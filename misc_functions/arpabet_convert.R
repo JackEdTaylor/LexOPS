@@ -1,4 +1,4 @@
-arpabet_convert <- function (string = "@dhisIvz", to = "two") {
+arpabet_convert <- function (string = "@dhisIvz", to = "two", sep = "_") {
   if (class(string) != "character") {
     stop("Expected a class of character for string.")
   }
@@ -7,10 +7,10 @@ arpabet_convert <- function (string = "@dhisIvz", to = "two") {
     oneletter = c("a", "@", "A", "c", "W", "Y", "b", "C", "d", "D", "E", "R", "e", "f", "g", "h", "I", "i", "J", "k", "l", "m", "n", "G", "o", "O", "p", "r", "s", "S", "t", "T", "U", "u", "v", "w", "y", "z", "Z")
   )
   regex.oneletter <- sprintf("[%s]", paste(arpabet$oneletter, collapse=""))
-  regex.twoletter <- sprintf("[%s|_]", paste(arpabet$twoletter, collapse="|"))
+  regex.twoletter <- sprintf("[%s|%s]", paste(arpabet$twoletter, collapse="|"), sep)
   ph_nr <- 0
   if(to=="one") {
-    if (!grepl("_", string) & !(string %in% arpabet$twoletter)) {
+    if (!grepl(sep, string) & !(string %in% arpabet$twoletter)) {
       stop("Check string. Already in one-letter phoneme representation?")
     }
     if (nchar(gsub(regex.twoletter, "", string))!=0) {
@@ -21,8 +21,8 @@ arpabet_convert <- function (string = "@dhisIvz", to = "two") {
     strvec <- strsplit(string, "_")[[1]]
     strvec <- strvec[strvec!=""]  # remove any empty entries
     if (lengths(regmatches(string, gregexpr("_", string))) != length(strvec)-1) {
-      stop(sprintf('Incorrect number of "_" seperators. Expected %i but found %i?',
-                   length(strvec)-1, lengths(regmatches(string, gregexpr("_", string)))))
+      stop(sprintf('Incorrect number of "%s" seperators. Expected %i but found %i?',
+                   sep, length(strvec)-1, lengths(regmatches(string, gregexpr("_", string)))))
     }
     for (ph in strvec) {
       ph_nr <- ph_nr + 1
@@ -37,7 +37,7 @@ arpabet_convert <- function (string = "@dhisIvz", to = "two") {
       }
     }
   } else if (to=="two") {
-    if (grepl("_", string)) {
+    if (grepl(sep, string)) {
       stop("Check string. Already in two-letter phoneme representation?")
     }
     if (nchar(gsub(regex.oneletter, "", string))!=0) {
@@ -54,7 +54,7 @@ arpabet_convert <- function (string = "@dhisIvz", to = "two") {
       } else {
         out <- sprintf("%s%s", out, nextph)
       }
-      if (ph_nr != length(strvec)) {out <- sprintf("%s_", out)}
+      if (ph_nr != length(strvec)) {out <- sprintf("%s%s", out, sep)}
     }
   }
   out
