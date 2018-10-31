@@ -11,7 +11,7 @@ vis.cats <- c('Length', 'Syllables', 'Word Frequency', 'Bigram Frequency', 'Orth
 
 shinyUI(dashboardPage(skin='black',
                     
-  dashboardHeader(title='The Word Machine',
+  dashboardHeader(title='LexOPS',
                   titleWidth=200),
   
   dashboardSidebar(width=200,
