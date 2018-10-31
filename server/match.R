@@ -218,11 +218,20 @@ resultsdata <- reactive({
     if(input$check.pn) {
       
       out_copy <- left_join(out, dat, by='string')
-      out_copy$PN <- switch(input$pn.opt, 'pld20'=out_copy$pld20, 'cn'=out_copy$phon.coltheart.N)
+      out_copy$PN <- switch(input$pn.opt, 'pld20'=out_copy$cmu.pr1_pld20, 'cn'=out_copy$cmu.pr1_phon.coltheart.N)
       if(input$pn.log){out_copy$PN <- log(out_copy$PN)}
       
+      # handle multiple pronunciations by getting value for selected pronunciation
+      pron_summ <- get_pronunciations(input$string, df = dat) %>%
+        unname() %>%
+        lapply(arpabet_convert, to="two", sep='-') %>%
+        unlist(use.names = F)
+      pron_nr <- match(input$manual.pron.pn, pron_summ)
+      xsource <- switch(input$pn.opt, 'pld20'='pld20', 'cn'='phon.coltheart.N')
+      xsource_prx <- sprintf("cmu.pr%i_%s", pron_nr, xsource)
+      str_in_pn <- dat[[xsource_prx]][dat$string==input$string]
+      
       # calculate diffs & distances
-      str_in_pn <- out_copy$PN[out_copy$string==str_in]
       out_copy$pn_diff <- out_copy$PN - str_in_pn
       out_copy$pn_dist <- abs(out_copy$pn_diff)
       

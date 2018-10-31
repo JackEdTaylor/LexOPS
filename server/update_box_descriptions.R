@@ -197,7 +197,7 @@ output$descr.pn <- renderText({
     } else if(input$pn.sl[1]!=0 & input$pn.sl[2]==0){
       boundary <- sprintf(' Will allow values %.2f smaller than the target word.', abs(input$pn.sl[1]))
     } else if(input$pn.sl[1]!=0 & input$pn.sl[2]!=0){
-      boundary <- sprintf(' Will allow values %.2f smaller or %.2f greater than the target word.', abs(input$pn.sl[1]), input$pn.sl[2])
+      boundary <- sprintf(' Will allow values %.2f smaller or %.2f greater than the target pronunciation.', abs(input$pn.sl[1]), input$pn.sl[2])
     }
     t <- sprintf('%s%s', t, boundary)
   } else {

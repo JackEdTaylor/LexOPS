@@ -110,10 +110,19 @@ output$plot.phonemes <- renderPlot({
 # Phonological Neighbourhood
 output$plot.pn <- renderPlot({
   xsource <- switch(input$pn.opt, 'pld20'='pld20', 'cn'='phon.coltheart.N')
-  str_in_x <- dat[[xsource]][dat$string==input$string]
+  xsource_pr1 <- sprintf("cmu.pr1_%s", xsource)
+  # handle multiple pronunciations by getting value for selected pronunciation
+  pron_summ <- get_pronunciations(input$string, df = dat) %>%
+    unname() %>%
+    lapply(arpabet_convert, to="two", sep='-') %>%
+    unlist(use.names = F)
+  pron_nr <- match(input$manual.pron.pn, pron_summ)
+  xsource <- switch(input$pn.opt, 'pld20'='pld20', 'cn'='phon.coltheart.N')
+  xsource_prx <- sprintf("cmu.pr%i_%s", pron_nr, xsource)
+  str_in_x <- dat[[xsource_prx]][dat$string==input$string]
   x_lowtext <- switch(input$pn.opt, 'pld20'='Larger Neighborhood', 'cn'='Smaller Neighborhood')
   x_hightext <- switch(input$pn.opt, 'pld20'='Smaller Neighborhood', 'cn'='Larger Neighborhood')
-  dens.plot(x=xsource, selected=input$check.pn,
+  dens.plot(x=xsource_pr1, selected=input$check.pn,
             redline=str_in_x,
             shade=c(str_in_x + input$pn.sl[1], str_in_x + input$pn.sl[2]),
             boxtype='info',

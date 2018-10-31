@@ -17,6 +17,12 @@ source("server/get_vis_dat.R", local=T)
 # functions for visualising distributions in boxes
 source("server/box_vis_functions.R", local=T)
 
+# function for converting CMU phoneme representations between one and two-letter
+source("misc_functions/arpabet_convert.R", local=T)
+
+# function for getting a word's possible pronunciations
+source("misc_functions/get_pronunciations.R", local=T)
+
 # Define server logic
 shinyServer(function(input, output) {
   
@@ -49,7 +55,7 @@ shinyServer(function(input, output) {
       arrange(desc(n)) %>%
       na.omit()
     if(input$check.manual.pos){
-      selectInput('manual.pos', NULL, unlist(PoS.summ[1], use.names=F), width=200)
+      selectInput('manual.pos', NULL, unlist(PoS.summ[1], use.names=F), width='100%')
     } else {
       NULL
     }
@@ -57,16 +63,11 @@ shinyServer(function(input, output) {
   
   # Reactive change to Phonological boxes for manual pronunciation definition
   output$manual.pron.pn.choice <- renderUI ({
-    pron_summ <- dat %>%
-      filter(string==input$string) %>%
-      select('cmu.pronun_1letter', 'cmu.pronun_1letter_alt1', 'cmu.pronun_1letter_alt2', 'cmu.pronun_1letter_alt3') %>%
-      select_if(~sum(!is.na(.)) > 0) %>%
-      unname()
-    if (length(pron_summ) > 1) {
-      selectInput('manual.pron.pn', sprintf("Select Pronuciation (%i detected) - NOT YET IMPLEMENTED", length(pron_summ)), pron_summ, width=200)
-    } else {
-      NULL
-    }
+    pron_summ <- get_pronunciations(input$string, df = dat) %>%
+      unname() %>%
+      lapply(arpabet_convert, to="two", sep='-') %>%
+      unlist(use.names = F)
+    selectInput('manual.pron.pn', sprintf("Select Pronuciation (%i detected)", length(pron_summ)), pron_summ, width='100%')
   })
   
   
