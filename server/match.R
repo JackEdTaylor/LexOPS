@@ -176,27 +176,54 @@ resultsdata <- reactive({
     # Match by Syllables
     if (input$check.syllables){
       out_copy <- left_join(out, dat, by='string')
-      str_in_syll <- out_copy$mhyph.syllables[out_copy$string==str_in]
+      out_copy$Syllables <- switch(input$syllables.opt, 'mp'=out_copy$mhyph.syllables, 'cmu'=out_copy$cmu.pr1_syllables)
       
-      syll_tol <- (str_in_syll+input$syllables.sl[1]):(str_in_syll+input$syllables.sl[2])  # vector for allowed syllables
-      out_copy <- dplyr::filter(out_copy, mhyph.syllables %in% syll_tol | string==str_in)
+      # handle multiple pronunciations by getting value for selected pronunciation
+      if (input$syllables.opt=='cmu') {
+        pron_summ <- get_pronunciations(input$string, df = dat) %>%
+          unname() %>%
+          lapply(arpabet_convert, to="two", sep='-') %>%
+          unlist(use.names = F)
+        pron_nr <- match(input$manual.pron.syllables, pron_summ)
+        xsource_prx <- sprintf("cmu.pr%i_syllables", pron_nr)
+        str_in_syll <- dat[[xsource_prx]][dat$string==input$string]
+      } else {
+        str_in_syll <- dat$mhyph.syllables[dat$string==input$string]
+      }
       
-      out <- dplyr::filter(out, string %in% out_copy$string) %>%
-        mutate(Syllables = out_copy$mhyph.syllables)
-      out_diff <- dplyr::filter(out_diff, string %in% out$string) %>%
-        mutate(Syllables = out_copy$mhyph.syllables)
-      out_dist <- dplyr::filter(out_dist, string %in% out$string) %>%
-        mutate(Syllables = out_copy$mhyph.syllables)
+      # calculate diffs & distances
+      out_copy$syll_diff <- out_copy$Syllables - str_in_syll
+      out_copy$syll_dist <- abs(out_copy$syll_diff)
+      
+      out <- left_join(out, select(out_copy, string, Syllables), by='string')
+      out_diff <- mutate(out_diff, Syllables=out_copy$syll_diff)
+      out_dist <- mutate(out_dist, Syllables=out_copy$syll_dist)
+      
+      out$Syllables <- round(out$Syllables, 2)
+      out_diff$Syllables <- round(out_diff$Syllables, 2)
+      out_dist$Syllables <- round(out_dist$Syllables, 2)
+      
+      out <- dplyr::filter(out, Syllables >= str_in_syll+input$syllables.sl[1] | string==str_in,
+                           Syllables <= str_in_syll+input$syllables.sl[2] | string==str_in)
+      out_diff <- dplyr::filter(out_diff, string %in% out$string)
+      out_dist <- dplyr::filter(out_dist, string %in% out$string)
     }
     
     # Match by Phonemes
     if(input$check.phonemes) {
-      
       out_copy <- left_join(out, dat, by='string')
-      out_copy$Phonemes <- switch(input$phonemes.opt, 'cmu'=out_copy$cmu.N_phonemes)
+      out_copy$Phonemes <- switch(input$phonemes.opt, 'cmu'=out_copy$cmu.pr1_N_phonemes)
+      
+      # handle multiple pronunciations
+      pron_summ <- get_pronunciations(input$string, df = dat) %>%
+        unname() %>%
+        lapply(arpabet_convert, to="two", sep='-') %>%
+        unlist(use.names = F)
+      pron_nr <- match(input$manual.pron.phonemes, pron_summ)
+      xsource_prx <- sprintf("cmu.pr%i_N_phonemes", pron_nr)
+      str_in_phonemes <- dat[[xsource_prx]][dat$string==input$string]
       
       # calculate diffs & distances
-      str_in_phonemes <- out_copy$Phonemes[out_copy$string==str_in]
       out_copy$phonemes_diff <- out_copy$Phonemes - str_in_phonemes
       out_copy$phonemes_dist <- abs(out_copy$phonemes_diff)
       
@@ -251,12 +278,19 @@ resultsdata <- reactive({
     
     # Match by Phonological Similarity
     if(input$check.ps) {
+      # handle multiple pronunciations by getting value for selected pronunciation
+      pron_summ <- get_pronunciations(input$string, df = dat) %>%
+        unname() %>%
+        lapply(arpabet_convert, to="two", sep='-') %>%
+        unlist(use.names = F)
+      pron_nr <- match(input$manual.pron.ps, pron_summ)
+      xsource_prx <- sprintf("cmu.pr%i_pronun_1letter", pron_nr)
+      str_in_pronun <- dat[[xsource_prx]][dat$string==input$string]
       
-      str_in_pronun <- dat$cmu.pronun_1letter[dat$string==input$string]
       out_copy <- left_join(out, dat, by='string')
       out_copy$PS <- as.integer(switch(input$ps.opt,
-                                       'ld'=vwr::levenshtein.distance(str_in_pronun, out_copy$cmu.pronun_1letter),
-                                       'ldd'=vwr::levenshtein.damerau.distance(str_in_pronun, out_copy$cmu.pronun_1letter)))
+                                       'ld'=vwr::levenshtein.distance(str_in_pronun, out_copy$cmu.pr1_pronun_1letter),
+                                       'ldd'=vwr::levenshtein.damerau.distance(str_in_pronun, out_copy$cmu.pr1_pronun_1letter)))
       
       # calculate diffs & distances
       str_in_ps <- out_copy$PS[out_copy$string==str_in]

@@ -17,18 +17,20 @@ shinyUI(dashboardPage(skin='black',
   dashboardSidebar(width=200,
                    sidebarMenu(
                      style = 'position: fixed; overflow: visible;',  # Stationary sidebar while scrolling
-                     menuItem('Match', tabname='match', icon=icon('search', lib='glyphicon'),
+                     menuItem('Generate', tabname='generate', icon=icon('cogs')),
+                     br(),
+                     menuItem('Match', tabname='match', icon=icon('search'),
                               startExpanded = T,
-                      textInput('string', 'Word:', 'thicket', width=180),  # must explicitly give width of UI items in sidebar to avoid overflowing
-                      column(1, textOutput('nrow.results')),
-                      br(), br(),
-                      menuSubItem('Options', tabName="options", icon=icon('tasks', lib='glyphicon')),
-                      menuSubItem('Suggested Matches', tabName="results", icon=icon('sort-by-attributes-alt', lib='glyphicon'))),
+                              textInput('string', 'Word:', 'thicket', width="100%"),  # must explicitly give width of UI items in sidebar to avoid overflowing
+                              column(1, textOutput('nrow.results')),
+                              br(), br(),
+                              menuSubItem('Options', tabName="match_options", icon=icon('sliders-h')),
+                              menuSubItem('Suggested Matches', tabName="match_results", icon=icon('sort-amount-down'))),
                      br(),
-                     menuItem('Generate Stimuli', tabname='generate', icon=icon('list', lib='glyphicon')),
+                     menuItem('Fetch', tabname='fetch', icon=icon('file-import')),
                      br(),
-                     menuItem('Visualise', tabName="visualise", icon=icon('stats', lib='glyphicon')),
-                     menuItem('Info', tabName='info', icon=icon('info-sign', lib='glyphicon'))
+                     menuItem('Visualise', tabName="visualise", icon=icon('chart-bar')),
+                     menuItem('Info', tabName='info', icon=icon('info-circle'))
                      )),
   
   dashboardBody(
@@ -62,7 +64,7 @@ shinyUI(dashboardPage(skin='black',
     
     tabItems(
     # Options tab
-    tabItem(tabName='options',
+    tabItem(tabName='match_options',
             fluidRow(
               # Lexical Header
               valueBox("Lexical Features", subtitle=NULL, width = 12, color='light-blue', icon=icon("book")),
@@ -161,9 +163,10 @@ shinyUI(dashboardPage(skin='black',
                 title='Syllables', status='info', solidHeader=T,
                 checkboxInput('check.syllables', 'Match by Number of Syllables', 0),
                 radioButtons('syllables.opt', 'Source',
-                             c('The Moby Project'='mp'),
-                             'mp',
+                             c('CMU Pronouncing Dictionary'='cmu', 'Moby Project'='mp'),
+                             'cmu',
                              inline=T),
+                uiOutput('manual.pron.syllables.choice'),
                 br(),
                 sliderInput('syllables.sl', NULL, value=c(0, 0), min=-5, max=5, step=1),
                 textOutput('descr.syllables'),
@@ -175,9 +178,10 @@ shinyUI(dashboardPage(skin='black',
                 title='Phonemes', status='info', solidHeader=T,
                 checkboxInput('check.phonemes', 'Match by Number of Phonemes', 0),
                 radioButtons('phonemes.opt', 'Source',
-                             c('The CMU Pronouncing Dictionary'='cmu'),
+                             c('CMU Pronouncing Dictionary'='cmu'),
                              'cmu',
                              inline=T),
+                uiOutput('manual.pron.phonemes.choice'),
                 br(),
                 sliderInput('phonemes.sl', NULL, value=c(0, 0), min=-5, max=5, step=1),
                 textOutput('descr.phonemes'),
@@ -208,13 +212,14 @@ shinyUI(dashboardPage(skin='black',
                              c('Levenshtein Distance (LD)'='ld', 'Levenshtein-Damerau Distance (LDD)'='ldd'),
                              'ld',
                              inline=T),
+                uiOutput('manual.pron.ps.choice'),
                 br(),
                 sliderInput('ps.sl', NULL, value=c(0, 6), min=0, max=25, step=1),
                 textOutput('descr.ps'),
                 plotOutput('plot.ps', height='170px')
               ),
               # Semantic Header
-              valueBox("Semantic Features", subtitle=NULL, width = 12, color='green', icon=icon("key")),
+              valueBox("Semantic Features", subtitle=NULL, width = 12, color='green', icon=icon("lightbulb")),
               # Familiarity box
               box(
                 width=6,
@@ -376,7 +381,7 @@ shinyUI(dashboardPage(skin='black',
             
             )),
     # Results tab
-    tabItem(tabName='results',
+    tabItem(tabName='match_results',
             selectInput('results.format', NULL, c('Raw Values'='rv', 'Distances (Absolute Difference)'='dist', 'Differences'='diff'), selected='dist'),
             DT::dataTableOutput('results')
             ),

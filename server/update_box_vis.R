@@ -93,16 +93,37 @@ output$plot.os <- renderPlot({
 })
 # Syllables
 output$plot.syllables <- renderPlot({
-  str_in_x <- dat$mhyph.syllables[dat$string==input$string]
-  dens.plot(x='mhyph.syllables', selected=input$check.syllables,
+  if (input$syllables.opt=='mp'){
+    xsource_prx <- 'mhyph.syllables'
+    xsource_pr1 <- xsource_prx
+  } else if (input$syllables.opt=='cmu') {
+    xsource_pr1 <- sprintf("cmu.pr1_syllables")
+    # handle multiple pronunciations by getting value for selected pronunciation
+    pron_summ <- get_pronunciations(input$string, df = dat) %>%
+      unname() %>%
+      lapply(arpabet_convert, to="two", sep='-') %>%
+      unlist(use.names = F)
+    pron_nr <- match(input$manual.pron.syllables, pron_summ)
+    xsource_prx <- sprintf("cmu.pr%i_syllables", pron_nr)
+  }
+  str_in_x <- dat[[xsource_prx]][dat$string==input$string]
+  dens.plot(x=xsource_pr1, selected=input$check.syllables,
             redline=str_in_x,
             shade=c(str_in_x + input$syllables.sl[1], str_in_x + input$syllables.sl[2]),
             boxtype='info')
 })
 # Phonemes
 output$plot.phonemes <- renderPlot({
-  str_in_x <- dat$cmu.N_phonemes[dat$string==input$string]
-  dens.plot(x='cmu.N_phonemes', selected=input$check.phonemes,
+  
+  # handle multiple pronunciations by getting value for selected pronunciation
+  pron_summ <- get_pronunciations(input$string, df = dat) %>%
+    unname() %>%
+    lapply(arpabet_convert, to="two", sep='-') %>%
+    unlist(use.names = F)
+  pron_nr <- match(input$manual.pron.phonemes, pron_summ)
+  xsource_prx <- sprintf("cmu.pr%i_N_phonemes", pron_nr)
+  str_in_x <- dat[[xsource_prx]][dat$string==input$string]
+  dens.plot(x='cmu.pr1_N_phonemes', selected=input$check.phonemes,
             redline=str_in_x,
             shade=c(str_in_x + input$phonemes.sl[1], str_in_x + input$phonemes.sl[2]),
             boxtype='info')
@@ -132,11 +153,18 @@ output$plot.pn <- renderPlot({
 })
 # Phonological Similarity
 output$plot.ps <- renderPlot({
-  str_in_pronun <- dat$cmu.pronun_1letter[dat$string==input$string]
+  # handle multiple pronunciations by getting value for selected pronunciation
+  pron_summ <- get_pronunciations(input$string, df = dat) %>%
+    unname() %>%
+    lapply(arpabet_convert, to="two", sep='-') %>%
+    unlist(use.names = F)
+  pron_nr <- match(input$manual.pron.ps, pron_summ)
+  xsource_prx <- sprintf("cmu.pr%i_pronun_1letter", pron_nr)
+  str_in_pronun <- dat[[xsource_prx]][dat$string==input$string]
   dat_copy <- dat
   dat_copy$PS <- as.integer(switch(input$ps.opt,
-                                   'ld'=vwr::levenshtein.distance(str_in_pronun, dat$cmu.pronun_1letter),
-                                   'ldd'=vwr::levenshtein.damerau.distance(str_in_pronun, dat$cmu.pronun_1letter)))
+                                   'ld'=vwr::levenshtein.distance(str_in_pronun, dat$cmu.pr1_pronun_1letter),
+                                   'ldd'=vwr::levenshtein.damerau.distance(str_in_pronun, dat$pr1_cmu.pronun_1letter)))
   str_in_x <- dat_copy$PS[dat_copy$string==input$string]
   dens.plot(x='PS', df=dat_copy, selected=input$check.ps,
             redline=str_in_x,

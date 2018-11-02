@@ -150,16 +150,17 @@ output$descr.os <- renderText({
 output$descr.syllables <- renderText({
   if(input$check.syllables) {
     if(input$syllables.sl[1]==0 & input$syllables.sl[2]==0){
-      "Will match by number of syllables exactly."
+      t <- "Will match by number of syllables exactly"
     } else {
       if(input$syllables.sl[1]!=0 & input$syllables.sl[2]==0){
-        sprintf('Will match by number of syllables, but allow words with %i fewer syllables', abs(input$syllables.sl[1]))
+        t <- sprintf('Will match by number of syllables, but allow words with %i fewer syllables', abs(input$syllables.sl[1]))
       } else if(input$syllables.sl[1]==0 & input$syllables.sl[2]!=0){
-        sprintf('Will match by number of syllables, but allow words with %i more syllables', input$syllables.sl[2])
+        t <- sprintf('Will match by number of syllables, but allow words with %i more syllables', input$syllables.sl[2])
       } else {
-        sprintf('Will match by number of syllables, but allow words with %i fewer or %i more syllables.', abs(input$syllables.sl[1]), input$syllables.sl[2])
+        t <- sprintf('Will match by number of syllables, but allow words with %i fewer or %i more syllables', abs(input$syllables.sl[1]), input$syllables.sl[2])
       }
     }
+    sprintf('%s, according to the %s', t, switch(input$syllables.opt, 'cmu'='CMU Pronouncing Dictionary', 'mp'='Moby Project'))
   } else{
     "Will not match by number of syllables."
   }
