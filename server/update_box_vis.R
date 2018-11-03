@@ -75,8 +75,7 @@ output$plot.on <- renderPlot({
             shade=c(str_in_x + input$on.sl[1], str_in_x + input$on.sl[2]),
             boxtype='warning',
             text.lowscale=x_lowtext, text.highscale=x_hightext,
-            log.transform = input$on.log,
-            force.histogram = !input$on.log)
+            log.transform = input$on.log)
 })
 # Orthographic Similarity
 output$plot.os <- renderPlot({
@@ -110,11 +109,11 @@ output$plot.syllables <- renderPlot({
   dens.plot(x=xsource_pr1, selected=input$check.syllables,
             redline=str_in_x,
             shade=c(str_in_x + input$syllables.sl[1], str_in_x + input$syllables.sl[2]),
-            boxtype='info')
+            boxtype='info',
+            text.lowscale='Fewer', text.highscale='More')
 })
 # Phonemes
 output$plot.phonemes <- renderPlot({
-  
   # handle multiple pronunciations by getting value for selected pronunciation
   pron_summ <- get_pronunciations(input$string, df = dat) %>%
     unname() %>%
@@ -126,7 +125,8 @@ output$plot.phonemes <- renderPlot({
   dens.plot(x='cmu.pr1_N_phonemes', selected=input$check.phonemes,
             redline=str_in_x,
             shade=c(str_in_x + input$phonemes.sl[1], str_in_x + input$phonemes.sl[2]),
-            boxtype='info')
+            boxtype='info',
+            text.lowscale='Fewer', text.highscale='More')
 })
 # Phonological Neighbourhood
 output$plot.pn <- renderPlot({
@@ -148,8 +148,7 @@ output$plot.pn <- renderPlot({
             shade=c(str_in_x + input$pn.sl[1], str_in_x + input$pn.sl[2]),
             boxtype='info',
             text.lowscale=x_lowtext, text.highscale=x_hightext,
-            log.transform = input$pn.log,
-            force.histogram = !input$pn.log)
+            log.transform = input$pn.log)
 })
 # Phonological Similarity
 output$plot.ps <- renderPlot({
