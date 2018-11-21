@@ -185,6 +185,24 @@ output$descr.phonemes <- renderText({
   }
 })
 
+# Rhyme
+output$descr.rhyme <- renderText({
+  # get rhyme sound
+  pron_summ <- get_pronunciations(input$string, df = dat) %>%
+    unname() %>%
+    lapply(arpabet_convert, to="two", sep='-') %>%
+    unlist(use.names = F)
+  pron_nr <- match(input$manual.pron.phonemes, pron_summ)
+  xsource_prx <- sprintf("cmu.pr%i_rhymesound", pron_nr)
+  str_in_rhymesound <- dat[[xsource_prx]][dat$string==input$string]
+  if (input$check.rhyme) {
+    t <- sprintf('Will match by Rhyme Sound ("%s").', gsub("_", "-", str_in_rhymesound))
+  } else {
+    t <- 'Will not match by Rhyme Sound.'
+  }
+  t
+})
+
 # Phonological Neighborhood
 output$descr.pn <- renderText({
   if (input$check.pn) {
