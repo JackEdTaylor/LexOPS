@@ -1,4 +1,4 @@
-vis.dat <- tibble(string = dat$string,
+lexops <- tibble(string = dat$string,
                   Length = dat$Length,
                   PoS.SUBTLEX_UK = dat$subtlex_uk.DomPoS,
                   PoS.BNC.Written = dat$bnc.wDomPoS,
@@ -51,7 +51,7 @@ vis.dat <- tibble(string = dat$string,
 # Visualilsation vector categories
 vis.cats <- c('Length', 'Syllables', 'Part of Speech', 'Word Frequency', 'Bigram Frequency', 'Orthographic Neighbourhood', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Lexical Decision Response Time', 'Lexical Decision Accuracy')
 
-visualise.opts <- names(vis.dat)[!(names(vis.dat) %in% c('string'))]
+visualise.opts <- names(lexops)[!(names(lexops) %in% c('string'))]
 
 vis.opt.2.source <- function(x){switch(x,
                                        '(None)' = '',

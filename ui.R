@@ -452,7 +452,7 @@ shinyUI(dashboardPage(skin='black',
             )),
     # Info tab
     tabItem(tabName='info',
-            downloadButton('wordmatchmaker.csv', 'Word Match Maker Database')
+            downloadButton('LexOPS.csv', 'Download the LexOPS Database')
     )
   )
   

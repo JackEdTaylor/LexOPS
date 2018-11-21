@@ -12,7 +12,7 @@ dat <- readRDS('dat.rds')
 cat(sprintf(' -DONE.\n'))
 
 # Create visualisation dataframe
-source("server/get_vis_dat.R", local=T)
+source("server/get_lexops_data.R", local=T)
 
 # functions for visualising distributions in boxes
 source("server/box_vis_functions.R", local=T)
@@ -107,10 +107,10 @@ shinyServer(function(input, output) {
   source("server/update_box_vis.R", local=T)
   
   # Info page download button
-  output$wordmatchmaker.csv <- downloadHandler(
-    filename = 'wordmatchmaker.csv',
+  output$LexOPS.csv <- downloadHandler(
+    filename = 'LexOPS.csv',
     content = function(file) {
-      write.csv(vis.dat, file, row.names = FALSE)
+      write.csv(lexops, file, row.names = FALSE)
     }
   )
   
