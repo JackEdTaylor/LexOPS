@@ -241,6 +241,29 @@ resultsdata <- reactive({
       out_dist <- dplyr::filter(out_dist, string %in% out$string)
     }
     
+    # Match by Rhyme
+    if(input$check.rhyme) {
+      out_copy <- left_join(out, dat, by='string')
+      out_copy$Rhyme <- switch(input$rhyme.opt, 'cmu'=out_copy$cmu.pr1_rhymesound)
+      
+      # handle multiple pronunciations
+      pron_summ <- get_pronunciations(input$string, df = dat) %>%
+        unname() %>%
+        lapply(arpabet_convert, to="two", sep='-') %>%
+        unlist(use.names = F)
+      pron_nr <- match(input$manual.pron.rhyme, pron_summ)
+      xsource_prx <- sprintf("cmu.pr%i_rhymesound", pron_nr)
+      str_in_rhyme <- dat[[xsource_prx]][dat$string==input$string]
+      
+      out <- left_join(out, select(out_copy, string, Rhyme), by='string')
+      out_diff <- left_join(out_diff, select(out_copy, string, Rhyme), by='string')
+      out_dist <- left_join(out_dist, select(out_copy, string, Rhyme), by='string')
+      
+      out <- dplyr::filter(out, Rhyme==str_in_rhyme | string==str_in)
+      out_diff <- dplyr::filter(out_diff, string %in% out$string)
+      out_dist <- dplyr::filter(out_dist, string %in% out$string)
+    }
+    
     # Match by Phonological Neighbourhood
     if(input$check.pn) {
       
