@@ -38,6 +38,7 @@ shinyUI(dashboardPage(skin='black',
     # set 'info' status to a nice purple, and change default purple box colour to same shade
     # reduce size of the fontawesome icons used in the feature headings
     # change headings' icon colour to white instead of grey
+    # change LexOPS header to be left-aligned
     tags$style(HTML(".box.box-solid.box-info>.box-header {
                     color:#fff;
                     background:#641e68
@@ -60,6 +61,10 @@ shinyUI(dashboardPage(skin='black',
                     color:rgba(255, 255, 255, 0.9);
                     bottom:-5px;
                     right:10px
+                    }
+                    
+                    .main-header .logo {
+                    text-align:left;
                     }")),
     
     tabItems(
@@ -187,6 +192,19 @@ shinyUI(dashboardPage(skin='black',
                 textOutput('descr.phonemes'),
                 plotOutput('plot.phonemes', height='170px')
               ),
+              # Rhyme box
+              box(
+                width=6,
+                title='Rhyme Sound', status='info', solidHeader=T,
+                checkboxInput('check.rhyme', 'Match by Rhyme Sound', 0),
+                radioButtons('rhyme.opt', 'Source',
+                             c('CMU Pronouncing Dictionary'='cmu'),
+                             'cmu',
+                             inline=T),
+                uiOutput('manual.pron.rhyme.choice'),
+                textOutput('descr.rhyme'),
+                br()
+                ),
               # Phonological Neighbourhood Size
               box(
                 width=6,
