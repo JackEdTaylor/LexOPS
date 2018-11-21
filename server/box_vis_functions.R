@@ -76,6 +76,9 @@ pos.plot <- function(xname='subtlex_uk.DomPoS', selected=T, PoS='noun', df=dat, 
     summarise(n=n()) %>%
     arrange(desc(n))
   
+  manualcolours = c('#3c3cbc', '#993cbc', '#5abc3c', '#633cbc', '#bc873c', '#4bbc3c', '#bc3c3c',
+                    '#3c8dbc', '#3cbc45', '#b43cbc', '#3cbcae', '#b7bc3c', '#bc3c6c')
+  
   # Labels for the top N results, where N is defined in the function
   dfplot$disp_name <- as.character(dfplot$x)
   if (label_top_N < length(unique(dfplot$x))) {
@@ -104,6 +107,6 @@ pos.plot <- function(xname='subtlex_uk.DomPoS', selected=T, PoS='noun', df=dat, 
     labs(x=NULL, y=NULL) +
     theme_void() +
     scale_alpha(guide = 'none', range=c(0.05, 0.5)) +
-    scale_fill_manual(values=c('#3c3cbc', '#993cbc', '#5abc3c', '#633cbc', '#bc873c', '#4bbc3c', '#bc3c3c',
-                               '#3c8dbc', '#3cbc45', '#b43cbc', '#3cbcae', '#b7bc3c', '#bc3c6c'))
+    scale_fill_manual(values=rep(manualcolours,
+                                 ceiling((nrow(dfplot)+length(manualcolours))/length(manualcolours))))
 }
