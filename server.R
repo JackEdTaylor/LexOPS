@@ -94,6 +94,13 @@ shinyServer(function(input, output) {
       unlist(use.names = F)
     selectInput('manual.pron.ps', sprintf("Select Pronuciation (%i detected)", length(pron_summ)), pron_summ, width='100%')
   })
+  output$manual.pron.rhyme.choice <- renderUI ({
+    pron_summ <- get_pronunciations(input$string, df = dat) %>%
+      unname() %>%
+      lapply(arpabet_convert, to="two", sep='-') %>%
+      unlist(use.names = F)
+    selectInput('manual.pron.rhyme', sprintf("Select Pronuciation (%i detected)", length(pron_summ)), pron_summ, width='100%')
+  })
   
   
   # Density/Histogram plots in boxes
