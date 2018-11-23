@@ -76,7 +76,7 @@ pos.plot <- function(xname='subtlex_uk.DomPoS', selected=T, PoS='noun', df=dat, 
     summarise(n=n()) %>%
     arrange(desc(n))
   
-  manualcolours = c('#3c3cbc', '#993cbc', '#5abc3c', '#633cbc', '#bc873c', '#4bbc3c', '#bc3c3c',
+  manualcolours <- c('#3c3cbc', '#993cbc', '#5abc3c', '#633cbc', '#bc873c', '#4bbc3c', '#bc3c3c',
                     '#3c8dbc', '#3cbc45', '#b43cbc', '#3cbcae', '#b7bc3c', '#bc3c6c')
   
   # Labels for the top N results, where N is defined in the function
@@ -86,9 +86,9 @@ pos.plot <- function(xname='subtlex_uk.DomPoS', selected=T, PoS='noun', df=dat, 
   }
   
   # Add additional columns to data, needed for donut plot.
-  dfplot$fraction = dfplot$n / sum(dfplot$n)
-  dfplot$ymax = cumsum(dfplot$fraction)
-  dfplot$ymin = c(0, head(dfplot$ymax, n = -1))
+  dfplot$fraction <- dfplot$n / sum(dfplot$n)
+  dfplot$ymax <- cumsum(dfplot$fraction)
+  dfplot$ymin <- c(0, head(dfplot$ymax, n = -1))
   dfplot$alphalevel <- ifelse(as.character(dfplot$x)==PoS, 1, 0)
   
   # Only do alpha effect if checkbox selected
@@ -109,4 +109,20 @@ pos.plot <- function(xname='subtlex_uk.DomPoS', selected=T, PoS='noun', df=dat, 
     scale_alpha(guide = 'none', range=c(0.05, 0.5)) +
     scale_fill_manual(values=rep(manualcolours,
                                  ceiling((nrow(dfplot)+length(manualcolours))/length(manualcolours))))
+}
+
+# word cloud for rhyme
+rhyme.plot <- function(str_in="encyclopedia", pron_nr=1, selected=T, df=dat) {
+  rhymesound <- dat[[sprintf("cmu.pr%i_rhymesound", pron_nr)]][dat$string==str_in]
+  dat %>%
+    select(string, cmu.pr1_rhymesound, Mean.Zipf) %>%
+    filter(cmu.pr1_rhymesound==rhymesound & between(Mean.Zipf, 3, 7) & string!=str_in) %>%
+    sample_n(15) %>%
+    mutate(wordcloudsize=1, wordcloudalpha=if(selected){0.9}else{0.2}) %>%
+    add_row(string=str_in, wordcloudsize=5, wordcloudalpha=1, .before=1) %>%
+    ggplot(aes(label=string, size=wordcloudsize, alpha=wordcloudalpha)) +
+    geom_text_wordcloud(colour="#641e68", rm_outside=T, shape='circle') +
+    theme_minimal() +
+    scale_size_area(max_size=20) +
+    scale_alpha_identity()
 }
