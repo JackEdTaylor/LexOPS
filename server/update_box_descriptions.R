@@ -196,9 +196,9 @@ output$descr.rhyme <- renderText({
   xsource_prx <- sprintf("cmu.pr%i_rhymesound", pron_nr)
   str_in_rhymesound <- dat[[xsource_prx]][dat$string==input$string]
   if (input$check.rhyme) {
-    t <- sprintf('Will match by Rhyme Sound ("%s").', gsub("_", "-", str_in_rhymesound))
+    t <- sprintf('Will match by Rhyme ("%s").', gsub("_", "-", str_in_rhymesound))
   } else {
-    t <- 'Will not match by Rhyme Sound.'
+    t <- 'Will not match by Rhyme.'
   }
   t
 })
@@ -239,6 +239,25 @@ output$descr.ps <- renderText({
     t <- 'Will not match by PS to the target word'
   }
   t
+})
+
+# Number of Pronunciations
+output$descr.prn <- renderText({
+  if(input$check.prn) {
+    if(input$prn.sl[1]==0 & input$prn.sl[2]==0){
+      "Will match by number of pronunciations exactly."
+    } else {
+      if(input$prn.sl[1]!=0 & input$prn.sl[2]==0){
+        sprintf('Will match by number of pronunciations, but allow words with %i fewer phonemes', abs(input$prn.sl[1]))
+      } else if(input$prn.sl[1]==0 & input$prn.sl[2]!=0){
+        sprintf('Will match by number of pronunciations, but allow words with %i more phonemes', input$prn.sl[2])
+      } else {
+        sprintf('Will match by number of pronunciations, but allow words with %i fewer or %i more phonemes.', abs(input$prn.sl[1]), input$prn.sl[2])
+      }
+    }
+  } else{
+    "Will not match by number of pronunciations."
+  }
 })
 
 # Familiarity
