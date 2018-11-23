@@ -3,6 +3,7 @@ library(shinydashboard)
 library(tidyverse)
 library(plotly)
 library(viridis)
+library(ggwordcloud)
 library(DT)
 library(vwr)
 
@@ -11,8 +12,9 @@ cat(sprintf('\nIMPORTING DATA...\n'))
 dat <- readRDS('dat.rds')
 cat(sprintf(' -DONE.\n'))
 
-# Create visualisation dataframe
+# Create lexops dataframe and set options for visualisation
 source("server/get_lexops_data.R", local=T)
+lexopsraw <- lexops
 
 # functions for visualising distributions in boxes
 source("server/box_vis_functions.R", local=T)
@@ -23,11 +25,17 @@ source("misc_functions/arpabet_convert.R", local=T)
 # function for getting a word's possible pronunciations
 source("misc_functions/get_pronunciations.R", local=T)
 
+# function for returning which alternate pronunciation for a string has been selected
+source("misc_functions/get_pron_nr.R", local=T)
+
+# functions used in matching
+source("server/match/matcher_functions.R", local=T)
+
 # Define server logic
 shinyServer(function(input, output) {
   
   # get matches
-  source("server/match.R", local=T)
+  source("server/match/match.R", local=T)
   
   # put matches in datatable
   output$results <- DT::renderDataTable({
@@ -110,7 +118,7 @@ shinyServer(function(input, output) {
   output$LexOPS.csv <- downloadHandler(
     filename = 'LexOPS.csv',
     content = function(file) {
-      write.csv(lexops, file, row.names = FALSE)
+      write.csv(lexopsraw, file, row.names = FALSE)
     }
   )
   

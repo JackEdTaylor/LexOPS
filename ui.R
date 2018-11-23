@@ -6,9 +6,6 @@ library(plotly)
 library(viridis)
 library(DT)
 
-# Visualilsation vector categories
-vis.cats <- c('Length', 'Syllables', 'Word Frequency', 'Bigram Frequency', 'Orthographic Neighbourhood', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Lexical Decision Response Time', 'Lexical Decision Accuracy')
-
 shinyUI(dashboardPage(skin='black',
                     
   dashboardHeader(title='LexOPS',
@@ -77,7 +74,7 @@ shinyUI(dashboardPage(skin='black',
               box(
                 width=6,
                 title='Word Frequency', status='primary', solidHeader=T,
-                checkboxInput('check.frequency', 'Match by Frequency', 1),
+                checkboxInput('check.frequency', 'Match by Frequency', 0),
                 checkboxInput('frequency.log', 'Log Transform (Zipf)', 1),
                 checkboxGroupInput('frequency.opt', 'Corpora',
                                    c('BNC (written)'='bnc_w', 'BNC (spoken)'='bnc_s', 'SUBTLEX-UK'='suk', 'SUBTLEX-US'='sus'),
@@ -92,7 +89,7 @@ shinyUI(dashboardPage(skin='black',
               box(
                 width=6,
                 title='Part of Speech (PoS)', status='primary', solidHeader=T,
-                checkboxInput('check.partofspeech', 'Match by Part of Speech', 1),
+                checkboxInput('check.partofspeech', 'Match by Part of Speech', 0),
                 radioButtons('pos.opt', 'Corpus',
                              c('SUBTLEX-UK'='suk',
                                'BNC (written)'='bnc_w',
@@ -111,7 +108,7 @@ shinyUI(dashboardPage(skin='black',
               box(
                 width=6,
                 title='Length', status='warning', solidHeader=T,
-                checkboxInput('check.length', 'Match by Length (Number of Characters)', 1),
+                checkboxInput('check.length', 'Match by Length (Number of Characters)', 0),
                 br(),
                 sliderInput('length.sl', NULL, value=c(0, 0), min=-5, max=5, step=1),
                 textOutput('descr.length'),
@@ -120,7 +117,7 @@ shinyUI(dashboardPage(skin='black',
               # Bigram Frequency box
               box(
                 width=6,
-                title='Bigram Frequency (BG.Frequency)', status='warning', solidHeader=T,
+                title='Bigram Frequency (BG)', status='warning', solidHeader=T,
                 checkboxInput('check.bgfreq', 'Match by Bigram Frequency', 0),
                 checkboxGroupInput('bgfreq.opt', 'Corpora',
                                    c('BNC (written)'='bnc.wbg', 'BNC (spoken)'='bnc.sbg', 'SUBTLEX-UK'='subtlex_uk.bg', 'SUBTLEX-US'='subtlex_us.bg'),
@@ -195,15 +192,16 @@ shinyUI(dashboardPage(skin='black',
               # Rhyme box
               box(
                 width=6,
-                title='Rhyme Sound', status='info', solidHeader=T,
-                checkboxInput('check.rhyme', 'Match by Rhyme Sound', 0),
+                title='Rhyme', status='info', solidHeader=T,
+                checkboxInput('check.rhyme', 'Match by Rhyme', 0),
                 radioButtons('rhyme.opt', 'Source',
                              c('CMU Pronouncing Dictionary'='cmu'),
                              'cmu',
                              inline=T),
                 uiOutput('manual.pron.rhyme.choice'),
+                br(),
                 textOutput('descr.rhyme'),
-                br()
+                plotOutput('plot.rhyme', height='160px')
                 ),
               # Phonological Neighbourhood Size
               box(
@@ -211,6 +209,10 @@ shinyUI(dashboardPage(skin='black',
                 title='Phonological Neighbourhood Size (PN)', status='info', solidHeader=T,
                 checkboxInput('check.pn', 'Match by PN', 0),
                 checkboxInput('pn.log', 'Log Transform', 0),
+                radioButtons('pn.source', 'Source',
+                             c('CMU Pronouncing Dictionary'='cmu'),
+                             'cmu',
+                             inline=T),
                 radioButtons('pn.opt', 'Measure',
                              c('Phonological Levenshtein Distance 20 (PLD20)'='pld20', "Coltheart's N"='cn'),
                              'pld20',
@@ -235,6 +237,20 @@ shinyUI(dashboardPage(skin='black',
                 sliderInput('ps.sl', NULL, value=c(0, 6), min=0, max=25, step=1),
                 textOutput('descr.ps'),
                 plotOutput('plot.ps', height='170px')
+              ),
+              # Number of Pronunciations
+              box(
+                width=6,
+                title='Number of Pronunciations (PrN)', status='info', solidHeader=T,
+                checkboxInput('check.prn', 'Match by PrN', 0),
+                radioButtons('prn.opt', 'Source',
+                             c('CMU Pronouncing Dictionary'='cmu'),
+                             'cmu',
+                             inline=T),
+                br(),
+                sliderInput('prn.sl', NULL, value=c(0, 0), min=-3, max=3, step=1),
+                textOutput('descr.prn'),
+                plotOutput('plot.prn', height='170px')
               ),
               # Semantic Header
               valueBox("Semantic Features", subtitle=NULL, width = 12, color='green', icon=icon("lightbulb")),
