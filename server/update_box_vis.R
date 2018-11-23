@@ -171,6 +171,19 @@ output$plot.ps <- renderPlot({
             boxtype='info',
             text.lowscale='More Similar', text.highscale='Less Similar')
 })
+# Rhyme
+output$plot.rhyme <- renderPlot({
+  rhyme.plot(input$string, get_pron_nr(input$manual.pron.rhyme, input$string), selected=input$check.rhyme, dat)
+})
+# Number of Pronunciations
+output$plot.prn <- renderPlot({
+  str_in_x <- dat$cmu.alternatives[dat$string==input$string]
+  dens.plot(x='cmu.alternatives', selected=input$check.prn,
+            redline=str_in_x,
+            shade=c(str_in_x + input$prn.sl[1], str_in_x + input$prn.sl[2]),
+            boxtype='info',
+            text.lowscale='Fewer', text.highscale='More')
+})
 # Familiarity
 output$plot.fam <- renderPlot({
   xsource <- switch(input$fam.opt, 'gn'='gn.FAM', 'cp'='cp.FAM')
