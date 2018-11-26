@@ -6,6 +6,10 @@ library(plotly)
 library(viridis)
 library(DT)
 
+# Visualilsation vector categories - needed in UI for Visualisation tab
+vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Frequency', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Lexical Decision Response Time', 'Lexical Decision Accuracy')
+
+
 shinyUI(dashboardPage(skin='black',
                     
   dashboardHeader(title='LexOPS',
