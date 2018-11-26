@@ -284,9 +284,9 @@ output$descr.fam <- renderText({
 # Age of Acquisition
 output$descr.aoa <- renderText({
   if (input$check.aoa) {
-    aoasource <- switch(input$aoa.opt, 'kuperman' = 'Kuperman et al. (2012)', 'gn' = 'the Glasgow Norms')
-    aoatype <- switch(input$aoa.opt, 'kuperman'='estimates', 'gn'='ratings')
-    aoarange <- switch(input$aoa.opt, 'kuperman'='from 1 to 25 years of age', 'gn'='from 1 to 7')
+    aoasource <- switch(input$aoa.opt, 'kuperman' = 'Kuperman et al. (2012)', 'gn' = 'the Glasgow Norms', 'bb' = "Brysbaert & Biemiller''s (2017) test-based norms")
+    aoatype <- switch(input$aoa.opt, 'kuperman'='estimates', 'gn'='ratings', 'bb'='scores')
+    aoarange <- switch(input$aoa.opt, 'kuperman'='from 1 to 25 years of age', 'gn'='from 1 to 7', 'bb'='from 2 to 14 years of age')
     t <- sprintf('Will match by Age of Acquisition %s (%s) according to %s.', aoatype, aoarange, aoasource)
     if(input$aoa.sl[1]==0 & input$aoa.sl[2]==0){
       boundary <- sprintf(' Will match by %s exactly (not recommended).', aoatype)
@@ -448,6 +448,27 @@ output$descr.gen <- renderText({
     t <- sprintf('%s%s', t, boundary)
   } else {
     t <- 'Will not match by Semantic Gender.'
+  }
+  t
+})
+
+# Semantic Gender
+output$descr.hum <- renderText({
+  if (input$check.hum) {
+    humsource <- switch(input$hum.opt, 'eh' = 'Engelthaler and Hills (2018)')
+    t <- sprintf('Will match by Humour ratings (from 1 to 5) according to %s.', humsource)
+    if(input$hum.sl[1]==0 & input$hum.sl[2]==0){
+      boundary <- sprintf(' Will match by ratings exactly (not recommended).')
+    } else if(input$hum.sl[1]==0 & input$hum.sl[2]!=0){
+      boundary <- sprintf(' Will allow ratings %.2f greater than the target word.', input$hum.sl[2])
+    } else if(input$hum.sl[1]!=0 & input$hum.sl[2]==0){
+      boundary <- sprintf(' Will allow ratings %.2f smaller than the target word.', abs(input$hum.sl[1]))
+    } else if(input$hum.sl[1]!=0 & input$hum.sl[2]!=0){
+      boundary <- sprintf(' Will allow ratings %.2f smaller or %.2f greater than the target word.', abs(input$hum.sl[1]), input$hum.sl[2])
+    }
+    t <- sprintf('%s%s', t, boundary)
+  } else {
+    t <- 'Will not match by Humour.'
   }
   t
 })

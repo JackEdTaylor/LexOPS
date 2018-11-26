@@ -7,7 +7,7 @@ library(viridis)
 library(DT)
 
 # Visualilsation vector categories - needed in UI for Visualisation tab
-vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Frequency', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Lexical Decision Response Time', 'Lexical Decision Accuracy')
+vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Frequency', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Humour', 'Lexical Decision Response Time', 'Lexical Decision Accuracy')
 
 
 shinyUI(dashboardPage(skin='black',
@@ -278,7 +278,7 @@ shinyUI(dashboardPage(skin='black',
                 title='Age of Acquisition (AoA)', status='success', solidHeader=T,
                 checkboxInput('check.aoa', 'Match by Age of Acquisition Ratings/Estimates', 0),
                 radioButtons('aoa.opt', 'Source',
-                             c('Kuperman et al. (2012)'='kuperman', 'Glasgow Norms'='gn'),
+                             c('Kuperman et al. (2012)'='kuperman', 'Glasgow Norms'='gn', 'Brysbaert & Biemiller (2017)'='bb'),
                              selected='kuperman',
                              inline=T),
                 br(),
@@ -383,6 +383,20 @@ shinyUI(dashboardPage(skin='black',
                 sliderInput('gen.sl', NULL, value=c(-0.3, 0.3), min=-1.5, max=1.5, step=0.1),
                 textOutput('descr.gen'),
                 plotOutput('plot.gen', height='170px')
+              ),
+              # Humour box
+              box(
+                width=6,
+                title='Humour (HUM)', status='success', solidHeader=T,
+                checkboxInput('check.hum', 'Match by Humour Ratings', 0),
+                radioButtons('hum.opt', 'Source',
+                             c('Engelthaler & Hills (2018)'='eh'),
+                             selected='eh',
+                             inline=T),
+                br(),
+                sliderInput('hum.sl', NULL, value=c(-0.3, 0.3), min=-2, max=2, step=0.1),
+                textOutput('descr.hum'),
+                plotOutput('plot.hum', height='170px')
               ),
               # Behavioural Header
               valueBox("Behavioural Features", subtitle=NULL, width = 12, color='red', icon=icon("stopwatch")),

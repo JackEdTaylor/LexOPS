@@ -62,6 +62,7 @@ lexops <- tibble(
   FAM.Clark_and_Paivio = dat$cp.FAM,
   AoA.Kuperman = dat$kuperman.AOA,
   AoA.Glasgow_Norms = dat$gn.AOA,
+  AoA.BrysbaertBiemiller = dat$bb.AOA,
   CNC.Brysbaert = dat$brysbaert.CNC,
   CNC.Glasgow_Norms = dat$gn.CNC,
   IMAG.Glasgow_Norms = dat$gn.IMAG,
@@ -74,6 +75,7 @@ lexops <- tibble(
   DOM.Glasgow_Norms = dat$gn.DOM,
   SIZE.Glasgow_Norms = dat$gn.SIZE,
   GEND.Glasgow_Norms = dat$gn.GEND,
+  HUM.EngelthalerHills = dat$eh.HUM,
   RT.BLP = dat$blp.rt,
   RT_zscore.BLP = dat$blp.rt.zscore,
   Accuracy.BLP = dat$blp.accuracy,
@@ -85,7 +87,7 @@ lexops <- tibble(
 
 
 # Visualilsation vector categories
-vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Frequency', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Lexical Decision Response Time', 'Lexical Decision Accuracy')
+vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Frequency', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Humour', 'Lexical Decision Response Time', 'Lexical Decision Accuracy')
 
 visualise.opts <- names(lexops)[!(names(lexops) %in% c('string'))]
 
@@ -111,6 +113,7 @@ vis.opt.2.source <- function(x){switch(x,
                                        'Imageability' = visualise.opts[grepl("IMAG",visualise.opts)],
                                        'Semantic Size' = visualise.opts[grepl("SIZE",visualise.opts)],
                                        'Semantic Gender' = visualise.opts[grepl("GEND",visualise.opts)],
+                                       'Humoour' = visualise.opts[grepl("HUM",visualise.opts)],
                                        'Lexical Decision Response Time' = visualise.opts[grepl("RT",visualise.opts)],
                                        'Lexical Decision Accuracy' = visualise.opts[grepl("Accuracy",visualise.opts)]
 )}

@@ -196,7 +196,7 @@ output$plot.fam <- renderPlot({
 })
 # Age of Acquisition
 output$plot.aoa <- renderPlot({
-  xsource <- switch(input$aoa.opt, 'gn'='gn.AOA', 'kuperman'='kuperman.AOA')
+  xsource <- switch(input$aoa.opt, 'gn'='gn.AOA', 'kuperman'='kuperman.AOA', 'bb'='bb.AOA')
   str_in_x <- dat[[xsource]][dat$string==input$string]
   dens.plot(x=xsource, selected=input$check.aoa,
             redline=str_in_x,
@@ -273,6 +273,16 @@ output$plot.gen <- renderPlot({
             shade=c(str_in_x + input$gen.sl[1], str_in_x + input$gen.sl[2]),
             boxtype = 'success',
             text.lowscale='More Feminine', text.highscale='More Masculine')
+})
+# Humour
+output$plot.hum <- renderPlot({
+  xsource <- switch(input$hum.opt, 'eh'='eh.HUM')
+  str_in_x <- dat[[xsource]][dat$string==input$string]
+  dens.plot(x=xsource, selected=input$check.hum,
+            redline=str_in_x,
+            shade=c(str_in_x + input$hum.sl[1], str_in_x + input$hum.sl[2]),
+            boxtype = 'success',
+            text.lowscale='Less Funny', text.highscale='More Funny')
 })
 # Response Time
 output$plot.rt <- renderPlot({

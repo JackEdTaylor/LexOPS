@@ -39,6 +39,7 @@ resultsdata <- reactive({
     matcher(lexops, corpus_recode(input$dom.opt, "DOM"), input$dom.sl, input$check.dom, input$string) %>%
     matcher(lexops, corpus_recode(input$size.opt, "SIZE"), input$size.sl, input$check.size, input$string) %>%
     matcher(lexops, corpus_recode(input$gen.opt, "GEND"), input$gen.sl, input$check.gen, input$string) %>%
+    matcher(lexops, corpus_recode(input$hum.opt, "HUM"), input$hum.sl, input$check.hum, input$string) %>%
     matcher(lexops, corpus_recode(input$rt.opt, if(input$rt.zscore){"RT_zscore"}else{"RT"}), input$rt.sl, input$check.rt, input$string) %>%
     matcher(lexops, corpus_recode(input$acc.opt, if(input$acc.zscore){"Accuracy_zscore"}else{"Accuracy"}), input$acc.sl, input$check.acc, input$string)
   

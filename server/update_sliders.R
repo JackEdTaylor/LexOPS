@@ -37,7 +37,8 @@ output$pn.sl.choice <- renderUI({
 output$aoa.sl.choice <- renderUI({
   switch(input$aoa.opt,
          'kuperman' = sliderInput('aoa.sl', NULL, value=c(-1, 1), min=-5, max=5, step=0.5),
-         'gn'= sliderInput('aoa.sl', NULL, value=c(-0.3, 0.3), min=-1.5, max=1.5, step=0.1))
+         'gn'= sliderInput('aoa.sl', NULL, value=c(-0.3, 0.3), min=-1.5, max=1.5, step=0.1),
+         'bb'= sliderInput('aoa.sl', NULL, value=c(-1, 1), min=-12, max=12, step=1))
 })
 
 # Concreteness

@@ -58,8 +58,10 @@ corpus_recode <- function(inputopts = c("bnc_w", "bnc_s"), prefix=NA) {
          "gn" = "Glasgow_Norms",
          "cp" = "Clark_and_Paivio",
          "kuperman" = "Kuperman",
+         "bb" = "BrysbaertBiemiller",
          "brysbaert" = "Brysbaert",
-         "warriner" = "Warriner"
+         "warriner" = "Warriner",
+         "eh" = "EngelthalerHills"
          )
   sprintf("%s%s", prefix_dot, recoded)
 }
