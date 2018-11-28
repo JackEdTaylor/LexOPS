@@ -23,7 +23,7 @@ shinyUI(dashboardPage(skin='black',
                      menuItem('Match', tabname='match', icon=icon('search'),
                               startExpanded = T,
                               textInput('string', 'Word:', 'thicket', width="100%"),  # must explicitly give width of UI items in sidebar to avoid overflowing
-                              column(1, textOutput('nrow.results')),
+                              column(1, textOutput('nrow.matchresults')),
                               br(), br(),
                               menuSubItem('Options', tabName="match_options", icon=icon('sliders-h')),
                               menuSubItem('Suggested Matches', tabName="match_results", icon=icon('sort-amount-down'))),
@@ -432,10 +432,28 @@ shinyUI(dashboardPage(skin='black',
               )
             
             )),
-    # Results tab
+    # Match Results tab
     tabItem(tabName='match_results',
-            selectInput('results.format', NULL, c('Raw Values'='rv', 'Distances (Absolute Difference)'='dist', 'Differences'='diff'), selected='dist'),
-            DT::dataTableOutput('results')
+            fluidRow(box(
+              title='Options', status='primary',
+              collapsible=T, collapsed=T, width=12,
+              fluidRow(
+                column(12, downloadButton('matched.csv', 'Download Suggested Matches')),
+                br(), br(), br(),
+                column(12, selectInput('results.format', 'Results Format', c('Raw Values'='rv', 'Distances (Absolute Difference from Target Word)'='dist', 'Differences (from Target Word)'='diff'), selected='dist')),
+                column(6, uiOutput('match_results_sort_1_choice')),
+                column(6, uiOutput('match_results_sort_1_order_choice')),
+                column(6, uiOutput('match_results_sort_2_choice')),
+                column(6, uiOutput('match_results_sort_2_order_choice')),
+                column(6, uiOutput('match_results_sort_3_choice')),
+                column(6, uiOutput('match_results_sort_3_order_choice')),
+                column(6, uiOutput('match_results_sort_4_choice')),
+                column(6, uiOutput('match_results_sort_4_order_choice')),
+                column(6, uiOutput('match_results_sort_5_choice')),
+                column(6, uiOutput('match_results_sort_5_order_choice'))
+              )
+            )),
+            DT::dataTableOutput('match_results_dt')
             ),
     # Visualise tab
     tabItem(

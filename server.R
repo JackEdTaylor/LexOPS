@@ -37,13 +37,16 @@ shinyServer(function(input, output) {
   # get matches
   source("server/match/match.R", local=T)
   
+  # put matches in datatable & sorting options
+  source("server/match/results_match.R", local=T)
+  
   # put matches in datatable
-  output$results <- DT::renderDataTable({
-    DT::datatable(resultsdata(), options=list(pageLength=25))
+  output$match_results_dt <- DT::renderDataTable({
+    DT::datatable(matchresults(), options=list(pageLength=25))
   })
   
   # For displaying number of results under word-entry textbox in sidebar
-  output$nrow.results <- renderText({sprintf('%i results', nrow(resultsdata())-1)})
+  output$nrow.matchresults <- renderText({sprintf('%i results', nrow(matchresults())-1)})
   
   # Descriptions under boxes
   source("server/update_box_descriptions.R", local=T)

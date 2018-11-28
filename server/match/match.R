@@ -1,4 +1,4 @@
-resultsdata <- reactive({
+matchresults_unsorted <- reactive({
   
   # add similarity information to the lexops df
   if (input$check.os) {
@@ -12,6 +12,7 @@ resultsdata <- reactive({
                                    'ld'=vwr::levenshtein.distance(lexops[[sprintf("CMU.pr%i_1letter", get_pron_nr(input$manual.pron.ps, input$string))]][lexops$string==input$string], lexops$CMU.pr1_1letter),
                                    'ldd'=vwr::levenshtein.damerau.distance(lexops[[sprintf("CMU.pr%i_1letter", get_pron_nr(input$manual.pron.ps, input$string))]][lexops$string==input$string], lexops$CMU.pr1_1letter)))
   }
+
   
   matched <- select(lexops, string) %>%
     # Lexical
@@ -42,6 +43,7 @@ resultsdata <- reactive({
     matcher(lexops, corpus_recode(input$hum.opt, "HUM"), input$hum.sl, input$check.hum, input$string) %>%
     matcher(lexops, corpus_recode(input$rt.opt, if(input$rt.zscore){"RT_zscore"}else{"RT"}), input$rt.sl, input$check.rt, input$string) %>%
     matcher(lexops, corpus_recode(input$acc.opt, if(input$acc.zscore){"Accuracy_zscore"}else{"Accuracy"}), input$acc.sl, input$check.acc, input$string)
+    
   
   # Get differences and distances
   matched_differences <- get_differences(matched, str_in=input$string)
@@ -58,4 +60,44 @@ resultsdata <- reactive({
   
   res
   
+})
+
+# sorting
+
+matchresults <- reactive ({
+  
+  sort_vec <- c()
+  sort_vec_desc <- c()
+  
+  for (sortnr in 1:5) {
+    if (sprintf("match_results_sort_%i", sortnr) %in% names(input)) {
+      if (input[[sprintf("match_results_sort_%i", sortnr)]] != "(None)") {
+        sortnr_string <- as.character(input[[sprintf("match_results_sort_%i", sortnr)]])
+        if (input[[sprintf("match_results_sort_%i_order", sortnr)]] == "Ascending") {
+          sort_vec <- c(sort_vec, sortnr_string)
+        } else {
+          sort_vec_desc <- c(sort_vec_desc, sortnr_string)
+        }
+      }
+      else {
+        break
+      }
+    } else {
+      break
+    }
+  }
+  
+  if (length(sort_vec)>0 & length(sort_vec_desc)==0) {
+    matchresults_unsorted() %>%
+      arrange(!!! syms(sort_vec))
+  } else if (length(sort_vec)==0 & length(sort_vec_desc)>0) {
+    matchresults_unsorted() %>%
+      arrange(desc(!!! syms(sort_vec_desc)))
+  } else if (length(sort_vec)>0 & length(sort_vec_desc)>0) {
+    matchresults_unsorted() %>%
+      arrange(!!! syms(sort_vec), desc(!!! syms(sort_vec_desc)))
+  } else {
+    matchresults_unsorted()
+  }
+
 })
