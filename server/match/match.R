@@ -62,42 +62,30 @@ matchresults_unsorted <- reactive({
   
 })
 
+
+
 # sorting
 
 matchresults <- reactive ({
   
-  sort_vec <- c()
-  sort_vec_desc <- c()
+  out <- matchresults_unsorted()
   
   for (sortnr in 1:5) {
     if (sprintf("match_results_sort_%i", sortnr) %in% names(input)) {
-      if (input[[sprintf("match_results_sort_%i", sortnr)]] != "(None)") {
-        sortnr_string <- as.character(input[[sprintf("match_results_sort_%i", sortnr)]])
-        if (input[[sprintf("match_results_sort_%i_order", sortnr)]] == "Ascending") {
-          sort_vec <- c(sort_vec, sortnr_string)
+      sortnr_string <- as.character(input[[sprintf("match_results_sort_%i", sortnr)]])
+      sortnr_order <- as.character(input[[sprintf("match_results_sort_%i_order", sortnr)]])
+      if (sortnr_string != "(None)") {
+        if (sortnr_order == "Ascending") {
+          out <- out %>%
+            arrange(!!! sym(sortnr_string))
         } else {
-          sort_vec_desc <- c(sort_vec_desc, sortnr_string)
+          out <- out %>%
+            arrange(desc(!!! sym(sortnr_string)))
         }
       }
-      else {
-        break
-      }
-    } else {
-      break
     }
   }
   
-  if (length(sort_vec)>0 & length(sort_vec_desc)==0) {
-    matchresults_unsorted() %>%
-      arrange(!!! syms(sort_vec))
-  } else if (length(sort_vec)==0 & length(sort_vec_desc)>0) {
-    matchresults_unsorted() %>%
-      arrange(desc(!!! syms(sort_vec_desc)))
-  } else if (length(sort_vec)>0 & length(sort_vec_desc)>0) {
-    matchresults_unsorted() %>%
-      arrange(!!! syms(sort_vec), desc(!!! syms(sort_vec_desc)))
-  } else {
-    matchresults_unsorted()
-  }
+  out
 
 })
