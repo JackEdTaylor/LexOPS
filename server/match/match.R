@@ -12,7 +12,7 @@ matchresults_unsorted <- reactive({
                                    'ld'=vwr::levenshtein.distance(lexops[[sprintf("CMU.pr%i_1letter", get_pron_nr(input$manual.pron.ps, input$string))]][lexops$string==input$string], lexops$CMU.pr1_1letter),
                                    'ldd'=vwr::levenshtein.damerau.distance(lexops[[sprintf("CMU.pr%i_1letter", get_pron_nr(input$manual.pron.ps, input$string))]][lexops$string==input$string], lexops$CMU.pr1_1letter)))
   }
-
+  
   
   matched <- select(lexops, string) %>%
     # Lexical
@@ -43,7 +43,7 @@ matchresults_unsorted <- reactive({
     matcher(lexops, corpus_recode(input$hum.opt, "HUM"), input$hum.sl, input$check.hum, input$string) %>%
     matcher(lexops, corpus_recode(input$rt.opt, if(input$rt.zscore){"RT_zscore"}else{"RT"}), input$rt.sl, input$check.rt, input$string) %>%
     matcher(lexops, corpus_recode(input$acc.opt, if(input$acc.zscore){"Accuracy_zscore"}else{"Accuracy"}), input$acc.sl, input$check.acc, input$string)
-    
+  
   
   # Get differences and distances
   matched_differences <- get_differences(matched, str_in=input$string)
@@ -86,6 +86,7 @@ matchresults <- reactive ({
     }
   }
   
-  out
-
+  out %>%
+    filter(string != input$string)
+  
 })
