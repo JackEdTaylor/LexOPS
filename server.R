@@ -42,7 +42,7 @@ shinyServer(function(input, output) {
   
   # put matches in datatable
   output$match_results_dt <- DT::renderDataTable({
-    DT::datatable(matchresults(), options=list(pageLength=25))
+    DT::datatable(matchresults(), options=list(pageLength=25, scrollX=T))
   })
   
   # For displaying number of results under word-entry textbox in sidebar
@@ -113,9 +113,25 @@ shinyServer(function(input, output) {
     selectInput('manual.pron.rhyme', sprintf("Select Pronuciation (%i detected)", length(pron_summ)), pron_summ, width='100%')
   })
   
-  
   # Density/Histogram plots in boxes
   source("server/update_box_vis.R", local=T)
+  
+  # Reactive change to Part of Speech box for PoS selection when generating stimuli
+  output$manual.pos.choice_gen <- renderUI({
+    PoS.summ <- dat %>%
+      group_by(switch(input$pos.opt_gen,
+                      'suk'=subtlex_uk.DomPoS,
+                      'bnc_w'=bnc.wDomPoS,
+                      'bnc_s'=bnc.sDomPoS,
+                      'elp'=elp.DomPoS)) %>%
+      summarise(n=n()) %>%
+      arrange(desc(n)) %>%
+      na.omit()
+    checkboxGroupInput('manual.pos_gen', NULL, unlist(PoS.summ[1], use.names=F), width='100%')
+  })
+  
+  # fetch tab
+  source("server/fetch/fetcher.R", local=T)
   
   # Info page download button
   output$LexOPS.csv <- downloadHandler(
