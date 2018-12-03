@@ -1,3 +1,30 @@
+## GENERATE
+
+# Frequency
+output$plot.freq_gen <- renderPlot({
+  out_copy <- dat
+  if(input$frequency.log_gen) {
+    out_copy$bnc_w <- out_copy$bnc.wZipf
+    out_copy$bnc_s <- out_copy$bnc.sZipf
+    out_copy$suk <- out_copy$subtlex_uk.zipf
+    out_copy$sus <- out_copy$subtlex_us.zipf
+  } else {
+    out_copy$bnc_w <- out_copy$bnc.wFpmw
+    out_copy$bnc_s <- out_copy$bnc.sFpmw
+    out_copy$suk <- out_copy$subtlex_uk.fpmw
+    out_copy$sus <- out_copy$subtlex_us.fpmw
+  }
+  out_copy$Frequency <- rowMeans(select(out_copy, one_of(input$frequency.opt_gen)), dims=1, na.rm=T)
+  dens.plot(x='Frequency', selected=input$check.frequency_gen,
+            redline=NA,
+            shade=c(input$frequency.sl_gen[1], input$frequency.sl_gen[2]),
+            df=out_copy,
+            boxtype='primary',
+            text.lowscale='Less Frequent', text.highscale='More Frequent')
+})
+
+## MATCH
+
 # Length
 output$plot.length <- renderPlot({
   str_in_x <- dat$Length[dat$string==input$string]
