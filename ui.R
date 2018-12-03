@@ -83,6 +83,7 @@ shinyUI(dashboardPage(skin='black',
     tabItems(
       tabItem(tabName = 'generate_options',
               fluidRow(
+                valueBox("Generate Tab not yet Functional", subtitle=NULL, width = 12, color='red', icon=icon("exclamation-triangle")),
                 valueBox("Lexical Features", subtitle=NULL, width = 12, color='light-blue', icon=icon("book")),
                 box(
                   width=6,
