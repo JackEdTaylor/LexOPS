@@ -18,17 +18,20 @@ shinyUI(dashboardPage(skin='black',
   dashboardSidebar(width=200,
                    sidebarMenu(
                      style = 'position: fixed; overflow: visible;',  # Stationary sidebar while scrolling
-                     menuItem('Generate', tabname='generate', icon=icon('cogs')),
-                     br(),
-                     menuItem('Match', tabname='match', icon=icon('search'),
+                     menuItem('Generate', tabName='generate_options', icon=icon('cogs'),
                               startExpanded = T,
+                              menuSubItem('Options', tabName="generate_options", icon=icon('sliders-h')),
+                              menuSubItem('Generated Stimuli', tabName="generate_results", icon=icon('sort-amount-down'))),
+                     br(),
+                     menuItem('Match', icon=icon('search'),
+                              startExpanded = F,
                               textInput('string', 'Word:', 'thicket', width="100%"),  # must explicitly give width of UI items in sidebar to avoid overflowing
                               column(1, textOutput('nrow.matchresults')),
                               br(), br(),
                               menuSubItem('Options', tabName="match_options", icon=icon('sliders-h')),
                               menuSubItem('Suggested Matches', tabName="match_results", icon=icon('sort-amount-down'))),
                      br(),
-                     menuItem('Fetch', tabname='fetch', icon=icon('file-import')),
+                     menuItem('Fetch', tabName='fetch', icon=icon('file-import')),
                      br(),
                      menuItem('Visualise', tabName="visualise", icon=icon('chart-bar')),
                      menuItem('Info', tabName='info', icon=icon('info-circle'))
@@ -36,11 +39,20 @@ shinyUI(dashboardPage(skin='black',
   
   dashboardBody(
     
+    # set the font of the dashboard header
     # set 'info' status to a nice purple, and change default purple box colour to same shade
     # reduce size of the fontawesome icons used in the feature headings
     # change headings' icon colour to white instead of grey
     # change LexOPS header to be left-aligned
-    tags$style(HTML(".box.box-solid.box-info>.box-header {
+    tags$style(HTML('
+                    .main-header .logo {
+                      font-family: "Century Schoolbook", serif;
+                      font-style: italic;
+                      font-weight: bold;
+                      font-size: 24px;
+                    }
+
+                    .box.box-solid.box-info>.box-header {
                     color:#fff;
                     background:#641e68
                     }
@@ -66,14 +78,48 @@ shinyUI(dashboardPage(skin='black',
                     
                     .main-header .logo {
                     text-align:left;
-                    }")),
+                    }')),
     
     tabItems(
-    # Options tab
+      tabItem(tabName = 'generate_options',
+              fluidRow(
+                valueBox("Lexical Features", subtitle=NULL, width = 12, color='light-blue', icon=icon("book")),
+                box(
+                  width=6,
+                  title='Word Frequency', status='primary', solidHeader=T,
+                  checkboxInput('check.frequency_gen', 'Filter by Frequency', 0),
+                  checkboxInput('frequency.log_gen', 'Log Transform (Zipf)', 1),
+                  checkboxGroupInput('frequency.opt_gen', 'Corpora',
+                                     c('BNC (written)'='bnc_w', 'BNC (spoken)'='bnc_s', 'SUBTLEX-UK'='suk', 'SUBTLEX-US'='sus'),
+                                     c('bnc_w', 'bnc_s', 'suk', 'sus'),
+                                     inline=T),
+                  br(),
+                  uiOutput('frequency.sl.choice_gen'),
+                  textOutput('descr.frequency_gen'),
+                  plotOutput('plot.freq_gen', height='170px')
+                ),
+                box(
+                  width=6,
+                  title='Part of Speech (PoS)', status='primary', solidHeader=T,
+                  checkboxInput('check.partofspeech_gen', 'Filter by Part of Speech', 0),
+                  radioButtons('pos.opt_gen', 'Corpus',
+                               c('SUBTLEX-UK'='suk',
+                                 'BNC (written)'='bnc_w',
+                                 'BNC (spoken)'='bnc_s',
+                                 'English Lexicon Project (ELP)'='elp'),
+                               selected='suk',
+                               inline=T),
+                  uiOutput('manual.pos.choice_gen'),
+                  textOutput('descr.partofspeech_gen'),
+                  plotOutput('plot.pos_gen', height='200px')
+                )
+              )),
+      tabItem(tabName = 'generate_results'),
+    # Match Options tab
     tabItem(tabName='match_options',
             fluidRow(
               # Lexical Header
-              valueBox("Lexical Features", subtitle=NULL, width = 12, color='light-blue', icon=icon("book")),
+              valueBox("Lexical Features", subtitle=NULL, width = 12, color='light-blue', icon=icon("book-open")),
               # Frequency box
               box(
                 width=6,
@@ -455,6 +501,44 @@ shinyUI(dashboardPage(skin='black',
             )),
             DT::dataTableOutput('match_results_dt')
             ),
+    # Fetch tab
+    tabItem(tabName='fetch',
+            fluidRow(
+              box(
+              title='1) Stimuli Input', status='primary',
+              collapsible=T, collapsed=F, width=12,
+              fluidRow(
+                column(12, radioButtons('fetch.inputtype', 'Input Type', c("File (.csv, .tsv, .xls, .xlsx)"="file", "Text Box (copy-paste the words in)"="cp"))),
+                column(12, uiOutput('fetch.opts.inputfile.choice')),
+                column(12, uiOutput('fetch.opts.inputtext.choice')),
+                column(12, textOutput('fetch.filename')),
+                column(12, uiOutput('fetch.opts.filehasheaders.choice')),
+                column(12, br()),
+                column(12, uiOutput('fetch.opts.column.choice')),
+                column(12, uiOutput('fetch.textsep.choice'))
+              )),
+              box(
+                title='2) Choose Target Features', status='primary',
+                collapsible=T, collapsed=F, width=12,
+                fluidRow(
+                  column(12, uiOutput('fetch.includeorig.choice')),
+                  column(12, radioButtons('fetch.opts.all', NULL, c("Include all LexOPS Features"="all", "Select LexOPS Features Manually"="some"))),
+                  lapply(1:length(vis.cats), function(catnr) {
+                    column(12, uiOutput(sprintf("fetch.opts.choice.%i", catnr)))
+                  })
+                )
+              ),
+              box(
+                title='3) Results', status='primary',
+                collapsible=T, collapsed=F, width=12,
+                fluidRow(
+                  column(12, textOutput('fetch.results.plsinput')),
+                  column(12, uiOutput('fetched.csv.choice')),
+                  br(), br(), br(),
+                  column(12, DT::dataTableOutput('fetch_df_res_dt'))
+                         )
+              )
+            )),
     # Visualise tab
     tabItem(
       
