@@ -39,9 +39,15 @@ dens.plot <- function(x='gn.VAL', redline=3.2, selected=T, shade=c(3, 3.4), df=d
   
   if (selected) {
     p <- p +
-      annotate('rect', xmin=shade[1]-shadepadding, xmax=shade[2]+shadepadding, ymin=0, ymax=Inf, alpha=0.4, colour=NA) +
-      geom_vline(xintercept=redline, colour='red', size=1.25)
+      annotate('rect', xmin=shade[1]-shadepadding, xmax=shade[2]+shadepadding, ymin=0, ymax=Inf, alpha=0.4, colour=NA)
+    
+    if (!is.na(redline)) {
+      p <- p +
+        geom_vline(xintercept=redline, colour='red', size=1.25)
+    }
+    
   }
+  
   
   p <- p +
     labs(y=NULL, x=NULL) +
