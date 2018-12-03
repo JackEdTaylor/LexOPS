@@ -113,7 +113,7 @@ vis.opt.2.source <- function(x){switch(x,
                                        'Imageability' = visualise.opts[grepl("IMAG",visualise.opts)],
                                        'Semantic Size' = visualise.opts[grepl("SIZE",visualise.opts)],
                                        'Semantic Gender' = visualise.opts[grepl("GEND",visualise.opts)],
-                                       'Humoour' = visualise.opts[grepl("HUM",visualise.opts)],
+                                       'Humour' = visualise.opts[grepl("HUM",visualise.opts)],
                                        'Lexical Decision Response Time' = visualise.opts[grepl("RT",visualise.opts)],
                                        'Lexical Decision Accuracy' = visualise.opts[grepl("Accuracy",visualise.opts)]
 )}
