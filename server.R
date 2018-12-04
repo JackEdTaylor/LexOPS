@@ -138,7 +138,7 @@ shinyServer(function(input, output) {
   })
   
   # fetch tab
-  source("server/fetch/fetcher.R", local=T)
+  source("server/fetch.R", local=T)
   
   # Info page download button
   output$LexOPS.csv <- downloadHandler(
