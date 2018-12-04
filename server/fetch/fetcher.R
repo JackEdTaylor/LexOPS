@@ -56,7 +56,7 @@ fetch_df_raw <- reactive({
     } else if (file_ext == "tsv") {
       read_tsv(input$fetch.opts.inputfile$datapath, col_names=input$fetch.opts.filehasheaders)
     } else if (file_ext %in% c("xls", "xlsx", "xlsm")) {
-      gdata::read.xls(input$fetch.opts.inputfile$datapath, sheet=1, header=input$fetch.opts.filehasheaders)
+      readxl::read_excel(input$fetch.opts.inputfile$datapath, sheet=1, col_names=input$fetch.opts.filehasheaders)
     }
   } else {
     if (!is.null(input$fetch.opts.inputtext) & input$fetch.inputtype=="cp") {
