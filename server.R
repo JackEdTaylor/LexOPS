@@ -1,11 +1,18 @@
 library(shiny)
 library(shinydashboard)
+library(shinyjs)
 library(tidyverse)
 library(plotly)
 library(viridis)
 library(ggwordcloud)
 library(DT)
 library(vwr)
+
+lexops_loadingdone <- function(secs) {
+  Sys.sleep(secs)
+  hide(id = "loading_page", anim = TRUE, animType = "fade")    
+  show("main_content")
+}
 
 # IMPORT DATA
 cat(sprintf('\nIMPORTING DATA...\n'))
@@ -33,6 +40,9 @@ source("server/match/matcher_functions.R", local=T)
 
 # Define server logic
 shinyServer(function(input, output) {
+  
+  # loading screen
+  lexops_loadingdone(2)
   
   # get matches
   source("server/match/match.R", local=T)
