@@ -18,7 +18,8 @@ tagList(
   ),
   div(
     id = "loading_page",
-    img(src = "lexopslogo.png", class = 'center-fit'),
+    img(src = "lexopslogo_white.png", class = 'center-fit'),
+    
     br(), br(),
     img(src = "ajax-loader.gif")
   ),
@@ -26,9 +27,11 @@ tagList(
   hidden(
     div(
       id = "main_content",
-      dashboardPage(skin='black',
+      dashboardPage(title='LexOPS',
+                    skin='black',
                     
-                    dashboardHeader(title='LexOPS',
+                    dashboardHeader(title=tags$a(href='http://www.psy.gla.ac.uk',
+                                                 tags$img(src='lexopslogo_black_textonly.png', height='30px')),
                                     titleWidth=200),
                     
                     dashboardSidebar(width=200,
