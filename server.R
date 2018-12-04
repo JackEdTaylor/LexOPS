@@ -8,11 +8,11 @@ library(ggwordcloud)
 library(DT)
 library(vwr)
 
-lexops_loadingdone <- function(secs) {
-  Sys.sleep(secs)
+lexops_loadingdone <- function() {
   hide(id = "loading_page", anim = TRUE, animType = "fade")    
   show("main_content")
 }
+
 
 # IMPORT DATA
 cat(sprintf('\nIMPORTING DATA...\n'))
@@ -40,9 +40,6 @@ source("server/match/matcher_functions.R", local=T)
 
 # Define server logic
 shinyServer(function(input, output) {
-  
-  # loading screen
-  lexops_loadingdone(2)
   
   # get matches
   source("server/match/match.R", local=T)
@@ -152,6 +149,9 @@ shinyServer(function(input, output) {
   )
   
   source("server/update_visualisation.R", local=T)
+  
+  # loading screen finish
+  lexops_loadingdone()
   
 }
 

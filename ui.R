@@ -19,7 +19,6 @@ tagList(
   div(
     id = "loading_page",
     img(src = "lexopslogo_white.png", class = 'center-fit'),
-    
     br(), br(),
     img(src = "ajax-loader.gif")
   ),
