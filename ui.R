@@ -486,7 +486,7 @@ tagList(
                                     title='1) Stimuli Input', status='primary',
                                     collapsible=T, collapsed=F, width=12,
                                     fluidRow(
-                                      column(12, radioButtons('fetch.inputtype', 'Input Type', c("File (.csv, .tsv, .xls, .xlsx)"="file", "Text Box (copy-paste the words in)"="cp"))),
+                                      column(12, radioButtons('fetch.inputtype', 'Input Type', c("File (.csv, .tsv, .xls, .xlsx)"="file", "Text Box (type/copy-paste the words in)"="cp"))),
                                       column(12, uiOutput('fetch.opts.inputfile.choice')),
                                       column(12, uiOutput('fetch.opts.inputtext.choice')),
                                       column(12, textOutput('fetch.filename')),

@@ -27,7 +27,7 @@ output$fetch.opts.inputtext.choice <- renderUI({
   if(input$fetch.inputtype == "file"){
     NULL
   } else if(input$fetch.inputtype == "cp") {
-    textAreaInput("fetch.opts.inputtext", "Copy and Paste Target Word Stimuli into the Box Below", width="100%", height='270px')
+    textAreaInput("fetch.opts.inputtext", "Type or Copy and Paste Target Word Stimuli into the Box Below", width="100%", height='270px')
   }
 })
 
