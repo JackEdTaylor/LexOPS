@@ -296,215 +296,65 @@ output$descr.prn <- renderText({
 
 # Familiarity
 output$descr.fam <- renderText({
-  if (input$check.fam) {
-    famsource <- switch(input$fam.opt, 'cp' = 'Clark and Paivio (2004)', 'gn' = 'the Glasgow Norms')
-    t <- sprintf('Will match by Familiarity ratings (from 1 to 7) according to %s.', famsource)
-    if(input$fam.sl[1]==0 & input$fam.sl[2]==0){
-      boundary <- sprintf(' Will match by ratings exactly (not recommended).')
-    } else if(input$fam.sl[1]==0 & input$fam.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f greater than the target word.', input$fam.sl[2])
-    } else if(input$fam.sl[1]!=0 & input$fam.sl[2]==0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller than the target word.', abs(input$fam.sl[1]))
-    } else if(input$fam.sl[1]!=0 & input$fam.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller or %.2f greater than the target word.', abs(input$fam.sl[1]), input$fam.sl[2])
-    }
-    t <- sprintf('%s%s', t, boundary)
-  } else {
-    t <- 'Will not match by Familiarity.'
-  }
-  t
+  box_descr_numeric("Familiarity", "ratings", input$fam.opt, input$fam.sl, input$check.fam)
 })
 
 # Age of Acquisition
 output$descr.aoa <- renderText({
-  if (input$check.aoa) {
-    aoasource <- switch(input$aoa.opt, 'kuperman' = 'Kuperman et al. (2012)', 'gn' = 'the Glasgow Norms', 'bb' = "Brysbaert & Biemiller''s (2017) test-based norms")
-    aoatype <- switch(input$aoa.opt, 'kuperman'='estimates', 'gn'='ratings', 'bb'='scores')
-    aoarange <- switch(input$aoa.opt, 'kuperman'='from 1 to 25 years of age', 'gn'='from 1 to 7', 'bb'='from 2 to 14 years of age')
-    t <- sprintf('Will match by Age of Acquisition %s (%s) according to %s.', aoatype, aoarange, aoasource)
-    if(input$aoa.sl[1]==0 & input$aoa.sl[2]==0){
-      boundary <- sprintf(' Will match by %s exactly (not recommended).', aoatype)
-    } else if(input$aoa.sl[1]==0 & input$aoa.sl[2]!=0){
-      boundary <- sprintf(' Will allow %s %.2f greater than the target word.', aoatype, input$aoa.sl[2])
-    } else if(input$aoa.sl[1]!=0 & input$aoa.sl[2]==0){
-      boundary <- sprintf(' Will allow %s %.2f smaller than the target word.', aoatype, abs(input$aoa.sl[1]))
-    } else if(input$aoa.sl[1]!=0 & input$aoa.sl[2]!=0){
-      boundary <- sprintf(' Will allow %s %.2f smaller or %.2f greater than the target word.', aoatype, abs(input$aoa.sl[1]), input$aoa.sl[2])
+  aoavariabletype <- if (length(input$aoa.opt==1)) {
+    if (input$aoa.opt=="bb") {
+      "scores"
+    } else {
+      "ratings"
     }
-    t <- sprintf('%s%s', t, boundary)
   } else {
-    t <- 'Will not match by Age of Acquisition.'
+    if ("bb" %in% input$aoa.opt) {
+      "ratings and scores"
+    } else {
+      "ratings"
+    }
   }
-  t
+  box_descr_numeric("Age of Acquisition", aoavariabletype, input$aoa.opt, input$aoa.sl, input$check.aoa)
 })
 
 # Concreteness
 output$descr.cnc <- renderText({
-  if (input$check.cnc) {
-    cncsource <- switch(input$cnc.opt, 'brysbaert' = 'Brysbaert et al. (2014)', 'gn' = 'the Glasgow Norms')
-    cncrange <- switch(input$cnc.opt, 'brysbaert' = 'from 1 to 5', 'gn' = 'from 1 to 7')
-    t <- sprintf('Will match by Concreteness ratings (%s) according to %s.', cncrange, cncsource)
-    if(input$cnc.sl[1]==0 & input$cnc.sl[2]==0){
-      boundary <- sprintf(' Will match by ratings exactly (not recommended).')
-    } else if(input$cnc.sl[1]==0 & input$cnc.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f greater than the target word.', input$cnc.sl[2])
-    } else if(input$cnc.sl[1]!=0 & input$cnc.sl[2]==0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller than the target word.', abs(input$cnc.sl[1]))
-    } else if(input$cnc.sl[1]!=0 & input$cnc.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller or %.2f greater than the target word.', abs(input$cnc.sl[1]), input$cnc.sl[2])
-    }
-    t <- sprintf('%s%s', t, boundary)
-  } else {
-    t <- 'Will not match by Concreteness.'
-  }
-  t
+  box_descr_numeric("Concreteness", "ratings", input$cnc.opt, input$cnc.sl, input$check.cnc)
 })
 
 # Arousal
 output$descr.arou <- renderText({
-  if (input$check.arou) {
-    arousource <- switch(input$arou.opt, 'warriner' = 'Warriner et al. (2013)', 'gn' = 'the Glasgow Norms')
-    t <- sprintf('Will match by Arousal ratings (from 1 to 9) according to %s.', arousource)
-    if(input$arou.sl[1]==0 & input$arou.sl[2]==0){
-      boundary <- sprintf(' Will match by ratings exactly (not recommended).')
-    } else if(input$arou.sl[1]==0 & input$arou.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f greater than the target word.', input$arou.sl[2])
-    } else if(input$arou.sl[1]!=0 & input$arou.sl[2]==0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller than the target word.', abs(input$arou.sl[1]))
-    } else if(input$arou.sl[1]!=0 & input$arou.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller or %.2f greater than the target word.', abs(input$arou.sl[1]), input$arou.sl[2])
-    }
-    t <- sprintf('%s%s', t, boundary)
-  } else {
-    t <- 'Will not match by Arousal.'
-  }
-  t
+  box_descr_numeric("Arousal", "ratings", input$arou.opt, input$arou.sl, input$check.arou)
 })
 
 # Valence
 output$descr.val <- renderText({
-  if (input$check.val) {
-    valsource <- switch(input$val.opt, 'warriner' = 'Warriner et al. (2013)', 'gn' = 'the Glasgow Norms')
-    t <- sprintf('Will match by Valence ratings (from 1 to 9) according to %s.', valsource)
-    if(input$val.sl[1]==0 & input$val.sl[2]==0){
-      boundary <- sprintf(' Will match by ratings exactly (not recommended).')
-    } else if(input$val.sl[1]==0 & input$val.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f greater than the target word.', input$val.sl[2])
-    } else if(input$val.sl[1]!=0 & input$val.sl[2]==0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller than the target word.', abs(input$val.sl[1]))
-    } else if(input$val.sl[1]!=0 & input$val.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller or %.2f greater than the target word.', abs(input$val.sl[1]), input$val.sl[2])
-    }
-    t <- sprintf('%s%s', t, boundary)
-  } else {
-    t <- 'Will not match by Valence.'
-  }
-  t
+  box_descr_numeric("Valence", "ratings", input$val.opt, input$val.sl, input$check.val)
 })
 
 # Dominance
 output$descr.dom <- renderText({
-  if (input$check.dom) {
-    domsource <- switch(input$dom.opt, 'warriner' = 'Warriner et al. (2013)', 'gn' = 'the Glasgow Norms')
-    t <- sprintf('Will match by Dominance ratings (from 1 to 9) according to %s.', domsource)
-    if(input$dom.sl[1]==0 & input$dom.sl[2]==0){
-      boundary <- sprintf(' Will match by ratings exactly (not recommended).')
-    } else if(input$dom.sl[1]==0 & input$dom.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f greater than the target word.', input$dom.sl[2])
-    } else if(input$dom.sl[1]!=0 & input$dom.sl[2]==0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller than the target word.', abs(input$dom.sl[1]))
-    } else if(input$dom.sl[1]!=0 & input$dom.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller or %.2f greater than the target word.', abs(input$dom.sl[1]), input$dom.sl[2])
-    }
-    t <- sprintf('%s%s', t, boundary)
-  } else {
-    t <- 'Will not match by Dominance.'
-  }
-  t
+  box_descr_numeric("Dominance", "ratings", input$dom.opt, input$dom.sl, input$check.dom)
 })
 
 # Imageability
 output$descr.imag <- renderText({
-  if (input$check.imag) {
-    imagsource <- switch(input$imag.opt, 'cp' = 'Clark and Paivio (2004)', 'gn' = 'the Glasgow Norms')
-    t <- sprintf('Will match by Imageability ratings (from 1 to 7) according to %s.', imagsource)
-    if(input$imag.sl[1]==0 & input$imag.sl[2]==0){
-      boundary <- sprintf(' Will match by ratings exactly (not recommended).')
-    } else if(input$imag.sl[1]==0 & input$imag.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f greater than the target word.', input$imag.sl[2])
-    } else if(input$imag.sl[1]!=0 & input$imag.sl[2]==0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller than the target word.', abs(input$imag.sl[1]))
-    } else if(input$imag.sl[1]!=0 & input$imag.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller or %.2f greater than the target word.', abs(input$imag.sl[1]), input$imag.sl[2])
-    }
-    t <- sprintf('%s%s', t, boundary)
-  } else {
-    t <- 'Will not match by Imageability'
-  }
-  t
+  box_descr_numeric("Imageability", "ratings", input$imag.opt, input$imag.sl, input$check.imag)
 })
 
 # Semantic Size
 output$descr.size <- renderText({
-  if (input$check.size) {
-    sizesource <- switch(input$size.opt, 'gn' = 'the Glasgow Norms')
-    t <- sprintf('Will match by Semantic Size ratings (from 1 to 7) according to %s.', sizesource)
-    if(input$imag.sl[1]==0 & input$imag.sl[2]==0){
-      boundary <- sprintf(' Will match by ratings exactly (not recommended).')
-    } else if(input$imag.sl[1]==0 & input$imag.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f greater than the target word.', input$imag.sl[2])
-    } else if(input$imag.sl[1]!=0 & input$imag.sl[2]==0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller than the target word.', abs(input$imag.sl[1]))
-    } else if(input$imag.sl[1]!=0 & input$imag.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller or %.2f greater than the target word.', abs(input$imag.sl[1]), input$imag.sl[2])
-    }
-    t <- sprintf('%s%s', t, boundary)
-  } else {
-    t <- 'Will not match by Semantic Size.'
-  }
-  t
+  box_descr_numeric("Semantic Size", "ratings", input$size.opt, input$size.sl, input$check.size)
 })
 
 # Semantic Gender
 output$descr.gen <- renderText({
-  if (input$check.gen) {
-    gensource <- switch(input$gen.opt, 'gn' = 'the Glasgow Norms')
-    t <- sprintf('Will match by Semantic Gender ratings (from 1 to 7) according to %s.', gensource)
-    if(input$gen.sl[1]==0 & input$gen.sl[2]==0){
-      boundary <- sprintf(' Will match by ratings exactly (not recommended).')
-    } else if(input$gen.sl[1]==0 & input$gen.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f greater than the target word.', input$gen.sl[2])
-    } else if(input$gen.sl[1]!=0 & input$gen.sl[2]==0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller than the target word.', abs(input$gen.sl[1]))
-    } else if(input$gen.sl[1]!=0 & input$gen.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller or %.2f greater than the target word.', abs(input$gen.sl[1]), input$gen.sl[2])
-    }
-    t <- sprintf('%s%s', t, boundary)
-  } else {
-    t <- 'Will not match by Semantic Gender.'
-  }
-  t
+  box_descr_numeric("Semantic Gender", "ratings", input$gen.opt, input$gen.sl, input$check.gen)
 })
 
-# Semantic Gender
+# Humour
 output$descr.hum <- renderText({
-  if (input$check.hum) {
-    humsource <- switch(input$hum.opt, 'eh' = 'Engelthaler and Hills (2018)')
-    t <- sprintf('Will match by Humour ratings (from 1 to 5) according to %s.', humsource)
-    if(input$hum.sl[1]==0 & input$hum.sl[2]==0){
-      boundary <- sprintf(' Will match by ratings exactly (not recommended).')
-    } else if(input$hum.sl[1]==0 & input$hum.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f greater than the target word.', input$hum.sl[2])
-    } else if(input$hum.sl[1]!=0 & input$hum.sl[2]==0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller than the target word.', abs(input$hum.sl[1]))
-    } else if(input$hum.sl[1]!=0 & input$hum.sl[2]!=0){
-      boundary <- sprintf(' Will allow ratings %.2f smaller or %.2f greater than the target word.', abs(input$hum.sl[1]), input$hum.sl[2])
-    }
-    t <- sprintf('%s%s', t, boundary)
-  } else {
-    t <- 'Will not match by Humour.'
-  }
-  t
+  box_descr_numeric("Humour", "ratings", input$hum.opt, input$hum.sl, input$check.hum)
 })
 
 # Response Time
