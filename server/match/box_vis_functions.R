@@ -133,3 +133,38 @@ rhyme.plot <- function(str_in="encyclopedia", pron_nr=1, selected=T, df=dat) {
     scale_alpha_identity()
 }
 
+# Error plot
+error.plot <- function(errormessage="Error!", boxtype="success") {
+  tibble(qm = c(errormessage, rep("?", 99)),
+         wordcloudsize = c(6, rep(1, 99)),
+         wordcloudalpha = c(1, rep(0.6, 99))) %>%
+    ggplot(aes(label=qm, size=wordcloudsize, alpha=wordcloudalpha)) +
+    geom_text_wordcloud(colour=get.box.colour(boxtype), rm_outside=T, shape='circle') +
+    theme_minimal() +
+    scale_size_area(max_size=15) +
+    scale_alpha_identity()
+}
+
+# General time-saving box visualisation functions
+semantic_vis <- function(opts, selected, slider, prefix, text.lowscale="Less", text.highscale="More", df=lexops, str_in) {
+  if (length(opts)==0){
+    error.plot("No source\nselected!", "success")
+  } else {
+    out_copy <- df
+    column <- corpus_recode(opts, prefix)
+    if (length(column)>1) {
+      out_copy[column] <- lapply(out_copy[column], scale)
+      out_copy$xdata <- rowMeans(select(out_copy, one_of(column)), dims=1, na.rm=T)
+    } else {
+      out_copy$xdata <- out_copy[[column]]
+    }
+    str_in_x <- out_copy$xdata[out_copy$string==str_in]
+    dens.plot(x="xdata", selected=selected,
+              redline=str_in_x,
+              shade=c(str_in_x + slider[1], str_in_x + slider[2]),
+              df = out_copy,
+              boxtype = 'success',
+              text.lowscale=text.lowscale, text.highscale=text.highscale)
+  }
+}
+

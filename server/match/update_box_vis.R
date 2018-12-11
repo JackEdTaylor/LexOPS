@@ -203,103 +203,43 @@ output$plot.prn <- renderPlot({
 })
 # Familiarity
 output$plot.fam <- renderPlot({
-  xsource <- switch(input$fam.opt, 'gn'='gn.FAM', 'cp'='cp.FAM')
-  str_in_x <- dat[[xsource]][dat$string==input$string]
-  dens.plot(x=xsource, selected=input$check.fam,
-            redline=str_in_x,
-            shade=c(str_in_x + input$fam.sl[1], str_in_x + input$fam.sl[2]),
-            boxtype = 'success',
-            text.lowscale='Less Familiar', text.highscale='More Familiar')
+  semantic_vis(input$fam.opt, input$check.fam, input$fam.sl, prefix="FAM", "Less Familiar", "More Familiar", lexops, input$string)
 })
 # Age of Acquisition
 output$plot.aoa <- renderPlot({
-  xsource <- switch(input$aoa.opt, 'gn'='gn.AOA', 'kuperman'='kuperman.AOA', 'bb'='bb.AOA')
-  str_in_x <- dat[[xsource]][dat$string==input$string]
-  dens.plot(x=xsource, selected=input$check.aoa,
-            redline=str_in_x,
-            shade=c(str_in_x + input$aoa.sl[1], str_in_x + input$aoa.sl[2]),
-            boxtype = 'success',
-            text.lowscale='Earlier', text.highscale='Later')
+  semantic_vis(input$aoa.opt, input$check.aoa, input$aoa.sl, prefix="AoA", "Earlier", "Later", lexops, input$string)
 })
 # Concreteness
 output$plot.cnc <- renderPlot({
-  xsource <- switch(input$cnc.opt, 'gn'='gn.CNC', 'brysbaert'='brysbaert.CNC')
-  str_in_x <- dat[[xsource]][dat$string==input$string]
-  dens.plot(x=xsource, selected=input$check.cnc,
-            redline=str_in_x,
-            shade=c(str_in_x + input$cnc.sl[1], str_in_x + input$cnc.sl[2]),
-            boxtype = 'success',
-            text.lowscale='Less Concrete', text.highscale='More Concrete')
+  semantic_vis(input$cnc.opt, input$check.cnc, input$cnc.sl, prefix="CNC", "Less Concrete", "More Concrete", lexops, input$string)
 })
 # Imageability
 output$plot.imag <- renderPlot({
-  xsource <- switch(input$imag.opt, 'gn'='gn.IMAG', 'cp'='cp.IMAG')
-  str_in_x <- dat[[xsource]][dat$string==input$string]
-  dens.plot(x=xsource, selected=input$check.imag,
-            redline=str_in_x,
-            shade=c(str_in_x + input$imag.sl[1], str_in_x + input$imag.sl[2]),
-            boxtype = 'success',
-            text.lowscale='Less Imageable', text.highscale='More Imageable')
+  semantic_vis(input$imag.opt, input$check.imag, input$imag.sl, prefix="IMAG", "Less Imageable", "More Imageable", lexops, input$string)
 })
 # Arousal
 output$plot.arou <- renderPlot({
-  xsource <- switch(input$arou.opt, 'gn'='gn.AROU', 'warriner'='warriner.AROU')
-  str_in_x <- dat[[xsource]][dat$string==input$string]
-  dens.plot(x=xsource, selected=input$check.arou,
-            redline=str_in_x,
-            shade=c(str_in_x + input$arou.sl[1], str_in_x + input$arou.sl[2]),
-            boxtype = 'success',
-            text.lowscale='Less Arousing', text.highscale='More Arousing')
+  semantic_vis(input$arou.opt, input$check.arou, input$arou.sl, prefix="AROU", "Less Arousing", "More Arousing", lexops, input$string)
 })
 # Valence
 output$plot.val <- renderPlot({
-  xsource <- switch(input$val.opt, 'gn'='gn.VAL', 'warriner'='warriner.VAL')
-  str_in_x <- dat[[xsource]][dat$string==input$string]
-  dens.plot(x=xsource, selected=input$check.val,
-            redline=str_in_x,
-            shade=c(str_in_x + input$val.sl[1], str_in_x + input$val.sl[2]),
-            boxtype = 'success',
-            text.lowscale='More Negative', text.highscale='More Positive')
+  semantic_vis(input$val.opt, input$check.val, input$val.sl, prefix="VAL", "More Negative", "More Positive", lexops, input$string)
 })
 # Dominance
 output$plot.dom <- renderPlot({
-  xsource <- switch(input$dom.opt, 'gn'='gn.DOM', 'warriner'='warriner.DOM')
-  str_in_x <- dat[[xsource]][dat$string==input$string]
-  dens.plot(x=xsource, selected=input$check.dom,
-            redline=str_in_x,
-            shade=c(str_in_x + input$dom.sl[1], str_in_x + input$dom.sl[2]),
-            boxtype = 'success',
-            text.lowscale='Less Dominant', text.highscale='More Dominant')
+  semantic_vis(input$dom.opt, input$check.dom, input$dom.sl, prefix="DOM", "Less Dominant", "More Dominant", lexops, input$string)
 })
 # Size
 output$plot.size <- renderPlot({
-  xsource <- switch(input$size.opt, 'gn'='gn.SIZE')
-  str_in_x <- dat[[xsource]][dat$string==input$string]
-  dens.plot(x=xsource, selected=input$check.size,
-            redline=str_in_x,
-            shade=c(str_in_x + input$size.sl[1], str_in_x + input$size.sl[2]),
-            boxtype = 'success',
-            text.lowscale='Smaller', text.highscale='Larger')
+  semantic_vis(input$size.opt, input$check.size, input$size.sl, prefix="SIZE", "Smaller", "Larger", lexops, input$string)
 })
 # Gender
 output$plot.gen <- renderPlot({
-  xsource <- switch(input$gen.opt, 'gn'='gn.GEND')
-  str_in_x <- dat[[xsource]][dat$string==input$string]
-  dens.plot(x=xsource, selected=input$check.gen,
-            redline=str_in_x,
-            shade=c(str_in_x + input$gen.sl[1], str_in_x + input$gen.sl[2]),
-            boxtype = 'success',
-            text.lowscale='More Feminine', text.highscale='More Masculine')
+  semantic_vis(input$gen.opt, input$check.gen, input$gen.sl, prefix="GEND", "More Feminine", "More Masculine", lexops, input$string)
 })
 # Humour
 output$plot.hum <- renderPlot({
-  xsource <- switch(input$hum.opt, 'eh'='eh.HUM')
-  str_in_x <- dat[[xsource]][dat$string==input$string]
-  dens.plot(x=xsource, selected=input$check.hum,
-            redline=str_in_x,
-            shade=c(str_in_x + input$hum.sl[1], str_in_x + input$hum.sl[2]),
-            boxtype = 'success',
-            text.lowscale='Less Funny', text.highscale='More Funny')
+  semantic_vis(input$hum.opt, input$check.hum, input$hum.sl, prefix="HUM", "Less Funny", "More Funny", lexops, input$string)
 })
 # Response Time
 output$plot.rt <- renderPlot({
