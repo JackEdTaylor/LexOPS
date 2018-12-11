@@ -31,16 +31,16 @@ matchresults_unsorted <- reactive({
     matcher(lexops, "PS", input$ps.sl, input$check.ps, input$string) %>%
     matcher(lexops, "CMU.PrN", input$prn.sl, input$check.prn, input$string) %>%
     # Semantic
-    matcher(lexops, corpus_recode(input$fam.opt, "FAM"), input$fam.sl, input$check.fam, input$string) %>%
-    matcher(lexops, corpus_recode(input$aoa.opt, "AoA"), input$aoa.sl, input$check.aoa, input$string) %>%
-    matcher(lexops, corpus_recode(input$cnc.opt, "CNC"), input$cnc.sl, input$check.cnc, input$string) %>%
-    matcher(lexops, corpus_recode(input$imag.opt, "IMAG"), input$imag.sl, input$check.imag, input$string) %>%
-    matcher(lexops, corpus_recode(input$arou.opt, "AROU"), input$arou.sl, input$check.arou, input$string) %>%
-    matcher(lexops, corpus_recode(input$val.opt, "VAL"), input$val.sl, input$check.val, input$string) %>%
-    matcher(lexops, corpus_recode(input$dom.opt, "DOM"), input$dom.sl, input$check.dom, input$string) %>%
-    matcher(lexops, corpus_recode(input$size.opt, "SIZE"), input$size.sl, input$check.size, input$string) %>%
-    matcher(lexops, corpus_recode(input$gen.opt, "GEND"), input$gen.sl, input$check.gen, input$string) %>%
-    matcher(lexops, corpus_recode(input$hum.opt, "HUM"), input$hum.sl, input$check.hum, input$string) %>%
+    matcher(lexops, corpus_recode(input$fam.opt, "FAM"), input$fam.sl, input$check.fam, input$string, colmeans_name="Avg.FAM", scale.cols=if(length(input$fam.opt)>1) {T} else {F}) %>%
+    matcher(lexops, corpus_recode(input$aoa.opt, "AoA"), input$aoa.sl, input$check.aoa, input$string, colmeans_name="Avg.AoA", scale.cols=if(length(input$aoa.opt)>1) {T} else {F}) %>%
+    matcher(lexops, corpus_recode(input$cnc.opt, "CNC"), input$cnc.sl, input$check.cnc, input$string, colmeans_name="Avg.CNC", scale.cols=if(length(input$cnc.opt)>1) {T} else {F}) %>%
+    matcher(lexops, corpus_recode(input$imag.opt, "IMAG"), input$imag.sl, input$check.imag, input$string, colmeans_name="Avg.IMAG", scale.cols=if(length(input$imag.opt)>1) {T} else {F}) %>%
+    matcher(lexops, corpus_recode(input$arou.opt, "AROU"), input$arou.sl, input$check.arou, input$string, colmeans_name="Avg.AROU", scale.cols=if(length(input$arou.opt)>1) {T} else {F}) %>%
+    matcher(lexops, corpus_recode(input$val.opt, "VAL"), input$val.sl, input$check.val, input$string, colmeans_name="Avg.VAL", scale.cols=if(length(input$val.opt)>1) {T} else {F}) %>%
+    matcher(lexops, corpus_recode(input$dom.opt, "DOM"), input$dom.sl, input$check.dom, input$string, colmeans_name="Avg.DOM", scale.cols=if(length(input$dom.opt)>1) {T} else {F}) %>%
+    matcher(lexops, corpus_recode(input$size.opt, "SIZE"), input$size.sl, input$check.size, input$string, colmeans_name="Avg.SIZE", scale.cols=if(length(input$size.opt)>1) {T} else {F}) %>%
+    matcher(lexops, corpus_recode(input$gen.opt, "GEND"), input$gen.sl, input$check.gen, input$string, colmeans_name="Avg.GEND", scale.cols=if(length(input$gen.opt)>1) {T} else {F}) %>%
+    matcher(lexops, corpus_recode(input$hum.opt, "HUM"), input$hum.sl, input$check.hum, input$string, colmeans_name="Avg.HUM", scale.cols=if(length(input$hum.opt)>1) {T} else {F}) %>%
     matcher(lexops, corpus_recode(input$rt.opt, if(input$rt.zscore){"RT_zscore"}else{"RT"}), input$rt.sl, input$check.rt, input$string) %>%
     matcher(lexops, corpus_recode(input$acc.opt, if(input$acc.zscore){"Accuracy_zscore"}else{"Accuracy"}), input$acc.sl, input$check.acc, input$string)
   
@@ -49,7 +49,7 @@ matchresults_unsorted <- reactive({
   matched_differences <- get_differences(matched, str_in=input$string)
   matched_distances <- get_distances(matched_differences)
   
-  # Return the results
+  # Select results format
   if (input$results.format=='rv') {
     res <- matched
   } else if (input$results.format=='diff') {
