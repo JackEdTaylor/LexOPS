@@ -36,19 +36,9 @@ output$plot.length <- renderPlot({
 })
 # Frequency
 output$plot.freq <- renderPlot({
-  out_copy <- dat
-  if(input$frequency.log) {
-    out_copy$bnc_w <- out_copy$bnc.wZipf
-    out_copy$bnc_s <- out_copy$bnc.sZipf
-    out_copy$suk <- out_copy$subtlex_uk.zipf
-    out_copy$sus <- out_copy$subtlex_us.zipf
-  } else {
-    out_copy$bnc_w <- out_copy$bnc.wFpmw
-    out_copy$bnc_s <- out_copy$bnc.sFpmw
-    out_copy$suk <- out_copy$subtlex_uk.fpmw
-    out_copy$sus <- out_copy$subtlex_us.fpmw
-  }
-  out_copy$Frequency <- rowMeans(select(out_copy, one_of(input$frequency.opt)), dims=1, na.rm=T)
+  out_copy <- lexops
+  column <- corpus_recode(input$frequency.opt, if(input$frequency.log){"Zipf"}else{"fpmw"})
+  out_copy$Frequency <- rowMeans(select(out_copy, one_of(column)), dims=1, na.rm=T)
   str_in_x <- out_copy$Frequency[out_copy$string==input$string]
   dens.plot(x='Frequency', selected=input$check.frequency,
             redline=str_in_x,

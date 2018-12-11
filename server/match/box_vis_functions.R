@@ -132,3 +132,4 @@ rhyme.plot <- function(str_in="encyclopedia", pron_nr=1, selected=T, df=dat) {
     scale_size_area(max_size=20) +
     scale_alpha_identity()
 }
+
