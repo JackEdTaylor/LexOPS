@@ -48,17 +48,25 @@ output$pn.sl.choice <- renderUI({
 
 # Age of acquisition
 output$aoa.sl.choice <- renderUI({
-  switch(input$aoa.opt,
-         'kuperman' = sliderInput('aoa.sl', NULL, value=c(-1, 1), min=-5, max=5, step=0.5),
-         'gn'= sliderInput('aoa.sl', NULL, value=c(-0.3, 0.3), min=-1.5, max=1.5, step=0.1),
-         'bb'= sliderInput('aoa.sl', NULL, value=c(-1, 1), min=-12, max=12, step=1))
+  if (length(input$aoa.opt)==1) {
+    switch(input$aoa.opt,
+           'kuperman' = sliderInput('aoa.sl', NULL, value=c(-1, 1), min=-5, max=5, step=0.5),
+           'gn'= sliderInput('aoa.sl', NULL, value=c(-0.3, 0.3), min=-1.5, max=1.5, step=0.1),
+           'bb'= sliderInput('aoa.sl', NULL, value=c(-1, 1), min=-12, max=12, step=1))
+  } else {
+    sliderInput('aoa.sl', NULL, value=c(-0.3, 0.3), min=-1.5, max=1.5, step=0.1)
+  }
 })
 
 # Concreteness
 output$cnc.sl.choice <- renderUI({
-  switch(input$cnc.opt,
-         'brysbaert' = sliderInput('cnc.sl', NULL, value=c(-0.2, 0.2), min=-1, max=1, step=0.1),
-         'gn' = sliderInput('cnc.sl', NULL, value=c(-0.3, 0.3), min=-1.5, max=1.5, step=0.1))
+  if (length(input$cnc.opt)==1) {
+    switch(input$cnc.opt,
+           'brysbaert' = sliderInput('cnc.sl', NULL, value=c(-0.2, 0.2), min=-1, max=1, step=0.1),
+           'gn' = sliderInput('cnc.sl', NULL, value=c(-0.3, 0.3), min=-1.5, max=1.5, step=0.1))
+  } else {
+    sliderInput('cnc.sl', NULL, value=c(-0.3, 0.3), min=-1.5, max=1.5, step=0.1)
+  }
 })
 
 # Response Time
