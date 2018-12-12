@@ -1,6 +1,6 @@
 # These functions serve to match by selected variables, and calculate the distances and differences from that associated with the target string
 
-matcher <- function(df, rawdf, column="Length", sl, checkbox, str_in, manual_str_in_x=NA, colmeans_name=NA, pron_nr=NA, scale.cols=F) {
+matcher <- function(df, rawdf, column="Length", sl, checkbox, str_in, manual_str_in_x=NA, colmeans_name=NA, pron_nr=NA, scale.cols=F, do.filter=T) {
   if (checkbox & !(is.null(column)|is.na(column))) {
     
     if (scale.cols) {
@@ -36,7 +36,11 @@ matcher <- function(df, rawdf, column="Length", sl, checkbox, str_in, manual_str
       rawdf <- filter(rawdf, !!sym(column) == str_in_x | string==str_in)
     }
     
-    df %>% filter(string %in% rawdf$string)
+    if (do.filter) {
+      df <- df %>% filter(string %in% rawdf$string)
+    }
+    
+    df
     
   } else {
     

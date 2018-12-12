@@ -28,6 +28,9 @@ source("server/match/box_vis_functions.R", local=T)
 # function for converting CMU phoneme representations between one and two-letter
 source("misc_functions/arpabet_convert.R", local=T)
 
+# function for calculating Euclidean distance from target word for selected columns
+source("misc_functions/get_euclidean_distance.R", local=T)
+
 # function for getting a word's possible pronunciations
 source("misc_functions/get_pronunciations.R", local=T)
 
