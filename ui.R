@@ -46,7 +46,7 @@ tagList(
                                                 textInput('string', 'Word:', 'thicket', width="100%"),  # must explicitly give width of UI items in sidebar to avoid overflowing
                                                 column(1, textOutput('nrow.matchresults')),
                                                 br(), br(),
-                                                menuSubItem('Options', tabName="match_options", icon=icon('sliders-h')),
+                                                menuSubItem('Select & Filter', tabName="match_options", icon=icon('sliders-h')),
                                                 menuSubItem('Suggested Matches', tabName="match_results", icon=icon('sort-amount-down'))),
                                        br(),
                                        menuItem('Fetch', tabName='fetch', icon=icon('file-import')),
@@ -458,25 +458,50 @@ tagList(
                                 )),
                         # Match Results tab
                         tabItem(tabName='match_results',
-                                fluidRow(box(
-                                  title='Options', status='primary',
-                                  collapsible=T, collapsed=T, width=12,
-                                  fluidRow(
-                                    column(12, downloadButton('matched.csv', 'Download Suggested Matches')),
-                                    br(), br(), br(),
-                                    column(12, selectInput('results.format', 'Results Format', c('Raw Values'='rv', 'Distances (Absolute Difference from Target Word)'='dist', 'Differences (from Target Word)'='diff'), selected='dist')),
-                                    column(6, uiOutput('match_results_sort_1_choice')),
-                                    column(6, uiOutput('match_results_sort_1_order_choice')),
-                                    column(6, uiOutput('match_results_sort_2_choice')),
-                                    column(6, uiOutput('match_results_sort_2_order_choice')),
-                                    column(6, uiOutput('match_results_sort_3_choice')),
-                                    column(6, uiOutput('match_results_sort_3_order_choice')),
-                                    column(6, uiOutput('match_results_sort_4_choice')),
-                                    column(6, uiOutput('match_results_sort_4_order_choice')),
-                                    column(6, uiOutput('match_results_sort_5_choice')),
-                                    column(6, uiOutput('match_results_sort_5_order_choice'))
-                                  )
-                                )),
+                                fluidRow(
+                                  box(title='Options', status='primary',
+                                      collapsible=T, collapsed=T, width=12,
+                                      fluidRow(
+                                        column(12, h5(strong("Download"))),
+                                        column(12, downloadButton('matched.csv', 'Download Suggested Matches')),
+                                        column(12, br()),
+                                        column(12, h5(strong("Results Format"))),
+                                        column(12, selectInput('results.format', NULL, c('Raw Values'='rv',
+                                                                                                     'Distances (Absolute Difference from Target Word)'='dist',
+                                                                                                     'Differences (from Target Word)'='diff'), selected='dist')),
+                                        column(12, h5(strong("Ignore Filters"))),
+                                        column(12, checkboxInput('check.match.ignorefilters', 'Ignore Filters on Select & Filter Tab', 0)),
+                                        column(12, br()),
+                                        box(
+                                          title='Sorting Options', status='primary',
+                                          collapsible=T, collapsed=T, width=12,
+                                          fluidRow(
+                                            column(6, uiOutput('match_results_sort_1_choice')),
+                                            column(6, uiOutput('match_results_sort_1_order_choice')),
+                                            column(6, uiOutput('match_results_sort_2_choice')),
+                                            column(6, uiOutput('match_results_sort_2_order_choice')),
+                                            column(6, uiOutput('match_results_sort_3_choice')),
+                                            column(6, uiOutput('match_results_sort_3_order_choice')),
+                                            column(6, uiOutput('match_results_sort_4_choice')),
+                                            column(6, uiOutput('match_results_sort_4_order_choice')),
+                                            column(6, uiOutput('match_results_sort_5_choice')),
+                                            column(6, uiOutput('match_results_sort_5_order_choice'))
+                                          )),
+                                        box(
+                                          title='Distance Measures', status='primary',
+                                          collapsible=T, collapsed=T, width=12,
+                                          fluidRow(
+                                            column(12, h4("Euclidean Distance")),
+                                            column(12, checkboxInput('check.matchdist.ed', 'Calculate Euclidean Distance', 1)),
+                                            column(12, uiOutput('match_results_ed_all_choice')),
+                                            column(12, uiOutput('match_results_ed_opts_choice')),
+                                            column(12, br()),
+                                            column(12, h4("City Block Distance")),
+                                            column(12, checkboxInput('check.matchdist.cb', 'Calculate City Block Distance (NOT YET FUNCTIONAL)', 0))
+                                          ))
+                                      ))
+                                  
+                                ),
                                 DT::dataTableOutput('match_results_dt')
                         ),
                         # Fetch tab

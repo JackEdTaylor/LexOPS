@@ -8,7 +8,12 @@ output$matched.csv <- downloadHandler(
 
 # sorting options
 output$match_results_sort_1_choice <- renderUI ({
-  selectInput('match_results_sort_1', "Sort 1", c("(None)", names(matchresults_unsorted())), width='100%')
+  selected_col <- if ("Euclidean.Distance" %in% colnames(matchresults_unsorted())) {
+    "Euclidean.Distance"
+  } else {
+    NULL
+  }
+  selectInput('match_results_sort_1', "Sort 1", c("(None)", names(matchresults_unsorted())), width='100%', selected=selected_col)
 })
 output$match_results_sort_2_choice <- renderUI ({
   if (input$match_results_sort_1 != "(None)" & ncol(matchresults_unsorted())>1) {
@@ -97,3 +102,22 @@ output$match_results_dt <- DT::renderDataTable({
 
 # For displaying number of results under word-entry textbox in sidebar
 output$nrow.results <- renderText({sprintf('%i results', nrow(matchresults())-1)})
+
+# Distance Measures
+output$match_results_ed_all_choice <- renderUI ({
+  if (input$check.matchdist.ed) {
+    radioButtons('match_results_ed_all', 'Calculate using...',
+                 c('All Numeric Columns'='all', 'Select Manually'='manual'), selected='all')
+  }
+})
+
+output$match_results_ed_opts_choice <- renderUI ({
+  if (input$check.matchdist.ed & input$match_results_ed_all=="manual") {
+    ed_cols <- colnames(select_if(matchresults_undistanced(), is.numeric))[colnames(select_if(matchresults_undistanced(), is.numeric))!="Euclidean.Distance"]
+    checkboxGroupInput('match_results_ed_opts', NULL, ed_cols, inline=F)
+  } else {
+    NULL
+  }
+})
+
+
