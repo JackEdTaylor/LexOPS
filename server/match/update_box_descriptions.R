@@ -1,37 +1,3 @@
-## GENERATE
-
-# Frequency
-output$descr.frequency_gen <- renderText({
-  if (input$check.frequency_gen) {
-    t <- "Will filter by"
-    # values information
-    if (input$frequency.log_gen) {
-      freqval.name <- 'Zipf'
-      t <- sprintf('%s log-transformed frequency per million (%s)', t, freqval.name)
-    } else {
-      freqval.name <- 'fpmw'
-      t <- sprintf('%s raw frequency per million (%s)', t, freqval.name)
-    }
-    # averaging information
-    if (length(input$frequency.opt_gen)>1) {
-      t <- sprintf('%s, averaged across %i corpora', t, length(input$frequency.opt_gen))
-    } else {
-      t <- sprintf("%s, using only one ('%s') corpus", t, input$frequency.opt_gen[1])
-    }
-    # tolerance information
-    t <- sprintf('%s. Will find words with %s values between %.2f and %.2f', t, freqval.name, abs(input$frequency.sl_gen[1]), input$frequency.sl_gen[2])
-    # handle errors
-    if(length(input$frequency.opt_gen)<1){
-      t <- 'WARNING: No corpora selected!?'
-    }
-  } else {
-    t <- "Will not filter by frequency"
-  }
-  sprintf('%s.', t)  # return resulting text with period at end of sentence
-})
-
-## MATCH
-
 # Length
 output$descr.length <- renderText({
   if(input$check.length) {

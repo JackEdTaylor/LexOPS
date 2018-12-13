@@ -60,37 +60,7 @@ tagList(
                       tabItems(
                         tabItem(tabName = 'generate_options',
                                 fluidRow(
-                                  valueBox("Generate Tab not yet Functional", subtitle=NULL, width = 12, color='red', icon=icon("exclamation-triangle")),
-                                  valueBox("Lexical Features", subtitle=NULL, width = 12, color='light-blue', icon=icon("book")),
-                                  box(
-                                    width=6,
-                                    title='Word Frequency', status='primary', solidHeader=T,
-                                    checkboxInput('check.frequency_gen', 'Filter by Frequency', 0),
-                                    checkboxInput('frequency.log_gen', 'Log Transform (Zipf)', 1),
-                                    checkboxGroupInput('frequency.opt_gen', 'Corpora',
-                                                       c('BNC (written)'='bnc_w', 'BNC (spoken)'='bnc_s', 'SUBTLEX-UK'='suk', 'SUBTLEX-US'='sus'),
-                                                       c('bnc_w', 'bnc_s', 'suk', 'sus'),
-                                                       inline=T),
-                                    br(),
-                                    uiOutput('frequency.sl.choice_gen'),
-                                    textOutput('descr.frequency_gen'),
-                                    plotOutput('plot.freq_gen', height='170px')
-                                  ),
-                                  box(
-                                    width=6,
-                                    title='Part of Speech (PoS)', status='primary', solidHeader=T,
-                                    checkboxInput('check.partofspeech_gen', 'Filter by Part of Speech', 0),
-                                    radioButtons('pos.opt_gen', 'Corpus',
-                                                 c('SUBTLEX-UK'='suk',
-                                                   'BNC (written)'='bnc_w',
-                                                   'BNC (spoken)'='bnc_s',
-                                                   'English Lexicon Project (ELP)'='elp'),
-                                                 selected='suk',
-                                                 inline=T),
-                                    uiOutput('manual.pos.choice_gen'),
-                                    textOutput('descr.partofspeech_gen'),
-                                    plotOutput('plot.pos_gen', height='200px')
-                                  )
+                                  valueBox("Generate Tab not yet Functional", subtitle=NULL, width = 12, color='red', icon=icon("exclamation-triangle"))
                                 )),
                         tabItem(tabName = 'generate_results'),
                         # Match Options tab

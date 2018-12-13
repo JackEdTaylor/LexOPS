@@ -1,15 +1,3 @@
-## GENERATE
-
-# Frequency
-output$frequency.sl.choice_gen <- renderUI({
-  if(input$frequency.log_gen){
-    sliderInput('frequency.sl_gen', NULL, value=c(2, 3), min=1, max=8, step=0.1)
-  } else {
-    sliderInput('frequency.sl_gen', NULL, value=c(5000, 10000), min=0, max=45000, step=500)
-  }
-})
-
-## MATCH
 
 # Frequency
 output$frequency.sl.choice <- renderUI({
