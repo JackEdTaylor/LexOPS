@@ -104,17 +104,54 @@ output$match_results_dt <- DT::renderDataTable({
 output$nrow.results <- renderText({sprintf('%i results', nrow(matchresults())-1)})
 
 # Distance Measures
+
+# Euclidean Distance
+
+output$match_results_ed_all_choice_text <- renderText({
+  if (input$check.matchdist.ed) {
+    "Caclulate using..."
+  }
+})
+
 output$match_results_ed_all_choice <- renderUI ({
   if (input$check.matchdist.ed) {
-    radioButtons('match_results_ed_all', 'Calculate using...',
-                 c('All Numeric Columns'='all', 'Select Manually'='manual'), selected='all')
+    radioButtons('match_results_ed_all', NULL,
+                 c('All Numeric Columns Below'='all', 'Select Manually'='manual'), selected='all')
   }
 })
 
 output$match_results_ed_opts_choice <- renderUI ({
-  if (input$check.matchdist.ed & input$match_results_ed_all=="manual") {
-    ed_cols <- colnames(select_if(matchresults_undistanced(), is.numeric))[colnames(select_if(matchresults_undistanced(), is.numeric))!="Euclidean.Distance"]
-    checkboxGroupInput('match_results_ed_opts', NULL, ed_cols, inline=F)
+  if (input$check.matchdist.ed) {
+    if (input$match_results_ed_all=="manual") {
+      ed_cols <- colnames(select_if(matchresults_undistanced(), is.numeric))[!(colnames(select_if(matchresults_undistanced(), is.numeric)) %in% c("Euclidean.Distance", "CityBlock.Distance"))]
+      checkboxGroupInput('match_results_ed_opts', NULL, ed_cols, inline=F)
+    }
+  } else {
+    NULL
+  }
+})
+
+# City-Block Distance
+
+output$match_results_cb_all_choice_text <- renderText({
+  if (input$check.matchdist.cb) {
+    "Caclulate using..."
+  }
+})
+
+output$match_results_cb_all_choice <- renderUI ({
+  if (input$check.matchdist.cb) {
+    radioButtons('match_results_cb_all', NULL,
+                 c('All Numeric Columns Below'='all', 'Select Manually'='manual'), selected='all')
+  }
+})
+
+output$match_results_cb_opts_choice <- renderUI ({
+  if (input$check.matchdist.cb) {
+    if (input$match_results_cb_all=="manual") {
+      cb_cols <- colnames(select_if(matchresults_undistanced(), is.numeric))[!(colnames(select_if(matchresults_undistanced(), is.numeric)) %in% c("Euclidean.Distance", "CityBlock.Distance"))]
+      checkboxGroupInput('match_results_cb_opts', NULL, cb_cols, inline=F)
+    }
   } else {
     NULL
   }

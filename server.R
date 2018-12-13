@@ -34,6 +34,9 @@ source("misc_functions/arpabet_convert.R", local=T)
 # function for calculating Euclidean distance from target word for selected columns
 source("misc_functions/get_euclidean_distance.R", local=T)
 
+# function for calculating City-Block distance from target word for selected columns
+source("misc_functions/get_cityblock_distance.R", local=T)
+
 # function for getting a word's possible pronunciations
 source("misc_functions/get_pronunciations.R", local=T)
 

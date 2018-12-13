@@ -491,13 +491,17 @@ tagList(
                                           title='Distance Measures', status='primary',
                                           collapsible=T, collapsed=T, width=12,
                                           fluidRow(
-                                            column(12, h4("Euclidean Distance")),
+                                            column(12, h5(strong("Euclidean Distance"))),
                                             column(12, checkboxInput('check.matchdist.ed', 'Calculate Euclidean Distance', 1)),
+                                            column(12, textOutput('match_results_ed_all_choice_text')),
                                             column(12, uiOutput('match_results_ed_all_choice')),
                                             column(12, uiOutput('match_results_ed_opts_choice')),
                                             column(12, br()),
-                                            column(12, h4("City Block Distance")),
-                                            column(12, checkboxInput('check.matchdist.cb', 'Calculate City Block Distance (NOT YET FUNCTIONAL)', 0))
+                                            column(12, h5(strong("City Block Distance"))),
+                                            column(12, checkboxInput('check.matchdist.cb', 'Calculate City Block Distance', 0)),
+                                            column(12, textOutput('match_results_cb_all_choice_text')),
+                                            column(12, uiOutput('match_results_cb_all_choice')),
+                                            column(12, uiOutput('match_results_cb_opts_choice'))
                                           ))
                                       ))
                                   

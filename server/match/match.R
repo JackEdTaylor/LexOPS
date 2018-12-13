@@ -76,15 +76,33 @@ matchresults_unsorted <- reactive ({
         if (input$match_results_ed_all=="manual") {
           input$match_results_ed_opts
         } else {
-          colnames(select_if(res, is.numeric))[colnames(select_if(res, is.numeric))!="Euclidean.Distance"]
+          colnames(select_if(res, is.numeric))[!(colnames(select_if(res, is.numeric)) %in% c("Euclidean.Distance", "CityBlock.Distance"))]
         }
       } else {
-        colnames(select_if(res, is.numeric))[colnames(select_if(res, is.numeric))!="Euclidean.Distance"]
+        colnames(select_if(res, is.numeric))[!(colnames(select_if(res, is.numeric)) %in% c("Euclidean.Distance", "CityBlock.Distance"))]
       }
     
     res <- res %>%
       mutate(Euclidean.Distance = get_euclidean_distance(res, input$string, columns=target_cols)) %>%
       select(Euclidean.Distance, everything()) %>%
+      select(string, everything())
+  }
+  
+  if (input$check.matchdist.cb) {
+    target_cols <-
+      if (!is.null(input$match_results_cb_all)) {
+        if (input$match_results_cb_all=="manual") {
+          input$match_results_cb_opts
+        } else {
+          colnames(select_if(res, is.numeric))[!(colnames(select_if(res, is.numeric)) %in% c("Euclidean.Distance", "CityBlock.Distance"))]
+        }
+      } else {
+        colnames(select_if(res, is.numeric))[!(colnames(select_if(res, is.numeric)) %in% c("Euclidean.Distance", "CityBlock.Distance"))]
+      }
+    
+    res <- res %>%
+      mutate(CityBlock.Distance = get_cityblock_distance(res, input$string, columns=target_cols)) %>%
+      select(CityBlock.Distance, everything()) %>%
       select(string, everything())
   }
   
