@@ -1,7 +1,7 @@
 # These functions serve to match by selected variables, and calculate the distances and differences from that associated with the target string
 
 matcher <- function(df, rawdf, column="Length", sl, checkbox, str_in, manual_str_in_x=NA, colmeans_name=NA, pron_nr=NA, scale.cols=F, do.filter=T) {
-  if (checkbox & !(is.null(column)|is.na(column))) {
+  if (checkbox & !(all(is.null(column)) | all(is.na(column)))) {
     
     if (scale.cols) {
       rawdf[column] <- lapply(rawdf[column], scale)
