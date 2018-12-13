@@ -36,7 +36,7 @@ get_cityblock_distance <- function(df, str_in, columns=NA, weights=NA) {
       }
     }
     
-    res <- sqrt(rowSums(dist[, c(columns)], na.rm=T))
+    res <- rowSums(dist[, c(columns)], na.rm=T)
   }
   
   res
