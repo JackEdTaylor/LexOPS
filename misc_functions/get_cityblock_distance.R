@@ -23,6 +23,9 @@ get_cityblock_distance <- function(df, str_in, columns=NA, weights=NA) {
       }
     }
     dist <- df
+    if ("Euclidean.Distance" %in% names(dist)) {
+      dist <- select(dist, -Euclidean.Distance)
+    }
     if ("CityBlock.Distance" %in% names(dist)) {
       dist <- select(dist, -CityBlock.Distance)
     }

@@ -26,6 +26,9 @@ get_euclidean_distance <- function(df, str_in, columns=NA, weights=NA) {
     if ("Euclidean.Distance" %in% names(dist_squared)) {
       dist_squared <- select(dist_squared, -Euclidean.Distance)
     }
+    if ("CityBlock.Distance" %in% names(dist_squared)) {
+      dist_squared <- select(dist_squared, -CityBlock.Distance)
+    }
     for (cname in names(dist_squared)) {
       dist_squared[[cname]] <- get_dist(column=cname)**2
       if (cname %in% names(weights)) {
