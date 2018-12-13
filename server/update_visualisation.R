@@ -7,10 +7,17 @@ plotdata <- reactive({
   if (input$vis.zaxis.opts!='(None)'){
     t$z <- vd[[input$vis.zsource]]
   }
-  if (input$vis.colour.opts=='Target Word'){
+  if (input$vis.colour.opts=='Target Match Word'){
     t$colour <- ifelse(t$string==input$string, "Target String", "Other Strings")
   } else if (input$vis.colour.opts=='Suggested Matches'){
     t$colour <- ifelse(t$string %in% matchresults()$string, "Suggested Strings", "Other Strings")
+  } else if(input$vis.colour.opts=='Words Uploaded to Fetch Tab'){
+    if (is.null(fetch_df_raw()) | is.null(fetch_targwordstringcolname())) {
+      t$colour <- NA
+    } else {
+      t$colour <- ifelse(t$string %in% fetch_df_raw()[[fetch_targwordstringcolname()]],
+                         "Uploaded Items", "Other Strings")
+    }
   } else if(input$vis.colour.opts %in% vis.cats){
     t$colour <- vd[[input$vis.coloursource]]
   }

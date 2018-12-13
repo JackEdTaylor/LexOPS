@@ -110,6 +110,14 @@ output$fetch.results.plsinput <- renderText({
   }
 })
 
+fetch_targwordstringcolname <- reactive({
+  if (input$fetch.inputtype == "file") {
+    input$fetch.opts.column
+  } else {
+    "string"
+  }
+})
+
 fetch_df_res <- reactive({
   if (!is.null(fetch_df_raw())) {
     # get list of selected features
@@ -121,11 +129,7 @@ fetch_df_res <- reactive({
         sel_feats <- c(sel_feats, input[[sprintf("fetch.opts.%i", catnr)]])
       }
     }
-    if (input$fetch.inputtype == "file") {
-      targwordstringcolname <- input$fetch.opts.column
-    } else {
-      targwordstringcolname <- "string"
-    }
+    targwordstringcolname <- fetch_targwordstringcolname()
     # extract selected features
     lexops_f <- plyr::rename(lexops, c("string"=targwordstringcolname)) %>%
       select(c(targwordstringcolname, sel_feats))

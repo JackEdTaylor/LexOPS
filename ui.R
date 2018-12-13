@@ -575,7 +575,7 @@ tagList(
                               column(6, uiOutput('vis.zsource.choice'))
                             ),
                             fluidRow(
-                              column(6, selectInput('vis.colour.opts', 'Colour', c('(None)', 'Target Word', 'Suggested Matches', 'Part of Speech', vis.cats), "Suggested Matches")),
+                              column(6, selectInput('vis.colour.opts', 'Colour', c('(None)', 'Target Match Word', 'Suggested Matches', 'Words Uploaded to Fetch Tab', 'Part of Speech', vis.cats), "Suggested Matches")),
                               column(6, uiOutput('vis.coloursource.choice'))
                             ),
                             br(),

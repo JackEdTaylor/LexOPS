@@ -5,8 +5,9 @@ visualise.opts <- names(lexops)[!(names(lexops) %in% c('string'))]
 
 vis.opt.2.source <- function(x){switch(x,
                                        '(None)' = '',
-                                       'Target Word' = '',
+                                       'Target Match Word' = '',
                                        'Suggested Matches' = '',
+                                       'Words Uploaded to Fetch Tab' = '',
                                        'Part of Speech' = visualise.opts[grepl("PoS",visualise.opts)],
                                        'Length' = 'Length',
                                        'Syllables' = visualise.opts[grepl("Syllables",visualise.opts)],
