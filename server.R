@@ -43,6 +43,9 @@ source("misc_functions/get_pronunciations.R", local=T)
 # function for returning which alternate pronunciation for a string has been selected
 source("misc_functions/get_pron_nr.R", local=T)
 
+# functions for converting between short-hand and variable names or APA citations
+source("misc_functions/corpus_recoders.R", local=T)
+
 # functions used in matching
 source("server/match/matcher_functions.R", local=T)
 
