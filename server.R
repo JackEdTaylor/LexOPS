@@ -18,9 +18,12 @@ cat(sprintf('\nIMPORTING DATA...\n'))
 dat <- readRDS('dat.rds')
 cat(sprintf(' -DONE.\n'))
 
-# Create lexops dataframe and set options for visualisation
+# Create lexops dataframe
 source("server/get_lexops_data.R", local=T)
 lexopsraw <- lexops
+
+# set options for visualisation
+source("server/get_viscats.R", local=T)
 
 # functions for visualising distributions in boxes
 source("server/match/box_vis_functions.R", local=T)
