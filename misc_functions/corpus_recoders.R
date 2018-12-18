@@ -26,9 +26,10 @@ corpus_recode_apa <- function(inputopts) {
   }
 }
 
-corpus_recode <- function(inputopts = c("bnc_w", "bnc_s"), prefix=NA) {
+corpus_recode <- function(inputopts = c("bnc_w", "bnc_s"), prefix=NA, logprefix=F) {
   if (!is.null(inputopts)) {
     prefix_dot <- if(is.na(prefix)) {""} else {sprintf("%s.", prefix)}
+    log_prefix_str <- if(logprefix) {"Log_"} else {""}
     recoded <- recode(inputopts,
                       "bnc_w" = "BNC.Written",
                       "bnc.wbg" = "BNC.Written",
@@ -48,9 +49,11 @@ corpus_recode <- function(inputopts = c("bnc_w", "bnc_s"), prefix=NA) {
                       "bb" = "BrysbaertBiemiller",
                       "brysbaert" = "Brysbaert",
                       "warriner" = "Warriner",
-                      "eh" = "EngelthalerHills"
+                      "eh" = "EngelthalerHills",
+                      "cn" = "Colthearts_N",
+                      "old20" = "OLD20"
     )
-    sprintf("%s%s", prefix_dot, recoded)
+    sprintf("%s%s%s", prefix_dot, log_prefix_str, recoded)
   } else {
     NA
   }
