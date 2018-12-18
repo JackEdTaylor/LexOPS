@@ -26,7 +26,7 @@ lexopsraw <- lexops
 source("server/get_viscats.R", local=T)
 
 # functions for visualising distributions in boxes
-source("server/match/box_vis_functions.R", local=T)
+source("misc_functions/box_vis_functions.R", local=T)
 
 # function for converting CMU phoneme representations between one and two-letter
 source("misc_functions/arpabet_convert.R", local=T)
@@ -52,8 +52,22 @@ source("server/match/matcher_functions.R", local=T)
 # functions used to get the descriptions in boxes for matching
 source("server/match/box_descriptions_functions.R", local=T)
 
+# functions used in the generate tab to create the UIs
+source("server/generate/splitby_UIfunction.R", local=T)
+
+
 # Define server logic
 shinyServer(function(input, output) {
+  
+  # initial numbers of boxes on generate tab
+  gen_splitby_boxes_N <- reactiveVal(0)
+  gen_controlfor_boxes_N <- reactiveVal(0)
+  gen_filterby_boxes_N <- reactiveVal(0)
+  
+  # Generate tab boxes
+  source("server/generate/splitby_boxes.R", local=T)
+  source("server/generate/controlfor_boxes.R", local=T)
+  source("server/generate/filterby_boxes.R", local=T)
   
   # reactive changes to box UIs in match tab
   source("server/match/ReactiveBoxUIs.R", local=T)
