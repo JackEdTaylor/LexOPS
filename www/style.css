@@ -34,7 +34,11 @@
 	background:#641e68
 }
 
-.box.box-solid.box-info{
+.box.box-solid.box-info {
+	border-top-color:#641e68;
+}
+
+.box.box-info {
 	border-bottom-color:#641e68;
 	border-left-color:#641e68;
 	border-right-color:#641e68;
