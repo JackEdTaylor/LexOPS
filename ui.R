@@ -8,7 +8,7 @@ library(viridis)
 library(DT)
 
 # Visualilsation vector categories - needed in UI for Visualisation tab
-vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Frequency', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Humour', 'Lexical Decision Response Time', 'Lexical Decision Accuracy')
+vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Probability', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Humour', 'Lexical Decision Response Time', 'Lexical Decision Accuracy')
 
 
 tagList(
@@ -60,7 +60,40 @@ tagList(
                       tabItems(
                         tabItem(tabName = 'generate_options',
                                 fluidRow(
-                                  valueBox("Generate Tab not yet Functional", subtitle=NULL, width = 12, color='red', icon=icon("exclamation-triangle"))
+                                  valueBox("Generate Tab not yet Functional", subtitle=NULL, width = 12, color='red', icon=icon("exclamation-triangle")),
+                                  column(4, fluidRow(
+                                    valueBox("Split by...", width = 12, color='light-blue',
+                                             subtitle=fluidRow(column(12,
+                                                                      actionButton('gen_splitby_add', icon("plus-square")),
+                                                                      actionButton('gen_splitby_minus', icon("minus-square"))
+                                             ))),
+                                    lapply(1:25, function(i) {
+                                      boxid <- sprintf('gen_splitby_%i', i)
+                                      uiOutput(boxid)
+                                    })
+                                  )),
+                                  column(4, fluidRow(
+                                    valueBox("Control for...", width = 12, color='yellow',
+                                             subtitle=fluidRow(column(12,
+                                                                      actionButton('gen_controlfor_add', icon("plus-square")),
+                                                                      actionButton('gen_controlfor_minus', icon("minus-square"))
+                                             ))),
+                                    lapply(1:25, function(i) {
+                                      boxid <- sprintf('gen_controlfor_%i', i)
+                                      uiOutput(boxid)
+                                    })
+                                  )),
+                                  column(4, fluidRow(
+                                    valueBox("Filter by...", width = 12, color='purple',
+                                             subtitle=fluidRow(column(12,
+                                                                      actionButton('gen_filterby_add', icon("plus-square")),
+                                                                      actionButton('gen_filterby_minus', icon("minus-square"))
+                                             ))),
+                                    lapply(1:25, function(i) {
+                                      boxid <- sprintf('gen_filterby_%i', i)
+                                      uiOutput(boxid)
+                                    })
+                                  ))
                                 )),
                         tabItem(tabName = 'generate_results'),
                         # Match Options tab
@@ -115,8 +148,8 @@ tagList(
                                   # Bigram Frequency box
                                   box(
                                     width=6,
-                                    title='Bigram Frequency (BG)', status='warning', solidHeader=T,
-                                    checkboxInput('check.bgfreq', 'Match by Bigram Frequency', 0),
+                                    title='Bigram Probability (BG)', status='warning', solidHeader=T,
+                                    checkboxInput('check.bgfreq', 'Match by Bigram Probability', 0),
                                     checkboxGroupInput('bgfreq.opt', 'Corpora',
                                                        c('BNC (written)'='bnc.wbg', 'BNC (spoken)'='bnc.sbg', 'SUBTLEX-UK'='subtlex_uk.bg', 'SUBTLEX-US'='subtlex_us.bg'),
                                                        c('bnc.wbg', 'bnc.sbg', 'subtlex_uk.bg', 'subtlex_us.bg'),
