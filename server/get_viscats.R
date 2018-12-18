@@ -1,5 +1,5 @@
 # Visualilsation vector categories
-vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Frequency', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Humour', 'Lexical Decision Response Time', 'Lexical Decision Accuracy')
+vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Probability', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Humour', 'Lexical Decision Response Time', 'Lexical Decision Accuracy')
 
 visualise.opts <- names(lexops)[!(names(lexops) %in% c('string'))]
 
@@ -12,7 +12,7 @@ vis.opt.2.source <- function(x){switch(x,
                                        'Length' = 'Length',
                                        'Syllables' = visualise.opts[grepl("Syllables",visualise.opts)],
                                        'Word Frequency' = visualise.opts[grepl("Zipf",visualise.opts) | grepl("fpmw",visualise.opts)],
-                                       'Bigram Frequency' = visualise.opts[grepl("BG",visualise.opts)],
+                                       'Bigram Probability' = visualise.opts[grepl("BG",visualise.opts)],
                                        'Orthographic Neighbourhood' = visualise.opts[grepl("ON",visualise.opts)],
                                        'Phonemes' = visualise.opts[grepl("Phonemes",visualise.opts)],
                                        'Rhyme' = visualise.opts[grepl("Rhyme",visualise.opts)],
