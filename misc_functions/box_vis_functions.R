@@ -9,7 +9,11 @@ get.box.colour <- function(boxtype='warning'){
 }
 
 # Function for generating the density/histogram plots (histogram if integer)
-dens.plot <- function(x='gn.VAL', redline=3.2, selected=T, shade=c(3, 3.4), df=dat, boxtype='primary', text.lowscale='More Negative', text.highscale='More Positive', log.transform=F, force.histogram=F) {
+dens.plot <- function(x='gn.VAL', redline=3.2, selected=T, shade=c(3, 3.4), df=dat, boxtype='primary', text.lowscale='More Negative', text.highscale='More Positive', log.transform=F, force.histogram=F, shade_label=NA) {
+  
+  if (!is.list(shade)) {
+    shade <- list(shade)
+  }
   
   dfplot <- tibble(x=df[[x]]) %>%
     na.omit()
@@ -38,8 +42,16 @@ dens.plot <- function(x='gn.VAL', redline=3.2, selected=T, shade=c(3, 3.4), df=d
   }
   
   if (selected) {
-    p <- p +
-      annotate('rect', xmin=shade[1]-shadepadding, xmax=shade[2]+shadepadding, ymin=0, ymax=Inf, alpha=0.4, colour=NA)
+    shade_i_iter <- 0
+    for (shade_i in shade) {
+      shade_i_iter <- shade_i_iter + 1
+      p <- p +
+        annotate('rect', xmin=shade_i[1]-shadepadding, xmax=shade_i[2]+shadepadding, ymin=0, ymax=Inf, alpha=0.4, colour=NA)
+      if (!is.na(shade_label)) {
+        p <- p +
+          annotate('label', x=shade_i[1]+((shade_i[2] - shade_i[1])/2), y=Inf, label=shade_label[shade_i_iter], vjust=1.5, fontface="bold", colour=get.box.colour(boxtype), fill="black")
+      }
+    }
     
     if (!is.na(redline)) {
       p <- p +
