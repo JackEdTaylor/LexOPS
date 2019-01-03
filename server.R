@@ -54,7 +54,8 @@ source("server/match/box_descriptions_functions.R", local=T)
 
 # functions used in the generate tab to create the UIs
 source("server/generate/splitby_UIfunction.R", local=T)
-
+source("server/generate/controlfor_UIfunction.R", local=T)
+source("server/generate/filterby_UIfunction.R", local=T)
 
 # Define server logic
 shinyServer(function(input, output) {

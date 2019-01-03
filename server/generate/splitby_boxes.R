@@ -1,13 +1,14 @@
+# Counting N boxes
 observeEvent(input$gen_splitby_add, {
   gen_splitby_boxes_N(gen_splitby_boxes_N() + 1)
 })
-
 observeEvent(input$gen_splitby_minus, {
   if (gen_splitby_boxes_N()>0) {
     gen_splitby_boxes_N(gen_splitby_boxes_N() - 1)
   }
 })
 
+# Display N boxes
 observeEvent(gen_splitby_boxes_N(), {
   lapply (1:25, function(i) {
     boxid <- sprintf('gen_splitby_%i', i)
@@ -19,6 +20,7 @@ observeEvent(gen_splitby_boxes_N(), {
   })
 })
 
+# Build boxes' UIs
 lapply(1:25, function(i) {
   boxid <- sprintf('gen_splitby_%i', i)
   var_lttr <- toupper(letters[i])
@@ -29,7 +31,8 @@ lapply(1:25, function(i) {
                                                                              input[[sprintf("%s_Nlevels", boxid)]],
                                                                              input[[sprintf("%s.opt", boxid)]],
                                                                              input[[sprintf("%s.log", boxid)]],
-                                                                             var_lttr) })
+                                                                             var_lttr,
+                                                                             lexops) })
   box_sliders <- reactive({
     sl <- list()
     for (i in 1:input[[sprintf("%s_Nlevels", boxid)]]) {
@@ -43,17 +46,19 @@ lapply(1:25, function(i) {
                                                                        input[[sprintf("%s_Nlevels", boxid)]],
                                                                        input[[sprintf("%s.opt", boxid)]],
                                                                        input[[sprintf("%s.log", boxid)]],
+                                                                       input[[sprintf("%s.source", boxid)]],
                                                                        lexops,
                                                                        box_sliders(),
                                                                        var_lttr) })
 })
 
+# Put the UIs built above into their boxes
 lapply(1:25, function(i) {
   var_lttr <- toupper(letters[i])
   boxid <- sprintf('gen_splitby_%i', i)
   output[[boxid]] <- renderUI({
     box(title=var_lttr, width=12, status='primary',
-        selectInput(sprintf('%s_vtype', boxid), NULL, c('(None)', vis.cats)),
+        selectInput(sprintf('%s_vtype', boxid), NULL, c('(None)', vis.cats[vis.cats!="Rhyme"])),
         uiOutput(sprintf('%s_ui', boxid)),
         uiOutput(sprintf('%s_ui_sliders', boxid)),
         plotOutput(sprintf('%s_ui_vis', boxid), height='170px'),
