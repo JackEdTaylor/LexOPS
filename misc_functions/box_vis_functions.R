@@ -30,11 +30,8 @@ dens.plot <- function(x='gn.VAL', redline=3.2, selected=T, shade=c(3, 3.4), df=d
     
     p <- ggplot(dfplot, aes(x=x)) +
       geom_histogram(binwidth=bininterval, fill=get.box.colour(boxtype), alpha=0.5, colour=NA)
-    if (force.histogram) {
-      shadepadding <- 0
-      } else {
-      shadepadding <- 0.5
-      }  # extra padding to cover bar in histogram
+    
+    shadepadding <- 0.5  # extra padding to cover bar in histogram
   } else {
     p <- ggplot(dfplot, aes(x=x)) +
       geom_density(fill=get.box.colour(boxtype), alpha=0.5, colour=NA)
@@ -46,8 +43,8 @@ dens.plot <- function(x='gn.VAL', redline=3.2, selected=T, shade=c(3, 3.4), df=d
     for (shade_i in shade) {
       shade_i_iter <- shade_i_iter + 1
       p <- p +
-        annotate('rect', xmin=shade_i[1]-shadepadding, xmax=shade_i[2]+shadepadding, ymin=0, ymax=Inf, alpha=0.4, colour=NA)
-      if (!is.na(shade_label)) {
+        annotate('rect', xmin=shade_i[1]-shadepadding, xmax=shade_i[2]+shadepadding, ymin=-Inf, ymax=Inf, alpha=0.4, colour=NA)
+      if (all(!is.na(shade_label))) {
         p <- p +
           annotate('label', x=shade_i[1]+((shade_i[2] - shade_i[1])/2), y=Inf, label=shade_label[shade_i_iter], vjust=1.5, fontface="bold", colour=get.box.colour(boxtype), fill="black")
       }
@@ -107,7 +104,12 @@ pos.plot <- function(xname='subtlex_uk.DomPoS', selected=T, PoS='noun', df=dat, 
   dfplot$fraction <- dfplot$n / sum(dfplot$n)
   dfplot$ymax <- cumsum(dfplot$fraction)
   dfplot$ymin <- c(0, head(dfplot$ymax, n = -1))
-  dfplot$alphalevel <- ifelse(as.character(dfplot$x)==PoS, 1, 0)
+  
+  if (PoS=="all") {
+    dfplot$alphalevel <- 1
+  } else {
+    dfplot$alphalevel <- ifelse(as.character(dfplot$x) %in% unlist(PoS), 1, 0)
+  }
   
   # Only do alpha effect if checkbox selected
   p <- if(selected) {
@@ -128,6 +130,8 @@ pos.plot <- function(xname='subtlex_uk.DomPoS', selected=T, PoS='noun', df=dat, 
     scale_fill_manual(values=rep(manualcolours,
                                  ceiling((nrow(dfplot)+length(manualcolours))/length(manualcolours))))
 }
+
+
 
 # word cloud for rhyme
 rhyme.plot <- function(str_in="encyclopedia", pron_nr=1, selected=T, df=dat) {
