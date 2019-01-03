@@ -294,7 +294,7 @@ filterby_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
         lexops_df[cn] <- lapply(lexops_df[cn], scale)
         xval <- get_rowmeans(cn, lexops_df)
         slider.range <- c(floor(min(xval, na.rm=T)), ceiling(max(xval, na.rm=T)))
-        slider.def_val <- c(median(slider.range)-0.1, median(slider.range)+0.1)
+        slider.def_val <- c(-2, 2)
         slider.step <- .05
       }
     } else if (vtype == "Lexical Decision Accuracy") {
@@ -307,7 +307,7 @@ filterby_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
         lexops_df[cn] <- lapply(lexops_df[cn], scale)
         xval <- get_rowmeans(cn, lexops_df)
         slider.range <- c(floor(min(xval, na.rm=T)), ceiling(max(xval, na.rm=T)))
-        slider.def_val <- c(median(slider.range)-0.1, median(slider.range)+0.1)
+        slider.def_val <- c(0.5, 1)
         slider.step <- .05
       }
     }
