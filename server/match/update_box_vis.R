@@ -52,7 +52,7 @@ output$plot.bgfreq <- renderPlot({
             shade=c(str_in_x + input$bgfreq.sl[1], str_in_x + input$bgfreq.sl[2]),
             df=out_copy,
             boxtype='warning',
-            text.lowscale='Less Frequent', text.highscale='More Frequent')
+            text.lowscale='Less Likely', text.highscale='More Likely')
 })
 # Orthographic Neighbourhood
 output$plot.on <- renderPlot({
