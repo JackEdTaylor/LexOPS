@@ -51,7 +51,8 @@ corpus_recode <- function(inputopts = c("bnc_w", "bnc_s"), prefix=NA, logprefix=
                       "warriner" = "Warriner",
                       "eh" = "EngelthalerHills",
                       "cn" = "Colthearts_N",
-                      "old20" = "OLD20"
+                      "old20" = "OLD20",
+                      "pld20" = "PLD20"
     )
     sprintf("%s%s%s", prefix_dot, log_prefix_str, recoded)
   } else {
@@ -59,3 +60,46 @@ corpus_recode <- function(inputopts = c("bnc_w", "bnc_s"), prefix=NA, logprefix=
   }
 }
 
+viscat2prefix <- function(viscat) {
+  recode(viscat,
+         "Bigram Probability" = "BG",
+         "Orthographic Similarity" = "OS",
+         "Orthographic Neighbourhood" = "ON",
+         "Syllables" = "Syllables",
+         "Phonemes" = "Phonemes",
+         "Number of Pronunciations" = "PrN",
+         "Familiarity" = "FAM",
+         "Age of Acquisition" = "AoA",
+         "Concreteness" = "CNC",
+         "Arousal" = "AROU",
+         "Valence" = "VAL",
+         "Dominance" = "DOM",
+         "Imageability" = "IMAG",
+         "Semantic Size" = "SIZE",
+         "Semantic Gender" = "GEND",
+         "Humour" = "HUM",
+         "Lexical Decision Response Time" = "RT",
+         "Lexical Decision Accuracy" = "Accuracy"
+  )
+}
+
+viscat2scaletext <- function(v) {
+  case_when(
+    v == "Bigram Probability" ~ c("Less Likely", "More Likely"),
+    v == "Syllables" ~ c("Fewer", "More"),
+    v == "Phonemes" ~ c("Fewer", "More"),
+    v == "Number of Pronunciations" ~ c("Fewer", "More"),
+    v == "Familiarity" ~ c("Less Familiar", "More Familiar"),
+    v == "Age of Acquisition" ~ c("Earlier", "Later"),
+    v == "Concreteness" ~ c("Less Concrete", "More Concrete"),
+    v == "Arousal" ~ c("Less Arousing", "More Arousing"),
+    v == "Valence" ~ c("More Negative", "More Positive"),
+    v == "Dominance" ~ c("Less Dominant", "More Dominant"),
+    v == "Imageability" ~ c("Less Imageable", "More Imageable"),
+    v == "Semantic Size" ~ c("Smaller", "Larger"),
+    v == "Semantic Gender" ~ c("More Feminine", "More Masculine"),
+    v == "Humour" ~ c("Less Funny", "More Funny"),
+    v == "Lexical Decision Response Time" ~ c("Faster", "Slower"),
+    v == "Lexical Decision Accuracy" ~ c("Less Accurate", "More Accurate")
+  )
+}
