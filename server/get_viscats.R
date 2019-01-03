@@ -1,5 +1,5 @@
 # Visualilsation vector categories
-vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Probability', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Humour', 'Lexical Decision Response Time', 'Lexical Decision Accuracy')
+vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Probability', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Number of Pronunciations', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Humour', 'Lexical Decision Response Time', 'Lexical Decision Accuracy')
 
 visualise.opts <- names(lexops)[!(names(lexops) %in% c('string'))]
 
@@ -16,7 +16,8 @@ vis.opt.2.source <- function(x){switch(x,
                                        'Orthographic Neighbourhood' = visualise.opts[grepl("ON",visualise.opts)],
                                        'Phonemes' = visualise.opts[grepl("Phonemes",visualise.opts)],
                                        'Rhyme' = visualise.opts[grepl("Rhyme",visualise.opts)],
-                                       'Phonological Neighbourhood' = visualise.opts[grepl("PLD20",visualise.opts) | grepl("PhonColtheartN",visualise.opts)],
+                                       'Phonological Neighbourhood' = visualise.opts[grepl("PN",visualise.opts)],
+                                       'Number of Pronunciations' = visualise.opts[grepl("PrN",visualise.opts)],
                                        'Familiarity' = visualise.opts[grepl("FAM",visualise.opts)],
                                        'Age of Acquisition' = visualise.opts[grepl("AoA",visualise.opts)],
                                        'Concreteness' = visualise.opts[grepl("CNC",visualise.opts)],
