@@ -97,7 +97,7 @@ output$match_results_sort_5_order_choice <- renderUI ({
 
 # put matches in datatable
 output$match_results_dt <- DT::renderDataTable({
-  DT::datatable(matchresults(), options=list(pageLength=25))
+  DT::datatable(matchresults(), options=list(pageLength=25, scrollX=T))
 })
 
 # For displaying number of results under word-entry textbox in sidebar
