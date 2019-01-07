@@ -1,0 +1,4 @@
+genresults <- reactive({
+  lexops
+})
+

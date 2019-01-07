@@ -70,6 +70,12 @@ shinyServer(function(input, output) {
   source("server/generate/controlfor_boxes.R", local=T)
   source("server/generate/filterby_boxes.R", local=T)
   
+  # Get the generated stimuli
+  source("server/generate/generate.R", local=T)
+  
+  # Generate tab results
+  source("server/generate/results_generate.R", local=T)
+  
   # reactive changes to box UIs in match tab
   source("server/match/ReactiveBoxUIs.R", local=T)
   

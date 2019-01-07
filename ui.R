@@ -106,13 +106,10 @@ tagList(
                                         column(12, br()),
                                         box(
                                           title='Sampling Options', status='primary',
-                                          collapsible=T, collapsed=T, width=12,
+                                          collapsible=T, collapsed=F, width=12,
                                           fluidRow(
                                             column(12, numericInput('gen_N_stim', 'Number of Items per Condition', 40, min=1, max=9999, step=1)),
                                             column(12, radioButtons('gendist.opt', 'Distance Measure', c('Euclidean Distance'='ed', 'City Block Distance'='cb'), selected='ed')),
-                                            column(12, textOutput('gen_results_all_choice_text')),
-                                            column(12, uiOutput('gen_results_all_choice')),
-                                            column(12, uiOutput('gen_results_opts_choice')),
                                             column(12, sliderInput('gen_dist_tol', 'Tolerance', min=-1, max=1, value=c(-0.1, 0.1), step=0.05, width='100%'))
                                           ))))),
                                 DT::dataTableOutput('gen_results_dt')),
