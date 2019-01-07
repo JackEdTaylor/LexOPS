@@ -23,7 +23,7 @@ observeEvent(gen_splitby_boxes_N(), {
 # Build boxes' UIs
 lapply(1:25, function(i) {
   boxid <- sprintf('gen_splitby_%i', i)
-  var_lttr <- toupper(letters[i])
+  var_lttr <- LETTERS[i]
   output[[sprintf('%s_ui', boxid)]] <- renderUI({ splitby_UI(input[[sprintf("%s_vtype", boxid)]],
                                                              boxid) })
   output[[sprintf('%s_ui_sliders', boxid)]] <- renderUI({ splitby_UI_sliders(input[[sprintf("%s_vtype", boxid)]],
@@ -54,7 +54,7 @@ lapply(1:25, function(i) {
 
 # Put the UIs built above into their boxes
 lapply(1:25, function(i) {
-  var_lttr <- toupper(letters[i])
+  var_lttr <- LETTERS[i]
   boxid <- sprintf('gen_splitby_%i', i)
   output[[boxid]] <- renderUI({
     box(title=var_lttr, width=12, status='primary',
