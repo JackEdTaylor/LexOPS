@@ -60,7 +60,7 @@ corpus_recode <- function(inputopts = c("bnc_w", "bnc_s"), prefix=NA, logprefix=
   }
 }
 
-viscat2prefix <- function(viscat) {
+viscat2prefix <- function(viscat, log=F) {
   recode(viscat,
          "Bigram Probability" = "BG",
          "Orthographic Similarity" = "OS",
@@ -79,7 +79,26 @@ viscat2prefix <- function(viscat) {
          "Semantic Gender" = "GEND",
          "Humour" = "HUM",
          "Lexical Decision Response Time" = "RT",
-         "Lexical Decision Accuracy" = "Accuracy"
+         "Lexical Decision Accuracy" = "Accuracy",
+         "Part of Speech" = "PoS",
+         "Word Frequency" = if (log) {"Zipf"} else {"fpmw"}
+  )
+}
+
+corpus_recode_columns <- function(inputopts = c("bnc_w", "bnc_s"), v="Word Frequency", log=F) {
+  case_when(
+    v == "Word Frequency" ~ corpus_recode(inputopts, viscat2prefix(v, log)),
+    v == "Part of Speech" ~ corpus_recode(inputopts, viscat2prefix(v)),
+    v == "Length" ~ "Length",
+    v == "Bigram Probability" ~ corpus_recode(inputopts, viscat2prefix(v)),
+    v == "Orthographic Neighbourhood" ~ corpus_recode(inputopts, viscat2prefix(v), log),
+    v == "Syllables" ~ corpus_recode(inputopts, viscat2prefix(v)),
+    v == "Phonemes" ~ corpus_recode(inputopts, viscat2prefix(v)),
+    v == "Phonological Neighbourhood" ~ sprintf("%s.CMU.pr1", corpus_recode(inputopts, viscat2prefix(v), log)),
+    v == "Syllables" ~ corpus_recode(inputopts, viscat2prefix(v)),
+    v == "Number of Pronunciations" ~ "CMU.PrN",
+    v %in% c("Familiarity", "Age of Acquisition", "Concreteness", "Arousal", "Valence", "Dominance", "Imageability", "Semantic Size", "Semantic Gender", "Humour") ~ corpus_recode(inputopts, viscat2prefix(v)),
+    v %in% c("Lexical Decision Response Time", "Lexical Decision Accuracy") ~ corpus_recode(inputopts, viscat2prefix(v))
   )
 }
 
