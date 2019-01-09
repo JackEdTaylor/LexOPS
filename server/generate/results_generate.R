@@ -1,5 +1,5 @@
 # Download button
-output$matched.csv <- downloadHandler(
+output$generated.csv <- downloadHandler(
   filename = 'generated.csv',
   content = function(file) {
     write.csv(genresults(), file, row.names = FALSE)
