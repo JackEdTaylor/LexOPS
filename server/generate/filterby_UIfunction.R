@@ -363,20 +363,20 @@ filterby_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, lexops_d
           scaletext <- viscat2scaletext(vtype)
         } else if (vtype == "Orthographic Neighbourhood") {
           cn <- corpus_recode(box_opt, "ON", logprefix=box_log)
-          if (box_opt=="old20") scaletext <- c("Larger Neighbourhood", "Smaller Neighbourhood")
-          if (box_opt=="cn") scaletext <- c("Smaller Neighbourhood", "Larger Neighbourhood")
-          if (box_opt=="cn" & !box_log) force.histogram <- T
+          if (all(box_opt=="old20")) scaletext <- c("Larger Neighbourhood", "Smaller Neighbourhood")
+          if (all(box_opt=="cn")) scaletext <- c("Smaller Neighbourhood", "Larger Neighbourhood")
+          if (all(box_opt=="cn" & !box_log)) force.histogram <- T
         } else if (vtype == "Phonological Neighbourhood") {
           cn <- sprintf("%s.%s", corpus_recode(box_opt, "PN", logprefix=box_log), corpus_recode(box_source))
-          if (box_opt=="pld20") scaletext <- c("Larger Neighbourhood", "Smaller Neighbourhood")
-          if (box_opt=="cn") scaletext <- c("Smaller Neighbourhood", "Larger Neighbourhood")
-          if (box_opt=="cn" & !box_log) force.histogram <- T
+          if (all(box_opt=="pld20")) scaletext <- c("Larger Neighbourhood", "Smaller Neighbourhood")
+          if (all(box_opt=="cn")) scaletext <- c("Smaller Neighbourhood", "Larger Neighbourhood")
+          if (all(box_opt=="cn") & !box_log) force.histogram <- T
         } else if (vtype == "Number of Pronunciations") {
           cn <- "CMU.PrN"
           scaletext <- c("Fewer", "More")
           force.histogram <- T
         } else {
-          if (vtype %in% c("Phonemes", "Syllables") | (vtype=="Age of Acquisition" & box_opt=="bb")) force.histogram <- T
+          if ((vtype %in% c("Phonemes", "Syllables")) | (vtype=="Age of Acquisition" & all(box_opt=="bb"))) force.histogram <- T
           cn <- corpus_recode(box_opt, viscat2prefix(vtype))
           if (length(box_opt)>1) lexops_df[cn] <- lapply(lexops_df[cn], scale)
           scaletext <- viscat2scaletext(vtype)

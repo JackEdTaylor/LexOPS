@@ -169,7 +169,7 @@ controlfor_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
       slider.def_val <- c(-0.002, 0.002)
       slider.step <- 0.001
     } else if (vtype=="Orthographic Neighbourhood") {
-      if (box_opt=="old20") {
+      if (all(box_opt=="old20")) {
         if (box_log) {
           slider.range <- c(-0.75, 0.75)
           slider.def_val <- c(-0.1, 0.1)
@@ -179,7 +179,7 @@ controlfor_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
           slider.def_val <- c(-1, 1)
           slider.step <- 0.1
         }
-      } else if (box_opt=="cn") {
+      } else if (all(box_opt=="cn")) {
         if (box_log) {
           slider.range <- c(-1.5, 1.5)
           slider.def_val <- c(-0.2, 0.2)
@@ -199,7 +199,7 @@ controlfor_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
       slider.def_val <- c(0, 0)
       slider.step <- 1
     } else if (vtype=="Phonological Neighbourhood") {
-      if (box_opt=="pld20") {
+      if (all(box_opt=="pld20")) {
         if (box_log) {
           slider.range <- c(-0.75, 0.75)
           slider.def_val <- c(-0.1, 0.1)
@@ -209,7 +209,7 @@ controlfor_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
           slider.def_val <- c(-1, 1)
           slider.step <- 0.1
         }
-      } else if (box_opt=="cn") {
+      } else if (all(box_opt=="cn")) {
         if (box_log) {
           slider.range <- c(-1.5, 1.5)
           slider.def_val <- c(-0.2, 0.2)
@@ -229,13 +229,13 @@ controlfor_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
       slider.def_val <- c(-0.3, 0.3)
       slider.step <- 0.1
     } else if (vtype == "Concreteness") {
-      slider.range <- if (box_opt=="brysbaert") c(-1, 1) else c(-1.5, 1.5)
-      slider.def_val <- if (box_opt=="brysbaert") c(-0.2, 0.2) else c(-0.3, 0.3)
+      slider.range <- if (all(box_opt=="brysbaert")) c(-1, 1) else c(-1.5, 1.5)
+      slider.def_val <- if (all(box_opt=="brysbaert")) c(-0.2, 0.2) else c(-0.3, 0.3)
       slider.step <- 0.1
     } else if (vtype == "Age of Acquisition") {
-      slider.range <- if (box_opt=="bb") c(-12, 12) else if (box_opt=="kuperman") c(-5, 5) else c(-1.5, 1.5)
-      slider.def_val <- if (box_opt=="bb") c(-1, 1) else if (box_opt=="kuperman") c(-1, 1) else c(-0.3, 0.3)
-      slider.step <- if (box_opt=="bb") 1 else 0.1
+      slider.range <- if (all(box_opt=="bb")) c(-12, 12) else if (all(box_opt=="kuperman")) c(-5, 5) else c(-1.5, 1.5)
+      slider.def_val <- if (all(box_opt=="bb")) c(-1, 1) else if (all(box_opt=="kuperman")) c(-1, 1) else c(-0.3, 0.3)
+      slider.step <- if (all(box_opt=="bb")) 1 else 0.1
     } else if (vtype == "Lexical Decision Response Time") {
       if (length(box_opt)==1) {
         slider.range <- c(-500, 500)
@@ -326,7 +326,7 @@ controlfor_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, lexops
           scaletext <- c("Fewer", "More")
           force.histogram <- T
         } else {
-          if (vtype %in% c("Phonemes", "Syllables") | (vtype=="Age of Acquisition" & box_opt=="bb")) force.histogram <- T
+          if ((vtype %in% c("Phonemes", "Syllables")) | (vtype=="Age of Acquisition" & all(box_opt=="bb"))) force.histogram <- T
           cn <- corpus_recode(box_opt, viscat2prefix(vtype))
           if (length(box_opt)>1) lexops_df[cn] <- lapply(lexops_df[cn], scale)
           scaletext <- viscat2scaletext(vtype)
