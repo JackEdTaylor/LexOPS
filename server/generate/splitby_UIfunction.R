@@ -428,7 +428,7 @@ splitby_UI_vis <- function(vtype, boxid, levels_N, box_opt, box_log, box_source,
           scaletext <- c("Fewer", "More")
           force.histogram <- T
         } else {
-          if ((vtype %in% c("Phonemes", "Syllables")) | (vtype=="Age of Acquisition" & box_opt=="bb")) force.histogram <- T
+          if ((vtype %in% c("Phonemes", "Syllables")) | (vtype=="Age of Acquisition" & all(box_opt=="bb"))) force.histogram <- T
           cn <- corpus_recode(box_opt, viscat2prefix(vtype))
           if (length(box_opt)>1) lexops_df[cn] <- lapply(lexops_df[cn], scale)
           scaletext <- viscat2scaletext(vtype)
