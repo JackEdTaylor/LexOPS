@@ -44,7 +44,7 @@ lapply(1:25, function(i) {
 lapply(1:25, function(i) {
   boxid <- sprintf('gen_filterby_%i', i)
   output[[sprintf('%s', boxid)]] <- renderUI({
-    box(title=i, width=12, status='info',
+    box(title=i, width=12, status='info', solidHeader=T,
         selectInput(sprintf('%s_vtype', boxid), NULL, c('(None)', vis.cats)),
         uiOutput(sprintf('%s_ui', boxid)),
         uiOutput(sprintf('%s_ui_sliders', boxid)),

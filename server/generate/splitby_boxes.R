@@ -57,7 +57,7 @@ lapply(1:25, function(i) {
   var_lttr <- LETTERS[i]
   boxid <- sprintf('gen_splitby_%i', i)
   output[[boxid]] <- renderUI({
-    box(title=var_lttr, width=12, status='primary',
+    box(title=var_lttr, width=12, status='primary', solidHeader=T,
         selectInput(sprintf('%s_vtype', boxid), NULL, c('(None)', vis.cats[vis.cats!="Rhyme"])),
         uiOutput(sprintf('%s_ui', boxid)),
         uiOutput(sprintf('%s_ui_sliders', boxid)),
