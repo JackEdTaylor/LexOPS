@@ -24,6 +24,8 @@ genlevels <- reactive({
 
 genresults_prematching <- reactive({
   
+  input$gen_generate  # trigger recalculation if regenerate button is clicked
+  
   res <- lexops %>%
     select(string)
   
@@ -59,56 +61,61 @@ genresults_prematching <- reactive({
         lexops_filt <- filter(lexops_filt, UQ(sym(column)) %in% sl)
       }
     }
+    
+    res <- filter(res, string %in% lexops_filt$string)
   }
   
-  res <- filter(res, string %in% lexops_filt$string)
   
   # Split by...
   
-  res <- mutate(res, Condition = NA)
-  
-  levels <- genlevels()
-  
-  lexops_custom_cols <- lexops[lexops$string %in% res$string, ]
-  
-  for (lvl in 1:nrow(levels)) {
-    rowlevel <- levels[lvl, ]
-    lexops_filt <- lexops[lexops$string %in% res$string, ]
+  if (gen_splitby_boxes_N() >= 1) {
     
-    for (i in 1:gen_splitby_boxes_N()) {
-      i_lttr <- LETTERS[i]
-      i_lttr_lvl <- as.numeric(rowlevel[[i_lttr]])  # get which level of the variable this cell belongs to
-      boxid <- sprintf('gen_splitby_%i', i)
-      sl <- input[[sprintf('%s_sl%i', boxid, i_lttr_lvl)]]  # get the level's filter
-      boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
-      boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
-      boxv <- input[[sprintf('%s_vtype', boxid)]]
-      column <- corpus_recode_columns(boxopt, boxv, boxlog)
-      if (length(column)>1) {
-        # create new column, which will be the average of the variables selected
-        if (!(boxv %in% c("Word Frequency", "Bigram Probability"))) {
-          lexops_custom_cols[column] <- lapply(lexops_custom_cols[column], scale)
+    res <- mutate(res, Condition = NA)
+    
+    levels <- genlevels()
+    
+    lexops_custom_cols <- lexops[lexops$string %in% res$string, ]
+    
+    for (lvl in 1:nrow(levels)) {
+      rowlevel <- levels[lvl, ]
+      lexops_filt <- lexops[lexops$string %in% res$string, ]
+      
+      for (i in 1:gen_splitby_boxes_N()) {
+        i_lttr <- LETTERS[i]
+        i_lttr_lvl <- as.numeric(rowlevel[[i_lttr]])  # get which level of the variable this cell belongs to
+        boxid <- sprintf('gen_splitby_%i', i)
+        sl <- input[[sprintf('%s_sl%i', boxid, i_lttr_lvl)]]  # get the level's filter
+        boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
+        boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
+        boxv <- input[[sprintf('%s_vtype', boxid)]]
+        column <- corpus_recode_columns(boxopt, boxv, boxlog)
+        if (length(column)>1) {
+          # create new column, which will be the average of the variables selected
+          if (!(boxv %in% c("Word Frequency", "Bigram Probability"))) {
+            lexops_custom_cols[column] <- lapply(lexops_custom_cols[column], scale)
+          }
+          colmeans_name <- sprintf("Avg.%s", viscat2prefix(boxv, boxlog))
+          lexops_custom_cols[[colmeans_name]] <- rowMeans(select(lexops_custom_cols, one_of(column)), dims=1, na.rm=T)
+          lexops_filt <- inner_join(lexops_filt, select(lexops_custom_cols, "string", UQ(sym(colmeans_name))), by="string")
+          column <- colmeans_name
         }
-        colmeans_name <- sprintf("Avg.%s", viscat2prefix(boxv, boxlog))
-        lexops_custom_cols[[colmeans_name]] <- rowMeans(select(lexops_custom_cols, one_of(column)), dims=1, na.rm=T)
-        lexops_filt <- inner_join(lexops_filt, select(lexops_custom_cols, "string", UQ(sym(colmeans_name))), by="string")
-        column <- colmeans_name
-      }
-      if (!(column %in% colnames(res))) {
-        res[[column]] <- lexops_custom_cols[[column]]  # copy over the column to the results df
-      }
-      if (is.numeric(lexops_filt[[column]])) {
-        lexops_filt <- filter(lexops_filt, UQ(sym(column)) >= sl[[1]] & UQ(sym(column)) <= sl[[2]])
-      } else {
-        lexops_filt <- filter(lexops_filt, UQ(sym(column)) %in% sl)
+        if (!(column %in% colnames(res))) {
+          res[[column]] <- lexops_custom_cols[[column]]  # copy over the column to the results df
+        }
+        if (is.numeric(lexops_filt[[column]])) {
+          lexops_filt <- filter(lexops_filt, UQ(sym(column)) >= sl[[1]] & UQ(sym(column)) <= sl[[2]])
+        } else {
+          lexops_filt <- filter(lexops_filt, UQ(sym(column)) %in% sl)
+        }
+        
       }
       
+      res$Condition[res$string %in% lexops_filt$string] <- rowlevel$Level
     }
     
-    res$Condition[res$string %in% lexops_filt$string] <- rowlevel$Level
+    res <- filter(res, !is.na(Condition))
+    
   }
-  
-  res <- filter(res, !is.na(Condition))
   
   res
 })
@@ -144,14 +151,99 @@ genresults <- reactive({
       res[[column]] <- lexops_custom_cols[[column]]  # copy over the column to res df
       control_tols[[column]] <- input[[sprintf('%s_sl', boxid)]]  # get the box's filter and store under the column's name
     }
-  }
-  
-  # control for the selected variables
-  if (input$gen_controlnull == "inclusive") {
-    # all stimuli (for all conditions) must be within tolerance relative to all other matched stimuli
     
-  } else {
-    # all stimuli (for all conditions) must be within tolerance relative to selected condition ("null" condition)
+    
+    # get design's cells
+    cells <- genlevels() %>%
+      select(Level) %>%
+      unlist(use.names=F)
+    
+    # control for the selected variables
+    
+    dist_func <- if (input$gen_dist.opt=="cb") {get_cityblock_distance} else {get_euclidean_distance}
+    gen_controlnull <- if (is.null(input$gen_controlnull)) {"inclusive"} else {input$gen_controlnull}  # assume inclusive if selection not rendered yet
+    numerics <- colnames(select_if(res, is.numeric))  # get a list of the numeric variables
+    
+    if (gen_controlnull == "inclusive") {
+      # all stimuli (for all conditions) must be within tolerance relative to all other matched stimuli
+      
+    } else {
+      # all stimuli (for all conditions) must be within tolerance relative to selected condition ("null" condition)
+      none_NAs_count <- 0
+      nullcond <- gen_controlnull
+      otherconds <- cells[cells!=nullcond]
+      newres <- res %>%
+        filter(Condition == nullcond) %>%
+        select(Condition, string) %>%
+        mutate(spread_id=1:n()) %>%
+        spread(Condition, string) %>%
+        select(-spread_id) %>%
+        slice(sample(1:n()))
+
+      for (itemnr in 1:nrow(newres)) {
+        item_str <- newres[[nullcond]][itemnr]
+        
+        # get pool of potential matches, and shuffle randomly
+        match_str_pool_base <- res %>%
+          mutate(dist = dist_func(res, item_str, names(control_tols)[names(control_tols) %in% numerics]))
+
+        for (condnr in 1:length(otherconds)) {
+          condname <- otherconds[condnr]
+
+          # get pool of potential matches, and shuffle randomly
+          match_str_pool <- match_str_pool_base %>%
+            filter(Condition == condname) %>%
+            slice(sample(1:n()))
+          
+          for (control_nr in 1:length(names(control_tols))) {
+            control_name <- names(control_tols)[control_nr]
+            control_value <- res[[control_name]][res$string==item_str]
+            if (control_name %in% numerics) {
+              control_tol <- control_tols[[control_name]] + control_value
+              match_str_pool <- filter(match_str_pool, dist <= input$gen_dist_tol) %>%
+                filter(UQ(sym(control_name))>=control_tol[1] & UQ(sym(control_name))<=control_tol[2])
+            } else {
+              match_str_pool <- filter(match_str_pool, UQ(sym(control_name)) == control_value)
+            }
+          }
+          
+          if (nrow(match_str_pool)>=1) {
+            # choose random match from pool of possibilities
+            match_str <- match_str_pool %>%
+              sample_n(1) %>%
+              select(string) %>%
+              unlist(use.names=F)
+            # remove from future pools to avoid duplications in stimuli list
+            res <- filter(res, string != match_str)
+          } else {
+            match_str <- NA
+          }
+
+          # if (is.null(newres[[condname]])) {newres[[condname]] <- NA}  # ensure column exists
+          newres[[condname]][itemnr] <- match_str
+        }
+        
+        newres_test <- newres[1:itemnr, ]
+        if (nrow(newres_test) >= input$gen_N_stim & nrow(na.omit(newres_test)) >= input$gen_N_stim) {
+          break
+        }
+        
+      }
+      
+      newres <- na.omit(newres)
+      newres <- newres[1:input$gen_N_stim, ]
+      
+      validate(
+        need(nrow(newres) >= input$gen_N_stim,
+             sprintf("Insufficient pool size (requested %i of total %i in generated pool). Consider regenerating, increasing tolerances, increasing sizes of splits, or reducing desired sample size.", input$gen_N_stim, nrow(newres)))
+      )
+      
+      newres <- newres %>%
+        mutate(Item = row_number()) %>%
+        select(Item, everything())
+      
+      res <- newres
+    }
     
   }
   
