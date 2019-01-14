@@ -10,7 +10,6 @@ library(DT)
 # Visualilsation vector categories - needed in UI for Visualisation tab
 vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Probability', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Number of Pronunciations', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Humour', 'Lexical Decision Response Time', 'Lexical Decision Accuracy')
 
-
 tagList(
   useShinyjs(),
   tags$head(
@@ -98,7 +97,7 @@ tagList(
                         tabItem(tabName = 'generate_results',
                                 fluidRow(
                                   box(title='Options', status='primary',
-                                      collapsible=T, collapsed=T, width=12,
+                                      collapsible=T, collapsed=F, width=12,
                                       fluidRow(
                                         column(12, h5(strong("Download"))),
                                         column(12, downloadButton('generated.csv', 'Download Generated Stimuli')),
@@ -106,10 +105,11 @@ tagList(
                                         column(12, br()),
                                         box(
                                           title='Sampling Options', status='primary',
-                                          collapsible=T, collapsed=F, width=12,
+                                          collapsible=T, collapsed=T, width=12,
                                           fluidRow(
                                             column(12, numericInput('gen_N_stim', 'Number of Items per Condition', 40, min=1, max=9999, step=1)),
-                                            column(12, radioButtons('gendist.opt', 'Distance Measure', c('Euclidean Distance'='ed', 'City Block Distance'='cb'), selected='ed')),
+                                            column(12, uiOutput('gen_controlnull_choice')),
+                                            column(12, radioButtons('gen_dist.opt', 'Distance Measure', c('Euclidean Distance'='ed', 'City Block Distance'='cb'), selected='ed')),
                                             column(12, sliderInput('gen_dist_tol', 'Tolerance', min=-1, max=1, value=c(-0.1, 0.1), step=0.05, width='100%'))
                                           ))))),
                                 DT::dataTableOutput('gen_results_dt')),
