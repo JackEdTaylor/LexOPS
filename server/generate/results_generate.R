@@ -17,8 +17,9 @@ output$gen_controlnull_choice <- renderUI({
     cells <- genlevels() %>%
       select(Level) %>%
       unlist(use.names=F)
+    cells <- c("All conditions (inclusive tolerance)"="inclusive", cells)
   } else {
     cells <- c("(None)")
   }
-  selectInput('gen_controlnull', "Control for Variables relative to", c("All conditions (inclusive tolerance)"="inclusive", cells))
+  selectInput('gen_controlnull', "Control for Variables relative to", cells)
 })

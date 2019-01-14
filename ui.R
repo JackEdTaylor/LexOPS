@@ -59,7 +59,7 @@ tagList(
                       tabItems(
                         tabItem(tabName = 'generate_options',
                                 fluidRow(
-                                  valueBox("Generate Tab not yet Functional", subtitle=NULL, width = 12, color='red', icon=icon("exclamation-triangle")),
+                                  valueBox("Generate Tab still in Beta", subtitle=NULL, width = 12, color='red', icon=icon("exclamation-triangle")),
                                   column(4, fluidRow(
                                     valueBox("Split by...", width = 12, color='light-blue',
                                              subtitle=fluidRow(column(12,
@@ -99,18 +99,19 @@ tagList(
                                   box(title='Options', status='primary',
                                       collapsible=T, collapsed=F, width=12,
                                       fluidRow(
-                                        column(12, h5(strong("Download"))),
-                                        column(12, downloadButton('generated.csv', 'Download Generated Stimuli')),
+                                        column(12, numericInput('gen_N_stim', 'Number of Items per Condition', 50, min=1, max=9999, step=1)),
+                                        column(12, HTML('&nbsp;')),
+                                        column(6, align="center", actionButton("gen_generate", "Generate/Regenerate Stimuli List", icon=icon("redo-alt"))),
+                                        column(6, align="center", downloadButton('generated.csv', 'Download Generated Stimuli')),
                                         column(12, br()),
                                         column(12, br()),
                                         box(
-                                          title='Sampling Options', status='primary',
+                                          title='Condition-Matching Options', status='primary',
                                           collapsible=T, collapsed=T, width=12,
                                           fluidRow(
-                                            column(12, numericInput('gen_N_stim', 'Number of Items per Condition', 40, min=1, max=9999, step=1)),
                                             column(12, uiOutput('gen_controlnull_choice')),
                                             column(12, radioButtons('gen_dist.opt', 'Distance Measure', c('Euclidean Distance'='ed', 'City Block Distance'='cb'), selected='ed')),
-                                            column(12, sliderInput('gen_dist_tol', 'Tolerance', min=-1, max=1, value=c(-0.1, 0.1), step=0.05, width='100%'))
+                                            column(12, sliderInput('gen_dist_tol', 'Distance Tolerance', min=0, max=10, value=1, step=0.1, width='100%'))
                                           ))))),
                                 DT::dataTableOutput('gen_results_dt')),
                         # Match Options tab
