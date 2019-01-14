@@ -1,4 +1,28 @@
-genresults <- reactive({
+gensplits <- reactive({
+  
+  splits <- list()
+  for (i in 1:gen_splitby_boxes_N()) {
+    boxid <- sprintf('gen_splitby_%i', i)
+    Nlevels <- input[[sprintf("%s_Nlevels", boxid)]]
+    i_lttr <- LETTERS[i]
+    if (!is.null(Nlevels)) {
+      for (lvl in 1:Nlevels) {
+        splits[[i_lttr]] <- append(splits[[i_lttr]], sprintf("%s%i", i_lttr, lvl))
+      }
+    }
+  }
+  
+  splits
+  
+})
+
+genlevels <- reactive({
+  levels <- expand.grid(gensplits())
+  unite(levels, "Level", 1:ncol(levels), sep="_", remove=F)
+})
+
+
+genresults_prematching <- reactive({
   
   res <- lexops %>%
     select(string)
@@ -43,20 +67,7 @@ genresults <- reactive({
   
   res <- mutate(res, Condition = NA)
   
-  splits <- list()
-  for (i in 1:gen_splitby_boxes_N()) {
-    boxid <- sprintf('gen_splitby_%i', i)
-    Nlevels <- input[[sprintf("%s_Nlevels", boxid)]]
-    i_lttr <- LETTERS[i]
-    if (!is.null(Nlevels)) {
-      for (lvl in 1:Nlevels) {
-        splits[[i_lttr]] <- append(splits[[i_lttr]], sprintf("%s%i", i_lttr, lvl))
-      }
-    }
-  }
-  
-  levels <- expand.grid(splits)
-  levels <- unite(levels, "Level", 1:ncol(levels), sep="_", remove=F)
+  levels <- genlevels()
   
   lexops_custom_cols <- lexops[lexops$string %in% res$string, ]
   
@@ -100,4 +111,50 @@ genresults <- reactive({
   res <- filter(res, !is.na(Condition))
   
   res
+})
+
+
+genresults <- reactive({
+  
+  res <- genresults_prematching()
+  
+  lexops_custom_cols <- lexops[lexops$string %in% res$string, ]
+  
+  # Control for...
+  
+  # Add relevant columns and store details
+  control_tols <- list()  # will contain all controlled variables' names (in the res df) and associated tolerances
+  if (gen_controlfor_boxes_N() >= 1) {
+    
+    for (i in 1:gen_controlfor_boxes_N()) {
+      boxid <- sprintf('gen_controlfor_%i', i)
+      boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
+      boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
+      boxv <- input[[sprintf('%s_vtype', boxid)]]
+      column <- corpus_recode_columns(boxopt, boxv, boxlog)
+      if (length(column)>1) {
+        # create new column, which will be the average of the variables selected
+        if (!(boxv %in% c("Word Frequency", "Bigram Probability"))) {
+          lexops_custom_cols[column] <- lapply(lexops_custom_cols[column], scale)
+        }
+        colmeans_name <- sprintf("Avg.%s", viscat2prefix(boxv, boxlog))
+        lexops_custom_cols[[colmeans_name]] <- rowMeans(select(lexops_custom_cols, one_of(column)), dims=1, na.rm=T)
+        column <- colmeans_name
+      }
+      res[[column]] <- lexops_custom_cols[[column]]  # copy over the column to res df
+      control_tols[[column]] <- input[[sprintf('%s_sl', boxid)]]  # get the box's filter and store under the column's name
+    }
+  }
+  
+  # control for the selected variables
+  if (input$gen_controlnull == "inclusive") {
+    # all stimuli (for all conditions) must be within tolerance relative to all other matched stimuli
+    
+  } else {
+    # all stimuli (for all conditions) must be within tolerance relative to selected condition ("null" condition)
+    
+  }
+  
+  res
+  
 })
