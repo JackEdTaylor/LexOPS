@@ -36,6 +36,7 @@
 
 .box.box-solid.box-info {
 	border-top-color:#641e68;
+	border:1px solid #641e68;
 }
 
 .box.box-info {
