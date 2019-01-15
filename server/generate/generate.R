@@ -217,6 +217,7 @@ genresults <- reactive({
               sample_n(1) %>%
               select(string) %>%
               unlist(use.names=F)
+            if (length(match_str)==0) {match_str <- NA}
             # remove from future pools to avoid duplications in stimuli list
             res <- filter(res, string != match_str)
           } else {
@@ -235,11 +236,12 @@ genresults <- reactive({
       }
       
       newres <- na.omit(newres)
-      newres <- newres[1:input$gen_N_stim, ]
+      newres <- newres[1:input$gen_N_stim, ] %>%
+        na.omit()
       
       validate(
         need(nrow(newres) >= input$gen_N_stim,
-             sprintf("Insufficient pool size (requested %i of total %i in generated pool). Consider regenerating, increasing tolerances, increasing sizes of splits, or reducing desired sample size.", input$gen_N_stim, nrow(newres)))
+             sprintf("Insufficient pool size (requested random sample of %i words per condition, from total of %i combinations in generated pool). Consider regenerating, increasing tolerances, increasing sizes of splits, or reducing desired stimulus list size.", input$gen_N_stim, nrow(newres)))
       )
       
       newres <- newres %>%
