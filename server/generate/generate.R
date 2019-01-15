@@ -149,7 +149,11 @@ genresults <- reactive({
         column <- colmeans_name
       }
       res[[column]] <- lexops_custom_cols[[column]]  # copy over the column to res df
-      control_tols[[column]] <- input[[sprintf('%s_sl', boxid)]]  # get the box's filter and store under the column's name
+      if (is.numeric(res[[column]])) {
+        control_tols[[column]] <- input[[sprintf('%s_sl', boxid)]]  # get the box's filter and store under the column's name
+      } else {
+        control_tols[[column]] <- NA
+      }
     }
     
     
