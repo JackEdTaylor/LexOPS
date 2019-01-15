@@ -63,3 +63,7 @@
 .main-header .logo {
 	text-align:left;
 }
+
+.shiny-output-error-validation {
+	color: red;
+}
