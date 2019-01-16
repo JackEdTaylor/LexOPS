@@ -164,7 +164,9 @@ genresults <- reactive({
     
     # control for the selected variables
     
-    dist_func <- if (input$gen_dist.opt=="cb") {get_cityblock_distance} else {get_euclidean_distance}
+    if (input$gen_check.dist) {
+      dist_func <- if (input$gen_dist.opt=="cb") {get_cityblock_distance} else {get_euclidean_distance}
+    }
     gen_controlnull <- if (is.null(input$gen_controlnull)) {"inclusive"} else {input$gen_controlnull}  # assume inclusive if selection not rendered yet
     numerics <- colnames(select_if(res, is.numeric))  # get a list of the numeric variables
     
@@ -188,8 +190,8 @@ genresults <- reactive({
         item_str <- newres[[nullcond]][itemnr]
         
         # get pool of potential matches, and shuffle randomly
-        match_str_pool_base <- res %>%
-          mutate(dist = dist_func(res, item_str, names(control_tols)[names(control_tols) %in% numerics]))
+        match_str_pool_base <- res
+        if (input$gen_check.dist) {match_str_pool_base <- mutate(match_str_pool_base, dist = dist_func(res, item_str, names(control_tols)[names(control_tols) %in% numerics]))}
 
         for (condnr in 1:length(otherconds)) {
           condname <- otherconds[condnr]
@@ -204,8 +206,8 @@ genresults <- reactive({
             control_value <- res[[control_name]][res$string==item_str]
             if (control_name %in% numerics) {
               control_tol <- control_tols[[control_name]] + control_value
-              match_str_pool <- filter(match_str_pool, dist <= input$gen_dist_tol) %>%
-                filter(UQ(sym(control_name))>=control_tol[1] & UQ(sym(control_name))<=control_tol[2])
+              if (input$gen_check.dist) {match_str_pool <- filter(match_str_pool, dist <= input$gen_dist_tol)}
+              match_str_pool <- filter(match_str_pool, UQ(sym(control_name))>=control_tol[1] & UQ(sym(control_name))<=control_tol[2])
             } else {
               match_str_pool <- filter(match_str_pool, UQ(sym(control_name)) == control_value)
             }
