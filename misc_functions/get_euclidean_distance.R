@@ -41,5 +41,3 @@ get_euclidean_distance <- function(df, str_in, columns=NA, weights=NA) {
   
   res
 }
-
-#lexops$Euclidean.Distance <- get_euclidean_distance(lexops, "thicket", c("Length", "Avg.Zipf"))

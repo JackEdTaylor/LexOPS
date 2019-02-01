@@ -41,5 +41,3 @@ get_cityblock_distance <- function(df, str_in, columns=NA, weights=NA) {
   
   res
 }
-
-#lexops$CityBlock.Distance <- get_cityblock_distance(lexops, "thicket", c("Length", "Zipf.SUBTLEX_UK"))
