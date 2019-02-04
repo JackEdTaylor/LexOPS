@@ -39,7 +39,6 @@ tagList(
                                                 startExpanded = T,
                                                 menuSubItem('Options', tabName="generate_options", icon=icon('sliders-h')),
                                                 menuSubItem('Generated Stimuli', tabName="generate_results", icon=icon('sort-amount-down'))),
-                                       br(),
                                        menuItem('Match', icon=icon('search'),
                                                 startExpanded = F,
                                                 textInput('string', 'Word:', 'thicket', width="100%"),  # must explicitly give width of UI items in sidebar to avoid overflowing
@@ -47,10 +46,10 @@ tagList(
                                                 br(), br(),
                                                 menuSubItem('Select & Filter', tabName="match_options", icon=icon('sliders-h')),
                                                 menuSubItem('Suggested Matches', tabName="match_results", icon=icon('sort-amount-down'))),
-                                       br(),
                                        menuItem('Fetch', tabName='fetch', icon=icon('file-import')),
-                                       br(),
                                        menuItem('Visualise', tabName="visualise", icon=icon('chart-bar')),
+                                       br(),
+                                       menuItem('Custom Variables', tabName='custom_variables', icon=icon('plus')),
                                        menuItem('Info', tabName='info', icon=icon('info-circle'))
                                      )),
                     
@@ -614,6 +613,28 @@ tagList(
                             plotlyOutput('visualiseplotly') %>%
                               withSpinner()
                           )),
+                        # Custom Variables tab
+                        tabItem(tabName='custom_variables',
+                                fluidRow(
+                                  box(
+                                    title='1) Upload Data', status='primary',
+                                    collapsible=T, collapsed=F, width=12,
+                                    fluidRow(
+                                      column(12, uiOutput('cust.opts.inputfile.choice')),
+                                      column(12, textOutput('cust.filename')),
+                                      column(12, uiOutput('cust.opts.filehasheaders.choice')),
+                                      column(12, br()),
+                                      column(12, uiOutput('cust.opts.column.choice'))
+                                    )),
+                                  box(
+                                    title='2) Choose Target Features', status='primary',
+                                    collapsible=T, collapsed=F, width=12,
+                                    fluidRow(
+                                      column(12, radioButtons('cust.opts.all', NULL, c("Include all Columns from Uploaded Data as Custom Variables"="all", "Select which Variables to Include Manually"="some"))),
+                                      column(12, uiOutput("cust.opts.choice"))
+                                    )
+                                  )
+                                  )),
                         # Info tab
                         tabItem(tabName='info',
                                 downloadButton('LexOPS.csv', 'Download the LexOPS Database')

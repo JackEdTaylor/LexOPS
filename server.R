@@ -105,6 +105,9 @@ shinyServer(function(input, output) {
   # fetch tab
   source("server/fetch.R", local=T)
   
+  # custom variables tab
+  source("server/custom_variables.R", local=T)
+  
   # Info page download button
   output$LexOPS.csv <- downloadHandler(
     filename = 'LexOPS.csv',
