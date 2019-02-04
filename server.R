@@ -62,8 +62,33 @@ shinyServer(function(input, output) {
   
   # a reactive object with the lexops data in it
   lexopsReact <- reactive({
-    # add uploaded variables here
-    lexops
+    res <- lexops
+    
+    # add uploaded variables
+    if (!is.null(input$cust.opts.inputfile)) {
+      if (input$cust.opts.all=="all") {
+        selcols <- colnames(cust_df_raw())
+        selcols <- selcols[selcols!=input$cust.opts.column]
+      } else {
+        selcols <- colnames(select(cust_df_raw(), input$cust.opts))
+        selcols <- selcols[selcols!=input$cust.opts.column]
+      }
+      
+      targstringcolname <- input$cust.opts.column
+      
+      inputfile <- cust_df_raw() %>%
+        rename_at(vars(selcols), ~ sprintf("custom.%s", selcols)) %>%
+        rename(string = targstringcolname)
+      
+      res <- res %>%
+        full_join(select(inputfile, c(sprintf("custom.%s", selcols), "string")), by="string")
+    }
+    
+    res
+  })
+  
+  visualise.opts <- reactive({
+    names(lexopsReact())[!(names(lexopsReact()) %in% c('string'))]
   })
   
   # initial numbers of boxes on generate tab
