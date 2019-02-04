@@ -185,57 +185,64 @@ genresults <- reactive({
         spread(Condition, string) %>%
         select(-spread_id) %>%
         slice(sample(1:n()))
-
-      for (itemnr in 1:nrow(newres)) {
-        item_str <- newres[[nullcond]][itemnr]
+      
+      withProgress(message="Generating stimuli...", value=0, {
         
-        # get pool of potential matches, and shuffle randomly
-        match_str_pool_base <- res
-        if (input$gen_check.dist) {match_str_pool_base <- mutate(match_str_pool_base, dist = dist_func(res, item_str, names(control_tols)[names(control_tols) %in% numerics]))}
-
-        for (condnr in 1:length(otherconds)) {
-          condname <- otherconds[condnr]
-
+        for (itemnr in 1:nrow(newres)) {
+          item_str <- newres[[nullcond]][itemnr]
+          
           # get pool of potential matches, and shuffle randomly
-          match_str_pool <- match_str_pool_base %>%
-            filter(Condition == condname) %>%
-            slice(sample(1:n()))
+          match_str_pool_base <- res
+          if (input$gen_check.dist) {match_str_pool_base <- mutate(match_str_pool_base, dist = dist_func(res, item_str, names(control_tols)[names(control_tols) %in% numerics]))}
           
-          for (control_nr in 1:length(names(control_tols))) {
-            control_name <- names(control_tols)[control_nr]
-            control_value <- res[[control_name]][res$string==item_str]
-            if (control_name %in% numerics) {
-              control_tol <- control_tols[[control_name]] + control_value
-              if (input$gen_check.dist) {match_str_pool <- filter(match_str_pool, dist <= input$gen_dist_tol)}
-              match_str_pool <- filter(match_str_pool, UQ(sym(control_name))>=control_tol[1] & UQ(sym(control_name))<=control_tol[2])
-            } else {
-              match_str_pool <- filter(match_str_pool, UQ(sym(control_name)) == control_value)
+          for (condnr in 1:length(otherconds)) {
+            condname <- otherconds[condnr]
+            
+            # get pool of potential matches, and shuffle randomly
+            match_str_pool <- match_str_pool_base %>%
+              filter(Condition == condname) %>%
+              slice(sample(1:n()))
+            
+            for (control_nr in 1:length(names(control_tols))) {
+              control_name <- names(control_tols)[control_nr]
+              control_value <- res[[control_name]][res$string==item_str]
+              if (control_name %in% numerics) {
+                control_tol <- control_tols[[control_name]] + control_value
+                if (input$gen_check.dist) {match_str_pool <- filter(match_str_pool, dist <= input$gen_dist_tol)}
+                match_str_pool <- filter(match_str_pool, UQ(sym(control_name))>=control_tol[1] & UQ(sym(control_name))<=control_tol[2])
+              } else {
+                match_str_pool <- filter(match_str_pool, UQ(sym(control_name)) == control_value)
+              }
             }
+            
+            if (nrow(match_str_pool)>=1) {
+              # choose random match from pool of possibilities
+              match_str <- match_str_pool %>%
+                sample_n(1) %>%
+                select(string) %>%
+                unlist(use.names=F)
+              if (length(match_str)==0) {match_str <- NA}
+              # remove from future pools to avoid duplications in stimuli list
+              res <- filter(res, string != match_str)
+            } else {
+              match_str <- NA
+            }
+            
+            # if (is.null(newres[[condname]])) {newres[[condname]] <- NA}  # ensure column exists
+            newres[[condname]][itemnr] <- match_str
           }
           
-          if (nrow(match_str_pool)>=1) {
-            # choose random match from pool of possibilities
-            match_str <- match_str_pool %>%
-              sample_n(1) %>%
-              select(string) %>%
-              unlist(use.names=F)
-            if (length(match_str)==0) {match_str <- NA}
-            # remove from future pools to avoid duplications in stimuli list
-            res <- filter(res, string != match_str)
-          } else {
-            match_str <- NA
+          newres_test <- newres[1:itemnr, ]
+          incProgress(nrow(na.omit(newres_test))/input$gen_N_stim, detail=sprintf("%i%%", round((nrow(na.omit(newres_test))/input$gen_N_stim*100))))
+          if (nrow(newres_test) >= input$gen_N_stim & nrow(na.omit(newres_test)) >= input$gen_N_stim) {
+            break
           }
-
-          # if (is.null(newres[[condname]])) {newres[[condname]] <- NA}  # ensure column exists
-          newres[[condname]][itemnr] <- match_str
+          
         }
         
-        newres_test <- newres[1:itemnr, ]
-        if (nrow(newres_test) >= input$gen_N_stim & nrow(na.omit(newres_test)) >= input$gen_N_stim) {
-          break
-        }
-        
-      }
+      })
+      
+      
       
       newres <- na.omit(newres)
       newres <- newres[1:input$gen_N_stim, ] %>%
