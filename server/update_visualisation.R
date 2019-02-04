@@ -106,21 +106,21 @@ output$visualiseplotly <- renderPlotly({
 # source drop-down menu for visualisation
 output$vis.xsource.choice <- renderUI({
   if(input$vis.xaxis.opts %in% vis.cats) {
-    selectInput('vis.xsource', 'X Axis Source', vis.opt.2.source(input$vis.xaxis.opts))
+    selectInput('vis.xsource', 'X Axis Source', vis.opt.2.source(input$vis.xaxis.opts, visualise.opts()))
   } else {NULL}
 })
 output$vis.ysource.choice <- renderUI({
   if(input$vis.yaxis.opts %in% vis.cats) {
-    selectInput('vis.ysource', 'Y Axis Source', vis.opt.2.source(input$vis.yaxis.opts))
+    selectInput('vis.ysource', 'Y Axis Source', vis.opt.2.source(input$vis.yaxis.opts, visualise.opts()))
   } else {NULL}
 })
 output$vis.zsource.choice <- renderUI({
   if(input$vis.zaxis.opts %in% vis.cats) {
-    selectInput('vis.zsource', 'Z Axis Source', vis.opt.2.source(input$vis.zaxis.opts))
+    selectInput('vis.zsource', 'Z Axis Source', vis.opt.2.source(input$vis.zaxis.opts, visualise.opts()))
   } else {NULL}
 })
 output$vis.coloursource.choice <- renderUI({
   if(input$vis.colour.opts %in% vis.cats) {
-    selectInput('vis.coloursource', 'Colour Source', vis.opt.2.source(input$vis.colour.opts))
+    selectInput('vis.coloursource', 'Colour Source', vis.opt.2.source(input$vis.colour.opts, visualise.opts()))
   } else {NULL}
 })

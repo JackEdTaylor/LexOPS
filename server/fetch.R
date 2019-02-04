@@ -91,7 +91,7 @@ lapply(1:length(vis.cats), function(catnr) {
     if (input$fetch.opts.all=="some") {
       checkboxGroupInput(sprintf("fetch.opts.%i", catnr),
                          catname,
-                         vis.opt.2.source(catname),
+                         vis.opt.2.source(catname, visualise.opts()),
                          inline=T)
     } else {
       NULL
