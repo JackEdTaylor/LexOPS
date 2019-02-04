@@ -81,7 +81,8 @@ viscat2prefix <- function(viscat, log=F) {
          "Lexical Decision Response Time" = "RT",
          "Lexical Decision Accuracy" = "Accuracy",
          "Part of Speech" = "PoS",
-         "Word Frequency" = if (log) {"Zipf"} else {"fpmw"}
+         "Word Frequency" = if (log) {"Zipf"} else {"fpmw"},
+         "Custom Variable" = "custom."
   )
 }
 
@@ -119,6 +120,7 @@ viscat2scaletext <- function(v) {
     v == "Semantic Gender" ~ c("More Feminine", "More Masculine"),
     v == "Humour" ~ c("Less Funny", "More Funny"),
     v == "Lexical Decision Response Time" ~ c("Faster", "Slower"),
-    v == "Lexical Decision Accuracy" ~ c("Less Accurate", "More Accurate")
+    v == "Lexical Decision Accuracy" ~ c("Less Accurate", "More Accurate"),
+    v == "Custom Variable" ~ c("Lower", "Higher")
   )
 }
