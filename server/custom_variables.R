@@ -59,7 +59,51 @@ output$cust.opts.choice <- renderUI({
   } else {
     custcols <- colnames(cust_df_raw())
     custcols <- custcols[custcols!=input$cust.opts.column]
-    checkboxGroupInput('cust.opts', NULL, custcols, inline=T, selected=custcols)
+    checkboxGroupInput('cust.opts', NULL, custcols, inline=T)
   }
 })
 
+# summarise the uploaded variables
+
+output$cust.uploadedvars <- renderTable(na="-", {
+  
+  if (input$cust.opts.all=="all") {
+    selcols <- colnames(cust_df_raw())
+    selcols <- selcols[selcols!=input$cust.opts.column]
+  } else {
+    selcols <- colnames(select(cust_df_raw(), input$cust.opts))
+    selcols <- selcols[selcols!=input$cust.opts.column]
+  }
+  
+  tibble(
+    Variable = sprintf("custom.%s", selcols),
+    Entries = as.integer(lapply(selcols, function(x) {
+      cust_df_raw() %>%
+        select(x) %>%
+        na.omit() %>%
+        nrow()
+      })),
+    Class = lapply(selcols, function(x) {
+      class(cust_df_raw()[[x]])
+      }),
+    Mean = as.numeric(lapply(selcols, function(x) {
+      if (is.numeric(cust_df_raw()[[x]])) {
+        cust_df_raw()[[x]] %>%
+          mean(na.rm=T) %>%
+          round(2)
+      } else {
+        NA
+      } 
+    })),
+    SD = as.numeric(lapply(selcols, function(x) {
+      if (is.numeric(cust_df_raw()[[x]])) {
+        cust_df_raw()[[x]] %>%
+          sd(na.rm=T) %>%
+          round(2)
+      } else {
+        NA
+      } 
+    }))
+  )
+  
+})
