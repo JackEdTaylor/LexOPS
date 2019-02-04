@@ -60,6 +60,12 @@ source("server/generate/filterby_UIfunction.R", local=T)
 # Define server logic
 shinyServer(function(input, output) {
   
+  # a reactive object with the lexops data in it
+  lexopsReact <- reactive({
+    # add uploaded variables here
+    lexops
+  })
+  
   # initial numbers of boxes on generate tab
   gen_splitby_boxes_N <- reactiveVal(0)
   gen_controlfor_boxes_N <- reactiveVal(0)

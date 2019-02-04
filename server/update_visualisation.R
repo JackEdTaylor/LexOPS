@@ -1,6 +1,6 @@
 # Get data for plotting
 plotdata <- reactive({
-  vd <- lexops
+  vd <- lexopsReact()
   t <- tibble(string = vd$string,
               x = vd[[input$vis.xsource]],
               y = vd[[input$vis.ysource]])

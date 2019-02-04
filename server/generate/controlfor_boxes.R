@@ -29,14 +29,14 @@ lapply(1:25, function(i) {
                                                                                 boxid,
                                                                                 input[[sprintf("%s.opt", boxid)]],
                                                                                 input[[sprintf("%s.log", boxid)]],
-                                                                                lexops) })
+                                                                                lexopsReact()) })
   box_sliders <- reactive({ input[[sprintf("%s_sl", boxid)]] })
   output[[sprintf('%s_ui_vis', boxid)]] <- renderPlot({ controlfor_UI_vis(input[[sprintf("%s_vtype", boxid)]],
                                                                           boxid,
                                                                           input[[sprintf("%s.opt", boxid)]],
                                                                           input[[sprintf("%s.log", boxid)]],
                                                                           input[[sprintf("%s.source", boxid)]],
-                                                                          lexops,
+                                                                          lexopsReact(),
                                                                           box_sliders()) })
 })
 

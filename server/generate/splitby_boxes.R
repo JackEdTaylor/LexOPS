@@ -32,7 +32,7 @@ lapply(1:25, function(i) {
                                                                              input[[sprintf("%s.opt", boxid)]],
                                                                              input[[sprintf("%s.log", boxid)]],
                                                                              var_lttr,
-                                                                             lexops) })
+                                                                             lexopsReact()) })
   box_sliders <- reactive({
     sl <- list()
     for (i in 1:input[[sprintf("%s_Nlevels", boxid)]]) {
@@ -47,7 +47,7 @@ lapply(1:25, function(i) {
                                                                        input[[sprintf("%s.opt", boxid)]],
                                                                        input[[sprintf("%s.log", boxid)]],
                                                                        input[[sprintf("%s.source", boxid)]],
-                                                                       lexops,
+                                                                       lexopsReact(),
                                                                        box_sliders(),
                                                                        var_lttr) })
 })

@@ -26,17 +26,17 @@ genresults_prematching <- reactive({
   
   input$gen_generate  # trigger recalculation if regenerate button is clicked
   
-  res <- lexops %>%
+  res <- lexopsReact() %>%
     select(string)
   
   # Filter by...
   
-  lexops_filt <- lexops
+  lexops_filt <- lexopsReact()
   
   if (gen_filterby_boxes_N() >= 1) {
     
     for (i in 1:gen_filterby_boxes_N()) {
-      lexops_custom_cols <- lexops
+      lexops_custom_cols <- lexopsReact()
       boxid <- sprintf('gen_filterby_%i', i)
       sl <- input[[sprintf('%s_sl', boxid)]]  # get the box's filter
       boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
@@ -74,7 +74,7 @@ genresults_prematching <- reactive({
     
     levels <- genlevels()
     
-    lexops_custom_cols <- lexops[lexops$string %in% res$string, ]
+    lexops_custom_cols <- lexopsReact()[lexopsReact()$string %in% res$string, ]
     
     for (lvl in 1:nrow(levels)) {
       rowlevel <- levels[lvl, ]
