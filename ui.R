@@ -8,7 +8,7 @@ library(viridis)
 library(DT)
 
 # Visualilsation vector categories - needed in UI for Visualisation tab
-vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Probability', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Number of Pronunciations', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Humour', 'Lexical Decision Response Time', 'Lexical Decision Accuracy')
+vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Probability', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Number of Pronunciations', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Humour', 'Lexical Decision Response Time', 'Lexical Decision Accuracy', 'Custom Variable')
 
 tagList(
   useShinyjs(),
@@ -632,6 +632,13 @@ tagList(
                                     fluidRow(
                                       column(12, radioButtons('cust.opts.all', NULL, c("Include all Columns from Uploaded Data as Custom Variables"="all", "Select which Variables to Include Manually"="some"))),
                                       column(12, uiOutput("cust.opts.choice"))
+                                    )
+                                  ),
+                                  box(
+                                    title='3) Summary of Uploaded Variables', status='primary',
+                                    collapsible=T, collapsed=F, width=12,
+                                    fluidRow(
+                                      column(12, tableOutput('cust.uploadedvars'))
                                     )
                                   )
                                   )),
