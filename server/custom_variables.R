@@ -86,6 +86,24 @@ output$cust.uploadedvars <- renderTable(na="-", {
     Class = lapply(selcols, function(x) {
       class(cust_df_raw()[[x]])
       }),
+    Min = as.numeric(lapply(selcols, function(x) {
+      if (is.numeric(cust_df_raw()[[x]])) {
+        cust_df_raw()[[x]] %>%
+          min(na.rm=T) %>%
+          round(2)
+      } else {
+        NA
+      }
+    })),
+    Max = as.numeric(lapply(selcols, function(x) {
+      if (is.numeric(cust_df_raw()[[x]])) {
+        cust_df_raw()[[x]] %>%
+          max(na.rm=T) %>%
+          round(2)
+      } else {
+        NA
+      }
+    })),
     Mean = as.numeric(lapply(selcols, function(x) {
       if (is.numeric(cust_df_raw()[[x]])) {
         cust_df_raw()[[x]] %>%
@@ -93,7 +111,7 @@ output$cust.uploadedvars <- renderTable(na="-", {
           round(2)
       } else {
         NA
-      } 
+      }
     })),
     SD = as.numeric(lapply(selcols, function(x) {
       if (is.numeric(cust_df_raw()[[x]])) {
@@ -102,7 +120,7 @@ output$cust.uploadedvars <- renderTable(na="-", {
           round(2)
       } else {
         NA
-      } 
+      }
     }))
   )
   
