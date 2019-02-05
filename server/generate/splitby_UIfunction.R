@@ -114,6 +114,13 @@ splitby_UI <- function(vtype = "Word Frequency", boxid) {
                                     c('British Lexicon Project (BLP)'='blp', 'English Lexicon Project (ELP)'='elp'),
                                     selected='blp',
                                     inline=T)
+    } else if(vtype == "Custom Variable") {
+      customopts <- vis.opt.2.source(vtype, visualise.opts())
+      customopts <- gsub("custom.", "", customopts)
+      ui[[1]] <- checkboxGroupInput(sprintf('%s.opt', boxid), 'Source(s)',
+                                    customopts,
+                                    selected = customopts[1],
+                                    inline=T)
     }
     
     ui[[length(ui)+1]] <- if (vtype != "(None)") {
@@ -354,6 +361,16 @@ splitby_UI_sliders <- function(vtype, boxid, levels_N, box_opt, box_log, boxlett
           slider.valueABC <- list(c(-2, -1.75), c(1.75, 2), c(-0.1, 0.1))
           slider.step <- .05
         }
+      } else if (vtype == "Custom Variable") {
+        cn <- corpus_recode(box_opt, viscat2prefix(vtype))
+        if (length(box_opt)!=1) {
+          lexops_df[cn] <- lapply(lexops_df[cn], scale)
+        }
+        xval <- get_rowmeans(cn, lexops_df)
+        slider.range <- c(floor(min(xval, na.rm=T)), ceiling(max(xval, na.rm=T)))
+        slider.def_val <- c(median(slider.range)-0.1, median(slider.range)+0.1)
+        slider.valueABC <- list(slider.def_val-0.5, slider.def_val+0.5, slider.def_val)
+        slider.step <- .05
       }
       
       # build sliders

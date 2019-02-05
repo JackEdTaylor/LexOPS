@@ -78,7 +78,7 @@ genresults_prematching <- reactive({
     
     for (lvl in 1:nrow(levels)) {
       rowlevel <- levels[lvl, ]
-      lexops_filt <- lexops[lexops$string %in% res$string, ]
+      lexops_filt <- lexopsReact()[lexopsReact()$string %in% res$string, ]
       
       for (i in 1:gen_splitby_boxes_N()) {
         i_lttr <- LETTERS[i]
@@ -125,7 +125,7 @@ genresults <- reactive({
   
   res <- genresults_prematching()
   
-  lexops_custom_cols <- lexops[lexops$string %in% res$string, ]
+  lexops_custom_cols <- lexopsReact()[lexopsReact()$string %in% res$string, ]
   
   # Control for...
   

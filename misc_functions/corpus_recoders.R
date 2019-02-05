@@ -82,7 +82,7 @@ viscat2prefix <- function(viscat, log=F) {
          "Lexical Decision Accuracy" = "Accuracy",
          "Part of Speech" = "PoS",
          "Word Frequency" = if (log) {"Zipf"} else {"fpmw"},
-         "Custom Variable" = "custom."
+         "Custom Variable" = "custom"
   )
 }
 
@@ -99,7 +99,8 @@ corpus_recode_columns <- function(inputopts = c("bnc_w", "bnc_s"), v="Word Frequ
     v == "Syllables" ~ corpus_recode(inputopts, viscat2prefix(v)),
     v == "Number of Pronunciations" ~ "CMU.PrN",
     v %in% c("Familiarity", "Age of Acquisition", "Concreteness", "Arousal", "Valence", "Dominance", "Imageability", "Semantic Size", "Semantic Gender", "Humour") ~ corpus_recode(inputopts, viscat2prefix(v)),
-    v %in% c("Lexical Decision Response Time", "Lexical Decision Accuracy") ~ corpus_recode(inputopts, viscat2prefix(v))
+    v %in% c("Lexical Decision Response Time", "Lexical Decision Accuracy") ~ corpus_recode(inputopts, viscat2prefix(v)),
+    v == "Custom Variable" ~ corpus_recode(inputopts, viscat2prefix(v))
   )
 }
 

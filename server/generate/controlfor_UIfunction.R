@@ -119,6 +119,13 @@ controlfor_UI <- function(vtype = "Word Frequency", boxid) {
                                     c('British Lexicon Project (BLP)'='blp', 'English Lexicon Project (ELP)'='elp'),
                                     selected='blp',
                                     inline=T)
+    } else if(vtype == "Custom Variable") {
+      customopts <- vis.opt.2.source(vtype, visualise.opts())
+      customopts <- gsub("custom.", "", customopts)
+      ui[[1]] <- checkboxGroupInput(sprintf('%s.opt', boxid), 'Source(s)',
+                                    customopts,
+                                    selected = customopts[1],
+                                    inline=T)
     }
     
     ui
@@ -256,6 +263,27 @@ controlfor_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
         slider.def_val <- c(-0.3, 0.3)
         slider.step <- 0.1
       }
+    } else if (vtype == "Custom Variable") {
+      cn <- corpus_recode(box_opt, viscat2prefix(vtype))
+      if (length(box_opt)!=1) {
+        lexops_df[cn] <- lapply(lexops_df[cn], scale)
+      }
+      xval <- get_rowmeans(cn, lexops_df)
+      fl <- floor(min(xval, na.rm=T))
+      ce <- ceiling(max(xval, na.rm=T))
+      fc_dist <- abs(ce-fl)
+      slider.range <- c(-fc_dist/4, fc_dist/4)
+      slider.step <- case_when(
+        diff(slider.range) >= 10 ~ 1,
+        diff(slider.range) >= 1 & diff(slider.range) < 10 ~ 0.1,
+        diff(slider.range) < 1 ~ 0.01
+      )
+      slider.range <- case_when(
+        diff(slider.range) >= 10 ~ c(floor(slider.range[1]), ceiling(slider.range[2])),
+        diff(slider.range) >= 1 & diff(slider.range) < 10 ~ c(floor_dec(slider.range[1], 1), ceiling_dec(slider.range[2], 1)),
+        diff(slider.range) < 1 ~ c(floor_dec(slider.range[1], 2), ceiling_dec(slider.range[2], 2))
+      )
+      slider.def_val <- c(-slider.step, slider.step)
     }
     
     # build sliders

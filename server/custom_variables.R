@@ -76,7 +76,7 @@ output$cust.uploadedvars <- renderTable(na="-", {
   }
   
   tibble(
-    Variable = sprintf("custom.%s", selcols),
+    Variable = sprintf("%s", selcols),
     Entries = as.integer(lapply(selcols, function(x) {
       cust_df_raw() %>%
         select(x) %>%

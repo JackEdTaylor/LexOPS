@@ -22,6 +22,9 @@ cat(sprintf(' -DONE.\n'))
 source("server/get_lexops_data.R", local=T)
 lexopsraw <- lexops
 
+# simple functions for rounding decimals up or down
+source("misc_functions/rounding.R", local=T)
+
 # set options for visualisation
 source("server/get_viscats.R", local=T)
 
@@ -52,19 +55,13 @@ source("server/match/matcher_functions.R", local=T)
 # functions used to get the descriptions in boxes for matching
 source("server/match/box_descriptions_functions.R", local=T)
 
-# functions used in the generate tab to create the UIs
-source("server/generate/splitby_UIfunction.R", local=T)
-source("server/generate/controlfor_UIfunction.R", local=T)
-source("server/generate/filterby_UIfunction.R", local=T)
-
 # Define server logic
 shinyServer(function(input, output) {
   
   # a reactive object with the lexops data in it
   lexopsReact <- reactive({
     res <- lexops
-    
-    # add uploaded variables
+    # add uploaded variables (if any)
     if (!is.null(input$cust.opts.inputfile)) {
       if (input$cust.opts.all=="all") {
         selcols <- colnames(cust_df_raw())
@@ -73,23 +70,24 @@ shinyServer(function(input, output) {
         selcols <- colnames(select(cust_df_raw(), input$cust.opts))
         selcols <- selcols[selcols!=input$cust.opts.column]
       }
-      
       targstringcolname <- input$cust.opts.column
-      
       inputfile <- cust_df_raw() %>%
         rename_at(vars(selcols), ~ sprintf("custom.%s", selcols)) %>%
         rename(string = targstringcolname)
-      
       res <- res %>%
         full_join(select(inputfile, c(sprintf("custom.%s", selcols), "string")), by="string")
     }
-    
     res
   })
   
   visualise.opts <- reactive({
     names(lexopsReact())[!(names(lexopsReact()) %in% c('string'))]
   })
+  
+  # functions used in the generate tab to create the UIs
+  source("server/generate/splitby_UIfunction.R", local=T)
+  source("server/generate/controlfor_UIfunction.R", local=T)
+  source("server/generate/filterby_UIfunction.R", local=T)
   
   # initial numbers of boxes on generate tab
   gen_splitby_boxes_N <- reactiveVal(0)
