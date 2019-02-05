@@ -254,15 +254,9 @@ controlfor_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
         slider.step <- 0.1
       }
     } else if (vtype == "Lexical Decision Accuracy") {
-      if (length(box_opt)==1) {
-        slider.range <- c(-0.5, 0.5)
-        slider.def_val <- c(-0.1, 0.1)
-        slider.step <- 0.01
-      } else {
-        slider.range <- c(-1.5, 1.5)
-        slider.def_val <- c(-0.3, 0.3)
-        slider.step <- 0.1
-      }
+      slider.range <- c(-0.5, 0.5)
+      slider.def_val <- c(-0.1, 0.1)
+      slider.step <- 0.01
     } else if (vtype == "Custom Variable") {
       cn <- corpus_recode(box_opt, viscat2prefix(vtype))
       if (length(box_opt)!=1) {
@@ -353,6 +347,9 @@ controlfor_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, lexops
           cn <- "CMU.PrN"
           scaletext <- c("Fewer", "More")
           force.histogram <- T
+        } else if (vtype == "Lexical Decision Accuracy") {
+          cn <- corpus_recode(box_opt, prefix="Accuracy")
+          scaletext <- c("Less Accurate", "More Accurate")
         } else {
           if ((vtype %in% c("Phonemes", "Syllables")) | (vtype=="Age of Acquisition" & all(box_opt=="bb"))) force.histogram <- T
           cn <- corpus_recode(box_opt, viscat2prefix(vtype))

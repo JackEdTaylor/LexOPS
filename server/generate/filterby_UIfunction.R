@@ -305,18 +305,9 @@ filterby_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
         slider.step <- .05
       }
     } else if (vtype == "Lexical Decision Accuracy") {
-      if (length(box_opt)==1) {
-        slider.range <- c(0, 1)
-        slider.def_val <- c(0.85, 1)
-        slider.step <- 0.01
-      } else {
-        cn <- corpus_recode(box_opt, viscat2prefix(vtype))
-        lexops_df[cn] <- lapply(lexops_df[cn], scale)
-        xval <- get_rowmeans(cn, lexops_df)
-        slider.range <- c(floor(min(xval, na.rm=T)), ceiling(max(xval, na.rm=T)))
-        slider.def_val <- c(0.5, 1)
-        slider.step <- .05
-      }
+      slider.range <- c(0, 1)
+      slider.def_val <- c(0.85, 1)
+      slider.step <- 0.01
     } else if (vtype == "Custom Variable") {
       cn <- corpus_recode(box_opt, viscat2prefix(vtype))
       if (length(box_opt)!=1) {
@@ -402,6 +393,9 @@ filterby_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, lexops_d
           cn <- "CMU.PrN"
           scaletext <- c("Fewer", "More")
           force.histogram <- T
+        } else if (vtype == "Lexical Decision Accuracy") {
+          cn <- corpus_recode(box_opt, prefix="Accuracy")
+          scaletext <- c("Less Accurate", "More Accurate")
         } else {
           if ((vtype %in% c("Phonemes", "Syllables")) | (vtype=="Age of Acquisition" & all(box_opt=="bb"))) force.histogram <- T
           cn <- corpus_recode(box_opt, viscat2prefix(vtype))
