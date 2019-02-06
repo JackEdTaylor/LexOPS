@@ -154,7 +154,6 @@ genresults <- reactive({
       } else {
         control_tols[[column]] <- NA
       }
-      control_tols_raw <- control_tols
     }
     
     
@@ -258,7 +257,6 @@ genresults <- reactive({
             cond <- cells[condnr]
             condnr_string <- gen_row[[cond]]
             if (input$gen_check.dist) {match_str_pool_base <- mutate(match_str_pool_base, dist = dist_func(res, condnr_string, names(control_tols)[names(control_tols) %in% numerics]))}
-            control_tols <- control_tols_raw
             for (control_nr in 1:length(names(control_tols))) {
               control_name <- names(control_tols)[control_nr]
               control_value <- res[[control_name]][res$string==condnr_string]
@@ -284,6 +282,7 @@ genresults <- reactive({
     })
     
     newres <- na.omit(newres)
+    if (gen_controlnull=="inclusive") {newres <- select(newres, -rownullcond)}
     
     validate(
       need(nrow(newres) >= input$gen_N_stim,
