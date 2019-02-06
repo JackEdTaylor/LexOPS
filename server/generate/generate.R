@@ -154,6 +154,7 @@ genresults <- reactive({
       } else {
         control_tols[[column]] <- NA
       }
+      control_tols_raw <- control_tols
     }
     
     
@@ -171,7 +172,17 @@ genresults <- reactive({
     numerics <- colnames(select_if(res, is.numeric))  # get a list of the numeric variables
     
     if (gen_controlnull == "inclusive") {
-      # all stimuli (for all conditions) must be within tolerance relative to all other matched stimuli
+      # all stimuli (for all conditions) must be within tolerance relative to all other conditions
+      # randomly select one condition as "initial condition" for each row,
+      # then exclude entries from pool if all conditions' words are not within tolerance from each other
+      none_NAs_count <- 0
+      newres <- res %>%
+        select(Condition, string) %>%
+        mutate(spread_id=1:n()) %>%
+        spread(Condition, string) %>%
+        select(-spread_id) %>%
+        slice(sample(1:n()))
+      newres$rownullcond <- sample(names(newres), nrow(newres), replace=T)
       
     } else {
       # all stimuli (for all conditions) must be within tolerance relative to selected condition ("null" condition)
@@ -186,26 +197,71 @@ genresults <- reactive({
         select(-spread_id) %>%
         slice(sample(1:n()))
       
-      withProgress(message="Generating stimuli...", value=0, {
+    }
+    
+    withProgress(message="Generating stimuli...", value=0, {
+      
+      for (itemnr in 1:nrow(newres)) {
         
-        for (itemnr in 1:nrow(newres)) {
-          item_str <- newres[[nullcond]][itemnr]
+        if (gen_controlnull=="inclusive") {
+          nullcond <- newres$rownullcond[itemnr]
+          otherconds <- cells[cells!=nullcond]
+        }
+        
+        item_str <- newres[[nullcond]][itemnr]
+        
+        # get pool of potential matches, and shuffle randomly
+        match_str_pool_base <- res
+        if (input$gen_check.dist) {match_str_pool_base <- mutate(match_str_pool_base, dist = dist_func(res, item_str, names(control_tols)[names(control_tols) %in% numerics]))}
+        
+        for (condnr in 1:length(otherconds)) {
+          condname <- otherconds[condnr]
           
           # get pool of potential matches, and shuffle randomly
-          match_str_pool_base <- res
-          if (input$gen_check.dist) {match_str_pool_base <- mutate(match_str_pool_base, dist = dist_func(res, item_str, names(control_tols)[names(control_tols) %in% numerics]))}
+          match_str_pool <- match_str_pool_base %>%
+            filter(Condition == condname) %>%
+            slice(sample(1:n()))
           
-          for (condnr in 1:length(otherconds)) {
-            condname <- otherconds[condnr]
-            
-            # get pool of potential matches, and shuffle randomly
-            match_str_pool <- match_str_pool_base %>%
-              filter(Condition == condname) %>%
-              slice(sample(1:n()))
-            
+          for (control_nr in 1:length(names(control_tols))) {
+            control_name <- names(control_tols)[control_nr]
+            control_value <- res[[control_name]][res$string==item_str]
+            if (control_name %in% numerics) {
+              control_tol <- control_tols[[control_name]] + control_value
+              if (input$gen_check.dist) {match_str_pool <- filter(match_str_pool, dist <= input$gen_dist_tol)}
+              match_str_pool <- filter(match_str_pool, UQ(sym(control_name))>=control_tol[1] & UQ(sym(control_name))<=control_tol[2])
+            } else {
+              match_str_pool <- filter(match_str_pool, UQ(sym(control_name)) == control_value)
+            }
+          }
+          
+          if (nrow(match_str_pool)>=1) {
+            # choose random match from pool of possibilities
+            match_str <- match_str_pool %>%
+              sample_n(1) %>%
+              select(string) %>%
+              unlist(use.names=F)
+            if (length(match_str)==0) {match_str <- NA}
+            # remove from future pools to avoid duplications in stimuli list
+            res <- filter(res, string != match_str)
+          } else {
+            match_str <- NA
+          }
+          
+          # if (is.null(newres[[condname]])) {newres[[condname]] <- NA}  # ensure column exists
+          newres[[condname]][itemnr] <- match_str
+        }
+        
+        # also check all selected words are within tolerance to each other if inclusive stimulus generation is selected
+        if (gen_controlnull=="inclusive") {
+          gen_row <- newres[1,]
+          for (condnr in 1:length(cells)) {
+            cond <- cells[condnr]
+            condnr_string <- gen_row[[cond]]
+            if (input$gen_check.dist) {match_str_pool_base <- mutate(match_str_pool_base, dist = dist_func(res, condnr_string, names(control_tols)[names(control_tols) %in% numerics]))}
+            control_tols <- control_tols_raw
             for (control_nr in 1:length(names(control_tols))) {
               control_name <- names(control_tols)[control_nr]
-              control_value <- res[[control_name]][res$string==item_str]
+              control_value <- res[[control_name]][res$string==condnr_string]
               if (control_name %in% numerics) {
                 control_tol <- control_tols[[control_name]] + control_value
                 if (input$gen_check.dist) {match_str_pool <- filter(match_str_pool, dist <= input$gen_dist_tol)}
@@ -214,51 +270,31 @@ genresults <- reactive({
                 match_str_pool <- filter(match_str_pool, UQ(sym(control_name)) == control_value)
               }
             }
-            
-            if (nrow(match_str_pool)>=1) {
-              # choose random match from pool of possibilities
-              match_str <- match_str_pool %>%
-                sample_n(1) %>%
-                select(string) %>%
-                unlist(use.names=F)
-              if (length(match_str)==0) {match_str <- NA}
-              # remove from future pools to avoid duplications in stimuli list
-              res <- filter(res, string != match_str)
-            } else {
-              match_str <- NA
-            }
-            
-            # if (is.null(newres[[condname]])) {newres[[condname]] <- NA}  # ensure column exists
-            newres[[condname]][itemnr] <- match_str
           }
-          
-          newres_test <- newres[1:itemnr, ]
-          incProgress(nrow(na.omit(newres_test))/input$gen_N_stim, detail=sprintf("%i%%", round((nrow(na.omit(newres_test))/input$gen_N_stim*100))))
-          if (nrow(newres_test) >= input$gen_N_stim & nrow(na.omit(newres_test)) >= input$gen_N_stim) {
-            break
-          }
-          
         }
         
-      })
+        newres_test <- newres[1:itemnr, ]
+        incProgress(nrow(na.omit(newres_test))/input$gen_N_stim, detail=sprintf("%i%%", round((nrow(na.omit(newres_test))/input$gen_N_stim*100))))
+        if (nrow(newres_test) >= input$gen_N_stim & nrow(na.omit(newres_test)) >= input$gen_N_stim) {
+          break
+        }
+        
+      }
       
-      
-      
-      newres <- na.omit(newres)
-      newres <- newres[1:input$gen_N_stim, ] %>%
-        na.omit()
-      
-      validate(
-        need(nrow(newres) >= input$gen_N_stim,
-             sprintf("Insufficient pool size (requested random sample of %i words per condition, from total of %i combinations in generated pool). Consider regenerating, increasing tolerances, increasing sizes of splits, or reducing desired stimulus list size.", input$gen_N_stim, nrow(newres)))
-      )
-      
-      newres <- newres %>%
-        mutate(Item = row_number()) %>%
-        select(Item, everything())
-      
-      res <- newres
-    }
+    })
+    
+    newres <- na.omit(newres)
+    
+    validate(
+      need(nrow(newres) >= input$gen_N_stim,
+           sprintf("Insufficient pool size (requested random sample of %i words per condition, from total of %i combinations in generated pool). Consider regenerating, increasing tolerances, increasing sizes of splits, or reducing desired stimulus list size.", input$gen_N_stim, nrow(newres)))
+    )
+    
+    newres <- newres %>%
+      mutate(Item = row_number()) %>%
+      select(Item, everything())
+    
+    res <- newres
     
   }
   
