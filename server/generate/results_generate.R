@@ -2,13 +2,13 @@
 output$generated.csv <- downloadHandler(
   filename = 'generated.csv',
   content = function(file) {
-    write.csv(genresults(), file, row.names = FALSE)
+    write.csv(genresults(), file, row.names=F)
   }
 )
 
 # put generated stimuli in datatable
 output$gen_results_dt <- DT::renderDataTable({
-  DT::datatable(genresults(), options=list(pageLength=25, scrollX=T))
+  DT::datatable(genresults(), options=list(pageLength=25, scrollX=T), rownames=F)
 })
 
 # Options for controlling for variables
