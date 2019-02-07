@@ -131,7 +131,7 @@ genresults <- reactive({
   
   # Add relevant columns and store details
   control_tols <- list()  # will contain all controlled variables' names (in the res df) and associated tolerances
-  if (gen_controlfor_boxes_N() >= 1) {
+  if (gen_controlfor_boxes_N() >= 1 & gen_splitby_boxes_N() >= 1) {
     
     for (i in 1:gen_controlfor_boxes_N()) {
       boxid <- sprintf('gen_controlfor_%i', i)
