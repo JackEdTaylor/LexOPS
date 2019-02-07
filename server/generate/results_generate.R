@@ -1,6 +1,10 @@
 # N Stim
 output$gen_N_stim_choice <- renderUI({
-  column(12, numericInput('gen_N_stim', 'Number of Words per Condition', 50, min=1, max=9999, step=1))
+  if (input$gen_limit_N=="N") {
+    column(12, numericInput('gen_N_stim', 'Number of Words per Condition', 50, min=1, max=9999, step=1))
+  } else {
+    NULL
+  }
 })
 
 # Download button

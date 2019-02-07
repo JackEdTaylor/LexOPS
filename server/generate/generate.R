@@ -266,12 +266,18 @@ genresults <- reactive({
         }
         
         newres_test <- newres[1:itemnr, ]
-        if (is.null(input$gen_N_stim)) {
-          max_entries <- 50  # default if not yet rendered
+        if (input$gen_limit_N == "N") {
+          if (is.null(input$gen_N_stim)) {
+            max_entries <- 50  # default if not yet rendered
+          } else {
+            max_entries <- input$gen_N_stim
+          }
+          incProgress(nrow(na.omit(newres_test))/max_entries, detail=sprintf("%i%%", round((nrow(na.omit(newres_test))/max_entries*100))))
         } else {
-          max_entries <- input$gen_N_stim
+          max_entries <- Inf
+          incProgress(itemnr/nrow(newres), detail=sprintf("%i%%", round(itemnr/nrow(newres)*100)))
         }
-        incProgress(nrow(na.omit(newres_test))/max_entries, detail=sprintf("%i%%", round((nrow(na.omit(newres_test))/max_entries*100))))
+        
         if (none_NAs_items >= max_entries) {
           break
         }

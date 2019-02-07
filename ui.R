@@ -98,6 +98,7 @@ tagList(
                                   box(title='Options', status='primary',
                                       collapsible=T, collapsed=F, width=12,
                                       fluidRow(
+                                        column(12, radioButtons('gen_limit_N', NA, c('Generate N Items'='N', 'Generate All Possible Items'='all'), 'N')),
                                         column(12, uiOutput('gen_N_stim_choice')),
                                         column(12, HTML('&nbsp;')),
                                         column(6, align="center", actionButton("gen_generate", "Generate/Regenerate Stimuli List", icon=icon("redo-alt"))),
