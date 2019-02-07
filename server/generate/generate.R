@@ -293,10 +293,12 @@ genresults <- reactive({
       newres <- mutate(newres, Match_Null=nullcond)
     }
     
-    validate(
-      need(nrow(newres) >= input$gen_N_stim,
-           sprintf("Insufficient pool size (requested random sample of %i words per condition, from total of %i combinations in generated pool). Consider regenerating, increasing tolerances, increasing sizes of splits, or reducing desired stimulus list size.", input$gen_N_stim, nrow(newres)))
-    )
+    if (input$gen_limit_N == "N") {
+      validate(
+        need(nrow(newres) >= input$gen_N_stim,
+             sprintf("Insufficient pool size (requested random sample of %i words per condition, from total of %i combinations in generated pool). Consider regenerating, increasing tolerances, increasing sizes of splits, or reducing desired stimulus list size.", input$gen_N_stim, nrow(newres)))
+      )
+    }
     
     newres <- newres %>%
       mutate(Item = row_number()) %>%
