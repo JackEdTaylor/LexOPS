@@ -121,7 +121,7 @@ genresults_prematching <- reactive({
 })
 
 
-genresults <- reactive({
+genresults_preformatting <- reactive({
   
   res <- genresults_prematching()
   
@@ -310,4 +310,49 @@ genresults <- reactive({
   
   res
   
+})
+
+genresults <- reactive({
+  # wide to long conversion
+  if (input$gen_dataformat=="long" & gen_controlfor_boxes_N() >= 1 & gen_splitby_boxes_N() >= 1) {
+    
+    control_tols <- list()  # will contain all controlled variables' names and associated tolerances
+    pm_df <- genresults_prematching()
+    lexops_custom_cols <- lexopsReact()[lexopsReact()$string %in% pm_df$string, ]
+    for (i in 1:gen_controlfor_boxes_N()) {
+      boxid <- sprintf('gen_controlfor_%i', i)
+      boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
+      boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
+      boxv <- input[[sprintf('%s_vtype', boxid)]]
+      column <- corpus_recode_columns(boxopt, boxv, boxlog)
+      if (length(column)>1) {
+        # create new column, which will be the average of the variables selected
+        if (!(boxv %in% c("Word Frequency", "Bigram Probability"))) {
+          lexops_custom_cols[column] <- lapply(lexops_custom_cols[column], scale)
+        }
+        colmeans_name <- sprintf("Avg.%s", viscat2prefix(boxv, boxlog))
+        lexops_custom_cols[[colmeans_name]] <- rowMeans(select(lexops_custom_cols, one_of(column)), dims=1, na.rm=T)
+        column <- colmeans_name
+      }
+      pm_df[[column]] <- lexops_custom_cols[[column]]  # copy over the column to pm_df df
+      if (is.numeric(pm_df[[column]])) {
+        control_tols[[column]] <- input[[sprintf('%s_sl', boxid)]]  # get the box's filter and store under the column's name
+      } else {
+        control_tols[[column]] <- NA
+      }
+    }
+    lexops_custom_cols <- select(lexops_custom_cols, string, names(control_tols))
+    
+    res <- genresults_preformatting() %>%
+      gather("Condition", "string", 2:(ncol(genresults_preformatting())-1)) %>%
+      left_join(genresults_prematching(), by=c("string", "Condition")) %>%
+      left_join(lexops_custom_cols, by="string") %>%
+      select(Item, string, Condition, Match_Null, everything())
+    
+  } else {
+    
+    res <- genresults_preformatting()
+    
+  }
+  res
 })

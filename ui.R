@@ -98,13 +98,14 @@ tagList(
                                   box(title='Options', status='primary',
                                       collapsible=T, collapsed=F, width=12,
                                       fluidRow(
-                                        column(12, radioButtons('gen_limit_N', NA, c('Generate N Items'='N', 'Generate All Possible Items'='all'), 'N')),
-                                        column(12, uiOutput('gen_N_stim_choice')),
-                                        column(12, HTML('&nbsp;')),
                                         column(6, align="center", actionButton("gen_generate", "Generate/Regenerate Stimuli List", icon=icon("redo-alt"))),
                                         column(6, align="center", downloadButton('generated.csv', 'Download Generated Stimuli')),
                                         column(12, br()),
                                         column(12, br()),
+                                        column(6, radioButtons('gen_limit_N', 'Number of Items', c('Generate N Items'='N', 'Generate All Possible Items'='all'), 'N')),
+                                        column(6, uiOutput('gen_N_stim_choice')),
+                                        column(12, radioButtons('gen_dataformat', 'Data Format', c('Wide'='wide', 'Long'='long'), 'wide')),
+                                        column(12, HTML('&nbsp;')),
                                         box(
                                           title='Condition-Matching Options', status='primary',
                                           collapsible=T, collapsed=T, width=12,
@@ -112,7 +113,8 @@ tagList(
                                             column(12, uiOutput('gen_controlnull_choice')),
                                             column(12, checkboxInput('gen_check.dist', 'Filter by Euclidean/CityBlock Distance', 0)),
                                             uiOutput('gen_dist_opts_choice')
-                                          ))))),
+                                          ))
+                                        ))),
                                 DT::dataTableOutput('gen_results_dt')),
                         # Match Options tab
                         tabItem(tabName='match_options',
