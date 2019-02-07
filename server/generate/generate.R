@@ -167,14 +167,13 @@ genresults <- reactive({
     if (input$gen_check.dist) {
       dist_func <- if (input$gen_dist.opt=="cb") {get_cityblock_distance} else {get_euclidean_distance}
     }
-    gen_controlnull <- if (is.null(input$gen_controlnull)) {"inclusive"} else {input$gen_controlnull}  # assume inclusive if selection not rendered yet
+    gen_controlnull <- if (is.null(input$gen_controlnull)) {cells[1]} else {input$gen_controlnull}  # assume first cell if selection not rendered yet
     numerics <- colnames(select_if(res, is.numeric))  # get a list of the numeric variables
     
-    if (gen_controlnull == "inclusive") {
+    if (gen_controlnull == "random") {
       # all stimuli (for all conditions) must be within tolerance relative to all other conditions
       # randomly select one condition as "initial condition" for each row,
       # then exclude entries from pool if all conditions' words are not within tolerance from each other
-      none_NAs_count <- 0
       newres <- res %>%
         select(Condition, string) %>%
         mutate(spread_id=1:n()) %>%
@@ -185,11 +184,9 @@ genresults <- reactive({
       
     } else {
       # all stimuli (for all conditions) must be within tolerance relative to selected condition ("null" condition)
-      none_NAs_count <- 0
       nullcond <- gen_controlnull
       otherconds <- cells[cells!=nullcond]
       newres <- res %>%
-        filter(Condition == nullcond) %>%
         select(Condition, string) %>%
         mutate(spread_id=1:n()) %>%
         spread(Condition, string) %>%
@@ -200,9 +197,10 @@ genresults <- reactive({
     
     withProgress(message="Generating stimuli...", value=0, {
       
+      none_NAs_items <- 0
       for (itemnr in 1:nrow(newres)) {
         
-        if (gen_controlnull=="inclusive") {
+        if (gen_controlnull=="random") {
           nullcond <- newres$rownullcond[itemnr]
           otherconds <- cells[cells!=nullcond]
         }
@@ -213,6 +211,7 @@ genresults <- reactive({
         match_str_pool_base <- res
         if (input$gen_check.dist) {match_str_pool_base <- mutate(match_str_pool_base, dist = dist_func(res, item_str, names(control_tols)[names(control_tols) %in% numerics]))}
         
+        none_NAs_this_item <- 0
         for (condnr in 1:length(otherconds)) {
           condname <- otherconds[condnr]
           
@@ -224,12 +223,20 @@ genresults <- reactive({
           for (control_nr in 1:length(names(control_tols))) {
             control_name <- names(control_tols)[control_nr]
             control_value <- res[[control_name]][res$string==item_str]
-            if (control_name %in% numerics) {
-              control_tol <- control_tols[[control_name]] + control_value
-              if (input$gen_check.dist) {match_str_pool <- filter(match_str_pool, dist <= input$gen_dist_tol)}
-              match_str_pool <- filter(match_str_pool, UQ(sym(control_name))>=control_tol[1] & UQ(sym(control_name))<=control_tol[2])
+            if (all(is.na(control_value))) {
+              
+              match_str_pool <- match_str_pool[0,]
+              
             } else {
-              match_str_pool <- filter(match_str_pool, UQ(sym(control_name)) == control_value)
+              
+              if (control_name %in% numerics) {
+                control_tol <- control_tols[[control_name]] + control_value
+                if (input$gen_check.dist) {match_str_pool <- filter(match_str_pool, dist <= input$gen_dist_tol)}
+                match_str_pool <- filter(match_str_pool, UQ(sym(control_name))>=control_tol[1] & UQ(sym(control_name))<=control_tol[2])
+              } else {
+                match_str_pool <- filter(match_str_pool, UQ(sym(control_name)) == control_value)
+              }
+              
             }
           }
           
@@ -248,32 +255,24 @@ genresults <- reactive({
           
           # if (is.null(newres[[condname]])) {newres[[condname]] <- NA}  # ensure column exists
           newres[[condname]][itemnr] <- match_str
-        }
-        
-        # also check all selected words are within tolerance to each other if inclusive stimulus generation is selected
-        if (gen_controlnull=="inclusive") {
-          gen_row <- newres[1,]
-          for (condnr in 1:length(cells)) {
-            cond <- cells[condnr]
-            condnr_string <- gen_row[[cond]]
-            if (input$gen_check.dist) {match_str_pool_base <- mutate(match_str_pool_base, dist = dist_func(res, condnr_string, names(control_tols)[names(control_tols) %in% numerics]))}
-            for (control_nr in 1:length(names(control_tols))) {
-              control_name <- names(control_tols)[control_nr]
-              control_value <- res[[control_name]][res$string==condnr_string]
-              if (control_name %in% numerics) {
-                control_tol <- control_tols[[control_name]] + control_value
-                if (input$gen_check.dist) {match_str_pool <- filter(match_str_pool, dist <= input$gen_dist_tol)}
-                match_str_pool <- filter(match_str_pool, UQ(sym(control_name))>=control_tol[1] & UQ(sym(control_name))<=control_tol[2])
-              } else {
-                match_str_pool <- filter(match_str_pool, UQ(sym(control_name)) == control_value)
-              }
-            }
+          
+          if (!is.na(match_str)) {
+            none_NAs_this_item <- none_NAs_this_item + 1
           }
         }
         
+        if (none_NAs_this_item==length(otherconds)) {
+          none_NAs_items <- none_NAs_items + 1
+        }
+        
         newres_test <- newres[1:itemnr, ]
-        incProgress(nrow(na.omit(newres_test))/input$gen_N_stim, detail=sprintf("%i%%", round((nrow(na.omit(newres_test))/input$gen_N_stim*100))))
-        if (nrow(newres_test) >= input$gen_N_stim & nrow(na.omit(newres_test)) >= input$gen_N_stim) {
+        if (is.null(input$gen_N_stim)) {
+          max_entries <- 50  # default if not yet rendered
+        } else {
+          max_entries <- input$gen_N_stim
+        }
+        incProgress(nrow(na.omit(newres_test))/max_entries, detail=sprintf("%i%%", round((nrow(na.omit(newres_test))/max_entries*100))))
+        if (none_NAs_items >= max_entries) {
           break
         }
         
@@ -282,7 +281,11 @@ genresults <- reactive({
     })
     
     newres <- na.omit(newres)
-    if (gen_controlnull=="inclusive") {newres <- select(newres, -rownullcond)}
+    if (gen_controlnull=="random") {
+      newres <- plyr::rename(newres, c("rownullcond"="Match_Null"))
+    } else {
+      newres <- mutate(newres, Match_Null=nullcond)
+    }
     
     validate(
       need(nrow(newres) >= input$gen_N_stim,

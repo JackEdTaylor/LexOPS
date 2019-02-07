@@ -98,7 +98,7 @@ tagList(
                                   box(title='Options', status='primary',
                                       collapsible=T, collapsed=F, width=12,
                                       fluidRow(
-                                        column(12, numericInput('gen_N_stim', 'Number of Words per Condition', 50, min=1, max=9999, step=1)),
+                                        column(12, uiOutput('gen_N_stim_choice')),
                                         column(12, HTML('&nbsp;')),
                                         column(6, align="center", actionButton("gen_generate", "Generate/Regenerate Stimuli List", icon=icon("redo-alt"))),
                                         column(6, align="center", downloadButton('generated.csv', 'Download Generated Stimuli')),

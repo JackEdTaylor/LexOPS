@@ -1,3 +1,8 @@
+# N Stim
+output$gen_N_stim_choice <- renderUI({
+  column(12, numericInput('gen_N_stim', 'Number of Words per Condition', 50, min=1, max=9999, step=1))
+})
+
 # Download button
 output$generated.csv <- downloadHandler(
   filename = 'generated.csv',
@@ -17,7 +22,7 @@ output$gen_controlnull_choice <- renderUI({
     cells <- genlevels() %>%
       select(Level) %>%
       unlist(use.names=F)
-    cells <- c("All conditions (inclusive tolerance)"="inclusive", cells)
+    cells <- c(cells, "Random (Different Null Condition Per Item)"="random")
   } else {
     cells <- c("(None)")
   }
