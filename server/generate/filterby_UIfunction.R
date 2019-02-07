@@ -306,7 +306,7 @@ filterby_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
       }
     } else if (vtype == "Lexical Decision Accuracy") {
       slider.range <- c(0, 1)
-      slider.def_val <- c(0.85, 1)
+      slider.def_val <- c(0.5, 1)
       slider.step <- 0.01
     } else if (vtype == "Custom Variable") {
       cn <- corpus_recode(box_opt, viscat2prefix(vtype))
