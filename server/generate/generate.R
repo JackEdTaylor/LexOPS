@@ -45,7 +45,7 @@ genresults_prematching <- reactive({
       column <- corpus_recode_columns(boxopt, boxv, boxlog)
       if (length(column)>1) {
         # create new column, which will be the average of the variables selected
-        if (!(boxv %in% c("Word Frequency", "Bigram Probability"))) {
+        if (!(boxv %in% vis.cats.non_Zscore)) {
           lexops_custom_cols[column] <- lapply(lexops_custom_cols[column], scale)
         }
         colmeans_name <- sprintf("Avg.%s", viscat2prefix(boxv, boxlog))
@@ -91,7 +91,7 @@ genresults_prematching <- reactive({
         column <- corpus_recode_columns(boxopt, boxv, boxlog)
         if (length(column)>1) {
           # create new column, which will be the average of the variables selected
-          if (!(boxv %in% c("Word Frequency", "Bigram Probability", "Lexical Decision Accuracy"))) {
+          if (!(boxv %in% vis.cats.non_Zscore)) {
             lexops_custom_cols[column] <- lapply(lexops_custom_cols[column], scale)
           }
           colmeans_name <- sprintf("Avg.%s", viscat2prefix(boxv, boxlog))
@@ -141,7 +141,7 @@ genresults_preformatting <- reactive({
       column <- corpus_recode_columns(boxopt, boxv, boxlog)
       if (length(column)>1) {
         # create new column, which will be the average of the variables selected
-        if (!(boxv %in% c("Word Frequency", "Bigram Probability"))) {
+        if (!(boxv %in% vis.cats.non_Zscore)) {
           lexops_custom_cols[column] <- lapply(lexops_custom_cols[column], scale)
         }
         colmeans_name <- sprintf("Avg.%s", viscat2prefix(boxv, boxlog))
@@ -327,7 +327,7 @@ genresults <- reactive({
       column <- corpus_recode_columns(boxopt, boxv, boxlog)
       if (length(column)>1) {
         # create new column, which will be the average of the variables selected
-        if (!(boxv %in% c("Word Frequency", "Bigram Probability"))) {
+        if (!(boxv %in% vis.cats.non_Zscore)) {
           lexops_custom_cols[column] <- lapply(lexops_custom_cols[column], scale)
         }
         colmeans_name <- sprintf("Avg.%s", viscat2prefix(boxv, boxlog))

@@ -30,3 +30,5 @@ vis.opt.2.source <- function(x, opts){switch(x,
                                        'Lexical Decision Accuracy' = opts[grepl("Accuracy",opts)],
                                        'Custom Variable' = opts[grepl("custom.",opts)]
 )}
+
+vis.cats.non_Zscore <- c("Word Frequency", "Bigram Probability", "Lexical Decision Accuracy")
