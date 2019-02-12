@@ -190,3 +190,10 @@ output$vis.coloursource.choice <- renderUI({
   } else {NULL}
 })
 
+# put visualisation inside of a suitably sized box
+output$visualisation.ui_box <- renderUI({
+  fluidRow(
+    box(width=12, withSpinner(plotlyOutput('visualiseplotly')), height=screenheight()-150)
+  )
+})
+

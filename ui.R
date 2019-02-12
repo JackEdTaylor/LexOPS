@@ -611,10 +611,8 @@ tagList(
                             )
                           )),
                           
-                          fluidRow(
-                            plotlyOutput('visualiseplotly') %>%
-                              withSpinner()
-                          )),
+                          uiOutput('visualisation.ui_box')
+                        ),
                         # Custom Variables tab
                         tabItem(tabName='custom_variables',
                                 fluidRow(
