@@ -58,7 +58,6 @@ tagList(
                       tabItems(
                         tabItem(tabName = 'generate_options',
                                 fluidRow(
-                                  valueBox("Generate Tab still in Beta", subtitle=NULL, width = 12, color='red', icon=icon("exclamation-triangle")),
                                   column(4, fluidRow(
                                     valueBox("Split by...", width = 12, color='light-blue',
                                              subtitle=fluidRow(column(12,
