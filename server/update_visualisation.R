@@ -1,11 +1,52 @@
 # Get data for plotting
 plotdata <- reactive({
   vd <- lexopsReact()
+  
+  if (length(input$vis.xsource)>1) {
+    if (!(input$vis.xaxis.opts %in% vis.cats.non_Zscore)) {
+      vd[input$vis.xsource] <- lapply(vd[input$vis.xsource], scale)
+    }
+    vd$xcol <- rowMeans(select(vd, one_of(input$vis.xsource)), dims=1, na.rm=T)
+  } else {
+    vd$xcol <- vd[[input$vis.xsource]]
+  }
+  
+  if (length(input$vis.ysource)>1) {
+    if (!(input$vis.yaxis.opts %in% vis.cats.non_Zscore)) {
+      vd[input$vis.ysource] <- lapply(vd[input$vis.ysource], scale)
+    }
+    vd$ycol <- rowMeans(select(vd, one_of(input$vis.ysource)), dims=1, na.rm=T)
+  } else {
+    vd$ycol <- vd[[input$vis.ysource]]
+  }
+  
+  if (input$vis.zaxis.opts!='(None)') {
+    if (length(input$vis.zsource)>1) {
+      if (!(input$vis.zaxis.opts %in% vis.cats.non_Zscore)) {
+        vd[input$vis.zsource] <- lapply(vd[input$vis.zsource], scale)
+      }
+      vd$zcol <- rowMeans(select(vd, one_of(input$vis.zsource)), dims=1, na.rm=T)
+    } else {
+      vd$zcol <- vd[[input$vis.zsource]]
+    }
+  }
+  
+  if (input$vis.colour.opts!='(None)' & input$vis.colour.opts %in% vis.cats) {
+    if (length(input$vis.coloursource)>1) {
+      if (!(input$vis.colour.opts %in% vis.cats.non_Zscore)) {
+        vd[input$vis.coloursource] <- lapply(vd[input$vis.coloursource], scale)
+      }
+      vd$colourcol <- rowMeans(select(vd, one_of(input$vis.coloursource)), dims=1, na.rm=T)
+    } else {
+      vd$colourcol <- vd[[input$vis.coloursource]]
+    }
+  }
+  
   t <- tibble(string = vd$string,
-              x = vd[[input$vis.xsource]],
-              y = vd[[input$vis.ysource]])
+              x = vd$xcol,
+              y = vd$ycol)
   if (input$vis.zaxis.opts!='(None)'){
-    t$z <- vd[[input$vis.zsource]]
+    t$z <- vd$zcol
   }
   if (input$vis.colour.opts=='Target Match Word'){
     t$colour <- ifelse(t$string==input$string, "Target String", "Other Strings")
@@ -19,7 +60,7 @@ plotdata <- reactive({
                          "Uploaded Items", "Other Strings")
     }
   } else if(input$vis.colour.opts %in% vis.cats){
-    t$colour <- vd[[input$vis.coloursource]]
+    t$colour <- vd$colourcol
   }
   t %>%
     na.omit()  # remove values with missing data for requested visualisation variables
@@ -106,21 +147,46 @@ output$visualiseplotly <- renderPlotly({
 # source drop-down menu for visualisation
 output$vis.xsource.choice <- renderUI({
   if(input$vis.xaxis.opts %in% vis.cats) {
-    selectInput('vis.xsource', 'X Axis Source', vis.opt.2.source(input$vis.xaxis.opts, visualise.opts()))
+    sources <- vis.opt.2.source(input$vis.xaxis.opts, visualise.opts())
+    vd <- lexopsReact()
+    if (all(sapply(vd[sources], is.numeric))) {
+      checkboxGroupInput('vis.xsource', 'X Axis Source', sources, sources[1], inline=T)
+    } else {
+      radioButtons('vis.xsource', 'X Axis Source', sources, sources[1], inline=T)
+    }
   } else {NULL}
 })
 output$vis.ysource.choice <- renderUI({
   if(input$vis.yaxis.opts %in% vis.cats) {
-    selectInput('vis.ysource', 'Y Axis Source', vis.opt.2.source(input$vis.yaxis.opts, visualise.opts()))
+    sources <- vis.opt.2.source(input$vis.yaxis.opts, visualise.opts())
+    vd <- lexopsReact()
+    if (all(sapply(vd[sources], is.numeric))) {
+      checkboxGroupInput('vis.ysource', 'Y Axis Source', sources, sources[1], inline=T)
+    } else {
+      radioButtons('vis.ysource', 'Y Axis Source', sources, sources[1], inline=T)
+    }
   } else {NULL}
 })
 output$vis.zsource.choice <- renderUI({
   if(input$vis.zaxis.opts %in% vis.cats) {
-    selectInput('vis.zsource', 'Z Axis Source', vis.opt.2.source(input$vis.zaxis.opts, visualise.opts()))
+    sources <- vis.opt.2.source(input$vis.zaxis.opts, visualise.opts())
+    vd <- lexopsReact()
+    if (all(sapply(vd[sources], is.numeric))) {
+      checkboxGroupInput('vis.zsource', 'Z Axis Source', sources, sources[1], inline=T)
+    } else {
+      radioButtons('vis.zsource', 'Z Axis Source', sources, sources[1], inline=T)
+    }
   } else {NULL}
 })
 output$vis.coloursource.choice <- renderUI({
   if(input$vis.colour.opts %in% vis.cats) {
-    selectInput('vis.coloursource', 'Colour Source', vis.opt.2.source(input$vis.colour.opts, visualise.opts()))
+    sources <- vis.opt.2.source(input$vis.colour.opts, visualise.opts())
+    vd <- lexopsReact()
+    if (all(sapply(vd[sources], is.numeric))) {
+      checkboxGroupInput('vis.coloursource', 'Colour Source', sources, sources[1], inline=T)
+    } else {
+      radioButtons('vis.coloursource', 'Colour Source', sources, sources[1], inline=T)
+    }
   } else {NULL}
 })
+
