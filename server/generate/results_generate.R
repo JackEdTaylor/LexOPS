@@ -43,3 +43,12 @@ output$gen_dist_opts_choice <- renderUI({
     NULL
   }
 })
+
+# Data format
+output$gen_dataformat_choice <- renderUI({
+  if (gen_controlfor_boxes_N()>0){
+    radioButtons('gen_dataformat', 'Data Format', c('Wide'='wide', 'Long'='long'), 'wide')
+  } else {
+    NULL
+  }
+})

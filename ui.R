@@ -103,7 +103,7 @@ tagList(
                                         column(12, br()),
                                         column(6, radioButtons('gen_limit_N', 'Number of Items', c('Generate N Items'='N', 'Generate All Possible Items'='all'), 'N')),
                                         column(6, uiOutput('gen_N_stim_choice')),
-                                        column(12, radioButtons('gen_dataformat', 'Data Format', c('Wide'='wide', 'Long'='long'), 'wide')),
+                                        column(12, uiOutput('gen_dataformat_choice')),
                                         column(12, HTML('&nbsp;')),
                                         box(
                                           title='Condition-Matching Options', status='primary',
@@ -601,7 +601,7 @@ tagList(
                               column(6, uiOutput('vis.zsource.choice'))
                             ),
                             fluidRow(
-                              column(6, selectInput('vis.colour.opts', 'Colour', c('(None)', 'Target Match Word', 'Suggested Matches', 'Words Uploaded to Fetch Tab', 'Part of Speech', vis.cats), "Suggested Matches")),
+                              column(6, selectInput('vis.colour.opts', 'Colour', c('(None)', 'Generated Stimuli', 'Target Match Word', 'Suggested Matches', 'Words Uploaded to Fetch Tab', 'Part of Speech', vis.cats), "Suggested Matches")),
                               column(6, uiOutput('vis.coloursource.choice'))
                             ),
                             br(),

@@ -49,11 +49,15 @@ plotdata <- reactive({
     t$z <- vd$zcol
   }
   if (input$vis.colour.opts=='Generated Stimuli'){
-    if (is.null(genresults_longformat())) {
+    if (gen_splitby_boxes_N()==0 & gen_controlfor_boxes_N()==0 & gen_filterby_boxes_N()==0) {
       t$colour <- NA
     } else {
-      t <- left_join(t, select(genresults_longformat(), string, Condition), by="string") %>%
-        mutate(colour=Condition)
+      if (is.null(genresults_longformat()$Condition) | is.null(genresults_longformat()$string)) {
+        t$colour <- NA
+      } else {
+        t <- left_join(t, select(genresults_longformat(), string, Condition), by="string") %>%
+          mutate(colour=Condition)
+      }
     }
   } else if (input$vis.colour.opts=='Target Match Word'){
     t$colour <- ifelse(t$string==input$string, "Target String", "Other Strings")
