@@ -359,7 +359,7 @@ controlfor_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, lexops
         
         lexops_df$xval <- get_rowmeans(cn, lexops_df)
         random_val <- lexops_df %>%
-          filter(!is.na(xval)) %>%
+          filter(!is.na(xval) & is.finite(xval)) %>%
           sample_n(1) %>%
           select(xval)
         random_val <- unlist(random_val[1], use.names=F)
