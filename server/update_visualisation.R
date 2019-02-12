@@ -48,7 +48,14 @@ plotdata <- reactive({
   if (input$vis.zaxis.opts!='(None)'){
     t$z <- vd$zcol
   }
-  if (input$vis.colour.opts=='Target Match Word'){
+  if (input$vis.colour.opts=='Generated Stimuli'){
+    if (is.null(genresults_longformat())) {
+      t$colour <- NA
+    } else {
+      t <- left_join(t, select(genresults_longformat(), string, Condition), by="string") %>%
+        mutate(colour=Condition)
+    }
+  } else if (input$vis.colour.opts=='Target Match Word'){
     t$colour <- ifelse(t$string==input$string, "Target String", "Other Strings")
   } else if (input$vis.colour.opts=='Suggested Matches'){
     t$colour <- ifelse(t$string %in% matchresults()$string, "Suggested Strings", "Other Strings")
