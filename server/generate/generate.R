@@ -43,6 +43,8 @@ genresults_prematching <- reactive({
       boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
       boxv <- input[[sprintf('%s_vtype', boxid)]]
       column <- corpus_recode_columns(boxopt, boxv, boxlog)
+      # remove duplicates (fixes bug in rendering order)
+      column <- unique(column)
       if (length(column)>1) {
         # create new column, which will be the average of the variables selected
         if (!(boxv %in% vis.cats.non_Zscore)) {
@@ -89,6 +91,8 @@ genresults_prematching <- reactive({
         boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
         boxv <- input[[sprintf('%s_vtype', boxid)]]
         column <- corpus_recode_columns(boxopt, boxv, boxlog)
+        # remove duplicates (fixes bug from rendering order)
+        column <- unique(column)
         if (length(column)>1) {
           # create new column, which will be the average of the variables selected
           if (!(boxv %in% vis.cats.non_Zscore)) {
@@ -139,6 +143,8 @@ genresults_preformatting <- reactive({
       boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
       boxv <- input[[sprintf('%s_vtype', boxid)]]
       column <- corpus_recode_columns(boxopt, boxv, boxlog)
+      # remove duplicates (fixes bug from rendering order)
+      column <- unique(column)
       if (length(column)>1) {
         # create new column, which will be the average of the variables selected
         if (!(boxv %in% vis.cats.non_Zscore)) {
@@ -325,6 +331,8 @@ genresults_longformat <- reactive({
       boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
       boxv <- input[[sprintf('%s_vtype', boxid)]]
       column <- corpus_recode_columns(boxopt, boxv, boxlog)
+      # remove duplicates (fixes bug from rendering order)
+      column <- unique(column)
       if (length(column)>1) {
         # create new column, which will be the average of the variables selected
         if (!(boxv %in% vis.cats.non_Zscore)) {
