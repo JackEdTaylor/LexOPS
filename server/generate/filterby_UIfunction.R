@@ -239,7 +239,7 @@ filterby_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
       slider.range <- c(1, 4)
       slider.def_val <- c(1, 2)
       slider.step <- 1
-    } else if (vtype %in% c("Familiarity", "Imageability", "Semantic Size", "Semantic Gender", "Humour")) {
+    } else if (vtype %in% c("Familiarity", "Imageability", "Semantic Size", "Semantic Gender")) {
       if (length(box_opt)==1) {
         slider.range <- c(1, 7)
         slider.def_val <- c(2, 6)
@@ -291,6 +291,10 @@ filterby_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
         slider.def_val <- c(-1.5, 1.5)
         slider.step <- .05
       }
+    } else if (vtype=="Humour") {
+      slider.range <- c(1, 5)
+      slider.def_val <- c(1.5, 3.5)
+      slider.step <- 0.1
     } else if (vtype == "Lexical Decision Response Time") {
       if (length(box_opt)==1) {
         slider.range <- c(300, 1700)
@@ -318,6 +322,7 @@ filterby_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
       ce <- ceiling(max(xval, na.rm=T))
       slider.range <- c(fl, ce)
       slider.step <- case_when(
+        diff(slider.range) >= 100 ~ 10,
         diff(slider.range) >= 10 ~ 1,
         diff(slider.range) >= 1 & diff(slider.range) < 10 ~ 0.1,
         diff(slider.range) < 1 ~ 0.01

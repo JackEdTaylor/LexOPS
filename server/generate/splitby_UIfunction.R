@@ -265,7 +265,7 @@ splitby_UI_sliders <- function(vtype, boxid, levels_N, box_opt, box_log, boxlett
         slider.def_val <- c(4, 4)
         slider.valueABC <- list(c(1, 1), c(2, 2), c(3, 3))
         slider.step <- 1
-      } else if (vtype %in% c("Familiarity", "Imageability", "Semantic Size", "Semantic Gender", "Humour")) {
+      } else if (vtype %in% c("Familiarity", "Imageability", "Semantic Size", "Semantic Gender")) {
         if (length(box_opt)==1) {
           slider.range <- c(1, 7)
           slider.def_val <- c(2.5, 3)
@@ -331,6 +331,11 @@ splitby_UI_sliders <- function(vtype, boxid, levels_N, box_opt, box_log, boxlett
           slider.valueABC <- list(c(-2, -1.75), c(1.75, 2), c(-0.1, 0.1))
           slider.step <- .05
         }
+      } else if (vtype == "Humour") {
+        slider.range <- c(1, 5)
+        slider.def_val <- c(1.5, 3.5)
+        slider.valueABC <- list(c(1, 1.7), c(3.3, 5), c(2, 3))
+        slider.step <- 0.1
       } else if (vtype == "Lexical Decision Response Time") {
         if (length(box_opt)==1) {
           slider.range <- c(300, 1700)
