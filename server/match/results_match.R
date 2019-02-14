@@ -157,4 +157,3 @@ output$match_results_cb_opts_choice <- renderUI ({
   }
 })
 
-

@@ -52,9 +52,6 @@ source("misc_functions/corpus_recoders.R", local=T)
 # functions used in matching
 source("server/match/matcher_functions.R", local=T)
 
-# functions used to get the descriptions in boxes for matching
-source("server/match/box_descriptions_functions.R", local=T)
-
 # Define server logic
 shinyServer(function(input, output) {
   
@@ -105,8 +102,14 @@ shinyServer(function(input, output) {
   # Generate tab results
   source("server/generate/results_generate.R", local=T)
   
-  # reactive changes to box UIs in match tab
-  source("server/match/ReactiveBoxUIs.R", local=T)
+  # initial number of boxes on generate tab
+  matchboxes_N <- reactiveVal(0)
+  
+  # Match tab UI
+  source("server/match/match_UIfunction.R", local=T)
+  
+  # Match tab boxes
+  source("server/match/match_boxes.R", local=T)
   
   # get matches
   source("server/match/match.R", local=T)
@@ -120,16 +123,13 @@ shinyServer(function(input, output) {
   })
   
   # For displaying number of results under word-entry textbox in sidebar
-  output$nrow.matchresults <- renderText({sprintf('%i results', nrow(matchresults())-1)})
-  
-  # Descriptions under boxes
-  source("server/match/update_box_descriptions.R", local=T)
-  
-  # Reactive changes to matching sliders
-  source("server/match/update_sliders.R", local=T)
-  
-  # Density/Histogram plots in boxes
-  source("server/match/update_box_vis.R", local=T)
+  output$nrow.matchresults <- renderText({
+    if (!is.null(matchresults())) {
+      sprintf('%i results', nrow(matchresults()))
+    } else {
+      '0 results'
+    }
+  })
   
   # fetch tab
   source("server/fetch.R", local=T)
