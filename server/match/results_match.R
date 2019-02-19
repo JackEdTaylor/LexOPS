@@ -102,7 +102,9 @@ output$match_results_dt <- DT::renderDataTable({
 
 # For displaying number of results under word-entry textbox in sidebar
 output$nrow.matchresults <- renderText({
-  if (is.null(matchresults())) {
+  if (!input$matchstring %in% lexopsReact()$string) {
+    '0 results (unknown word)'
+  } else if (is.null(matchresults())) {
     'processing...'
   } else {
     sprintf('%i results', nrow(matchresults()))
