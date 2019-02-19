@@ -102,10 +102,10 @@ output$match_results_dt <- DT::renderDataTable({
 
 # For displaying number of results under word-entry textbox in sidebar
 output$nrow.matchresults <- renderText({
-  if (!is.null(matchresults())) {
-    sprintf('%i results', nrow(matchresults()))
+  if (is.null(matchresults())) {
+    'processing...'
   } else {
-    '0 results'
+    sprintf('%i results', nrow(matchresults()))
   }
 })
 
