@@ -1,6 +1,6 @@
 get_pronunciations <- function(wordstring  = "example", df) {
   df %>%
     filter(string==wordstring) %>%
-    select('cmu.pr1_pronun_1letter', 'cmu.pr2_pronun_1letter', 'cmu.pr3_pronun_1letter', 'cmu.pr4_pronun_1letter') %>%
+    select("CMU.pr1_1letter", "CMU.pr2_1letter", "CMU.pr3_1letter", "CMU.pr4_1letter") %>%
     select_if(~sum(!is.na(.)) > 0)
 }
