@@ -5,7 +5,7 @@ get.box.colour <- function(boxtype='warning'){
          'warning'='#f39c12',
          'success'='#00a65a',
          'danger'='#dd4b39',
-         'info' = '#641e68')
+         'info'='#641e68')
 }
 
 # Function for generating the density/histogram plots (histogram if integer)
@@ -106,9 +106,9 @@ pos.plot <- function(xname='subtlex_uk.DomPoS', selected=T, PoS='noun', df=dat, 
   dfplot$ymin <- c(0, head(dfplot$ymax, n = -1))
   
   if (PoS=="all") {
-    dfplot$alphalevel <- 1
+    dfplot$alphalevel <- 0.5
   } else {
-    dfplot$alphalevel <- ifelse(as.character(dfplot$x) %in% unlist(PoS), 1, 0)
+    dfplot$alphalevel <- ifelse(as.character(dfplot$x) %in% unlist(PoS), 0.5, 0.05)
   }
   
   # Only do alpha effect if checkbox selected
@@ -126,7 +126,7 @@ pos.plot <- function(xname='subtlex_uk.DomPoS', selected=T, PoS='noun', df=dat, 
     xlim(c(0, 4)) +
     labs(x=NULL, y=NULL) +
     theme_void() +
-    scale_alpha(guide = 'none', range=c(0.05, 0.5)) +
+    scale_alpha_identity() +
     scale_fill_manual(values=rep(manualcolours,
                                  ceiling((nrow(dfplot)+length(manualcolours))/length(manualcolours))))
 }
