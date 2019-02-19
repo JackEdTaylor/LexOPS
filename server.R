@@ -117,20 +117,6 @@ shinyServer(function(input, output) {
   # put matches in datatable & sorting options
   source("server/match/results_match.R", local=T)
   
-  # put matches in datatable
-  output$match_results_dt <- DT::renderDataTable({
-    DT::datatable(matchresults(), options=list(pageLength=25, scrollX=T))
-  })
-  
-  # For displaying number of results under word-entry textbox in sidebar
-  output$nrow.matchresults <- renderText({
-    if (!is.null(matchresults())) {
-      sprintf('%i results', nrow(matchresults()))
-    } else {
-      '0 results'
-    }
-  })
-  
   # fetch tab
   source("server/fetch.R", local=T)
   

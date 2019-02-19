@@ -101,7 +101,13 @@ output$match_results_dt <- DT::renderDataTable({
 })
 
 # For displaying number of results under word-entry textbox in sidebar
-output$nrow.results <- renderText({sprintf('%i results', nrow(matchresults())-1)})
+output$nrow.matchresults <- renderText({
+  if (!is.null(matchresults())) {
+    sprintf('%i results', nrow(matchresults()))
+  } else {
+    '0 results'
+  }
+})
 
 # Distance Measures
 
