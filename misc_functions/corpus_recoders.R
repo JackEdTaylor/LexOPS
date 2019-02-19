@@ -26,7 +26,7 @@ corpus_recode_apa <- function(inputopts) {
   }
 }
 
-corpus_recode <- function(inputopts = c("bnc_w", "bnc_s"), prefix=NA, logprefix=F) {
+corpus_recode <- function(inputopts = c("bnc_w", "bnc_s"), prefix=NA, logprefix=F, pron_nr=1) {
   if (!is.null(inputopts)) {
     prefix_dot <- if(is.na(prefix)) {""} else {sprintf("%s.", prefix)}
     log_prefix_str <- if(logprefix) {"Log_"} else {""}
@@ -42,7 +42,7 @@ corpus_recode <- function(inputopts = c("bnc_w", "bnc_s"), prefix=NA, logprefix=
                       "elp" = "ELP",
                       "blp" = "BLP",
                       "mp" = "Moby",
-                      "cmu" = "CMU.pr1",
+                      "cmu" = sprintf("CMU.pr%i", pron_nr),
                       "gn" = "Glasgow_Norms",
                       "cp" = "Clark_and_Paivio",
                       "kuperman" = "Kuperman",
