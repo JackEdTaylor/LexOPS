@@ -24,20 +24,31 @@ observeEvent(matchboxes_N(), {
 lapply(1:50, function(i) {
   boxid <- sprintf('matchbox_%i', i)
   output[[sprintf('%s_ui', boxid)]] <- renderUI({ match_UI(input[[sprintf("%s_vtype", boxid)]],
-                                                                boxid) })
+                                                           boxid,
+                                                           lexopsReact(),
+                                                           input$matchstring) })
+  output[[sprintf('%s_ui_manual', boxid)]] <- renderUI({ match_UI_manual(input[[sprintf("%s_vtype", boxid)]],
+                                                                         boxid,
+                                                                         input[[sprintf("%s.opt", boxid)]],
+                                                                         lexopsReact(),
+                                                                         input[[sprintf('%s.auto_or_manual', boxid)]],
+                                                                         input$matchstring) })
   output[[sprintf('%s_ui_sliders', boxid)]] <- renderUI({ match_UI_sliders(input[[sprintf("%s_vtype", boxid)]],
-                                                                                boxid,
-                                                                                input[[sprintf("%s.opt", boxid)]],
-                                                                                input[[sprintf("%s.log", boxid)]],
-                                                                                lexopsReact()) })
+                                                                           boxid,
+                                                                           input[[sprintf("%s.opt", boxid)]],
+                                                                           input[[sprintf("%s.log", boxid)]],
+                                                                           lexopsReact())})
   box_sliders <- reactive({ input[[sprintf("%s_sl", boxid)]] })
   output[[sprintf('%s_ui_vis', boxid)]] <- renderPlot({ match_UI_vis(input[[sprintf("%s_vtype", boxid)]],
-                                                                          boxid,
-                                                                          input[[sprintf("%s.opt", boxid)]],
-                                                                          input[[sprintf("%s.log", boxid)]],
-                                                                          input[[sprintf("%s.source", boxid)]],
-                                                                          lexopsReact(),
-                                                                          box_sliders()) })
+                                                                     boxid,
+                                                                     input[[sprintf("%s.opt", boxid)]],
+                                                                     input[[sprintf("%s.log", boxid)]],
+                                                                     input[[sprintf("%s.source", boxid)]],
+                                                                     input[[sprintf('%s.auto_or_manual', boxid)]],
+                                                                     input[[sprintf('%s_manual', boxid)]],
+                                                                     lexopsReact(),
+                                                                     box_sliders(),
+                                                                     input$matchstring) })
 })
 
 # Put the UIs built above into their boxes
@@ -47,6 +58,7 @@ lapply(1:50, function(i) {
     box(title=i, width=12, status='primary', solidHeader=T,
         selectInput(sprintf('%s_vtype', boxid), NULL, c('(None)', vis.cats)),
         uiOutput(sprintf('%s_ui', boxid)),
+        uiOutput(sprintf('%s_ui_manual', boxid)),
         uiOutput(sprintf('%s_ui_sliders', boxid)),
         plotOutput(sprintf('%s_ui_vis', boxid), height='170px'),
         id = boxid

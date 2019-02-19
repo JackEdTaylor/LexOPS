@@ -1,4 +1,4 @@
-match_UI <- function(vtype = "Word Frequency", boxid) {
+match_UI <- function(vtype = "Word Frequency", boxid, lexops_df, str_in) {
   
   if (!is.null(vtype)) {
     
@@ -18,6 +18,10 @@ match_UI <- function(vtype = "Word Frequency", boxid) {
                                 'English Lexicon Project (ELP)'='elp'),
                               selected='suk',
                               inline=T)
+      ui[[2]] <- radioButtons(sprintf('%s.auto_or_manual', boxid), "Manual Selection",
+                              c('Use Dominant Part of Speech'='auto', 'Select Manually'='manual'),
+                              selected='auto',
+                              inline=T)
     } else if(vtype == "Bigram Probability") {
       ui[[1]] <- checkboxGroupInput(sprintf('%s.opt', boxid), 'Corpora',
                                     c('BNC (written)'='bnc.wbg', 'BNC (spoken)'='bnc.sbg', 'SUBTLEX-UK'='subtlex_uk.bg', 'SUBTLEX-US'='subtlex_us.bg'),
@@ -30,19 +34,40 @@ match_UI <- function(vtype = "Word Frequency", boxid) {
                               'old20',
                               inline=T)
     } else if(vtype == "Syllables") {
+      reactivedefault <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {
+        'cmu'
+      } else {
+        input[[sprintf('%s.opt', boxid)]]
+      }
       ui[[1]] <- radioButtons(sprintf('%s.opt', boxid), 'Source(s)',
                               c('CMU Pronouncing Dictionary'='cmu', 'Moby Project'='mp'),
-                              'cmu',
+                              reactivedefault,
                               inline=T)
+      if (!is.null(input[[sprintf('%s.opt', boxid)]])) {
+        if (input[[sprintf('%s.opt', boxid)]]=="cmu") {
+          ui[[2]] <- radioButtons(sprintf('%s.auto_or_manual', boxid), sprintf("Pronunciation (%i detected)", length(get_pronunciations(str_in, lexops_df))),
+                                  c('Use Primary Pronunciation'='auto', 'Select Manually'='manual'),
+                                  selected='auto',
+                                  inline=T)
+        }
+      }
     } else if(vtype == "Phonemes") {
       ui[[1]] <- radioButtons(sprintf('%s.opt', boxid), 'Source(s)',
                               c('CMU Pronouncing Dictionary'='cmu'),
                               'cmu',
                               inline=T)
+      ui[[2]] <- radioButtons(sprintf('%s.auto_or_manual', boxid), sprintf("Pronunciation (%i detected)", length(get_pronunciations(str_in, lexops_df))),
+                              c('Use Primary Pronunciation'='auto', 'Select Manually'='manual'),
+                              selected='auto',
+                              inline=T)
     } else if (vtype == "Rhyme") {
       ui[[1]] <- radioButtons(sprintf('%s.opt', boxid), 'Source(s)',
                               c('CMU Pronouncing Dictionary'='cmu'),
                               'cmu',
+                              inline=T)
+      ui[[2]] <- radioButtons(sprintf('%s.auto_or_manual', boxid), sprintf("Pronunciation (%i detected)", length(get_pronunciations(str_in, lexops_df))),
+                              c('Use Primary Pronunciation'='auto', 'Select Manually'='manual'),
+                              selected='auto',
                               inline=T)
     } else if(vtype == "Phonological Neighbourhood") {
       ui[[1]] <- checkboxInput(sprintf('%s.log', boxid), 'Log Transform', 1)
@@ -53,6 +78,10 @@ match_UI <- function(vtype = "Word Frequency", boxid) {
       ui[[3]] <- radioButtons(sprintf('%s.opt', boxid), 'Measure',
                               c('Phonological Levenshtein Distance 20 (PLD20)'='pld20', "Coltheart's N"='cn'),
                               'pld20',
+                              inline=T)
+      ui[[4]] <- radioButtons(sprintf('%s.auto_or_manual', boxid), sprintf("Pronunciation (%i detected)", length(get_pronunciations(str_in, lexops_df))),
+                              c('Use Primary Pronunciation'='auto', 'Select Manually'='manual'),
+                              selected='auto',
                               inline=T)
     } else if(vtype == "Number of Pronunciations") {
       ui[[1]] <- radioButtons(sprintf('%s.opt', boxid), 'Source(s)',
@@ -136,15 +165,62 @@ match_UI <- function(vtype = "Word Frequency", boxid) {
 }
 
 
-match_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
+match_UI_manual <- function(vtype, boxid, box_opt, lexops_df, box_auto_or_manual, str_in) {
+  
+  ui <- NULL
+  
+  if (vtype == "Part of Speech") {
+    if (!is.null(box_auto_or_manual)) {
+      if (box_auto_or_manual == "manual") {
+        # get list of possible PoSs from selected corpus
+        xname <- corpus_recode(box_opt, "PoS")
+        pos <- tibble(x=lexops_df[[xname]]) %>%
+          filter(x!=' ') %>%
+          na.omit() %>%
+          group_by(x) %>%
+          summarise(n=n()) %>%
+          arrange(desc(n)) %>%
+          pull(x)
+        # drop-down selectInput for manual PoS definition
+        ui <- selectInput(sprintf("%s_manual", boxid),
+                          label = NULL,
+                          choices = pos,
+                          selected = pos[1],
+                          width="100%")
+      }
+    }
+    
+  } else if (vtype %in% phonological.vis.cats) {
+    if (!is.null(box_auto_or_manual)) {
+      if (box_auto_or_manual == "manual") {
+        # get list of possible pronunciations from selected corpus
+        prons <- get_pronunciations(str_in, df=lexops) %>%
+          unname() %>%
+          unlist()
+        prons <- lapply(prons, arpabet_convert, sep='-')
+        # drop-down selectInput for manual PoS definition
+        ui <- selectInput(sprintf("%s_manual", boxid),
+                          label = NULL,
+                          choices = prons,
+                          selected = prons[1],
+                          width="100%")
+      }
+    }
+  }
+  
+  ui
+  
+}
+
+
+match_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df, pos_opt) {
   
   ui <- NULL
   
   # Categorical Variables
   if (vtype %in% c("Part of Speech", "Rhyme")) {
     
-    # placeholder to maintain consistency with comparible functions
-    # (splitby and filterby)
+    
     
   } else if (length(box_opt)>=1 | vtype=="Length") {
     # Numerical Variables
@@ -297,84 +373,133 @@ match_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
   ui
 }
 
-match_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, lexops_df, shade_list) {
+match_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, box_auto_or_manual, box_manual, lexops_df, shade_list, str_in) {
   
-  if (vtype != "(None)") {
+  out_plot <- tryCatch({
     
-    if (vtype == "Rhyme") {
+    if (!str_in %in% lexops_df$string) {
+      return(error.plot("Word not in\nCorpus!", "primary"))
+    }
+    
+    if (vtype != "(None)") {
       
-      NULL
-      
-    } else if (vtype == "Part of Speech") {
-      
-      pos.plot(xname = corpus_recode(box_opt, "PoS"),
-               selected=T,
-               PoS = "all",
-               df = lexops)
-      
-    } else {
-      # numeric vtypes
-      
-      force.histogram <- F
-      
-      if (length(box_opt)==0 & !(vtype %in% c("Length"))) {
-        error.plot("Select a Source", "primary")
-      } else {
+      if (vtype == "Rhyme") {
         
-        get_rowmeans <- function(column, df) { rowMeans(select(df, one_of(column)), dims=1, na.rm=T) }
+        NULL
         
-        if (vtype == "Word Frequency") {
-          cn <- corpus_recode(box_opt, if(box_log){"Zipf"}else{"fpmw"})
-          scaletext <- c("Less Frequent", "More Frequent")
-        } else if (vtype == "Length") {
-          cn <- "Length"
-          scaletext <- c("Shorter", "Longer")
-          force.histogram <- T
-        } else if (vtype == "Bigram Probability") {
-          cn <- corpus_recode(box_opt, viscat2prefix(vtype))
-          scaletext <- viscat2scaletext(vtype)
-        } else if (vtype == "Orthographic Neighbourhood") {
-          cn <- corpus_recode(box_opt, "ON", logprefix=box_log)
-          if (box_opt=="old20") scaletext <- c("Larger Neighbourhood", "Smaller Neighbourhood")
-          if (box_opt=="cn") scaletext <- c("Smaller Neighbourhood", "Larger Neighbourhood")
-          if (box_opt=="cn" & !box_log) force.histogram <- T
-        } else if (vtype == "Phonological Neighbourhood") {
-          cn <- sprintf("%s.%s", corpus_recode(box_opt, "PN", logprefix=box_log), corpus_recode(box_source))
-          if (box_opt=="pld20") scaletext <- c("Larger Neighbourhood", "Smaller Neighbourhood")
-          if (box_opt=="cn") scaletext <- c("Smaller Neighbourhood", "Larger Neighbourhood")
-          if (box_opt=="cn" & !box_log) force.histogram <- T
-        } else if (vtype == "Number of Pronunciations") {
-          cn <- "CMU.PrN"
-          scaletext <- c("Fewer", "More")
-          force.histogram <- T
-        } else if (vtype == "Lexical Decision Accuracy") {
-          cn <- corpus_recode(box_opt, prefix="Accuracy")
-          scaletext <- c("Less Accurate", "More Accurate")
-        } else {
-          if ((vtype %in% c("Phonemes", "Syllables")) | (vtype=="Age of Acquisition" & all(box_opt=="bb"))) force.histogram <- T
-          cn <- corpus_recode(box_opt, viscat2prefix(vtype))
-          if (length(box_opt)>1) lexops_df[cn] <- lapply(lexops_df[cn], scale)
-          scaletext <- viscat2scaletext(vtype)
+      } else if (vtype == "Part of Speech") {
+        
+        xname <- corpus_recode(box_opt, "PoS")
+        
+        if (is.na(lexops_df[[xname]][lexops_df$string==str_in])) {
+          return(error.plot("Word not in\nCorpus!", "primary"))
         }
         
-        lexops_df$xval <- get_rowmeans(cn, lexops_df)
-        random_val <- lexops_df %>%
-          filter(!is.na(xval) & is.finite(xval)) %>%
-          sample_n(1) %>%
-          select(xval)
-        random_val <- unlist(random_val[1], use.names=F)
-        relative_shade_list <- shade_list + random_val
+        if (box_auto_or_manual=="manual") {
+          highlightpos <- box_manual
+        } else {
+          highlightpos <- as.character(lexops_df[[xname]][lexops_df$string==str_in])
+        }
         
-        dens.plot(x="xval", redline=random_val, shade=relative_shade_list, df=lexops_df, boxtype='primary', text.lowscale=scaletext[1], text.highscale=scaletext[2], force.histogram=force.histogram)
+        pos.plot(xname = xname,
+                 selected=T,
+                 PoS = highlightpos,
+                 df = lexops_df)
+        
+      } else {
+        # numeric vtypes
+        
+        # get selected pronunciation number
+        if (vtype %in% phonological.vis.cats) {
+          if (box_auto_or_manual=="manual") {
+            pron_nr <- get_pron_nr(box_manual, str_in, lexops_df)
+          } else {
+            pron_nr <- 1
+          }
+        } else {
+          pron_nr <- 1
+        }
+        
+        force.histogram <- F
+        
+        if (length(box_opt)==0 & !(vtype %in% c("Length"))) {
+          error.plot("Select a Source", "primary")
+        } else {
+          
+          get_rowmeans <- function(column, df) { rowMeans(select(df, one_of(column)), dims=1, na.rm=T) }
+          
+          if (vtype == "Word Frequency") {
+            cn <- corpus_recode(box_opt, if(box_log){"Zipf"}else{"fpmw"})
+            scaletext <- c("Less Frequent", "More Frequent")
+          } else if (vtype == "Length") {
+            cn <- "Length"
+            scaletext <- c("Shorter", "Longer")
+            force.histogram <- T
+          } else if (vtype == "Bigram Probability") {
+            cn <- corpus_recode(box_opt, viscat2prefix(vtype))
+            scaletext <- viscat2scaletext(vtype)
+          } else if (vtype == "Orthographic Neighbourhood") {
+            cn <- corpus_recode(box_opt, "ON", logprefix=box_log)
+            if (box_opt=="old20") scaletext <- c("Larger Neighbourhood", "Smaller Neighbourhood")
+            if (box_opt=="cn") scaletext <- c("Smaller Neighbourhood", "Larger Neighbourhood")
+            if (box_opt=="cn" & !box_log) force.histogram <- T
+          } else if (vtype == "Phonological Neighbourhood") {
+            cn <- sprintf("%s.%s", corpus_recode(box_opt, "PN", logprefix=box_log), corpus_recode(box_source))
+            # for non-primary pronunciation equivalent
+            cn_prX <- sprintf("%s.%s", corpus_recode(box_opt, "PN", logprefix=box_log), corpus_recode(box_source, pron_nr=pron_nr))
+            if (box_opt=="pld20") scaletext <- c("Larger Neighbourhood", "Smaller Neighbourhood")
+            if (box_opt=="cn") scaletext <- c("Smaller Neighbourhood", "Larger Neighbourhood")
+            if (box_opt=="cn" & !box_log) force.histogram <- T
+          } else if (vtype == "Number of Pronunciations") {
+            cn <- "CMU.PrN"
+            scaletext <- c("Fewer", "More")
+            force.histogram <- T
+          } else if (vtype == "Lexical Decision Accuracy") {
+            cn <- corpus_recode(box_opt, prefix="Accuracy")
+            scaletext <- c("Less Accurate", "More Accurate")
+          } else {
+            if ((vtype %in% c("Phonemes", "Syllables")) | (vtype=="Age of Acquisition" & all(box_opt=="bb"))) force.histogram <- T
+            cn <- corpus_recode(box_opt, viscat2prefix(vtype))
+            if (length(box_opt)>1) lexops_df[cn] <- lapply(lexops_df[cn], scale)
+            scaletext <- viscat2scaletext(vtype)
+            # for non-primary pronunciation equivalent
+            cn_prX <- corpus_recode(box_opt, viscat2prefix(vtype), pron_nr=pron_nr)
+            if (length(box_opt)>1) lexops_df[cn_prX] <- lapply(lexops_df[cn_prX], scale)
+          }
+          
+          lexops_df$xval <- get_rowmeans(cn, lexops_df)
+          target_val <- if (str_in %in% lexops_df$string) {
+            if (vtype %in% phonological.vis.cats & pron_nr != 1) {
+              get_rowmeans(cn_prX, lexops_df)[lexops_df$string==str_in]
+            } else {
+              lexops_df$xval[lexops_df$string==str_in]
+            }
+          } else {
+            return(error.plot("Word not in\nCorpus!", "primary"))
+          }
+          relative_shade_list <- shade_list + target_val
+          
+          dens.plot(x="xval", redline=target_val, shade=relative_shade_list, df=lexops_df, boxtype='primary', text.lowscale=scaletext[1], text.highscale=scaletext[2], force.histogram=force.histogram)
+        }
+        
       }
+      
+    } else {
+      
+      error.plot("Select a Variable", "primary")
       
     }
     
-  } else {
-    
-    error.plot("Select a Variable", "primary")
-    
-  }
+  })
+  
+  # error=function(cond) {
+  #   return(NULL)
+  # },
+  # warning=function(cond) {
+  #   return(NULL)
+  # })
+  
+  out_plot
   
 }
 
