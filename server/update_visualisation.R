@@ -85,12 +85,33 @@ screenheight <- reactive({
 # visualisation in plotly
 output$visualiseplotly <- renderPlotly({
   
-  xtitle <- sprintf('%s (%s)', input$vis.xaxis.opts, input$vis.xsource)
-  ytitle <- sprintf('%s (%s)', input$vis.yaxis.opts, input$vis.ysource)
+  xtitle <- if (length(input$vis.xsource)>1) {
+    sprintf("Average %s (%i sources)", input$vis.xaxis.opts, length(input$vis.xsource))
+  } else {
+    sprintf('%s (%s)', input$vis.xaxis.opts, input$vis.xsource)
+  }
+  ytitle <- if (length(input$vis.ysource)>1) {
+    sprintf("Average %s (%i sources)", input$vis.yaxis.opts, length(input$vis.ysource))
+  } else {
+    sprintf('%s (%s)', input$vis.yaxis.opts, input$vis.ysource)
+  }
   ztitle <- if (input$vis.zaxis.opts %in% vis.cats) {
-    sprintf('%s (%s)', input$vis.zaxis.opts, input$vis.zsource)
+    if (length(input$vis.zsource)>1) {
+      sprintf("Average %s (%i sources)", input$vis.zaxis.opts, length(input$vis.zsource))
+    } else {
+      sprintf('%s (%s)', input$vis.zaxis.opts, input$vis.zsource)
+    }
   } else if (input$vis.zaxis.opts != '(None)') {
     input$vis.zaxis.opts  # z axis title if error occurs
+  }
+  colourtitle <- if (input$vis.colour.opts %in% vis.cats) {
+    if (length(input$vis.coloursource)>1) {
+      sprintf("Average %s\n(%i sources)", input$vis.colour.opts, length(input$vis.coloursource))
+    } else {
+      sprintf('%s\n(%s)', input$vis.colour.opts, input$vis.coloursource)
+    }
+  } else if (input$vis.colour.opts != '(None)') {
+    input$vis.colour.opts  # z axis title if error occurs
   }
   
   pd <- plotdata()
@@ -121,7 +142,6 @@ output$visualiseplotly <- renderPlotly({
     colorbarsettings <- NULL  # default of no colorbar title
     if (input$vis.colour.opts %in% vis.cats & input$vis.colour.opts != 'Part of Speech'){
       variable_colours <- viridis_pal(option = "E")(3)  # More numerical colour scheme
-      colorbarsettings <- list(title='Test')  # title for colorbar
     } else {
       # More nominal colour schemes
       if (input$vis.colour.opts=="Part of Speech"){
@@ -137,6 +157,7 @@ output$visualiseplotly <- renderPlotly({
               colors = variable_colours, marker=list(size = input$vis.pointsize.sl, colorbar=colorbarsettings),
               opacity = input$vis.opacity.sl,
               text = ~paste("'", string, "'")) %>%
+        colorbar(title=colourtitle) %>%
         layout(xaxis = list(title = xtitle),
                yaxis = list(title = ytitle)) %>%
         config(displayModeBar = F)
@@ -147,6 +168,7 @@ output$visualiseplotly <- renderPlotly({
               marker = list(symbol = 'circle', sizemode = 'diameter', size = input$vis.pointsize.sl/2, colorbar=colorbarsettings),
               opacity = input$vis.opacity.sl,
               text = ~paste("'", string, "'")) %>%
+        colorbar(title=colourtitle) %>%
         layout(scene = list(xaxis = list(title = xtitle),
                             yaxis = list(title = ytitle),
                             zaxis = list(title = ztitle))) %>%
