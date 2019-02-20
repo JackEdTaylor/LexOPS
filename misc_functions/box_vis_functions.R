@@ -134,16 +134,19 @@ pos.plot <- function(xname='subtlex_uk.DomPoS', selected=T, PoS='noun', df=dat, 
 
 
 # word cloud for rhyme
-rhyme.plot <- function(str_in="encyclopedia", pron_nr=1, selected=T, df=dat) {
-  rhymesound <- dat[[sprintf("cmu.pr%i_rhymesound", pron_nr)]][dat$string==str_in]
-  dat %>%
-    select(string, cmu.pr1_rhymesound, Mean.Zipf) %>%
-    filter(cmu.pr1_rhymesound==rhymesound & between(Mean.Zipf, 3, 7) & string!=str_in) %>%
+rhyme.plot <- function(str_in="encyclopedia", pron_nr=1, df=lexops, box_opt="cmu", boxtype="primary") {
+  xname <- corpus_recode_columns(box_opt, "Rhyme")
+  rhymesound <- df[[xname]][dat$string==str_in]
+  zipf_cols <- colnames(df)[grepl("Zipf", colnames(df))]
+  df$Avg.Zipf <- rowMeans(select(df, one_of(zipf_cols)), dims=1, na.rm=T)
+  df %>%
+    select(string, UQ(sym(xname)), Avg.Zipf) %>%
+    filter(UQ(sym(xname))==rhymesound & between(Avg.Zipf, 3, 7) & string!=str_in) %>%
     sample_n(15) %>%
-    mutate(wordcloudsize=1, wordcloudalpha=if(selected){0.9}else{0.2}) %>%
+    mutate(wordcloudsize=1, wordcloudalpha=0.9) %>%
     add_row(string=str_in, wordcloudsize=5, wordcloudalpha=1, .before=1) %>%
     ggplot(aes(label=string, size=wordcloudsize, alpha=wordcloudalpha)) +
-    geom_text_wordcloud(colour="#641e68", rm_outside=T, shape='circle') +
+    geom_text_wordcloud(colour=get.box.colour(boxtype), rm_outside=T, shape='circle') +
     theme_minimal() +
     scale_size_area(max_size=20) +
     scale_alpha_identity()

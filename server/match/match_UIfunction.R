@@ -385,7 +385,13 @@ match_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, box_auto_or
       
       if (vtype == "Rhyme") {
         
-        NULL
+        xname <- corpus_recode_columns(box_opt, "Rhyme")
+        
+        if (is.na(lexops_df[[xname]][lexops_df$string==str_in])) {
+          return(error.plot("Word not in\nCorpus!", "primary"))
+        }
+        
+        rhyme.plot(input$matchstring, pron_nr=1, df=lexops_df)
         
       } else if (vtype == "Part of Speech") {
         

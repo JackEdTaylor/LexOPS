@@ -303,14 +303,14 @@ controlfor_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, lexops
     
     if (vtype == "Rhyme") {
       
-      NULL
+      rhyme.plot("rhyme", pron_nr=1, df=lexops_df, boxtype="warning")
       
     } else if (vtype == "Part of Speech") {
       
       pos.plot(xname = corpus_recode(box_opt, "PoS"),
                selected=T,
                PoS = "all",
-               df = lexops)
+               df = lexops_df)
       
     } else {
       # numeric vtypes
