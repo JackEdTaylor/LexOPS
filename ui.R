@@ -35,11 +35,11 @@ tagList(
                     dashboardSidebar(width=200,
                                      sidebarMenu(
                                        style = 'position: fixed; overflow: visible;',  # Stationary sidebar while scrolling
-                                       menuItem('Generate', tabName='generate_options', icon=icon('cogs'),
+                                       menuItem('Generate', icon=icon('cogs'),
                                                 startExpanded = T,
                                                 menuSubItem('Options', tabName="generate_options", icon=icon('sliders-h')),
                                                 menuSubItem('Generated Stimuli', tabName="generate_results", icon=icon('sort-amount-down'))),
-                                       menuItem('Match', icon=icon('search'),
+                                       menuItem('Match', icon=icon('balance-scale'),
                                                 startExpanded = F,
                                                 textInput('matchstring', 'Word:', 'thicket', width="90%"),  # must explicitly give width of UI items in sidebar to avoid overflowing
                                                 column(1, textOutput('nrow.matchresults')),
@@ -59,7 +59,7 @@ tagList(
                         tabItem(tabName = 'generate_options',
                                 fluidRow(
                                   column(4, fluidRow(
-                                    valueBox("Split by...", width = 12, color='light-blue',
+                                    valueBox("Split by...", width = 12, color='light-blue', icon=icon("sitemap"),
                                              subtitle=fluidRow(column(12,
                                                                       actionButton('gen_splitby_add', icon("plus-square")),
                                                                       actionButton('gen_splitby_minus', icon("minus-square"))
@@ -70,7 +70,7 @@ tagList(
                                     })
                                   )),
                                   column(4, fluidRow(
-                                    valueBox("Control for...", width = 12, color='yellow',
+                                    valueBox("Control for...", width = 12, color='yellow', icon=icon("balance-scale"),
                                              subtitle=fluidRow(column(12,
                                                                       actionButton('gen_controlfor_add', icon("plus-square")),
                                                                       actionButton('gen_controlfor_minus', icon("minus-square"))
@@ -81,7 +81,7 @@ tagList(
                                     })
                                   )),
                                   column(4, fluidRow(
-                                    valueBox("Filter by...", width = 12, color='purple',
+                                    valueBox("Filter by...", width = 12, color='purple', icon=icon("filter"),
                                              subtitle=fluidRow(column(12,
                                                                       actionButton('gen_filterby_add', icon("plus-square")),
                                                                       actionButton('gen_filterby_minus', icon("minus-square"))
@@ -120,8 +120,8 @@ tagList(
                                 
                                 fluidRow(
                                   column(12, fluidRow(
-                                    valueBox("Match Tab in Beta", subtitle=NULL, width = 12, color='red', icon=icon("exclamation-triangle")),
-                                    valueBox("Match by...", width = 12, color='light-blue',
+                                    valueBox("Match Tab in Beta", subtitle=NULL, width = 12, color='red'),
+                                    valueBox("Match by...", width = 12, color='light-blue', icon=icon("balance-scale"),
                                              subtitle=fluidRow(column(12,
                                                                       actionButton('match_add', icon("plus-square")),
                                                                       actionButton('match_minus', icon("minus-square"))

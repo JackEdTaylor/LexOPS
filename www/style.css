@@ -50,12 +50,8 @@
 	background-color:#641e68!important
 }
 
-.icon-large>.fa {
-	font-size: 45px;
-}
-
 .small-box .icon-large {
-	color:rgba(255, 255, 255, 0.9);
+	color:rgba(0.25, 0.25, 0.25, 0.25);
 	bottom:-5px;
 	right:10px
 }
