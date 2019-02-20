@@ -95,6 +95,7 @@ corpus_recode_columns <- function(inputopts = c("bnc_w", "bnc_s"), v="Word Frequ
     v == "Orthographic Neighbourhood" ~ corpus_recode(inputopts, viscat2prefix(v), log),
     v == "Syllables" ~ corpus_recode(inputopts, viscat2prefix(v)),
     v == "Phonemes" ~ corpus_recode(inputopts, viscat2prefix(v)),
+    v == "Rhyme" ~ corpus_recode(inputopts, viscat2prefix(v)),
     v == "Phonological Neighbourhood" ~ sprintf("%s.CMU.pr1", corpus_recode(inputopts, viscat2prefix(v), log)),
     v == "Syllables" ~ corpus_recode(inputopts, viscat2prefix(v)),
     v == "Number of Pronunciations" ~ "CMU.PrN",
