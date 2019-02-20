@@ -490,14 +490,14 @@ match_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, box_auto_or
       
     }
     
-  })
+  },
   
-  # error=function(cond) {
-  #   return(NULL)
-  # },
-  # warning=function(cond) {
-  #   return(NULL)
-  # })
+  error=function(cond) {
+    return(NULL)
+  },
+  warning=function(cond) {
+    return(NULL)
+  })
   
   out_plot
   
