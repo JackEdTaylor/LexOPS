@@ -22,7 +22,14 @@ matchresults_undistanced <- reactive({
           sl <- input[[sprintf('%s_sl', boxid)]]  # get the box's filter
           boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
           boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
-          column <- corpus_recode_columns(boxopt, boxv, boxlog)
+          boxsource <- input[[sprintf("%s.source", boxid)]]
+          
+          if (boxv == "Phonological Neighbourhood") {
+            column <- sprintf("%s.%s", corpus_recode(boxopt, "PN", logprefix=boxlog), corpus_recode(boxsource))
+          } else {
+            column <- corpus_recode_columns(boxopt, boxv, boxlog)
+          }
+          
           # remove duplicates (fixes bug in rendering order)
           column <- unique(column)
           if (all(column %in% colnames(lexops_custom_cols))) {
