@@ -55,7 +55,7 @@ lapply(1:50, function(i) {
 lapply(1:50, function(i) {
   boxid <- sprintf('matchbox_%i', i)
   output[[boxid]] <- renderUI({
-    box(title=i, width=12, status='primary', solidHeader=T,
+    box(title=i, width=6, status='primary', solidHeader=T,
         selectInput(sprintf('%s_vtype', boxid), NULL, c('(None)', vis.cats)),
         uiOutput(sprintf('%s_ui', boxid)),
         uiOutput(sprintf('%s_ui_manual', boxid)),
