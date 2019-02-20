@@ -28,7 +28,7 @@ tagList(
       dashboardPage(title='LexOPS',
                     skin='black',
                     
-                    dashboardHeader(title=tags$a(href='http://www.psy.gla.ac.uk',
+                    dashboardHeader(title=tags$a(href="javascript:history.go(0)",
                                                  tags$img(src='lexopslogo_black_textonly.png', height='30px')),
                                     titleWidth=200),
                     
