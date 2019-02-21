@@ -45,7 +45,7 @@ lapply(1:50, function(i) {
                                                                      input[[sprintf("%s.log", boxid)]],
                                                                      input[[sprintf("%s.source", boxid)]],
                                                                      input[[sprintf('%s.auto_or_manual', boxid)]],
-                                                                     input[[sprintf('%s_manual', boxid)]],
+                                                                     input[[sprintf('%s.manual', boxid)]],
                                                                      lexopsReact(),
                                                                      box_sliders(),
                                                                      input$matchstring) })
