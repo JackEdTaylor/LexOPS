@@ -147,7 +147,7 @@ tagList(
                                                                                                      'Distances (Absolute Difference from Target Word)'='dist',
                                                                                                      'Differences (from Target Word)'='diff'), selected='dist')),
                                         column(12, h5(strong("Ignore Filters"))),
-                                        column(12, checkboxInput('check.match.ignorefilters', 'Ignore Filters on Select & Filter Tab', 0)),
+                                        column(12, checkboxInput('check.match.ignorefilters', 'Ignore Tolerances on Options Tab', 0)),
                                         column(12, br()),
                                         box(
                                           title='Sorting Options', status='primary',

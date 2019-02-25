@@ -106,8 +106,9 @@ matchresults_undistanced <- reactive({
         }
         
       }
-      
-      matched <- filter(matched, string %in% lexops_match$string)
+      if (!input$check.match.ignorefilters) {
+        matched <- filter(matched, string %in% lexops_match$string)
+      }
     }
     
     # Get differences and distances
