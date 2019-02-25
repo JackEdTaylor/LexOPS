@@ -58,9 +58,28 @@ genresults_prematching <- reactive({
         }
         colmeans_name <- sprintf("Avg.%s", viscat2prefix(boxv, boxlog))
         lexops_custom_cols[[colmeans_name]] <- rowMeans(select(lexops_custom_cols, one_of(column)), dims=1, na.rm=T)
+        if (colmeans_name %in% colnames(lexops_filt)) {lexops_filt <- select(lexops_filt, -UQ(sym(colmeans_name)))}  # avoid duplicate column names in lexops_filt
         lexops_filt <- inner_join(lexops_filt, select(lexops_custom_cols, "string", UQ(sym(colmeans_name))), by="string")
         column <- colmeans_name
       }
+      
+      # Handle Multiple Columns with Same Source
+      # rename to colname.2, colname.3, colname.4 etc if an average column has already been calculated
+      columnname_raw <- column
+      col_iter <- 1
+      while (column %in% colnames(res)) {
+        col_iter <- col_iter + 1
+        column <- sprintf("%s.%i", columnname_raw, col_iter)
+      }
+      if (column != columnname_raw) {
+        colnames(lexops_custom_cols)[colnames(lexops_custom_cols)==columnname_raw] <- column
+        colnames(lexops_filt)[colnames(lexops_filt)==columnname_raw] <- column
+      }
+      # rename the original Avg.%s to Avg.%s.1 for consistency
+      if (columnname_raw %in% colnames(res) & !sprintf("%s.1", columnname_raw) %in% colnames(res)) {
+        colnames(res)[colnames(res)==columnname_raw] <- sprintf("%s.1", columnname_raw)
+      }
+      
       res[[column]] <- lexops_custom_cols[[column]]  # copy over the column to the results df
       
       if (is.numeric(lexops_filt[[column]])) {
@@ -112,6 +131,7 @@ genresults_prematching <- reactive({
           }
           colmeans_name <- sprintf("Avg.%s", viscat2prefix(boxv, boxlog))
           lexops_custom_cols[[colmeans_name]] <- rowMeans(select(lexops_custom_cols, one_of(column)), dims=1, na.rm=T)
+          if (colmeans_name %in% colnames(lexops_filt)) {lexops_filt <- select(lexops_filt, -UQ(sym(colmeans_name)))}  # avoid duplicate column names in lexops_filt
           lexops_filt <- inner_join(lexops_filt, select(lexops_custom_cols, "string", UQ(sym(colmeans_name))), by="string")
           column <- colmeans_name
         }
