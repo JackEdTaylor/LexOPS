@@ -30,6 +30,20 @@ matchresults_undistanced <- reactive({
             column <- corpus_recode_columns(boxopt, boxv, boxlog)
           }
           
+          # manual pronunciation
+          if (boxv %in% phonological.vis.cats) {
+            if (input[[sprintf('%s.auto_or_manual', boxid)]]=="manual") {
+              pron_nr <- get_pron_nr(input[[sprintf('%s.manual', boxid)]], input$matchstring, lexops_custom_cols)
+            } else {
+              pron_nr <- 1
+            }
+            if (boxv == "Phonological Neighbourhood") {
+              column_prX <- sprintf("%s.%s", corpus_recode(boxopt, "PN", logprefix=boxlog), corpus_recode(boxsource, pron_nr=pron_nr))
+            } else {
+              column_prX <- corpus_recode(boxopt, viscat2prefix(boxv), pron_nr=pron_nr)
+            }
+          }
+          
           # remove duplicates (fixes bug in rendering order)
           column <- unique(column)
           if (all(column %in% colnames(lexops_custom_cols))) {
@@ -53,7 +67,31 @@ matchresults_undistanced <- reactive({
               lexops_match <- inner_join(lexops_match, select(lexops_custom_cols, "string", UQ(sym(colmeans_name))), by="string")
               column <- colmeans_name
             }
-            str_in_x <- lexops_custom_cols[[column]][lexops_custom_cols$string==input$matchstring]
+            
+            if (boxv %in% phonological.vis.cats) {
+              
+              if (pron_nr > 1) {
+                str_in_x <- lexops_custom_cols[[column_prX]][lexops_custom_cols$string==input$matchstring]
+                # add the alternative pronunciation column to the output
+                if (!column_prX %in% colnames(matched)) {
+                  matched <- inner_join(matched, select(lexops_custom_cols, "string", UQ(sym(column_prX))), by="string")
+                }
+              } else {
+                str_in_x <- lexops_custom_cols[[column]][lexops_custom_cols$string==input$matchstring]
+              }
+              
+            } else if (boxv == "Part of Speech") {
+              
+              if (input[[sprintf('%s.auto_or_manual', boxid)]]=="manual") {
+                str_in_x <- input[[sprintf('%s.manual', boxid)]]
+              } else {
+                str_in_x <- lexops_custom_cols[[column]][lexops_custom_cols$string==input$matchstring]
+              }
+              
+            } else {
+              str_in_x <- lexops_custom_cols[[column]][lexops_custom_cols$string==input$matchstring]
+            }
+            
             if (!column %in% colnames(matched)) {
               matched <- inner_join(matched, select(lexops_custom_cols, "string", UQ(sym(column))), by="string")  # copy over the column to the results df
             }
@@ -91,7 +129,7 @@ matchresults_undistanced <- reactive({
   error = function(cond) {
     return(NULL)
   }
-  
+
   )
   
 })
