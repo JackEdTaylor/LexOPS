@@ -34,7 +34,9 @@ match_UI <- function(vtype = "Word Frequency", boxid, lexops_df, str_in) {
                               'old20',
                               inline=T)
     } else if(vtype == "Syllables") {
-      reactivedefault <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {
+      reactivedefault <- if (length(input[[sprintf('%s.opt', boxid)]])==0) {
+        'cmu'
+      } else if (!input[[sprintf('%s.opt', boxid)]] %in% c('cmu', 'mp')) {
         'cmu'
       } else {
         input[[sprintf('%s.opt', boxid)]]
