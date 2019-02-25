@@ -120,7 +120,6 @@ tagList(
                                 
                                 fluidRow(
                                   column(12, fluidRow(
-                                    valueBox("Match Tab in Beta", subtitle=NULL, width = 12, color='red'),
                                     valueBox("Match by...", width = 12, color='light-blue', icon=icon("balance-scale"),
                                              subtitle=fluidRow(column(12,
                                                                       actionButton('match_add', icon("plus-square")),
