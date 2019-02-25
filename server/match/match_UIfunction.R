@@ -34,7 +34,9 @@ match_UI <- function(vtype = "Word Frequency", boxid, lexops_df, str_in) {
                               'old20',
                               inline=T)
     } else if(vtype == "Syllables") {
-      reactivedefault <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {
+      reactivedefault <- if (length(input[[sprintf('%s.opt', boxid)]])==0) {
+        'cmu'
+      } else if (!input[[sprintf('%s.opt', boxid)]] %in% c('cmu', 'mp')) {
         'cmu'
       } else {
         input[[sprintf('%s.opt', boxid)]]
@@ -182,7 +184,7 @@ match_UI_manual <- function(vtype, boxid, box_opt, lexops_df, box_auto_or_manual
           arrange(desc(n)) %>%
           pull(x)
         # drop-down selectInput for manual PoS definition
-        ui <- selectInput(sprintf("%s_manual", boxid),
+        ui <- selectInput(sprintf("%s.manual", boxid),
                           label = NULL,
                           choices = pos,
                           selected = pos[1],
@@ -496,15 +498,15 @@ match_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, box_auto_or
       
     }
     
-  },
-  
-  error=function(cond) {
-    return(NULL)
-  },
-  warning=function(cond) {
-    return(NULL)
   })
   
+  # error=function(cond) {
+  #   return(NULL)
+  # },
+  # warning=function(cond) {
+  #   return(NULL)
+  # })
+  # 
   out_plot
   
 }
