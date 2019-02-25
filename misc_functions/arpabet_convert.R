@@ -21,9 +21,9 @@ arpabet_convert <- function (string = "@dhisIvz", to = "two", sep = "_") {
                    Acceptable representations for two-to-one letter representations are:
                    %s', gsub(regex.twoletter, "", string), paste(arpabet$twoletter, collapse=" ")))
       }
-      strvec <- strsplit(string, "_")[[1]]
+      strvec <- strsplit(string, sep)[[1]]
       strvec <- strvec[strvec!=""]  # remove any empty entries
-      if (lengths(regmatches(string, gregexpr("_", string))) != length(strvec)-1) {
+      if (lengths(regmatches(string, gregexpr(sep, string))) != length(strvec)-1) {
         stop(sprintf('Incorrect number of "%s" seperators. Expected %i but found %i?',
                      sep, length(strvec)-1, lengths(regmatches(string, gregexpr("_", string)))))
       }
