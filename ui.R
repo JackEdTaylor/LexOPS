@@ -110,7 +110,7 @@ tagList(
                                           collapsible=T, collapsed=T, width=12,
                                           fluidRow(
                                             column(12, uiOutput('gen_controlnull_choice')),
-                                            column(12, checkboxInput('gen_check.dist', 'Filter by Euclidean/CityBlock Distance', 0)),
+                                            column(12, checkboxInput('gen_check.dist', 'Filter by Euclidean/CityBlock Distance from Null Condition', 0)),
                                             uiOutput('gen_dist_opts_choice')
                                           ))
                                         ))),
