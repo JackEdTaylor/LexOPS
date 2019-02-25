@@ -182,7 +182,7 @@ match_UI_manual <- function(vtype, boxid, box_opt, lexops_df, box_auto_or_manual
           arrange(desc(n)) %>%
           pull(x)
         # drop-down selectInput for manual PoS definition
-        ui <- selectInput(sprintf("%s_manual", boxid),
+        ui <- selectInput(sprintf("%s.manual", boxid),
                           label = NULL,
                           choices = pos,
                           selected = pos[1],
@@ -199,7 +199,7 @@ match_UI_manual <- function(vtype, boxid, box_opt, lexops_df, box_auto_or_manual
           unlist()
         prons <- lapply(prons, arpabet_convert, sep='-')
         # drop-down selectInput for manual PoS definition
-        ui <- selectInput(sprintf("%s_manual", boxid),
+        ui <- selectInput(sprintf("%s.manual", boxid),
                           label = NULL,
                           choices = prons,
                           selected = prons[1],
