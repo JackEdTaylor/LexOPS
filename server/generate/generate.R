@@ -62,12 +62,12 @@ genresults_prematching <- reactive({
         lexops_filt <- inner_join(lexops_filt, select(lexops_custom_cols, "string", UQ(sym(colmeans_name))), by="string")
         column <- colmeans_name
       }
-      
       # Handle Multiple Columns with Same Source
-      # rename to colname.2, colname.3, colname.4 etc if an average column has already been calculated
+      # rename to colname.2, colname.3, colname.4 etc
       columnname_raw <- column
+      columnname_raw_prefixed <- sprintf("filt.%s", columnname_raw)
       col_iter <- 1
-      while (column %in% colnames(res)) {
+      while (sprintf("filt.%s", column) %in% colnames(res)) {
         col_iter <- col_iter + 1
         column <- sprintf("%s.%i", columnname_raw, col_iter)
       }
@@ -76,11 +76,14 @@ genresults_prematching <- reactive({
         colnames(lexops_filt)[colnames(lexops_filt)==columnname_raw] <- column
       }
       # rename the original Avg.%s to Avg.%s.1 for consistency
-      if (columnname_raw %in% colnames(res) & !sprintf("%s.1", columnname_raw) %in% colnames(res)) {
-        colnames(res)[colnames(res)==columnname_raw] <- sprintf("%s.1", columnname_raw)
+      if (columnname_raw_prefixed %in% colnames(res) & !sprintf("%s.1", columnname_raw_prefixed) %in% colnames(res)) {
+        colnames(res)[colnames(res)==columnname_raw_prefixed] <- sprintf("%s.1", columnname_raw_prefixed)
       }
       
       res[[column]] <- lexops_custom_cols[[column]]  # copy over the column to the results df
+      
+      # Add "split", "cont" or "filt" as a prefix
+      colnames(res)[colnames(res)==column] <- sprintf("filt.%s", column)
       
       if (is.numeric(lexops_filt[[column]])) {
         lexops_filt <- filter(lexops_filt, UQ(sym(column)) >= sl[[1]] & UQ(sym(column)) <= sl[[2]])
@@ -102,6 +105,8 @@ genresults_prematching <- reactive({
     levels <- genlevels()
     
     lexops_custom_cols <- lexopsReact()[lexopsReact()$string %in% res$string, ]
+    
+    iterated_letters <- c()
     
     for (lvl in 1:nrow(levels)) {
       rowlevel <- levels[lvl, ]
@@ -135,14 +140,30 @@ genresults_prematching <- reactive({
           lexops_filt <- inner_join(lexops_filt, select(lexops_custom_cols, "string", UQ(sym(colmeans_name))), by="string")
           column <- colmeans_name
         }
-        if (!(column %in% colnames(res))) {
-          res[[column]] <- lexops_custom_cols[[column]]  # copy over the column to the results df
+        
+        # Handle Multiple Columns with Same Source
+        # rename to colname.2, colname.3, colname.4 etc
+        columnname_raw <- column
+        column_newname <- sprintf("split.%s", column)
+        col_iter <- 1
+        while (column_newname %in% colnames(res)) {
+          col_iter <- col_iter + 1
+          column_newname <- sprintf("split.%s.%i", columnname_raw, col_iter)
+        }
+        
+        if (i_lttr_lvl==1 & !i_lttr %in% iterated_letters) {  # only add the variable the first time a box refers to this variable (otherwise it'll be added twice)
+          if (sprintf("split.%s", columnname_raw) %in% colnames(res)) {
+            colnames(res)[colnames(res)==sprintf("split.%s", columnname_raw)] <- sprintf("split.%s.1", columnname_raw)  # rename the original Avg.%s to Avg.%s.1 for consistency
+          }
+          res[[column_newname]] <- lexops_custom_cols[[column]]  # copy over the column to the results df
         }
         if (is.numeric(lexops_filt[[column]])) {
           lexops_filt <- filter(lexops_filt, UQ(sym(column)) >= sl[[1]] & UQ(sym(column)) <= sl[[2]])
         } else {
           lexops_filt <- filter(lexops_filt, UQ(sym(column)) %in% sl)
         }
+        
+        iterated_letters <- c(iterated_letters, i_lttr)
         
       }
       
