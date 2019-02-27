@@ -256,13 +256,16 @@ tagList(
                               column(6, uiOutput('vis.zsource.choice'))
                             ),
                             fluidRow(
-                              column(6, selectInput('vis.colour.opts', 'Colour', c('(None)', 'Generated Stimuli', 'Target Match Word', 'Suggested Matches', 'Words Uploaded to Fetch Tab', 'Part of Speech', vis.cats), "(None)")),
+                              column(6, selectInput('vis.colour.opts', 'Colour', c('(None)', 'Generated Stimuli', 'Generated Stimuli Condition', 'Target Match Word', 'Suggested Matches', 'Words Uploaded to Fetch Tab', 'Part of Speech', vis.cats), "(None)")),
                               column(6, uiOutput('vis.coloursource.choice'))
                             ),
                             br(),
                             fluidRow(
                               column(6, sliderInput('vis.opacity.sl', 'Point Opacity', value=0.85, min=0.1, max=1, step=0.05)),
                               column(6, sliderInput('vis.pointsize.sl', 'Point Size', value=4, min=1, max=10, step=1))
+                            ),
+                            fluidRow(
+                              column(12, align="center", actionButton('vis.generateplot', 'Regenerate Plot', icon=icon("chart-bar")))
                             )
                           )),
                           
