@@ -63,6 +63,7 @@ matchresults_undistanced <- reactive({
                   colmeans_name <- sprintf("%s.%i", colmeans_name_orig, colnr)
                 }
                 colnames(lexops_custom_cols)[colnames(lexops_custom_cols)==colmeans_name_orig] <- colmeans_name
+                colnames(matched)[colnames(matched)==colmeans_name_orig] <- sprintf("%s.1", colmeans_name_orig)  # rename original average to Avg.%s.1 for consistency
               }
               lexops_match <- inner_join(lexops_match, select(lexops_custom_cols, "string", UQ(sym(colmeans_name))), by="string")
               column <- colmeans_name
