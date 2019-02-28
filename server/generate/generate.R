@@ -480,18 +480,28 @@ genresults_longformat <- reactive({
     cont_cols <- colnames(res)[startsWith(colnames(res), "cont.") & sapply(res, is.numeric)]  # get list of the numeric columns that refer to controls
     res$cont.Euclidean.Distance <- NA
     res$cont.CityBlock.Distance <- NA
-    for (itemnr in unique(res$Item)) {
-      null_cols <- as.numeric(res[res$is_null==T & res$Item==itemnr, cont_cols])
-      for (condname in unique(res$Condition)) {
-        x_cols <- as.numeric(res[res$Condition==condname & res$Item==itemnr, cont_cols])
-        res$cont.Euclidean.Distance[res$Condition==condname & res$Item==itemnr] <- euc.dist(x_cols, null_cols)
-        res$cont.CityBlock.Distance[res$Condition==condname & res$Item==itemnr] <- cb.dist(x_cols, null_cols)
+    if (length(cont_cols)>0) {
+      for (itemnr in unique(res$Item)) {
+        null_cols <- as.numeric(res[res$is_null==T & res$Item==itemnr, cont_cols])
+        for (condname in unique(res$Condition)) {
+          x_cols <- as.numeric(res[res$Condition==condname & res$Item==itemnr, cont_cols])
+          res$cont.Euclidean.Distance[res$Condition==condname & res$Item==itemnr] <- euc.dist(x_cols, null_cols)
+          res$cont.CityBlock.Distance[res$Condition==condname & res$Item==itemnr] <- cb.dist(x_cols, null_cols)
+        }
       }
     }
     
     res <- res %>%
       select(-is_null) %>%
-      select(Item, string, Condition, Match_Null, Euclidean.Distance, CityBlock.Distance, everything())
+      select(Item, string, Condition, Match_Null, cont.Euclidean.Distance, cont.CityBlock.Distance, everything())
+    
+    # remove the distance columns if empty (e.g. only controlling for categorical variables)
+    if (all(is.na(res$cont.Euclidean.Distance))) {
+      res <- select(res, -cont.Euclidean.Distance)
+    }
+    if (all(is.na(res$cont.CityBlock.Distance))) {
+      res <- select(res, -cont.CityBlock.Distance)
+    }
     
   } else {
     
