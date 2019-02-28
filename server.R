@@ -74,6 +74,33 @@ shinyServer(function(input, output) {
       res <- res %>%
         full_join(select(inputfile, c(sprintf("custom.%s", selcols), "string")), by="string")
     }
+    # calculate similarity measures for match tab (if any)
+    tryCatch({
+      if (matchboxes_N() >= 1) {
+        for (i in 1:matchboxes_N()) {
+          boxid <- boxid <- sprintf('matchbox_%i', i)
+          boxv <- input[[sprintf('%s_vtype', boxid)]]
+          boxopt <- input[[sprintf('%s.opt', boxid)]]
+          # Orthographic Similarity
+          if (boxv == "Orthographic Similarity") {
+            column <- corpus_recode_columns(boxopt, boxv)
+            if (boxopt == "ld") {
+              res[[column]] <- vwr::levenshtein.distance(input$matchstring, res$string)
+            }
+            if (boxopt == "ldd") {
+              res[[column]] <- vwr::levenshtein.damerau.distance(input$matchstring, res$string)
+            }
+          }
+        }
+      }
+    },
+    error = function(cond) {
+      return(NULL)
+    },
+    warning=function(cond) {
+      return(NULL)
+    })
+    
     res
   })
   

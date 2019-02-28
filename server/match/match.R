@@ -20,6 +20,7 @@ matchresults_undistanced <- reactive({
         if (boxv != "(None)") {
           
           sl <- input[[sprintf('%s_sl', boxid)]]  # get the box's filter
+          if (length(sl)==1) sl <- c(0, sl)  # handle sliders with one value (e.g. distances)
           boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
           boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
           boxsource <- input[[sprintf("%s.source", boxid)]]
@@ -130,9 +131,10 @@ matchresults_undistanced <- reactive({
   
   error = function(cond) {
     return(NULL)
-  }
-
-  )
+  },
+  warning=function(cond) {
+    return(NULL)
+  })
   
 })
 

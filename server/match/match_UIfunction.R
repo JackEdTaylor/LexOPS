@@ -33,6 +33,11 @@ match_UI <- function(vtype = "Word Frequency", boxid, lexops_df, str_in) {
                               c('Orthographic Levenshtein Distance 20 (OLD20)'='old20', "Coltheart's N"='cn'),
                               'old20',
                               inline=T)
+    } else if(vtype == "Orthographic Similarity") {
+      ui[[1]] <- radioButtons(sprintf('%s.opt', boxid), 'Measure',
+                              c('Levenshtein Distance'='ld', 'Demerau-Levenshtein Distance'='ldd'),
+                              'ld',
+                              inline=T)
     } else if(vtype == "Syllables") {
       reactivedefault <- if (length(input[[sprintf('%s.opt', boxid)]])==0) {
         'cmu'
@@ -275,6 +280,10 @@ match_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df, pos_opt)
           slider.step <- 1
         }
       }
+    } else if (vtype=="Orthographic Similarity") {
+      slider.range <- c(0, 25)
+      slider.def_val <- 5
+      slider.step <- 1
     } else if (vtype=="Syllables") {
       slider.range <- c(-5, 5)
       slider.def_val <- c(0, 0)
@@ -466,7 +475,7 @@ match_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, box_auto_or
             cn <- corpus_recode(box_opt, prefix="Accuracy")
             scaletext <- c("Less Accurate", "More Accurate")
           } else {
-            if ((vtype %in% c("Phonemes", "Syllables")) | (vtype=="Age of Acquisition" & all(box_opt=="bb"))) force.histogram <- T
+            if ((vtype %in% c("Phonemes", "Syllables", "Orthographic Similarity")) | (vtype=="Age of Acquisition" & all(box_opt=="bb"))) force.histogram <- T
             cn <- corpus_recode(box_opt, viscat2prefix(vtype))
             if (length(box_opt)>1) lexops_df[cn] <- lapply(lexops_df[cn], scale)
             scaletext <- viscat2scaletext(vtype)
@@ -485,6 +494,7 @@ match_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, box_auto_or
           } else {
             return(error.plot("Word not in\nCorpus!", "primary"))
           }
+          if (length(shade_list)==1) shade_list <- c(0, shade_list)
           relative_shade_list <- shade_list + target_val
           
           dens.plot(x="xval", redline=target_val, shade=relative_shade_list, df=lexops_df, boxtype='primary', text.lowscale=scaletext[1], text.highscale=scaletext[2], force.histogram=force.histogram)
@@ -498,15 +508,15 @@ match_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, box_auto_or
       
     }
     
-  })
+  },
   
-  # error=function(cond) {
-  #   return(NULL)
-  # },
-  # warning=function(cond) {
-  #   return(NULL)
-  # })
-  # 
+  error=function(cond) {
+    return(NULL)
+  },
+  warning=function(cond) {
+    return(NULL)
+  })
+
   out_plot
   
 }

@@ -52,7 +52,9 @@ corpus_recode <- function(inputopts = c("bnc_w", "bnc_s"), prefix=NA, logprefix=
                       "eh" = "EngelthalerHills",
                       "cn" = "Colthearts_N",
                       "old20" = "OLD20",
-                      "pld20" = "PLD20"
+                      "pld20" = "PLD20",
+                      "ld" = "LD",
+                      "ldd" = "DLD"
     )
     sprintf("%s%s%s", prefix_dot, log_prefix_str, recoded)
   } else {
@@ -93,6 +95,7 @@ corpus_recode_columns <- function(inputopts = c("bnc_w", "bnc_s"), v="Word Frequ
     v == "Length" ~ "Length",
     v == "Bigram Probability" ~ corpus_recode(inputopts, viscat2prefix(v)),
     v == "Orthographic Neighbourhood" ~ corpus_recode(inputopts, viscat2prefix(v), log),
+    v == "Orthographic Similarity" ~ corpus_recode(inputopts, viscat2prefix(v)),
     v == "Syllables" ~ corpus_recode(inputopts, viscat2prefix(v)),
     v == "Phonemes" ~ corpus_recode(inputopts, viscat2prefix(v)),
     v == "Rhyme" ~ corpus_recode(inputopts, viscat2prefix(v)),
@@ -108,6 +111,7 @@ corpus_recode_columns <- function(inputopts = c("bnc_w", "bnc_s"), v="Word Frequ
 viscat2scaletext <- function(v) {
   case_when(
     v == "Bigram Probability" ~ c("Less Likely", "More Likely"),
+    v == "Orthographic Similarity" ~ c("More Similar", "Less Similar"),
     v == "Syllables" ~ c("Fewer", "More"),
     v == "Phonemes" ~ c("Fewer", "More"),
     v == "Number of Pronunciations" ~ c("Fewer", "More"),

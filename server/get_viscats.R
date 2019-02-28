@@ -1,6 +1,10 @@
 # Visualilsation vector categories
 vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Probability', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Number of Pronunciations', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Humour', 'Lexical Decision Response Time', 'Lexical Decision Accuracy', 'Custom Variable')
 
+vis.cats.match <- vis.cats %>%
+  append("Phonological Similarity", after=match("Phonological Neighbourhood", vis.cats)) %>%
+  append("Orthographic Similarity", after=match("Orthographic Neighbourhood", vis.cats))
+
 vis.opt.2.source <- function(x, opts){switch(x,
                                        '(None)' = '',
                                        'Target Match Word' = '',
