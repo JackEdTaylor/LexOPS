@@ -165,7 +165,7 @@ output$visualiseplotly <- renderPlotly({
         }
       }
       
-      pd$colourname <- pd$colour
+      pd$colour
       if (length(unique(pd$colour))==2) {
         # get colour category with fewest members and set this as "a" and 1), and the other category as "b" and 2). This produces a fixed colour order.
         smallestcolcat <- pd %>%
@@ -174,15 +174,13 @@ output$visualiseplotly <- renderPlotly({
           arrange(desc(n)) %>%
           slice(1) %>%
           pull(colour)
-        pd <- pd %>%
-          mutate(colour = ifelse(colour==smallestcolcat, "a", "b"))
-        pd$colourname[pd$colourname!=smallestcolcat] <- sprintf("2) %s", pd$colourname[pd$colourname!=smallestcolcat])
-        pd$colourname[pd$colourname==smallestcolcat] <- sprintf("1) %s", pd$colourname[pd$colourname==smallestcolcat])
+        pd$colour[pd$colour!=smallestcolcat] <- sprintf("2) %s", pd$colour[pd$colour!=smallestcolcat])
+        pd$colour[pd$colour==smallestcolcat] <- sprintf("1) %s", pd$colour[pd$colour==smallestcolcat])
       }
       
       if(input$vis.zaxis.opts=='(None)'){
         # x * y * colour
-        plot_ly(data = pd, x = ~x, y = ~y, color=~colour, name=~colourname, height=screenheight()-175, mode='markers',
+        plot_ly(data = pd, x = ~x, y = ~y, color=~colour, height=screenheight()-175, mode='markers',
                 colors = variable_colours, marker=list(size = input$vis.pointsize.sl, colorbar=colorbarsettings),
                 opacity = input$vis.opacity.sl,
                 text = ~paste("'", string, "'")) %>%
@@ -192,7 +190,7 @@ output$visualiseplotly <- renderPlotly({
           config(displayModeBar = F)
       } else {
         # x * y * z * colour
-        plot_ly(data = pd, x = ~x, y = ~y, z = ~z, color=~colour, name=~colourname, height=screenheight()-175,
+        plot_ly(data = pd, x = ~x, y = ~y, z = ~z, color=~colour, height=screenheight()-175,
                 mode='markers', type="scatter3d", colors = variable_colours,
                 marker = list(symbol = 'circle', sizemode = 'diameter', size = input$vis.pointsize.sl/2, colorbar=colorbarsettings),
                 opacity = input$vis.opacity.sl,
