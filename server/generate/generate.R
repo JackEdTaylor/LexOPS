@@ -261,9 +261,7 @@ genresults_preformatting <- reactive({
     numerics <- colnames(select_if(res, is.numeric))  # get a list of the numeric variables
     
     if (gen_controlnull == "random") {
-      # all stimuli (for all conditions) must be within tolerance relative to all other conditions
-      # randomly select one condition as "initial condition" for each row,
-      # then exclude entries from pool if all conditions' words are not within tolerance from each other
+      # randomly select one condition as "null condition" for each row of output (each item)
       newres <- res %>%
         select(Condition, string) %>%
         mutate(spread_id=1:n()) %>%
@@ -472,7 +470,28 @@ genresults_longformat <- reactive({
     res <- genresults_preformatting() %>%
       gather("Condition", "string", 2:(ncol(genresults_preformatting())-1)) %>%
       left_join(res, by=c("string", "Condition")) %>%
-      select(Item, string, Condition, Match_Null, everything())
+      mutate(is_null = ifelse(Condition == Match_Null, T, F))
+    
+    # simple & fast euclidean and citblock distance functions
+    euc.dist <- function(x1, x2) as.numeric(dist(rbind(x1, x2), method="euclidean"))
+    cb.dist <- function(x1, x2) as.numeric(dist(rbind(x1, x2), method="manhattan"))
+    
+    # add euclidean and cityblock distance measures
+    cont_cols <- colnames(res)[startsWith(colnames(res), "cont.") & sapply(res, is.numeric)]  # get list of the numeric columns that refer to controls
+    res$cont.Euclidean.Distance <- NA
+    res$cont.CityBlock.Distance <- NA
+    for (itemnr in unique(res$Item)) {
+      null_cols <- as.numeric(res[res$is_null==T & res$Item==itemnr, cont_cols])
+      for (condname in unique(res$Condition)) {
+        x_cols <- as.numeric(res[res$Condition==condname & res$Item==itemnr, cont_cols])
+        res$cont.Euclidean.Distance[res$Condition==condname & res$Item==itemnr] <- euc.dist(x_cols, null_cols)
+        res$cont.CityBlock.Distance[res$Condition==condname & res$Item==itemnr] <- cb.dist(x_cols, null_cols)
+      }
+    }
+    
+    res <- res %>%
+      select(-is_null) %>%
+      select(Item, string, Condition, Match_Null, Euclidean.Distance, CityBlock.Distance, everything())
     
   } else {
     
