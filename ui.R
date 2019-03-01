@@ -39,14 +39,14 @@ tagList(
                                        menuItem('Generate', icon=icon('cogs'),
                                                 startExpanded = T,
                                                 menuSubItem('Options', tabName="generate_options", icon=icon('sliders-h')),
-                                                menuSubItem('Generated Stimuli', tabName="generate_results", icon=icon('sort-amount-down'))),
+                                                menuSubItem('Results', tabName="generate_results", icon=icon('sort-amount-down'))),
                                        menuItem('Match', icon=icon('balance-scale'),
                                                 startExpanded = F,
                                                 textInput('matchstring', 'Word:', 'thicket', width="90%"),  # must explicitly give width of UI items in sidebar to avoid overflowing
                                                 column(1, textOutput('nrow.matchresults')),
                                                 br(), br(),
                                                 menuSubItem('Options', tabName="match_options", icon=icon('sliders-h')),
-                                                menuSubItem('Suggested Matches', tabName="match_results", icon=icon('sort-amount-down'))),
+                                                menuSubItem('Results', tabName="match_results", icon=icon('sort-amount-down'))),
                                        menuItem('Fetch', tabName='fetch', icon=icon('file-import')),
                                        menuItem('Visualise', tabName="visualise", icon=icon('chart-bar')),
                                        br(),
@@ -95,7 +95,7 @@ tagList(
                                 )),
                         tabItem(tabName = 'generate_results',
                                 fluidRow(
-                                  box(title='Options', status='primary',
+                                  box(title='Results Options', status='primary',
                                       collapsible=T, collapsed=F, width=12,
                                       fluidRow(
                                         column(6, align="center", actionButton("gen_generate", "Generate/Regenerate Stimuli List", icon=icon("redo-alt"))),
@@ -137,7 +137,7 @@ tagList(
                         # Match Results tab
                         tabItem(tabName='match_results',
                                 fluidRow(
-                                  box(title='Options', status='primary',
+                                  box(title='Results Options', status='primary',
                                       collapsible=T, collapsed=T, width=12,
                                       fluidRow(
                                         column(12, h5(strong("Download"))),
