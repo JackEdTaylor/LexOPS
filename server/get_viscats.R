@@ -37,4 +37,4 @@ vis.opt.2.source <- function(x, opts){switch(x,
 
 vis.cats.non_Zscore <- c("Word Frequency", "Bigram Probability", "Lexical Decision Accuracy")
 
-phonological.vis.cats <- c("Syllables", "Phonemes", "Rhyme", "Phonological Neighbourhood", "Number of Pronunciations")
+phonological.vis.cats <- c("Syllables", "Phonemes", "Rhyme", "Phonological Neighbourhood", "Number of Pronunciations", "Phonological Similarity")

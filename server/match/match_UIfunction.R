@@ -35,7 +35,7 @@ match_UI <- function(vtype = "Word Frequency", boxid, lexops_df, str_in) {
                               inline=T)
     } else if(vtype == "Orthographic Similarity") {
       ui[[1]] <- radioButtons(sprintf('%s.opt', boxid), 'Measure',
-                              c('Levenshtein Distance'='ld', 'Demerau-Levenshtein Distance'='ldd'),
+                              c('Levenshtein Distance'='ld', 'Damerau-Levenshtein Distance'='ldd'),
                               'ld',
                               inline=T)
     } else if(vtype == "Syllables") {
@@ -87,6 +87,19 @@ match_UI <- function(vtype = "Word Frequency", boxid, lexops_df, str_in) {
                               'pld20',
                               inline=T)
       ui[[4]] <- radioButtons(sprintf('%s.auto_or_manual', boxid), sprintf("Pronunciation (%i detected)", length(get_pronunciations(str_in, lexops_df))),
+                              c('Use Primary Pronunciation'='auto', 'Select Manually'='manual'),
+                              selected='auto',
+                              inline=T)
+    } else if(vtype=="Phonological Similarity") {
+      ui[[1]] <- radioButtons(sprintf('%s.source', boxid), 'Source(s)',
+                              c('CMU Pronouncing Dictionary'='cmu'),
+                              'cmu',
+                              inline=T)
+      ui[[2]] <- radioButtons(sprintf('%s.opt', boxid), 'Measure',
+                              c('Levenshtein Distance'='ld', 'Damerau-Levenshtein Distance'='ldd'),
+                              'ld',
+                              inline=T)
+      ui[[3]] <- radioButtons(sprintf('%s.auto_or_manual', boxid), sprintf("Pronunciation (%i detected)", length(get_pronunciations(str_in, lexops_df))),
                               c('Use Primary Pronunciation'='auto', 'Select Manually'='manual'),
                               selected='auto',
                               inline=T)
@@ -314,6 +327,10 @@ match_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df, pos_opt)
           slider.step <- 1
         }
       }
+    } else if (vtype=="Phonological Similarity") {
+      slider.range <- c(0, 25)
+      slider.def_val <- 5
+      slider.step <- 1
     } else if (vtype=="Number of Pronunciations") {
       slider.range <- c(-3, 3)
       slider.def_val <- c(0, 0)
@@ -392,6 +409,17 @@ match_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, box_auto_or
       return(error.plot("Word not in\nCorpus!", "primary"))
     }
     
+    # get selected pronunciation number
+    if (vtype %in% phonological.vis.cats) {
+      if (box_auto_or_manual=="manual") {
+        pron_nr <- get_pron_nr(box_manual, str_in, lexops_df)
+      } else {
+        pron_nr <- 1
+      }
+    } else {
+      pron_nr <- 1
+    }
+    
     if (vtype != "(None)") {
       
       if (vtype == "Rhyme") {
@@ -426,17 +454,6 @@ match_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, box_auto_or
       } else {
         # numeric vtypes
         
-        # get selected pronunciation number
-        if (vtype %in% phonological.vis.cats) {
-          if (box_auto_or_manual=="manual") {
-            pron_nr <- get_pron_nr(box_manual, str_in, lexops_df)
-          } else {
-            pron_nr <- 1
-          }
-        } else {
-          pron_nr <- 1
-        }
-        
         force.histogram <- F
         
         if (length(box_opt)==0 & !(vtype %in% c("Length"))) {
@@ -467,6 +484,11 @@ match_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, box_auto_or
             if (box_opt=="pld20") scaletext <- c("Larger Neighbourhood", "Smaller Neighbourhood")
             if (box_opt=="cn") scaletext <- c("Smaller Neighbourhood", "Larger Neighbourhood")
             if (box_opt=="cn" & !box_log) force.histogram <- T
+          } else if (vtype == "Phonological Similarity") {
+            scaletext <- viscat2scaletext(vtype)
+            cn <- corpus_recode_columns(box_opt, "Phonological Similarity", pron_nr = pron_nr)
+            cn_prX <- cn
+            force.histogram <- T
           } else if (vtype == "Number of Pronunciations") {
             cn <- "CMU.PrN"
             scaletext <- c("Fewer", "More")
@@ -508,14 +530,14 @@ match_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, box_auto_or
       
     }
     
-  },
-  
-  error=function(cond) {
-    return(NULL)
-  },
-  warning=function(cond) {
-    return(NULL)
   })
+  
+  # error=function(cond) {
+  #   return(NULL)
+  # },
+  # warning=function(cond) {
+  #   return(NULL)
+  # })
 
   out_plot
   

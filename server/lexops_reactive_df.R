@@ -26,33 +26,32 @@ lexopsReact <- reactive({
               ON.OLD20 = old20val,
               ON.Log_OLD20 = log(old20val))
   }
+  
   # reactively calculate requested variables for target word in match tab
-  tryCatch({
-    if (matchboxes_N() >= 1) {
-      for (i in 1:matchboxes_N()) {
-        boxid <- boxid <- sprintf('matchbox_%i', i)
-        boxv <- input[[sprintf('%s_vtype', boxid)]]
-        boxopt <- input[[sprintf('%s.opt', boxid)]]
-        
-        # Orthographic Similarity
-        if (boxv == "Orthographic Similarity") {
-          column <- corpus_recode_columns(boxopt, boxv)
-          if (boxopt == "ld") {
-            res[[column]] <- vwr::levenshtein.distance(input$matchstring, res$string)
-          }
-          if (boxopt == "ldd") {
-            res[[column]] <- vwr::levenshtein.damerau.distance(input$matchstring, res$string)
-          }
+  if (!is.null(input$matchstring)) {
+    # Orthographic Similarity
+    for (measure in c("ld", "ldd")) {
+      column <- corpus_recode_columns(measure, "Orthographic Similarity")
+      if (measure=="ld") {
+        res[[column]] <- as.integer(vwr::levenshtein.distance(input$matchstring, res$string))
+      } else if (measure=="ldd") {
+        res[[column]] <- as.integer(vwr::levenshtein.damerau.distance(input$matchstring, res$string))
+      }
+    }
+    # Phonological Similarity
+    for (pron_nr in 1:4) {
+      pron_col <- sprintf("CMU.pr%i_1letter", pron_nr)
+      matchstring_pron <- res[[pron_col]][res$string==input$matchstring]
+      for (measure in c("ld", "ldd")) {
+        column <- corpus_recode_columns(measure, "Phonological Similarity", pron_nr = pron_nr)
+        if (measure=="ld") {
+          res[[column]] <- as.integer(vwr::levenshtein.distance(matchstring_pron, res[[pron_col]]))
+        } else if (measure=="ldd") {
+          res[[column]] <- as.integer(vwr::levenshtein.damerau.distance(matchstring_pron, res[[pron_col]]))
         }
       }
     }
-  },
-  error = function(cond) {
-    return(NULL)
-  },
-  warning=function(cond) {
-    return(NULL)
-  })
+  }
   
   res
 })

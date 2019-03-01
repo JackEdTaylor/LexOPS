@@ -25,12 +25,6 @@ matchresults_undistanced <- reactive({
           boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
           boxsource <- input[[sprintf("%s.source", boxid)]]
           
-          if (boxv == "Phonological Neighbourhood") {
-            column <- sprintf("%s.%s", corpus_recode(boxopt, "PN", logprefix=boxlog), corpus_recode(boxsource))
-          } else {
-            column <- corpus_recode_columns(boxopt, boxv, boxlog)
-          }
-          
           # manual pronunciation
           if (boxv %in% phonological.vis.cats) {
             if (input[[sprintf('%s.auto_or_manual', boxid)]]=="manual") {
@@ -41,8 +35,16 @@ matchresults_undistanced <- reactive({
             if (boxv == "Phonological Neighbourhood") {
               column_prX <- sprintf("%s.%s", corpus_recode(boxopt, "PN", logprefix=boxlog), corpus_recode(boxsource, pron_nr=pron_nr))
             } else {
-              column_prX <- corpus_recode(boxopt, viscat2prefix(boxv), pron_nr=pron_nr)
+              column_prX <- corpus_recode_columns(boxopt, boxv, pron_nr=pron_nr)
             }
+          }
+          
+          if (boxv == "Phonological Neighbourhood") {
+            column <- sprintf("%s.%s", corpus_recode(boxopt, "PN", logprefix=boxlog), corpus_recode(boxsource))
+          } else if (boxv == "Phonological Similarity") {
+            column <- corpus_recode_columns(boxopt, boxv, pron_nr = pron_nr)
+          } else {
+            column <- corpus_recode_columns(boxopt, boxv, boxlog)
           }
           
           # remove duplicates (fixes bug in rendering order)

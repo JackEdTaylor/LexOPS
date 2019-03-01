@@ -70,6 +70,7 @@ viscat2prefix <- function(viscat, log=F) {
          "Syllables" = "Syllables",
          "Phonemes" = "Phonemes",
          "Number of Pronunciations" = "PrN",
+         "Phonological Similarity" = "PS",
          "Familiarity" = "FAM",
          "Age of Acquisition" = "AoA",
          "Concreteness" = "CNC",
@@ -88,7 +89,7 @@ viscat2prefix <- function(viscat, log=F) {
   )
 }
 
-corpus_recode_columns <- function(inputopts = c("bnc_w", "bnc_s"), v="Word Frequency", log=F) {
+corpus_recode_columns <- function(inputopts = c("bnc_w", "bnc_s"), v="Word Frequency", log=F, pron_nr=1) {
   case_when(
     v == "Word Frequency" ~ corpus_recode(inputopts, viscat2prefix(v, log)),
     v == "Part of Speech" ~ corpus_recode(inputopts, viscat2prefix(v)),
@@ -100,6 +101,7 @@ corpus_recode_columns <- function(inputopts = c("bnc_w", "bnc_s"), v="Word Frequ
     v == "Phonemes" ~ corpus_recode(inputopts, viscat2prefix(v)),
     v == "Rhyme" ~ corpus_recode(inputopts, viscat2prefix(v)),
     v == "Phonological Neighbourhood" ~ sprintf("%s.CMU.pr1", corpus_recode(inputopts, viscat2prefix(v), log)),
+    v == "Phonological Similarity" ~ sprintf("%s.pr%i", corpus_recode(inputopts, viscat2prefix(v)), pron_nr),
     v == "Syllables" ~ corpus_recode(inputopts, viscat2prefix(v)),
     v == "Number of Pronunciations" ~ "CMU.PrN",
     v %in% c("Familiarity", "Age of Acquisition", "Concreteness", "Arousal", "Valence", "Dominance", "Imageability", "Semantic Size", "Semantic Gender", "Humour") ~ corpus_recode(inputopts, viscat2prefix(v)),
@@ -115,6 +117,7 @@ viscat2scaletext <- function(v) {
     v == "Syllables" ~ c("Fewer", "More"),
     v == "Phonemes" ~ c("Fewer", "More"),
     v == "Number of Pronunciations" ~ c("Fewer", "More"),
+    v == "Phonological Similarity" ~ c("More Similar", "Less Similar"),
     v == "Familiarity" ~ c("Less Familiar", "More Familiar"),
     v == "Age of Acquisition" ~ c("Earlier", "Later"),
     v == "Concreteness" ~ c("Less Concrete", "More Concrete"),
