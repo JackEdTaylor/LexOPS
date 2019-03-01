@@ -75,6 +75,5 @@ lexops <- tibble(
   HUM.EngelthalerHills = dat$eh.HUM,
   RT.BLP = dat$blp.rt,
   Accuracy.BLP = dat$blp.accuracy,
-  Accuracy_zscore.BLP = dat$blp.accuracy.zscore,
   RT.ELP = dat$elp.rt,
   Accuracy.ELP = dat$elp.accuracy)
