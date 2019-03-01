@@ -209,8 +209,8 @@ output$visualiseplotly <- renderPlotly({
                    tickfont=list(color=input$vis.textcolour)) %>%
           layout(scene = list(xaxis = list(title = xtitle, color = input$vis.textcolour),
                               yaxis = list(title = ytitle, color = input$vis.textcolour),
-                              zaxis = list(title = ztitle, color = input$vis.textcolour),
-                              legend = list(font=list(color=input$vis.textcolour)))) %>%
+                              zaxis = list(title = ztitle, color = input$vis.textcolour)),
+                 legend = list(font=list(color=input$vis.textcolour))) %>%
           config(displayModeBar = F)
       }
     }
