@@ -162,11 +162,14 @@ output$visualiseplotly <- renderPlotly({
         if (input$vis.colour.opts=="Part of Speech"){
           variable_colours <- c("red", "blue", "green", "orange", "purple")
         } else {
-          variable_colours <- viridis_pal(option = "D")(3)  # for suggested matches and target word
+          if (input$vis.colour.opts == "Generated Stimuli Condition") {
+            variable_colours <- c("magenta", "darkorange", "firebrick1", "chartreuse", "cyan", "yellow")[1:length(unique(pd$colour))]
+          } else {
+            variable_colours <- viridis_pal(option = "D")(3)  # for dichotomous visualisation of yellow on purple (e.g. suggested matches)
+          }
         }
       }
       
-      pd$colour
       if (length(unique(pd$colour))==2) {
         # get colour category with fewest members and set this as "a" and 1), and the other category as "b" and 2). This produces a fixed colour order.
         smallestcolcat <- pd %>%
