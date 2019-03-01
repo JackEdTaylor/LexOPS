@@ -19,17 +19,21 @@ lexopsReact <- reactive({
   }
   # add "word" to database temporarily if unknown
   if (!input$matchstring %in% res$string) {
+    old20val <- as.numeric(vwr::old20(input$matchstring, lexops$string))
     res <- res %>%
       add_row(string = input$matchstring,
-              Length = nchar(input$matchstring))
+              Length = nchar(input$matchstring),
+              ON.OLD20 = old20val,
+              ON.Log_OLD20 = log(old20val))
   }
-  # calculate similarity measures for match tab (if any)
+  # reactively calculate requested variables for target word in match tab
   tryCatch({
     if (matchboxes_N() >= 1) {
       for (i in 1:matchboxes_N()) {
         boxid <- boxid <- sprintf('matchbox_%i', i)
         boxv <- input[[sprintf('%s_vtype', boxid)]]
         boxopt <- input[[sprintf('%s.opt', boxid)]]
+        
         # Orthographic Similarity
         if (boxv == "Orthographic Similarity") {
           column <- corpus_recode_columns(boxopt, boxv)
