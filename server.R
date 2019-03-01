@@ -74,6 +74,12 @@ shinyServer(function(input, output) {
       res <- res %>%
         full_join(select(inputfile, c(sprintf("custom.%s", selcols), "string")), by="string")
     }
+    # add "word" to database temporarily if unknown
+    if (!input$matchstring %in% res$string) {
+      res <- res %>%
+        add_row(string = input$matchstring,
+                Length = nchar(input$matchstring))
+    }
     # calculate similarity measures for match tab (if any)
     tryCatch({
       if (matchboxes_N() >= 1) {
