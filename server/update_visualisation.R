@@ -132,23 +132,24 @@ output$visualiseplotly <- renderPlotly({
     if (input$vis.colour.opts=='(None)'){
       if(input$vis.zaxis.opts=='(None)'){
         # x * y
-        plot_ly(data = pd, x = ~x, y = ~y, height=screenheight()-175, mode='markers',
+        pl <- plot_ly(data = pd, x = ~x, y = ~y, height=screenheight()-175, mode='markers',
                 opacity = input$vis.opacity.sl,
+                marker = list(symbol = 'circle', sizemode = 'diameter', size = input$vis.pointsize.sl),
                 text = ~paste("'", string, "'")) %>%
           add_markers() %>%
-          layout(xaxis = list(title = xtitle),
-                 yaxis = list(title = ytitle)) %>%
+          layout(xaxis = list(title = xtitle, color = input$vis.textcolour),
+                 yaxis = list(title = ytitle, color = input$vis.textcolour)) %>%
           config(displayModeBar = F)
       } else {
         # x * y * z
-        plot_ly(data = pd, x = ~x, y = ~y, z = ~z, height=screenheight()-175,
+        pl <- plot_ly(data = pd, x = ~x, y = ~y, z = ~z, height=screenheight()-175,
                 mode='markers', type="scatter3d",
-                marker = list(symbol = 'circle', sizemode = 'diameter', size = 2.5),
+                marker = list(symbol = 'circle', sizemode = 'diameter', size = input$vis.pointsize.sl/2),
                 opacity = input$vis.opacity.sl,
                 text = ~paste("'", string, "'")) %>%
-          layout(scene = list(xaxis = list(title = xtitle),
-                              yaxis = list(title = ytitle),
-                              zaxis = list(title = ztitle))) %>%
+          layout(scene = list(xaxis = list(title = xtitle, color = input$vis.textcolour),
+                              yaxis = list(title = ytitle, color = input$vis.textcolour),
+                              zaxis = list(title = ztitle, color = input$vis.textcolour))) %>%
           config(displayModeBar = F)
       }
     } else {
@@ -180,28 +181,42 @@ output$visualiseplotly <- renderPlotly({
       
       if(input$vis.zaxis.opts=='(None)'){
         # x * y * colour
-        plot_ly(data = pd, x = ~x, y = ~y, color=~colour, height=screenheight()-175, mode='markers',
+        pl <- plot_ly(data = pd, x = ~x, y = ~y, color=~colour, height=screenheight()-175, mode='markers',
                 colors = variable_colours, marker=list(size = input$vis.pointsize.sl, colorbar=colorbarsettings),
                 opacity = input$vis.opacity.sl,
                 text = ~paste("'", string, "'")) %>%
-          colorbar(title=colourtitle) %>%
-          layout(xaxis = list(title = xtitle),
-                 yaxis = list(title = ytitle)) %>%
+          colorbar(title=colourtitle,
+                   titlefont=list(color=input$vis.textcolour),
+                   tickcolour=input$vis.textcolour,
+                   tickfont=list(color=input$vis.textcolour)) %>%
+          layout(xaxis = list(title = xtitle, color = input$vis.textcolour),
+                 yaxis = list(title = ytitle, color = input$vis.textcolour),
+                 legend = list(font=list(color=input$vis.textcolour))) %>%
           config(displayModeBar = F)
       } else {
         # x * y * z * colour
-        plot_ly(data = pd, x = ~x, y = ~y, z = ~z, color=~colour, height=screenheight()-175,
+        pl <- plot_ly(data = pd, x = ~x, y = ~y, z = ~z, color=~colour, height=screenheight()-175,
                 mode='markers', type="scatter3d", colors = variable_colours,
                 marker = list(symbol = 'circle', sizemode = 'diameter', size = input$vis.pointsize.sl/2, colorbar=colorbarsettings),
                 opacity = input$vis.opacity.sl,
                 text = ~paste("'", string, "'")) %>%
-          colorbar(title=colourtitle) %>%
-          layout(scene = list(xaxis = list(title = xtitle),
-                              yaxis = list(title = ytitle),
-                              zaxis = list(title = ztitle))) %>%
+          colorbar(title=colourtitle,
+                   titlefont=list(color=input$vis.textcolour),
+                   tickcolour=input$vis.textcolour,
+                   tickfont=list(color=input$vis.textcolour)) %>%
+          layout(scene = list(xaxis = list(title = xtitle, color = input$vis.textcolour),
+                              yaxis = list(title = ytitle, color = input$vis.textcolour),
+                              zaxis = list(title = ztitle, color = input$vis.textcolour),
+                              legend = list(font=list(color=input$vis.textcolour)))) %>%
           config(displayModeBar = F)
       }
     }
+    
+    # colour the plot background as selected, and return the output
+    pl %>% layout(
+      paper_bgcolor = input$vis.bgcolour,
+      plot_bgcolor = input$vis.bgcolour)
+    
   })
   
 })

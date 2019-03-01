@@ -7,6 +7,7 @@ library(viridis)
 library(ggwordcloud)
 library(DT)
 library(vwr)
+library(colourpicker)
 
 lexops_loadingdone <- function() {
   hide(id = "loading_page", anim = TRUE, animType = "fade")    

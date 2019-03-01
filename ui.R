@@ -6,6 +6,7 @@ library(tidyverse)
 library(plotly)
 library(viridis)
 library(DT)
+library(colourpicker)
 
 # Visualilsation vector categories - needed in UI for Visualisation tab
 vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Probability', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Number of Pronunciations', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Humour', 'Lexical Decision Response Time', 'Lexical Decision Accuracy', 'Custom Variable')
@@ -264,8 +265,15 @@ tagList(
                               column(6, sliderInput('vis.opacity.sl', 'Point Opacity', value=0.85, min=0.1, max=1, step=0.05)),
                               column(6, sliderInput('vis.pointsize.sl', 'Point Size', value=4, min=1, max=10, step=1))
                             ),
+                            br(),
                             fluidRow(
-                              column(12, align="center", actionButton('vis.generateplot', 'Regenerate Plot', icon=icon("chart-bar")))
+                              column(6, colourInput('vis.bgcolour', 'Background Colour', value="black")),
+                              column(6, colourInput('vis.textcolour', 'Text Colour', value="white"))
+                            ),
+                            br(),
+                            br(),
+                            fluidRow(
+                              column(12, align="center", actionButton('vis.generateplot', 'Regenerate Plot', icon=icon("chart-bar"), style='font-size:125%'))
                             )
                           )),
                           
