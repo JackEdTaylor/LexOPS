@@ -22,7 +22,7 @@ dens.plot <- function(x='gn.VAL', redline=3.2, selected=T, shade=c(3, 3.4), df=d
     dfplot$x <- log(dfplot$x)
   }
   
-  if (class(dfplot$x)=='integer' | force.histogram) {
+  if (is.integer(dfplot$x) | force.histogram) {
     
     # get binwidth
     binvals <- sort(unique(dfplot$x))
