@@ -38,6 +38,10 @@ lapply(1:25, function(i) {
                                                                           input[[sprintf("%s.source", boxid)]],
                                                                           lexopsReact(),
                                                                           box_sliders()) })
+  output[[sprintf('%s_ui_plotwarning', boxid)]] <- renderText({ controlfor_UI_plotwarning(input[[sprintf("%s_vtype", boxid)]],
+                                                                                          boxid,
+                                                                                          input[[sprintf("%s.opt", boxid)]],
+                                                                                          lexopsReact()) })
 })
 
 # Put the UIs built above into their boxes
@@ -49,6 +53,7 @@ lapply(1:25, function(i) {
         uiOutput(sprintf('%s_ui', boxid)),
         uiOutput(sprintf('%s_ui_sliders', boxid)),
         plotOutput(sprintf('%s_ui_vis', boxid), height='170px'),
+        em(textOutput(sprintf('%s_ui_plotwarning', boxid))),
         id = boxid
     )
   })

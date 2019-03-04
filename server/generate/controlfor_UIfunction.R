@@ -395,3 +395,25 @@ controlfor_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, lexops
   }
   
 }
+
+controlfor_UI_plotwarning <- function(vtype, boxid, boxopt, lexops_df) {
+  
+  if (vtype != "(None)") {
+    
+    if (vtype != "Part of Speech") {
+      
+      if (vtype == "Custom Variable") {
+        
+        cn <- corpus_recode(box_opt, viscat2prefix(vtype))
+        if (!is.numeric(lexops_df$cn)) return(NULL)
+        
+      }
+      
+      return("Note: Red line position is sampled randomly for illustration.")
+      
+    }
+    
+  }
+  
+}
+
