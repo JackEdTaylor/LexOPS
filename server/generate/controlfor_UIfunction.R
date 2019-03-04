@@ -146,7 +146,7 @@ controlfor_UI <- function(vtype = "Word Frequency", boxid) {
 }
 
 
-controlfor_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
+controlfor_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df, toleranceUIopt="slider") {
   
   ui <- NULL
   
@@ -301,15 +301,36 @@ controlfor_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
     # build sliders
     if (vtype != "(None)") {
       sl_val <- slider.def_val
-      ui <- sliderInput(sprintf("%s_sl", boxid),
-                        label = "Tolerance Criteria",
-                        min = slider.range[1],
-                        max = slider.range[2],
-                        value = sl_val,
-                        step = slider.step)
+      
+      if (toleranceUIopt=="slider") {
+        ui <- sliderInput(sprintf("%s_sl", boxid),
+                          label = "Tolerance Criteria",
+                          min = slider.range[1],
+                          max = slider.range[2],
+                          value = sl_val,
+                          step = slider.step)
+      } else if (toleranceUIopt=="numericinput") {
+        
+        if (length(sl_val)==1) {
+          sl_val <- c(0, sl_val)
+        }
+        
+        ui <- fluidRow(
+          column(6, numericInput(sprintf("%s_tol_lower", boxid),
+                                 label = "Tolerance Lower Limit",
+                                 max = 0,
+                                 value = sl_val[1],
+                                 step = slider.step)),
+          column(6, numericInput(sprintf("%s_tol_upper", boxid),
+                                 label = "Tolerance Upper Limit",
+                                 min = 0,
+                                 value = sl_val[2],
+                                 step = slider.step))
+        )
+        
+      }
+    
     }
-    
-    
   }
   
   ui

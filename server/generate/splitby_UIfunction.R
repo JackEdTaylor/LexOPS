@@ -147,7 +147,7 @@ splitby_UI <- function(vtype = "Word Frequency", boxid) {
 }
 
 
-splitby_UI_sliders <- function(vtype, boxid, levels_N, box_opt, box_log, boxletter, lexops_df) {
+splitby_UI_sliders <- function(vtype, boxid, levels_N, box_opt, box_log, boxletter, lexops_df, toleranceUIopt="slider") {
   
   ui <- list()
   
@@ -396,12 +396,32 @@ splitby_UI_sliders <- function(vtype, boxid, levels_N, box_opt, box_log, boxlett
           } else {
             sl_val <- slider.valueABC[[i]]
           }
-          ui[[i]] <- sliderInput(sprintf("%s_sl%i", boxid, i),
-                                 label = sprintf("Level %s%i", boxletter, i),
-                                 min = slider.range[1],
-                                 max = slider.range[2],
-                                 value = sl_val,
-                                 step = slider.step)
+          
+          if (toleranceUIopt=="slider") {
+            ui[[i]] <- sliderInput(sprintf("%s_sl%i", boxid, i),
+                              label = sprintf("Level %s%i", boxletter, i),
+                              min = slider.range[1],
+                              max = slider.range[2],
+                              value = sl_val,
+                              step = slider.step)
+          } else if (toleranceUIopt=="numericinput") {
+            
+            if (length(sl_val)==1) {
+              sl_val <- c(0, sl_val)
+            }
+            
+            ui[[i]] <- fluidRow(
+              column(6, numericInput(sprintf("%s_tol_lower%i", boxid, i),
+                                     label = sprintf("Level %s%i Lower Limit", boxletter, i),
+                                     value = sl_val[1],
+                                     step = slider.step)),
+              column(6, numericInput(sprintf("%s_tol_upper%i", boxid, i),
+                                     label = sprintf("Level %s%i Upper Limit", boxletter, i),
+                                     value = sl_val[2],
+                                     step = slider.step))
+            )
+            
+          }
         }
       }
       

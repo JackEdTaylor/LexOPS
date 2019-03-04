@@ -51,6 +51,7 @@ tagList(
                                        menuItem('Visualise', tabName="visualise", icon=icon('chart-bar')),
                                        br(),
                                        menuItem('Custom Variables', tabName='custom_variables', icon=icon('plus')),
+                                       menuItem('Preferences', tabName='preferences', icon=icon('wrench')),
                                        menuItem('Info', tabName='info', icon=icon('info-circle'))
                                      )),
                     
@@ -308,6 +309,16 @@ tagList(
                                     )
                                   )
                                   )),
+                        # Preferences tab
+                        tabItem(tabName='preferences',
+                                box(
+                                  title=NULL, status='primary',
+                                  collabsible=F, width=12,
+                                  fluidRow(
+                                    column(12, radioButtons('preference.toleranceUI', 'How Should Tolerances be Selected?', c('Click and Drag Sliders'='slider', 'Type Numeric Input'='numericinput'), selected='slider', inline=T))
+                                  )
+                                )
+                        ),
                         # Info tab
                         tabItem(tabName='info',
                                 downloadButton('LexOPS.csv', 'Download the LexOPS Database')

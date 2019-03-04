@@ -19,7 +19,13 @@ matchresults_undistanced <- reactive({
         
         if (boxv != "(None)") {
           
-          sl <- input[[sprintf('%s_sl', boxid)]]  # get the box's filter
+          # get the box's tolerance
+          sl <- if (input$preference.toleranceUI == 'slider') {
+            input[[sprintf("%s_sl", boxid)]]
+          } else if (input$preference.toleranceUI == 'numericinput') {
+            c(input[[sprintf("%s_tol_lower", boxid)]], input[[sprintf("%s_tol_upper", boxid)]])
+          }
+          
           if (length(sl)==1) sl <- c(0, sl)  # handle sliders with one value (e.g. distances)
           boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
           boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}

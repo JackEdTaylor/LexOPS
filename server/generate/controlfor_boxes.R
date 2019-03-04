@@ -29,8 +29,15 @@ lapply(1:25, function(i) {
                                                                                 boxid,
                                                                                 input[[sprintf("%s.opt", boxid)]],
                                                                                 input[[sprintf("%s.log", boxid)]],
-                                                                                lexopsReact()) })
-  box_sliders <- reactive({ input[[sprintf("%s_sl", boxid)]] })
+                                                                                lexopsReact(),
+                                                                                toleranceUIopt = input$preference.toleranceUI) })
+  box_sliders <- reactive({
+    if (input$preference.toleranceUI == 'slider') {
+      input[[sprintf("%s_sl", boxid)]]
+    } else {
+      c(input[[sprintf("%s_tol_lower", boxid)]], input[[sprintf("%s_tol_upper", boxid)]])
+    }
+  })
   output[[sprintf('%s_ui_vis', boxid)]] <- renderPlot({ controlfor_UI_vis(input[[sprintf("%s_vtype", boxid)]],
                                                                           boxid,
                                                                           input[[sprintf("%s.opt", boxid)]],

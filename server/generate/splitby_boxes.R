@@ -32,11 +32,16 @@ lapply(1:25, function(i) {
                                                                              input[[sprintf("%s.opt", boxid)]],
                                                                              input[[sprintf("%s.log", boxid)]],
                                                                              var_lttr,
-                                                                             lexopsReact()) })
+                                                                             lexopsReact(),
+                                                                             toleranceUIopt = input$preference.toleranceUI) })
   box_sliders <- reactive({
     sl <- list()
     for (i in 1:input[[sprintf("%s_Nlevels", boxid)]]) {
-      sl[[i]] <- input[[sprintf("%s_sl%i", boxid, i)]]
+      sl[[i]] <- if (input$preference.toleranceUI == 'slider') {
+        input[[sprintf("%s_sl%i", boxid, i)]]
+      } else {
+        c(input[[sprintf("%s_tol_lower%i", boxid, i)]], input[[sprintf("%s_tol_upper%i", boxid, i)]])
+      }
     }
     sl
   })
