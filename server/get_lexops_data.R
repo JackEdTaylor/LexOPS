@@ -73,6 +73,8 @@ lexops <- tibble(
   SIZE.Glasgow_Norms = dat$gn.SIZE,
   GEND.Glasgow_Norms = dat$gn.GEND,
   HUM.EngelthalerHills = dat$eh.HUM,
+  PREV.Brysbaert = dat$brysbaert.prev,
+  PK.Brysbaert = dat$brysbaert.p_known,
   RT.BLP = dat$blp.rt,
   Accuracy.BLP = dat$blp.accuracy,
   RT.ELP = dat$elp.rt,

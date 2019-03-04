@@ -104,6 +104,16 @@ filterby_UI <- function(vtype = "Word Frequency", boxid) {
                                     c('Engelthaler & Hills (2018)'='eh'),
                                     selected='eh',
                                     inline=T)
+    } else if (vtype == "Word Prevalence") {
+      ui[[1]] <- checkboxGroupInput(sprintf('%s.opt', boxid), 'Source(s)',
+                                    c('Brysbaert et al. (2018)'='brysbaert'),
+                                    selected='brysbaert',
+                                    inline=T)
+    } else if (vtype == "Proportion Known") {
+      ui[[1]] <- checkboxGroupInput(sprintf('%s.opt', boxid), 'Source(s)',
+                                    c('Brysbaert et al. (2018)'='brysbaert'),
+                                    selected='brysbaert',
+                                    inline=T)
     } else if(vtype == "Lexical Decision Response Time") {
       ui[[1]] <- checkboxGroupInput(sprintf('%s.opt', boxid), 'Source(s)',
                                     c('British Lexicon Project (BLP)'='blp', 'English Lexicon Project (ELP)'='elp'),
@@ -308,6 +318,14 @@ filterby_UI_sliders <- function(vtype, boxid, box_opt, box_log, lexops_df) {
         slider.def_val <- c(-2, 2)
         slider.step <- .05
       }
+    } else if (vtype == "Word Prevalence") {
+      slider.range <- c(-2, 2.6)
+      slider.def_val <- c(0, 2.6)
+      slider.step <- 0.1
+    } else if (vtype == "Proportion Known") {
+      slider.range <- c(0, 1)
+      slider.def_val <- c(0.5, 1)
+      slider.step <- 0.05
     } else if (vtype == "Lexical Decision Accuracy") {
       slider.range <- c(0, 1)
       slider.def_val <- c(0.5, 1)

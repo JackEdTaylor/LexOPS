@@ -1,5 +1,5 @@
 # Visualilsation vector categories
-vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Probability', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Number of Pronunciations', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Humour', 'Lexical Decision Response Time', 'Lexical Decision Accuracy', 'Custom Variable')
+vis.cats <- c('Word Frequency', 'Part of Speech', 'Length', 'Bigram Probability', 'Orthographic Neighbourhood', 'Syllables', 'Phonemes', 'Rhyme', 'Phonological Neighbourhood', 'Number of Pronunciations', 'Familiarity', 'Age of Acquisition', 'Concreteness', 'Arousal', 'Valence', 'Dominance', 'Imageability', 'Semantic Size', 'Semantic Gender', 'Humour', 'Word Prevalence', 'Proportion Known', 'Lexical Decision Response Time', 'Lexical Decision Accuracy', 'Custom Variable')
 
 vis.cats.match <- vis.cats %>%
   append("Phonological Similarity", after=match("Phonological Neighbourhood", vis.cats)) %>%
@@ -30,6 +30,8 @@ vis.opt.2.source <- function(x, opts){switch(x,
                                        'Semantic Size' = opts[grepl("SIZE",opts)],
                                        'Semantic Gender' = opts[grepl("GEND",opts)],
                                        'Humour' = opts[grepl("HUM",opts)],
+                                       'Word Prevalence' = opts[grepl("PREV", opts)],
+                                       'Proportion Known' = opts[grepl("PK", opts)],
                                        'Lexical Decision Response Time' = opts[grepl("RT",opts)],
                                        'Lexical Decision Accuracy' = opts[grepl("Accuracy",opts)],
                                        'Custom Variable' = opts[grepl("custom.",opts)]

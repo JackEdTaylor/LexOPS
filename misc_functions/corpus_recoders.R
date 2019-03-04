@@ -81,6 +81,8 @@ viscat2prefix <- function(viscat, log=F) {
          "Semantic Size" = "SIZE",
          "Semantic Gender" = "GEND",
          "Humour" = "HUM",
+         "Word Prevalence" = "PREV",
+         "Proportion Known" = "PK",
          "Lexical Decision Response Time" = "RT",
          "Lexical Decision Accuracy" = "Accuracy",
          "Part of Speech" = "PoS",
@@ -104,6 +106,8 @@ corpus_recode_columns <- function(inputopts = c("bnc_w", "bnc_s"), v="Word Frequ
     v == "Phonological Similarity" ~ sprintf("%s.pr%i", corpus_recode(inputopts, viscat2prefix(v)), pron_nr),
     v == "Syllables" ~ corpus_recode(inputopts, viscat2prefix(v)),
     v == "Number of Pronunciations" ~ "CMU.PrN",
+    v == "Word Prevalence" ~ corpus_recode(inputopts, viscat2prefix(v)),
+    v == "Proportion Known" ~ corpus_recode(inputopts, viscat2prefix(v)),
     v %in% c("Familiarity", "Age of Acquisition", "Concreteness", "Arousal", "Valence", "Dominance", "Imageability", "Semantic Size", "Semantic Gender", "Humour") ~ corpus_recode(inputopts, viscat2prefix(v)),
     v %in% c("Lexical Decision Response Time", "Lexical Decision Accuracy") ~ corpus_recode(inputopts, viscat2prefix(v)),
     v == "Custom Variable" ~ corpus_recode(inputopts, viscat2prefix(v))
@@ -128,6 +132,8 @@ viscat2scaletext <- function(v) {
     v == "Semantic Size" ~ c("Smaller", "Larger"),
     v == "Semantic Gender" ~ c("More Feminine", "More Masculine"),
     v == "Humour" ~ c("Less Funny", "More Funny"),
+    v == "Word Prevalence" ~ c("Less Prevalent", "More Prevalent"),
+    v == "Proportion Known" ~ c("Smaller", "Larger"),
     v == "Lexical Decision Response Time" ~ c("Faster", "Slower"),
     v == "Lexical Decision Accuracy" ~ c("Less Accurate", "More Accurate"),
     v == "Custom Variable" ~ c("Lower", "Higher")
