@@ -409,7 +409,7 @@ controlfor_UI_plotwarning <- function(vtype, boxid, boxopt, lexops_df) {
         
       }
       
-      return("Note: Red line position is sampled randomly for illustration.")
+      return("Note: For variables which are controlled for, the red line position is sampled randomly for illustration.")
       
     }
     
