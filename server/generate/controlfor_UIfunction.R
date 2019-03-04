@@ -5,7 +5,7 @@ controlfor_UI <- function(vtype = "Word Frequency", boxid) {
     ui <- list()
     
     if (vtype == "Word Frequency") {
-      ui[[1]] <- checkboxInput(sprintf('%s.log', boxid), 'Log Transform (Zipf)', 1)
+      ui[[1]] <- checkboxInput(sprintf('%s.log', boxid), 'Use Zipf Scale', 1)
       ui[[2]] <- checkboxGroupInput(sprintf('%s.opt', boxid), 'Corpora',
                                     c('BNC (written)'='bnc_w', 'BNC (spoken)'='bnc_s', 'SUBTLEX-UK'='suk', 'SUBTLEX-US'='sus'),
                                     c('bnc_w', 'bnc_s', 'suk', 'sus'),
