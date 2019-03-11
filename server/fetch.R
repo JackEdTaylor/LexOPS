@@ -122,7 +122,7 @@ fetch_df_res <- reactive({
   if (!is.null(fetch_df_raw())) {
     # get list of selected features
     if (input$fetch.opts.all=="all") {
-      sel_feats <- colnames(select(lexops, -string))
+      sel_feats <- colnames(select(lexopsReact(), -string))
     } else {
       sel_feats <- c()
       for (catnr in 1:length(vis.cats)) {
@@ -131,7 +131,7 @@ fetch_df_res <- reactive({
     }
     targwordstringcolname <- fetch_targwordstringcolname()
     # extract selected features
-    lexops_f <- plyr::rename(lexops, c("string"=targwordstringcolname)) %>%
+    lexops_f <- plyr::rename(lexopsReact(), c("string"=targwordstringcolname)) %>%
       select(c(targwordstringcolname, sel_feats))
     # get the input from the file or copy-paste
     in_df <- fetch_df_raw()
