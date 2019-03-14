@@ -21,7 +21,6 @@ cat(sprintf(' -DONE.\n'))
 
 # Create lexops dataframe
 source("server/get_lexops_data.R", local=T)
-lexopsraw <- lexops
 
 # simple functions for rounding decimals up or down
 source("misc_functions/rounding.R", local=T)
