@@ -108,7 +108,7 @@ shinyServer(function(input, output) {
   output$LexOPS.csv <- downloadHandler(
     filename = 'LexOPS.csv',
     content = function(file) {
-      write.csv(lexopsraw, file, row.names = FALSE)
+      write.csv(lexops, file, row.names = FALSE)
     }
   )
   
