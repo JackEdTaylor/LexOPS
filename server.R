@@ -1,13 +1,13 @@
 library(shiny)
 library(shinydashboard)
 library(shinyjs)
-library(tidyverse)
 library(plotly)
 library(viridis)
 library(ggwordcloud)
 library(DT)
 library(vwr)
 library(colourpicker)
+library(tidyverse)
 
 lexops_loadingdone <- function() {
   hide(id = "loading_page", anim = TRUE, animType = "fade")    
