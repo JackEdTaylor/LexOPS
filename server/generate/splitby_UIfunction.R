@@ -31,18 +31,18 @@ splitby_UI <- function(vtype = "Word Frequency", boxid) {
                               inline=T)
     } else if(vtype == "Syllables") {
       ui[[1]] <- radioButtons(sprintf('%s.opt', boxid), 'Source(s)',
-                              c('CMU Pronouncing Dictionary'='cmu', 'Moby Project'='mp'),
+                              c('CMU Pronouncing Dictionary'='cmu', 'eSpeak Transcriptions'='espeak'),
                               'cmu',
                               inline=T)
     } else if(vtype == "Phonemes") {
       ui[[1]] <- radioButtons(sprintf('%s.opt', boxid), 'Source(s)',
-                              c('CMU Pronouncing Dictionary'='cmu'),
+                              c('CMU Pronouncing Dictionary'='cmu', 'eSpeak Transcriptions'='espeak'),
                               'cmu',
                               inline=T)
     } else if(vtype == "Phonological Neighbourhood") {
       ui[[1]] <- checkboxInput(sprintf('%s.log', boxid), 'Log Transform', 1)
       ui[[2]] <- radioButtons(sprintf('%s.source', boxid), 'Source(s)',
-                              c('CMU Pronouncing Dictionary'='cmu'),
+                              c('CMU Pronouncing Dictionary'='cmu', 'eSpeak Transcriptions'='espeak'),
                               'cmu',
                               inline=T)
       ui[[3]] <- radioButtons(sprintf('%s.opt', boxid), 'Measure',
@@ -471,7 +471,7 @@ splitby_UI_vis <- function(vtype, boxid, levels_N, box_opt, box_log, box_source,
           if (box_opt=="cn") scaletext <- c("Smaller Neighbourhood", "Larger Neighbourhood")
           if (box_opt=="cn" & !box_log) force.histogram <- T
         } else if (vtype == "Phonological Neighbourhood") {
-          cn <- sprintf("%s.%s", corpus_recode(box_opt, "PN", logprefix=box_log), corpus_recode(box_source))
+          cn <- corpus_recode_columns(box_opt, vtype, box_log, box_source)
           if (box_opt=="pld20") scaletext <- c("Larger Neighbourhood", "Smaller Neighbourhood")
           if (box_opt=="cn") scaletext <- c("Smaller Neighbourhood", "Larger Neighbourhood")
           if (box_opt=="cn" & !box_log) force.histogram <- T
@@ -483,8 +483,10 @@ splitby_UI_vis <- function(vtype, boxid, levels_N, box_opt, box_log, box_source,
           cn <- corpus_recode(box_opt, prefix="Accuracy")
           scaletext <- c("Less Accurate", "More Accurate")
         } else {
+          box_log <- if (is.logical(box_log)) {box_log} else {F}
+          box_source <- if(!is.null(box_source)) {box_source} else {box_opt}  # handle for when the source is stored under opt
           if ((vtype %in% c("Phonemes", "Syllables")) | (vtype=="Age of Acquisition" & all(box_opt=="bb"))) force.histogram <- T
-          cn <- corpus_recode(box_opt, viscat2prefix(vtype))
+          cn <- corpus_recode_columns(box_opt, vtype, box_log, phonological_source = box_source)
           if (length(box_opt)>1) lexops_df[cn] <- lapply(lexops_df[cn], scale)
           scaletext <- viscat2scaletext(vtype)
         }

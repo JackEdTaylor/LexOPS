@@ -39,69 +39,38 @@ match_UI <- function(vtype = "Word Frequency", boxid, lexops_df, str_in) {
                               'ld',
                               inline=T)
     } else if(vtype == "Syllables") {
-      reactivedefault <- if (length(input[[sprintf('%s.opt', boxid)]])==0) {
-        'cmu'
-      } else if (!input[[sprintf('%s.opt', boxid)]] %in% c('cmu', 'mp')) {
-        'cmu'
-      } else {
-        input[[sprintf('%s.opt', boxid)]]
-      }
       ui[[1]] <- radioButtons(sprintf('%s.opt', boxid), 'Source(s)',
-                              c('CMU Pronouncing Dictionary'='cmu', 'Moby Project'='mp'),
-                              reactivedefault,
-                              inline=T)
-      if (!is.null(input[[sprintf('%s.opt', boxid)]])) {
-        if (input[[sprintf('%s.opt', boxid)]]=="cmu") {
-          ui[[2]] <- radioButtons(sprintf('%s.auto_or_manual', boxid), sprintf("Pronunciation (%i detected)", length(get_pronunciations(str_in, lexops_df))),
-                                  c('Use Primary Pronunciation'='auto', 'Select Manually'='manual'),
-                                  selected='auto',
-                                  inline=T)
-        }
-      }
-    } else if(vtype == "Phonemes") {
-      ui[[1]] <- radioButtons(sprintf('%s.opt', boxid), 'Source(s)',
-                              c('CMU Pronouncing Dictionary'='cmu'),
+                              c('CMU Pronouncing Dictionary'='cmu', 'eSpeak Transcriptions'='espeak'),
                               'cmu',
                               inline=T)
-      ui[[2]] <- radioButtons(sprintf('%s.auto_or_manual', boxid), sprintf("Pronunciation (%i detected)", length(get_pronunciations(str_in, lexops_df))),
-                              c('Use Primary Pronunciation'='auto', 'Select Manually'='manual'),
-                              selected='auto',
+    } else if(vtype == "Phonemes") {
+      ui[[1]] <- radioButtons(sprintf('%s.opt', boxid), 'Source(s)',
+                              c('CMU Pronouncing Dictionary'='cmu', 'eSpeak Transcriptions'='espeak'),
+                              'cmu',
                               inline=T)
     } else if (vtype == "Rhyme") {
       ui[[1]] <- radioButtons(sprintf('%s.opt', boxid), 'Source(s)',
-                              c('CMU Pronouncing Dictionary'='cmu'),
+                              c('CMU Pronouncing Dictionary'='cmu', 'eSpeak Transcriptions'='espeak'),
                               'cmu',
-                              inline=T)
-      ui[[2]] <- radioButtons(sprintf('%s.auto_or_manual', boxid), sprintf("Pronunciation (%i detected)", length(get_pronunciations(str_in, lexops_df))),
-                              c('Use Primary Pronunciation'='auto', 'Select Manually'='manual'),
-                              selected='auto',
                               inline=T)
     } else if(vtype == "Phonological Neighbourhood") {
       ui[[1]] <- checkboxInput(sprintf('%s.log', boxid), 'Log Transform', 1)
       ui[[2]] <- radioButtons(sprintf('%s.source', boxid), 'Source(s)',
-                              c('CMU Pronouncing Dictionary'='cmu'),
+                              c('CMU Pronouncing Dictionary'='cmu', 'eSpeak Transcriptions'='espeak'),
                               'cmu',
                               inline=T)
       ui[[3]] <- radioButtons(sprintf('%s.opt', boxid), 'Measure',
                               c('Phonological Levenshtein Distance 20 (PLD20)'='pld20', "Coltheart's N"='cn'),
                               'pld20',
                               inline=T)
-      ui[[4]] <- radioButtons(sprintf('%s.auto_or_manual', boxid), sprintf("Pronunciation (%i detected)", length(get_pronunciations(str_in, lexops_df))),
-                              c('Use Primary Pronunciation'='auto', 'Select Manually'='manual'),
-                              selected='auto',
-                              inline=T)
     } else if(vtype=="Phonological Similarity") {
       ui[[1]] <- radioButtons(sprintf('%s.source', boxid), 'Source(s)',
-                              c('CMU Pronouncing Dictionary'='cmu'),
+                              c('CMU Pronouncing Dictionary'='cmu', 'eSpeak Transcriptions'='espeak'),
                               'cmu',
                               inline=T)
       ui[[2]] <- radioButtons(sprintf('%s.opt', boxid), 'Measure',
                               c('Levenshtein Distance'='ld', 'Damerau-Levenshtein Distance'='ldd'),
                               'ld',
-                              inline=T)
-      ui[[3]] <- radioButtons(sprintf('%s.auto_or_manual', boxid), sprintf("Pronunciation (%i detected)", length(get_pronunciations(str_in, lexops_df))),
-                              c('Use Primary Pronunciation'='auto', 'Select Manually'='manual'),
-                              selected='auto',
                               inline=T)
     } else if(vtype == "Number of Pronunciations") {
       ui[[1]] <- radioButtons(sprintf('%s.opt', boxid), 'Source(s)',
@@ -220,22 +189,6 @@ match_UI_manual <- function(vtype, boxid, box_opt, lexops_df, box_auto_or_manual
       }
     }
     
-  } else if (vtype %in% phonological.vis.cats) {
-    if (!is.null(box_auto_or_manual)) {
-      if (box_auto_or_manual == "manual") {
-        # get list of possible pronunciations from selected corpus
-        prons <- get_pronunciations(str_in, df=lexops) %>%
-          unname() %>%
-          unlist()
-        prons <- lapply(prons, arpabet_convert, sep='-')
-        # drop-down selectInput for manual PoS definition
-        ui <- selectInput(sprintf("%s.manual", boxid),
-                          label = NULL,
-                          choices = prons,
-                          selected = prons[1],
-                          width="100%")
-      }
-    }
   }
   
   ui
@@ -447,17 +400,6 @@ match_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, box_auto_or
       return(error.plot("Word not in\nCorpus!", "primary"))
     }
     
-    # get selected pronunciation number
-    if (vtype %in% phonological.vis.cats) {
-      if (box_auto_or_manual=="manual") {
-        pron_nr <- get_pron_nr(box_manual, str_in, lexops_df)
-      } else {
-        pron_nr <- 1
-      }
-    } else {
-      pron_nr <- 1
-    }
-    
     if (vtype != "(None)") {
       
       if (vtype == "Rhyme") {
@@ -516,16 +458,13 @@ match_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, box_auto_or
             if (box_opt=="cn") scaletext <- c("Smaller Neighbourhood", "Larger Neighbourhood")
             if (box_opt=="cn" & !box_log) force.histogram <- T
           } else if (vtype == "Phonological Neighbourhood") {
-            cn <- sprintf("%s.%s", corpus_recode(box_opt, "PN", logprefix=box_log), corpus_recode(box_source))
-            # for non-primary pronunciation equivalent
-            cn_prX <- sprintf("%s.%s", corpus_recode(box_opt, "PN", logprefix=box_log), corpus_recode(box_source, pron_nr=pron_nr))
+            cn <- corpus_recode_columns(box_opt, vtype, box_log, box_source)
             if (box_opt=="pld20") scaletext <- c("Larger Neighbourhood", "Smaller Neighbourhood")
             if (box_opt=="cn") scaletext <- c("Smaller Neighbourhood", "Larger Neighbourhood")
             if (box_opt=="cn" & !box_log) force.histogram <- T
           } else if (vtype == "Phonological Similarity") {
             scaletext <- viscat2scaletext(vtype)
-            cn <- corpus_recode_columns(box_opt, "Phonological Similarity", pron_nr = pron_nr)
-            cn_prX <- cn
+            cn <- corpus_recode_columns(box_opt, vtype, phonological_source = box_source)
             force.histogram <- T
           } else if (vtype == "Number of Pronunciations") {
             cn <- "CMU.PrN"
@@ -535,22 +474,17 @@ match_UI_vis <- function(vtype, boxid, box_opt, box_log, box_source, box_auto_or
             cn <- corpus_recode(box_opt, prefix="Accuracy")
             scaletext <- c("Less Accurate", "More Accurate")
           } else {
+            box_log <- if (is.logical(box_log)) {box_log} else {F}
+            box_source <- if(!is.null(box_source)) {box_source} else {box_opt}  # handle for when the source is stored under opt
             if ((vtype %in% c("Phonemes", "Syllables", "Orthographic Similarity")) | (vtype=="Age of Acquisition" & all(box_opt=="bb"))) force.histogram <- T
-            cn <- corpus_recode(box_opt, viscat2prefix(vtype))
+            cn <- corpus_recode_columns(box_opt, vtype, box_log, phonological_source = box_source)
             if (length(box_opt)>1) lexops_df[cn] <- lapply(lexops_df[cn], scale)
             scaletext <- viscat2scaletext(vtype)
-            # for non-primary pronunciation equivalent
-            cn_prX <- corpus_recode(box_opt, viscat2prefix(vtype), pron_nr=pron_nr)
-            if (length(box_opt)>1) lexops_df[cn_prX] <- lapply(lexops_df[cn_prX], scale)
           }
           
           lexops_df$xval <- get_rowmeans(cn, lexops_df)
           target_val <- if (str_in %in% lexops_df$string) {
-            if (vtype %in% phonological.vis.cats & pron_nr != 1) {
-              get_rowmeans(cn_prX, lexops_df)[lexops_df$string==str_in]
-            } else {
-              lexops_df$xval[lexops_df$string==str_in]
-            }
+            lexops_df$xval[lexops_df$string==str_in]
           } else {
             return(error.plot("Word not in\nCorpus!", "primary"))
           }

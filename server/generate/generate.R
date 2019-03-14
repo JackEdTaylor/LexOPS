@@ -48,16 +48,15 @@ genresults_prematching <- reactive({
           c(input[[sprintf("%s_tol_lower", boxid)]], input[[sprintf("%s_tol_upper", boxid)]])
         }
         
+        boxv <- input[[sprintf('%s_vtype', boxid)]]
         boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
         boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
-        boxv <- input[[sprintf('%s_vtype', boxid)]]
         boxsource <- input[[sprintf("%s.source", boxid)]]
+        boxsource <- if(!is.null(boxsource)) {boxsource} else {boxopt}  # handle for when the source is stored under opt
         
-        if (boxv == "Phonological Neighbourhood") {
-          column <- sprintf("%s.%s", corpus_recode(boxopt, "PN", logprefix=boxlog), corpus_recode(boxsource))
-        } else {
-          column <- corpus_recode_columns(boxopt, boxv, boxlog)
-        }
+        # get target column
+        column <- corpus_recode_columns(boxopt, boxv, boxlog, boxsource)
+        
         # remove duplicates (fixes bug in rendering order)
         column <- unique(column)
         if (length(column)>1) {
@@ -141,16 +140,15 @@ genresults_prematching <- reactive({
             c(input[[sprintf("%s_tol_lower%i", boxid, i_lttr_lvl)]], input[[sprintf("%s_tol_upper%i", boxid, i_lttr_lvl)]])
           }
           
+          boxv <- input[[sprintf('%s_vtype', boxid)]]
           boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
           boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
-          boxv <- input[[sprintf('%s_vtype', boxid)]]
           boxsource <- input[[sprintf("%s.source", boxid)]]
+          boxsource <- if(!is.null(boxsource)) {boxsource} else {boxopt}  # handle for when the source is stored under opt
           
-          if (boxv == "Phonological Neighbourhood") {
-            column <- sprintf("%s.%s", corpus_recode(boxopt, "PN", logprefix=boxlog), corpus_recode(boxsource))
-          } else {
-            column <- corpus_recode_columns(boxopt, boxv, boxlog)
-          }
+          # get target column
+          column <- corpus_recode_columns(boxopt, boxv, boxlog, boxsource)
+          
           # remove duplicates (fixes bug from rendering order)
           column <- unique(column)
           if (length(column)>1) {
@@ -225,16 +223,15 @@ genresults_preformatting <- reactive({
       for (i in 1:gen_controlfor_boxes_N()) {
         lexops_custom_cols <- lexopsReact()[lexopsReact()$string %in% res$string, ]
         boxid <- sprintf('gen_controlfor_%i', i)
+        boxv <- input[[sprintf('%s_vtype', boxid)]]
         boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
         boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
-        boxv <- input[[sprintf('%s_vtype', boxid)]]
         boxsource <- input[[sprintf("%s.source", boxid)]]
+        boxsource <- if(!is.null(boxsource)) {boxsource} else {boxopt}  # handle for when the source is stored under opt
         
-        if (boxv == "Phonological Neighbourhood") {
-          column <- sprintf("%s.%s", corpus_recode(boxopt, "PN", logprefix=boxlog), corpus_recode(boxsource))
-        } else {
-          column <- corpus_recode_columns(boxopt, boxv, boxlog)
-        }
+        # get target column
+        column <- corpus_recode_columns(boxopt, boxv, boxlog, boxsource)
+        
         # remove duplicates (fixes bug from rendering order)
         column <- unique(column)
         if (length(column)>1) {

@@ -30,28 +30,10 @@ matchresults_undistanced <- reactive({
           boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
           boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
           boxsource <- input[[sprintf("%s.source", boxid)]]
+          boxsource <- if(!is.null(boxsource)) {boxsource} else {boxopt}  # handle for when the source is stored under opt
           
-          # manual pronunciation
-          if (boxv %in% phonological.vis.cats) {
-            if (input[[sprintf('%s.auto_or_manual', boxid)]]=="manual") {
-              pron_nr <- get_pron_nr(input[[sprintf('%s.manual', boxid)]], input$matchstring, lexops_custom_cols)
-            } else {
-              pron_nr <- 1
-            }
-            if (boxv == "Phonological Neighbourhood") {
-              column_prX <- sprintf("%s.%s", corpus_recode(boxopt, "PN", logprefix=boxlog), corpus_recode(boxsource, pron_nr=pron_nr))
-            } else {
-              column_prX <- corpus_recode_columns(boxopt, boxv, pron_nr=pron_nr)
-            }
-          }
-          
-          if (boxv == "Phonological Neighbourhood") {
-            column <- sprintf("%s.%s", corpus_recode(boxopt, "PN", logprefix=boxlog), corpus_recode(boxsource))
-          } else if (boxv == "Phonological Similarity") {
-            column <- corpus_recode_columns(boxopt, boxv, pron_nr = pron_nr)
-          } else {
-            column <- corpus_recode_columns(boxopt, boxv, boxlog)
-          }
+          # get target column
+          column <- corpus_recode_columns(boxopt, boxv, boxlog, boxsource)
           
           # remove duplicates (fixes bug in rendering order)
           column <- unique(column)
@@ -80,15 +62,7 @@ matchresults_undistanced <- reactive({
             
             if (boxv %in% phonological.vis.cats) {
               
-              if (pron_nr > 1) {
-                str_in_x <- lexops_custom_cols[[column_prX]][lexops_custom_cols$string==input$matchstring]
-                # add the alternative pronunciation column to the output
-                if (!column_prX %in% colnames(matched)) {
-                  matched <- inner_join(matched, select(lexops_custom_cols, "string", UQ(sym(column_prX))), by="string")
-                }
-              } else {
-                str_in_x <- lexops_custom_cols[[column]][lexops_custom_cols$string==input$matchstring]
-              }
+              str_in_x <- lexops_custom_cols[[column]][lexops_custom_cols$string==input$matchstring]
               
             } else if (boxv == "Part of Speech") {
               

@@ -38,19 +38,27 @@ lexopsReact <- reactive({
         res[[column]] <- as.integer(vwr::levenshtein.damerau.distance(input$matchstring, res$string))
       }
     }
-    # Phonological Similarity
-    for (pron_nr in 1:4) {
-      pron_col <- sprintf("CMU.pr%i_1letter", pron_nr)
-      matchstring_pron <- res[[pron_col]][res$string==input$matchstring]
-      for (measure in c("ld", "ldd")) {
-        column <- corpus_recode_columns(measure, "Phonological Similarity", pron_nr = pron_nr)
-        if (measure=="ld") {
-          res[[column]] <- as.integer(vwr::levenshtein.distance(matchstring_pron, res[[pron_col]]))
-        } else if (measure=="ldd") {
-          res[[column]] <- as.integer(vwr::levenshtein.damerau.distance(matchstring_pron, res[[pron_col]]))
-        }
+    # Phonological Similarity - CMU
+    matchstring_pron <- res$CMU.1letter[res$string==input$matchstring]
+    for (measure in c("ld", "ldd")) {
+      column <- corpus_recode_columns(measure, "Phonological Similarity", phonological_source = "cmu")
+      if (measure=="ld") {
+        res[[column]] <- as.integer(vwr::levenshtein.distance(matchstring_pron, res$CMU.1letter))
+      } else if (measure=="ldd") {
+        res[[column]] <- as.integer(vwr::levenshtein.damerau.distance(matchstring_pron, res$CMU.1letter))
       }
     }
+    # Phonological Similarity - eSpeak
+    matchstring_pron <- res$eSpeak.br_1letter[res$string==input$matchstring]
+    for (measure in c("ld", "ldd")) {
+      column <- corpus_recode_columns(measure, "Phonological Similarity", phonological_source = "espeak")
+      if (measure=="ld") {
+        res[[column]] <- as.integer(vwr::levenshtein.distance(matchstring_pron, res$eSpeak.br_1letter))
+      } else if (measure=="ldd") {
+        res[[column]] <- as.integer(vwr::levenshtein.damerau.distance(matchstring_pron, res$eSpeak.br_1letter))
+      }
+    }
+    
   }
   
   res

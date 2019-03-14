@@ -26,7 +26,7 @@ corpus_recode_apa <- function(inputopts) {
   }
 }
 
-corpus_recode <- function(inputopts = c("bnc_w", "bnc_s"), prefix=NA, logprefix=F, pron_nr=1) {
+corpus_recode <- function(inputopts = c("bnc_w", "bnc_s"), prefix=NA, logprefix=F) {
   if (!is.null(inputopts)) {
     prefix_dot <- if(is.na(prefix)) {""} else {sprintf("%s.", prefix)}
     log_prefix_str <- if(logprefix) {"Log_"} else {""}
@@ -42,7 +42,8 @@ corpus_recode <- function(inputopts = c("bnc_w", "bnc_s"), prefix=NA, logprefix=
                       "elp" = "ELP",
                       "blp" = "BLP",
                       "mp" = "Moby",
-                      "cmu" = sprintf("CMU.pr%i", pron_nr),
+                      "cmu" = "CMU",
+                      "espeak" = "eSpeak",
                       "gn" = "Glasgow_Norms",
                       "cp" = "Clark_and_Paivio",
                       "kuperman" = "Kuperman",
@@ -71,6 +72,7 @@ viscat2prefix <- function(viscat, log=F) {
          "Phonemes" = "Phonemes",
          "Number of Pronunciations" = "PrN",
          "Phonological Similarity" = "PS",
+         "Phonological Neighbourhood" = "PN",
          "Familiarity" = "FAM",
          "Age of Acquisition" = "AoA",
          "Concreteness" = "CNC",
@@ -91,7 +93,13 @@ viscat2prefix <- function(viscat, log=F) {
   )
 }
 
-corpus_recode_columns <- function(inputopts = c("bnc_w", "bnc_s"), v="Word Frequency", log=F, pron_nr=1) {
+corpus_recode_columns <- function(inputopts = c("bnc_w", "bnc_s"), v="Word Frequency", log=F, phonological_source="cmu") {
+  # ensure phonological source is correct
+  phonological_source <- recode(
+    phonological_source,
+    "cmu" = "CMU",
+    "espeak" = "eSpeak.br"
+  )
   case_when(
     v == "Word Frequency" ~ corpus_recode(inputopts, viscat2prefix(v, log)),
     v == "Part of Speech" ~ corpus_recode(inputopts, viscat2prefix(v)),
@@ -99,13 +107,12 @@ corpus_recode_columns <- function(inputopts = c("bnc_w", "bnc_s"), v="Word Frequ
     v == "Bigram Probability" ~ corpus_recode(inputopts, viscat2prefix(v)),
     v == "Orthographic Neighbourhood" ~ corpus_recode(inputopts, viscat2prefix(v), log),
     v == "Orthographic Similarity" ~ corpus_recode(inputopts, viscat2prefix(v)),
-    v == "Syllables" ~ corpus_recode(inputopts, viscat2prefix(v)),
-    v == "Phonemes" ~ corpus_recode(inputopts, viscat2prefix(v)),
-    v == "Rhyme" ~ corpus_recode(inputopts, viscat2prefix(v)),
-    v == "Phonological Neighbourhood" ~ sprintf("%s.CMU.pr1", corpus_recode(inputopts, viscat2prefix(v), log)),
-    v == "Phonological Similarity" ~ sprintf("%s.pr%i", corpus_recode(inputopts, viscat2prefix(v)), pron_nr),
-    v == "Syllables" ~ corpus_recode(inputopts, viscat2prefix(v)),
-    v == "Number of Pronunciations" ~ "CMU.PrN",
+    v == "Syllables" ~sprintf("%s.%s", viscat2prefix(v), phonological_source),
+    v == "Phonemes" ~ sprintf("%s.%s", viscat2prefix(v), phonological_source),
+    v == "Rhyme" ~ sprintf("%s.%s", viscat2prefix(v), phonological_source),
+    v == "Phonological Neighbourhood" ~ sprintf("%s.%s", corpus_recode(inputopts, viscat2prefix(v), log), phonological_source),
+    v == "Phonological Similarity" ~ sprintf("%s.%s", corpus_recode(inputopts, viscat2prefix(v)), phonological_source),
+    v == "Number of Pronunciations" ~ sprintf("%s.PrN", toupper(phonological_source)),
     v == "Word Prevalence" ~ corpus_recode(inputopts, viscat2prefix(v)),
     v == "Proportion Known" ~ corpus_recode(inputopts, viscat2prefix(v)),
     v %in% c("Familiarity", "Age of Acquisition", "Concreteness", "Arousal", "Valence", "Dominance", "Imageability", "Semantic Size", "Semantic Gender", "Humour") ~ corpus_recode(inputopts, viscat2prefix(v)),
