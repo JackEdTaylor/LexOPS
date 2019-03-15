@@ -2,6 +2,7 @@
 req_packages <- c("shiny", "shinydashboard", "shinyjs", "shinycssloaders", "plotly", "viridis", "ggwordcloud", "DT", "vwr", "colourpicker", "tidyverse")
 new_packages <- req_packages[!(req_packages %in% installed.packages()[, "Package"])]
 if(length(new_packages)) install.packages(new_packages, dependencies = TRUE)
+update.packages(req_packages)
 
 library(shiny)
 library(shinyjs)
