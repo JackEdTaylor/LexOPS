@@ -23,6 +23,7 @@ shiny::runGitHub("JackEdTaylor/LexOPS")
 Just clone this GitHub repository, set the working directory to the directory containing the `ui.r` and `server.r` scripts, then in R, run:
 
 ```
+install.packages("shiny")
 shiny::runApp()
 ```
 
