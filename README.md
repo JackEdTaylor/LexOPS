@@ -29,6 +29,6 @@ shiny::runApp()
 
 ### 2. Run on the LexOPS Server
 
-If you can't do any of the above, the easiest way to run LexOPS is as a web app (hosted on a dedicated server). This will probably be much slower than running LexOPS on your own computer, but also means you won't have to install anything. LexOPS is available online at:
+If you can't do any of the above, the next easiest way to run LexOPS is as a web app (hosted on a dedicated server). This will probably be much slower than running LexOPS on your own computer, but also means you won't have to install anything. LexOPS is available online at:
 
 [http://lexops.co.uk/run](http://lexops.co.uk/run)
