@@ -1,3 +1,8 @@
+# install necessary packages (this is so that shiny::runGitHub() can run even if lacking required packages)
+req_packages <- c("shiny", "shinydashboard", "shinyjs", "shinycssloaders", "plotly", "viridis", "ggwordcloud", "DT", "vwr", "colourpicker", "tidyverse")
+new_packages <- req_packages[!(req_packages %in% installed.packages()[, "Package"])]
+if(length(new_packages)) install.packages(new_packages, dependencies = TRUE)
+
 library(shiny)
 library(shinyjs)
 library(shinydashboard)
