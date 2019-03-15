@@ -108,7 +108,9 @@ shinyServer(function(input, output) {
   output$LexOPS.csv <- downloadHandler(
     filename = 'LexOPS.csv',
     content = function(file) {
-      write.csv(lexops, file, row.names = FALSE)
+      withProgress(message="Writing database to .csv file...", value=1, {
+        write.csv(lexops, file, row.names = FALSE)
+      })
     }
   )
   
