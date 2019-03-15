@@ -7,7 +7,7 @@ There are two main options for running LexOPS.
 
 ### 1. Run in own R Session
 
-This is the recommended method for running LexOPS. With R installed, you can run LexOPS on your own computer by either using the `shiny` function, `runGitHub()`, or by cloning the repository.
+This is the recommended method for running LexOPS. If you [have R installed](https://cloud.r-project.org/), you can run LexOPS on your own computer by either (a) using the `shiny` function, `runGitHub()`, or by (b) cloning the repository. Note, however, that these methods may automatically install or update some of the app's dependencies.
 
 #### a) Using `shiny::runGitHub()`
 
@@ -20,17 +20,15 @@ shiny::runGitHub("JackEdTaylor/LexOPS")
 
 #### b) Cloning the Repository
 
-Just clone this GitHub repository, set the working directory to the directory containing the `ui.r` and `server.r` scripts, then in R, run:
+Just [clone this GitHub repository](https://help.github.com/en/articles/cloning-a-repository), [set the working directory](http://rfunction.com/archives/1001) to the directory containing the `ui.r` and `server.r` scripts, then in R, run:
 
 ```
 install.packages("shiny")
 shiny::runApp()
 ```
 
-Similarly, this may automatically update dependencies.
-
 ### 2. Run on the LexOPS Server
 
-The easiest way to run the app if you can't do any of the above is to run LexOPS as a web app (hosted on a dedicated server). This will probably be much slower than running LexOPS on your own computer, but also means you won't have to install anything. LexOPS is available online at:
+If you can't do any of the above, the easiest way to run LexOPS is as a web app (hosted on a dedicated server). This will probably be much slower than running LexOPS on your own computer, but also means you won't have to install anything. LexOPS is available online at:
 
 [http://lexops.co.uk/run](http://lexops.co.uk/run)
