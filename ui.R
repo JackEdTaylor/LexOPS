@@ -56,7 +56,7 @@ tagList(
                                      )),
                     
                     dashboardBody(
-    
+                      
                       tabItems(
                         tabItem(tabName = 'generate_options',
                                 fluidRow(
@@ -115,7 +115,7 @@ tagList(
                                             column(12, checkboxInput('gen_check.dist', 'Filter by Euclidean/CityBlock Distance from Null Condition', 0)),
                                             uiOutput('gen_dist_opts_choice')
                                           ))
-                                        ))),
+                                      ))),
                                 DT::dataTableOutput('gen_results_dt')),
                         # Match Options tab
                         tabItem(tabName='match_options',
@@ -134,7 +134,7 @@ tagList(
                                   ))
                                 )
                                 
-                                ),
+                        ),
                         # Match Results tab
                         tabItem(tabName='match_results',
                                 fluidRow(
@@ -146,8 +146,8 @@ tagList(
                                         column(12, br()),
                                         column(12, h5(strong("Results Format"))),
                                         column(12, selectInput('results.format', NULL, c('Raw Values'='rv',
-                                                                                                     'Distances (Absolute Difference from Target Word)'='dist',
-                                                                                                     'Differences (from Target Word)'='diff'), selected='dist')),
+                                                                                         'Distances (Absolute Difference from Target Word)'='dist',
+                                                                                         'Differences (from Target Word)'='diff'), selected='dist')),
                                         column(12, h5(strong("Ignore Filters"))),
                                         column(12, checkboxInput('check.match.ignorefilters', 'Ignore Tolerances on Options Tab', 0)),
                                         column(12, br()),
@@ -279,7 +279,7 @@ tagList(
                           )),
                           
                           uiOutput('visualisation.ui_box')
-                        ),
+                          ),
                         # Custom Variables tab
                         tabItem(tabName='custom_variables',
                                 fluidRow(
@@ -308,7 +308,7 @@ tagList(
                                       column(12, tableOutput('cust.uploadedvars'))
                                     )
                                   )
-                                  )),
+                                )),
                         # Preferences tab
                         tabItem(tabName='preferences',
                                 box(
@@ -321,17 +321,43 @@ tagList(
                         ),
                         # Info tab
                         tabItem(tabName='info',
-                                downloadButton('LexOPS.csv', 'Download the LexOPS Database')
+                                box(
+                                  title=NULL, status='primary',
+                                  collabsible=F, width=12,
+                                  fluidRow(
+                                    column(4, align="center",
+                                           fluidRow(
+                                             column(12, tags$a(href = 'http://lexops.co.uk', icon('book-open'), style='font-size:75px; color:black;')),
+                                             column(12, tags$a(href = 'http://lexops.co.uk', 'lexops.co.uk', style='font-size:25px; color:black;'))
+                                           )),
+                                    column(4, align="center",
+                                           fluidRow(
+                                             column(12, tags$a(href = 'https://github.com/JackEdTaylor/LexOPS', icon('github'), style='font-size:75px; color:black;')),
+                                             column(12, tags$a(href = 'https://github.com/JackEdTaylor/LexOPS', 'GitHub Repository', style='font-size:25px; color:black;'))
+                                           )),
+                                    column(4, align="center",
+                                           fluidRow(
+                                             column(12, tags$a(href = '#???', icon('file-alt'), style='font-size:75px; color:black;')),
+                                             column(12, tags$a(href = '#???', 'Read the Paper', style='font-size:25px; color:black;'))
+                                           )),
+                                    column(12, br()),
+                                    column(12, br())
+                                  ),
+                                  fluidRow(
+                                    column(12, br()),
+                                    column(12, align="center", downloadButton('LexOPS.csv', 'Download the LexOPS Database', style='font-size:150%')))
+                                )
                         )
-                          )
-                      
-                      )
-                    )
+                        )
+      )
+      
     )
+  )
 )
-  
-  
-  
-  
 )
+
+
+
+
+
 
