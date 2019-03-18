@@ -121,7 +121,7 @@ genresults_prematching <- reactive({
     withProgress(message="Processing Splits...", {
       
       splitprogress = 0
-      splitcomplete = nrow(levels) * gen_splitby_boxes_N()
+      splitcomplete = nrow(levels)
       
       for (lvl in 1:nrow(levels)) {
         rowlevel <- levels[lvl, ]
