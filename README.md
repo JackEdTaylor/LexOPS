@@ -13,7 +13,7 @@ This is the recommended method for running LexOPS. If you [have R installed](htt
 
 This is a fast and easy way to run LexOPS from your own computer. Open R and run the following R commands to install `shiny` and then run the latest version of the app.
 
-```
+``` r
 install.packages("shiny")
 shiny::runGitHub("JackEdTaylor/LexOPS")
 ```
@@ -22,7 +22,7 @@ shiny::runGitHub("JackEdTaylor/LexOPS")
 
 If you don't want to have to download LexOPS each time you use it, just [clone this GitHub repository](https://help.github.com/en/articles/cloning-a-repository), then [set the working directory](http://rfunction.com/archives/1001) to the directory containing the `ui.r` and `server.r` scripts, and in R, run:
 
-```
+``` r
 install.packages("shiny")
 shiny::runApp()
 ```
