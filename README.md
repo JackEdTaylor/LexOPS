@@ -1,35 +1,34 @@
 # LexOPS
-LexOPS is an R Shiny App for generating word stimuli, for use in Psychology experiments. It can generate stimuli for a factorial design specified by the user, controlling for selected lexical variables. The app has an inbuilt database of features for English words, but the user can also provide their own list of features, for other languages.
+LexOPS is an R Shiny App for generating word stimuli, for use in Psychology experiments. It can generate stimuli for a factorial design specified by the user, controlling for selected lexical variables. It also has several features for visualising variables' distributions and relationships. The app has an inbuilt database of features for English words, but the user can also provide their own list of features, and/or for other languages.
 
 ## Run the Shiny App
 
-The app can be run in several ways...
+There are two main options for running LexOPS.
 
-### 1) Run in own R Session
+### 1. Run in own R Session
 
-This way is a fast and easy way to run LexOPS from your own computer. The following R commands will install the required packages and then run the latest version of the app.
+This is the recommended method for running LexOPS. If you [have R installed](https://cloud.r-project.org/), you can run LexOPS on your own computer by either (a) using the `shiny` function, `runGitHub()`, or by (b) cloning the repository. Note that these methods may automatically install or update some of the app's dependencies.
 
-```
+#### a) Using `shiny::runGitHub()`
+
+This is a fast and easy way to run LexOPS from your own computer. Open R and run the following R commands to install `shiny` and then run the latest version of the app.
+
+``` r
 install.packages("shiny")
 shiny::runGitHub("JackEdTaylor/LexOPS")
 ```
 
-Note that the first time you run this, R may install or update dependencies.
+#### b) Cloning the Repository
 
-### 2) Clone the Repository
+If you don't want to have to download LexOPS each time you use it, just [clone this GitHub repository](https://help.github.com/en/articles/cloning-a-repository), then [set the working directory](http://rfunction.com/archives/1001) to the directory containing the `ui.r` and `server.r` scripts, and in R, run:
 
-Just clone this GitHub repository, set the working directory to the directory containing the `ui.r` and `server.r` scripts, then in R, run:
-
-```
+``` r
+install.packages("shiny")
 shiny::runApp()
 ```
 
-Similarly, this may automatically update dependencies.
+### 2. Run on the LexOPS Server
 
-### 3) Run on the LexOPS Server
-
-The easiest way to run the app if you can't do any of the above is to go to:
+If you can't do any of the above, the next easiest way to run LexOPS is as a web app (hosted on a dedicated server). This will probably be much slower than running LexOPS on your own computer, but also means you won't have to install anything. LexOPS is available online at:
 
 [http://lexops.co.uk/run](http://lexops.co.uk/run)
-
-Here, the app is available as a web app, run on a dedicated server. This will be slower, but means you won't have to install anything.
