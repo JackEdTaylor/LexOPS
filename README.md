@@ -1,13 +1,14 @@
 # LexOPS
-LexOPS is an R Shiny App for generating word stimuli, for use in Psychology experiments. It can generate stimuli for a factorial design specified by the user, controlling for selected lexical variables. It also has several features for visualising variables' distributions and relationships. The app has an inbuilt database of features for English words, but the user can also provide their own list of features, and/or for other languages.
+
+LexOPS is an R Shiny App for generating word stimuli, for use in Psychology experiments. It can generate stimuli for a factorial design specified by the user, controlling for selected lexical variables. It also has several features for visualising variables' distributions and relationships. The app has an inbuilt database of features for English words, but the user can also provide their own list of features, for English words and/or for words in other languages.
 
 ## Run the Shiny App
 
 There are two main options for running LexOPS.
 
-### 1. Run Locally
+### 1. Run Locally (Recommended)
 
-This is the recommended method for running LexOPS. If you [have R installed](https://cloud.r-project.org/), you can run the latest version of LexOPS on your own computer with the `shiny` function, `runGitHub()`:
+This is the recommended method for running LexOPS. If you [have R installed](https://cloud.r-project.org/), you can run the latest version of LexOPS on your own computer with the following R commands:
 
 ``` r
 install.packages("shiny")
