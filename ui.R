@@ -1,8 +1,13 @@
-# install necessary packages (this is so that shiny::runGitHub() can run even if lacking required packages)
+# check for missing packages, and ask if they should be installed/updated
 req_packages <- c("shiny", "shinydashboard", "shinyjs", "shinycssloaders", "plotly", "viridis", "ggwordcloud", "DT", "vwr", "colourpicker", "tidyverse")
 new_packages <- req_packages[!(req_packages %in% installed.packages()[, "Package"])]
-if(length(new_packages)) install.packages(new_packages, dependencies = TRUE)
-update.packages(req_packages)
+if(length(new_packages)) {
+  new_packages_str <- paste(sprintf(" - %s", new_packages), collapse="\n")
+  yn <- winDialog(type="yesnocancel", message=sprintf("LexOPS requires the following packages to be installed:\n\n%s\n\nInstall now?", new_packages_str))
+  if (yn == "CANCEL") quit()
+  if (yn == "YES") install.packages(new_packages, dependencies = TRUE)
+}
+update.packages(req_packages, ask=TRUE, checkBuilt=TRUE)
 
 library(shiny)
 library(shinyjs)
