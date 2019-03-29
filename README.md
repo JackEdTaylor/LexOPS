@@ -5,26 +5,13 @@ LexOPS is an R Shiny App for generating word stimuli, for use in Psychology expe
 
 There are two main options for running LexOPS.
 
-### 1. Run in own R Session
+### 1. Run Locally
 
-This is the recommended method for running LexOPS. If you [have R installed](https://cloud.r-project.org/), you can run LexOPS on your own computer by either (a) using the `shiny` function, `runGitHub()`, or by (b) cloning the repository. Note that these methods may automatically install or update some of the app's dependencies.
-
-#### a) Using `shiny::runGitHub()`
-
-This is a fast and easy way to run LexOPS from your own computer. Open R and run the following R commands to install `shiny` and then run the latest version of the app.
+This is the recommended method for running LexOPS. If you [have R installed](https://cloud.r-project.org/), you can run the latest version of LexOPS on your own computer with the `shiny` function, `runGitHub()`:
 
 ``` r
 install.packages("shiny")
 shiny::runGitHub("JackEdTaylor/LexOPS")
-```
-
-#### b) Cloning the Repository
-
-If you don't want to have to download LexOPS each time you use it, just [clone this GitHub repository](https://help.github.com/en/articles/cloning-a-repository), then [set the working directory](http://rfunction.com/archives/1001) to the directory containing the `ui.r` and `server.r` scripts, and in R, run:
-
-``` r
-install.packages("shiny")
-shiny::runApp()
 ```
 
 ### 2. Run on the LexOPS Server
