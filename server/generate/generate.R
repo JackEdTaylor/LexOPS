@@ -40,19 +40,20 @@ genresults_prematching <- reactive({
       for (i in 1:gen_filterby_boxes_N()) {
         lexops_custom_cols <- lexopsReact()
         boxid <- sprintf('gen_filterby_%i', i)
-        
-        # get the box's filter
-        sl <- if (input$preference.toleranceUI == 'slider') {
-          input[[sprintf("%s_sl", boxid)]]
-        } else if (input$preference.toleranceUI == 'numericinput') {
-          c(input[[sprintf("%s_tol_lower", boxid)]], input[[sprintf("%s_tol_upper", boxid)]])
-        }
-        
         boxv <- input[[sprintf('%s_vtype', boxid)]]
         boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
         boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
         boxsource <- input[[sprintf("%s.source", boxid)]]
         boxsource <- if(!is.null(boxsource)) {boxsource} else {boxopt}  # handle for when the source is stored under opt
+        
+        # get the box's filter
+        sl <- if (boxv %in% c("Part of Speech", "Rhyme")) {
+          input[[sprintf("%s_sl", boxid)]]
+        } else if (input$preference.toleranceUI == 'slider') {
+          input[[sprintf("%s_sl", boxid)]]
+        } else if (input$preference.toleranceUI == 'numericinput') {
+          c(input[[sprintf("%s_tol_lower", boxid)]], input[[sprintf("%s_tol_upper", boxid)]])
+        }
         
         # get target column
         column <- corpus_recode_columns(boxopt, boxv, boxlog, boxsource)
@@ -132,19 +133,20 @@ genresults_prematching <- reactive({
           i_lttr <- LETTERS[i]
           i_lttr_lvl <- as.numeric(rowlevel[[i_lttr]])  # get which level of the variable this cell belongs to
           boxid <- sprintf('gen_splitby_%i', i)
-          
-          # get the level's filter
-          sl <- if (input$preference.toleranceUI == 'slider') {
-            input[[sprintf('%s_sl%i', boxid, i_lttr_lvl)]]
-          } else if (input$preference.toleranceUI == 'numericinput') {
-            c(input[[sprintf("%s_tol_lower%i", boxid, i_lttr_lvl)]], input[[sprintf("%s_tol_upper%i", boxid, i_lttr_lvl)]])
-          }
-          
           boxv <- input[[sprintf('%s_vtype', boxid)]]
           boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
           boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
           boxsource <- input[[sprintf("%s.source", boxid)]]
           boxsource <- if(!is.null(boxsource)) {boxsource} else {boxopt}  # handle for when the source is stored under opt
+          
+          # get the level's filter
+          sl <- if (boxv %in% c("Part of Speech", "Rhyme")) {
+            input[[sprintf("%s_sl%i", boxid, i_lttr_lvl)]]
+          } else if (input$preference.toleranceUI == 'slider') {
+            input[[sprintf('%s_sl%i', boxid, i_lttr_lvl)]]
+          } else if (input$preference.toleranceUI == 'numericinput') {
+            c(input[[sprintf("%s_tol_lower%i", boxid, i_lttr_lvl)]], input[[sprintf("%s_tol_upper%i", boxid, i_lttr_lvl)]])
+          }
           
           # get target column
           column <- corpus_recode_columns(boxopt, boxv, boxlog, boxsource)
@@ -260,7 +262,9 @@ genresults_preformatting <- reactive({
         res[[column]] <- lexops_custom_cols[[column]]  # copy over the column to res df
         
         #get the box's tolerance
-        sl <- if (input$preference.toleranceUI == 'slider') {
+        sl <- if (boxv %in% c("Part of Speech", "Rhyme")) {
+          input[[sprintf("%s_sl", boxid)]]
+        } else if (input$preference.toleranceUI == 'slider') {
           input[[sprintf("%s_sl", boxid)]]
         } else {
           c(input[[sprintf("%s_tol_lower", boxid)]], input[[sprintf("%s_tol_upper", boxid)]])
