@@ -8,7 +8,7 @@ There are two main options for running LexOPS.
 
 ### 1. Run Locally (Recommended)
 
-This is the recommended method for running LexOPS. If you [have R installed](https://cloud.r-project.org/), you can run the latest version of LexOPS on your own computer with the following R commands:
+This is the recommended method for running LexOPS. If you [have R installed](https://cloud.r-project.org/), you can run the latest version of LexOPS on your own computer with the following R code:
 
 ``` r
 install.packages("shiny")
