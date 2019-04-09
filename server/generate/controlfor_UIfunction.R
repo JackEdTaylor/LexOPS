@@ -423,7 +423,7 @@ controlfor_UI_plotwarning <- function(vtype, boxid, boxopt, lexops_df) {
   
   if (vtype != "(None)") {
     
-    if (vtype != "Part of Speech") {
+    if (!vtype %in% c("Part of Speech", "Rhyme")) {
       
       if (vtype == "Custom Variable") {
         
