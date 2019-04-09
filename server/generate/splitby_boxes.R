@@ -36,8 +36,11 @@ lapply(1:25, function(i) {
                                                                              toleranceUIopt = input$preference.toleranceUI) })
   box_sliders <- reactive({
     sl <- list()
+    vtype <- input[[sprintf("%s_vtype", boxid)]]
     for (i in 1:input[[sprintf("%s_Nlevels", boxid)]]) {
-      sl[[i]] <- if (input$preference.toleranceUI == 'slider') {
+      sl[[i]] <- if (vtype %in% c("Part of Speech", "Rhyme")) {
+        input[[sprintf("%s_sl%i", boxid, i)]]
+      } else if (input$preference.toleranceUI == 'slider') {
         input[[sprintf("%s_sl%i", boxid, i)]]
       } else {
         c(input[[sprintf("%s_tol_lower%i", boxid, i)]], input[[sprintf("%s_tol_upper%i", boxid, i)]])

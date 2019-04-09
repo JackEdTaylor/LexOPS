@@ -32,7 +32,10 @@ lapply(1:25, function(i) {
                                                                                 lexopsReact(),
                                                                                 toleranceUIopt = input$preference.toleranceUI) })
   box_sliders <- reactive({
-    if (input$preference.toleranceUI == 'slider') {
+    vtype <- input[[sprintf("%s_vtype", boxid)]]
+    if (vtype %in% c("Part of Speech", "Rhyme")) {
+      input[[sprintf("%s_sl", boxid)]]
+    } else if (input$preference.toleranceUI == 'slider') {
       input[[sprintf("%s_sl", boxid)]]
     } else {
       c(input[[sprintf("%s_tol_lower", boxid)]], input[[sprintf("%s_tol_upper", boxid)]])
