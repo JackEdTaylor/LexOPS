@@ -105,7 +105,7 @@ pos.plot <- function(xname='subtlex_uk.DomPoS', selected=T, PoS='noun', df=dat, 
   dfplot$ymax <- cumsum(dfplot$fraction)
   dfplot$ymin <- c(0, head(dfplot$ymax, n = -1))
   
-  if (PoS=="all") {
+  if (any(PoS=="all")) {
     dfplot$alphalevel <- 0.5
   } else {
     dfplot$alphalevel <- ifelse(as.character(dfplot$x) %in% unlist(PoS), 0.5, 0.05)
