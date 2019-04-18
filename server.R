@@ -10,7 +10,7 @@ library(colourpicker)
 library(tidyverse)
 
 lexops_loadingdone <- function() {
-  hide(id = "loading_page", anim = TRUE, animType = "fade")    
+  hide(id = "loading_page", anim = TRUE, animType = "slide")    
   show("main_content")
 }
 
