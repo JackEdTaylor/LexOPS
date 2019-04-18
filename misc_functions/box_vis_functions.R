@@ -9,7 +9,7 @@ get.box.colour <- function(boxtype='warning'){
 }
 
 # Function for generating the density/histogram plots (histogram if integer)
-dens.plot <- function(x='gn.VAL', redline=3.2, selected=T, shade=c(3, 3.4), df=dat, boxtype='primary', text.lowscale='More Negative', text.highscale='More Positive', log.transform=F, force.histogram=F, shade_label=NA) {
+dens.plot <- function(x='gn.VAL', redline=3.2, selected=T, shade=c(3, 3.4), df=lexops, boxtype='primary', text.lowscale='More Negative', text.highscale='More Positive', log.transform=F, force.histogram=F, shade_label=NA) {
   
   if (!is.list(shade)) {
     shade <- list(shade)
@@ -82,7 +82,7 @@ dens.plot <- function(x='gn.VAL', redline=3.2, selected=T, shade=c(3, 3.4), df=d
 }
 
 # pie chart for position of speech
-pos.plot <- function(xname='subtlex_uk.DomPoS', selected=T, PoS='noun', df=dat, label_top_N=5){
+pos.plot <- function(xname='subtlex_uk.DomPoS', selected=T, PoS='noun', df=lexops, label_top_N=5){
   
   dfplot <- tibble(x=df[[xname]]) %>%
     filter(x!=' ') %>%
@@ -136,7 +136,7 @@ pos.plot <- function(xname='subtlex_uk.DomPoS', selected=T, PoS='noun', df=dat, 
 # word cloud for rhyme
 rhyme.plot <- function(str_in="encyclopedia", pron_nr=1, df=lexops, box_opt="cmu", boxtype="primary") {
   xname <- corpus_recode_columns(box_opt, "Rhyme")
-  rhymesound <- df[[xname]][dat$string==str_in]
+  rhymesound <- df[[xname]][df$string==str_in]
   zipf_cols <- colnames(df)[grepl("Zipf", colnames(df))]
   df$Avg.Zipf <- rowMeans(select(df, one_of(zipf_cols)), dims=1, na.rm=T)
   df %>%

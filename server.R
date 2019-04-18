@@ -16,11 +16,8 @@ lexops_loadingdone <- function() {
 
 # IMPORT DATA
 cat(sprintf('\nIMPORTING DATA...\n'))
-dat <- readRDS('dat.rds')
+lexops <- readRDS('lexops.rds')
 cat(sprintf(' -DONE.\n'))
-
-# Create lexops dataframe
-source("server/get_lexops_data.R", local=T)
 
 # simple functions for rounding decimals up or down
 source("misc_functions/rounding.R", local=T)
