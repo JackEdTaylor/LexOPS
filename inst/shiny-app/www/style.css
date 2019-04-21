@@ -1,0 +1,63 @@
+
+#loading_page {
+	position: fixed;
+	background: #000000;
+	z-index: 10000;
+	left: 0;
+	right: 0;
+	top: 0;
+	padding-top: 50px;
+	bottom: 0;
+	font-size: 50px;
+	font-family: "Century Schoolbook", serif;
+	text-align: center;
+	color: #FFFFFF;
+}
+
+.center-fit {
+	max-width: 100%;
+	max-height: 100vh;
+	margin: auto;
+}
+
+.main-header .logo {
+	font-family: "Century Schoolbook", serif;
+	font-style: italic;
+	font-weight: bold;
+	font-size: 24px;
+}
+
+.box.box-solid.box-info>.box-header {
+	color:#fff;
+	background:#641e68
+}
+
+.box.box-solid.box-info {
+	border-top-color:#641e68;
+	border:1px solid #641e68;
+}
+
+.box.box-info {
+	border-bottom-color:#641e68;
+	border-left-color:#641e68;
+	border-right-color:#641e68;
+	border-top-color:#641e68;
+}
+
+.bg-purple {
+	background-color:#641e68!important
+}
+
+.small-box .icon-large {
+	color:rgba(0.25, 0.25, 0.25, 0.25);
+	bottom:-5px;
+	right:10px
+}
+
+.main-header .logo {
+	text-align:left;
+}
+
+.shiny-output-error-validation {
+	color: red;
+}

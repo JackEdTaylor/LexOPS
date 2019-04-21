@@ -1,0 +1,35 @@
+Package: LexOPS
+Title: A Package and Shiny App for Generating Psycholinguistic Stimuli
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Jack",
+           family = "Taylor",
+           role = c("aut", "cre"),
+           email = "j.e.taylor@live.co.uk",
+           comment = c(ORCID = "0000-0003-4765-0118"))
+Description: LexOPS is a package for generating word stimuli for use in Psychology experiments. It features useful functions and a Shiny app suitable for generating stimuli for a range of experimental designs.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.1
+Imports: 
+    magrittr,
+    dplyr,
+    purrr,
+    rlang,
+    shiny,
+    plotly,
+    ggwordcloud,
+    shinydashboard,
+    shinyjs,
+    viridis,
+    DT,
+    vwr,
+    colourpicker,
+    ggplot2,
+    tidyr,
+    readr,
+    tibble,
+    stringr,
+    forcats

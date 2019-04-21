@@ -1,22 +1,22 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # LexOPS
 
-LexOPS is an R Shiny App for generating word stimuli, for use in Psychology experiments. It can generate stimuli for a factorial design specified by the user, controlling for selected lexical variables. It also has several features for visualising variables' distributions and relationships. The app has an inbuilt database of features for English words, but the user can also provide their own list of features, for English words and/or for words in other languages.
+<!-- badges: start -->
 
-## Run the Shiny App
+<!-- badges: end -->
 
-There are two main options for running LexOPS.
+LexOPS is an R package and Shiny App for generating word stimuli, for
+use in Psychology experiments. It can generate stimuli for a factorial
+design specified by the user, controlling for selected lexical
+variables. It also has several features for visualising variables’
+distributions and relationships. The app has an inbuilt database of
+features for English words, but the user can also provide their own list
+of features, for English words and/or for words in other languages.
 
-### 1. Run Locally (Recommended)
-
-This is the recommended method for running LexOPS. If you [have R installed](https://cloud.r-project.org/), you can run the latest version of LexOPS on your own computer either by [cloning the repository](https://help.github.com/en/articles/cloning-a-repository), or with the following R code:
+LexOPS can be installed as an R package with:
 
 ``` r
-install.packages("shiny")
-shiny::runGitHub("JackEdTaylor/LexOPS")
+devtools::install_github("JackEdTaylor/LexOPS")
 ```
-
-### 2. Run on the LexOPS Server
-
-If you can't run it locally, the next easiest way to run LexOPS is as a web app (hosted on a dedicated server). This will probably be much slower than running LexOPS on your own computer, but also means you won't have to install anything. LexOPS is available online at:
-
-[http://lexops.co.uk/run](http://lexops.co.uk/run)
