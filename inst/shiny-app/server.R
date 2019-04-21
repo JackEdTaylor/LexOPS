@@ -1,16 +1,22 @@
 library(shiny)
-library(shinydashboard)
 library(shinyjs)
+library(shinydashboard)
+library(shinycssloaders)
 library(plotly)
 library(viridis)
-library(ggwordcloud)
 library(DT)
-library(vwr)
 library(colourpicker)
-library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(purrr)
+library(tibble)
+library(stringr)
+library(forcats)
 
 lexops_loadingdone <- function() {
-  hide(id = "loading_page", anim = TRUE, animType = "slide")    
+  hide(id = "loading_page", anim = TRUE, animType = "slide")
   show("main_content")
 }
 
@@ -51,56 +57,56 @@ source("server/match/matcher_functions.R", local=T)
 
 # Define server logic
 shinyServer(function(input, output) {
-  
+
   # get the lexopsReact() reactive df
   source("server/lexops_reactive_df.R", local=T)
-  
+
   visualise.opts <- reactive({
     names(lexopsReact())[!(names(lexopsReact()) %in% c('string'))]
   })
-  
+
   # functions used in the generate tab to create the UIs
   source("server/generate/splitby_UIfunction.R", local=T)
   source("server/generate/controlfor_UIfunction.R", local=T)
   source("server/generate/filterby_UIfunction.R", local=T)
-  
+
   # initial numbers of boxes on generate tab
   gen_splitby_boxes_N <- reactiveVal(0)
   gen_controlfor_boxes_N <- reactiveVal(0)
   gen_filterby_boxes_N <- reactiveVal(0)
-  
+
   # Generate tab boxes
   source("server/generate/splitby_boxes.R", local=T)
   source("server/generate/controlfor_boxes.R", local=T)
   source("server/generate/filterby_boxes.R", local=T)
-  
+
   # Get the generated stimuli
   source("server/generate/generate.R", local=T)
-  
+
   # Generate tab results
   source("server/generate/results_generate.R", local=T)
-  
+
   # initial number of boxes on generate tab
   matchboxes_N <- reactiveVal(0)
-  
+
   # Match tab UI
   source("server/match/match_UIfunction.R", local=T)
-  
+
   # Match tab boxes
   source("server/match/match_boxes.R", local=T)
-  
+
   # get matches
   source("server/match/match.R", local=T)
-  
+
   # put matches in datatable & sorting options
   source("server/match/results_match.R", local=T)
-  
+
   # fetch tab
   source("server/fetch.R", local=T)
-  
+
   # custom variables tab
   source("server/custom_variables.R", local=T)
-  
+
   # Info page download button
   output$LexOPS.csv <- downloadHandler(
     filename = 'LexOPS.csv',
@@ -110,12 +116,12 @@ shinyServer(function(input, output) {
       })
     }
   )
-  
+
   source("server/update_visualisation.R", local=T)
-  
+
   # loading screen finish
   lexops_loadingdone()
-  
+
 }
 
 )
