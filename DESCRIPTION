@@ -32,4 +32,5 @@ Imports:
     readr,
     tibble,
     stringr,
-    forcats
+    forcats,
+    shinycssloaders
