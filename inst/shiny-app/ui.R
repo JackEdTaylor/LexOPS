@@ -332,6 +332,9 @@ tagList(
                                   title=NULL, status='primary',
                                   collabsible=F, width=12,
                                   fluidRow(
+                                    column(12, align = "center", tags$p(sprintf("LexOPS version %s", packageVersion("LexOPS")), style='font-size:20px; color:black;')),
+                                    column(12, br()),
+                                    column(12, br()),
                                     column(4, align="center",
                                            fluidRow(
                                              column(12, tags$a(href = 'http://lexops.co.uk', icon('book-open'), style='font-size:75px; color:black;')),
