@@ -15,8 +15,18 @@ distributions and relationships. The app has an inbuilt database of
 features for English words, but the user can also provide their own list
 of features, for English words and/or for words in other languages.
 
+## Installation
+
 LexOPS can be installed as an R package with:
 
 ``` r
 devtools::install_github("JackEdTaylor/LexOPS")
+```
+
+## Shiny App
+
+The LexOPS Shiny App can be run with:
+
+``` r
+LexOPS::runShiny()
 ```
