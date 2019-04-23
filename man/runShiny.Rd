@@ -4,7 +4,10 @@
 \alias{runShiny}
 \title{runShiny}
 \usage{
-runShiny()
+runShiny(...)
+}
+\arguments{
+\item{...}{optional arguments to \code{shiny::runApp()}}
 }
 \description{
 Runs the LexOPS Shiny App.
