@@ -14,6 +14,8 @@ library(purrr)
 library(tibble)
 library(stringr)
 library(forcats)
+library(vwr)
+library(stringdist)
 
 lexops_loadingdone <- function() {
   hide(id = "loading_page", anim = TRUE, animType = "slide")

@@ -26,6 +26,7 @@ Imports:
     viridis,
     DT,
     vwr,
+    stringdist,
     colourpicker,
     ggplot2,
     tidyr,
