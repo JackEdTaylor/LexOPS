@@ -16,6 +16,7 @@ library(stringr)
 library(forcats)
 library(vwr)
 library(stringdist)
+library(LexOPS)
 
 lexops_loadingdone <- function() {
   hide(id = "loading_page", anim = TRUE, animType = "slide")
@@ -24,7 +25,7 @@ lexops_loadingdone <- function() {
 
 # IMPORT DATA
 cat(sprintf('\nIMPORTING DATA...\n'))
-lexops <- readRDS('lexops.rds')
+lexops <- LexOPS::lexops
 cat(sprintf(' -DONE.\n'))
 
 # simple functions for rounding decimals up or down
