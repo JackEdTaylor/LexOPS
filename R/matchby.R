@@ -115,7 +115,7 @@ matchby <- function(df = LexOPS::lexops, target, vars, stringCol = "string", fil
 
   # return the result
   if (length(numFilt) > 0 & length(charFilt) > 0) {
-    out <- dplyr::inner_join(charOut, numOut, by = stringCol)
+    out <- dplyr::inner_join(charOut, numOut, by = colnames(charOut))
   } else if (length(numFilt) > 0 & length(charFilt) == 0) {
     out <- numOut
   } else {
