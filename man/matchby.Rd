@@ -4,15 +4,15 @@
 \alias{matchby}
 \title{matchby}
 \usage{
-matchby(target, vars, df = LexOPS::lexops, stringCol = "string",
+matchby(df = LexOPS::lexops, target, vars, stringCol = "string",
   filter = TRUE)
 }
 \arguments{
+\item{df}{A data frame to reorder, containing the target string (default = LexOPS::lexops).}
+
 \item{target}{The target string}
 
 \item{vars}{Can be a list of vars from df to match by, in the form list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName"). Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.}
-
-\item{df}{A data frame to reorder, containing the target string (default = LexOPS::lexops).}
 
 \item{stringCol}{The column containing the strings (default = "string")}
 
@@ -28,16 +28,16 @@ selected variables of a data frame.
 \examples{
 
 # Match by number of syllables exactly
-matchby("thicket", "Syllables.CMU")
+LexOPS::lexops \%>\% matchby("thicket", "Syllables.CMU")
 
 # Match by number of syllables exactly, but keep the original dataframe
-matchby("thicket", "Syllables.CMU", filter = FALSE)
+LexOPS::lexops \%>\% matchby("thicket", "Syllables.CMU", filter = FALSE)
 
 # Match by number of syllables exactly, and rhyme
-matchby("thicket", list("Syllables.CMU", "Rhyme.CMU"))
+LexOPS::lexops \%>\% matchby("thicket", list("Syllables.CMU", "Rhyme.CMU"))
 
 # Match by length exactly, and closely by frequency (within 0.2 Zipf either way)
-matchby("thicket", list("Length", c("Zipf.SUBTLEX_UK", -0.2, 0.2)))
+LexOPS::lexops \%>\% matchby("thicket", list("Length", c("Zipf.SUBTLEX_UK", -0.2, 0.2)))
 
 }
 \seealso{

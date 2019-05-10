@@ -3,31 +3,31 @@
 #' Suggests strings that are suitable matches for a target string, based on
 #' selected variables of a data frame.
 #'
+#' @param df A data frame to reorder, containing the target string (default = LexOPS::lexops).
 #' @param target The target string
 #' @param vars Can be a list of vars from df to match by, in the form list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName"). Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.
-#' @param df A data frame to reorder, containing the target string (default = LexOPS::lexops).
 #' @param stringCol The column containing the strings (default = "string")
 #' @param filter Logical. If TRUE, matches outside the tolerances specified in vars are removed. If FALSE, a new column, matchFilter is calculated indicating whether or not the string is within all variables' tolerances. (Default = TRUE.)
 #' @return Returns data frame based on `df`. If `filter` == TRUE, will only contain matches. If `filter` == FALSE, will be the original `df` object, with a new column, "matchFilter".
 #' @examples
 #'
 #' # Match by number of syllables exactly
-#' matchby("thicket", "Syllables.CMU")
+#' LexOPS::lexops %>% matchby("thicket", "Syllables.CMU")
 #'
 #' # Match by number of syllables exactly, but keep the original dataframe
-#' matchby("thicket", "Syllables.CMU", filter = FALSE)
+#' LexOPS::lexops %>% matchby("thicket", "Syllables.CMU", filter = FALSE)
 #'
 #' # Match by number of syllables exactly, and rhyme
-#' matchby("thicket", list("Syllables.CMU", "Rhyme.CMU"))
+#' LexOPS::lexops %>% matchby("thicket", list("Syllables.CMU", "Rhyme.CMU"))
 #'
 #' # Match by length exactly, and closely by frequency (within 0.2 Zipf either way)
-#' matchby("thicket", list("Length", c("Zipf.SUBTLEX_UK", -0.2, 0.2)))
+#' LexOPS::lexops %>% matchby("thicket", list("Length", c("Zipf.SUBTLEX_UK", -0.2, 0.2)))
 #'
 #' @seealso \code{\link{lexops}} for the default data frame and associated variables.
 #'
 #' @export
 
-matchby <- function(target, vars, df = LexOPS::lexops, stringCol = "string", filter = TRUE) {
+matchby <- function(df = LexOPS::lexops, target, vars, stringCol = "string", filter = TRUE) {
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
   # check stringCol is a string
@@ -136,30 +136,30 @@ matchby <- function(target, vars, df = LexOPS::lexops, stringCol = "string", fil
 
 # # these should throw each of the possible errors
 #
-# matchby("thicket", list(c("Length", -1, 1), "Rhyme", c("unreal", 1)))
+# LexOPS::lexops %>% matchby("thicket", list(c("Length", -1, 1), "Rhyme", c("unreal", 1)))
 #
-# matchby("thicket", list(c("Length", -1, 1), c("Rhyme.CMU", 1, 2), "Zipf.SUBTLEX_UK"))
+# LexOPS::lexops %>% matchby("thicket", list(c("Length", -1, 1), c("Rhyme.CMU", 1, 2), "Zipf.SUBTLEX_UK"))
 #
-# matchby("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5)))
+# LexOPS::lexops %>% matchby("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5)))
 #
-# matchby("111", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)))
+# LexOPS::lexops %>% matchby("111", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)))
 #
-# matchby("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)))
+# LexOPS::lexops %>% matchby("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)))
 #
-# matchby("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)), df="hi")
+# LexOPS::lexops %>% matchby("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)), df="hi")
 #
-# matchby(2, list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)), stringCol = "string")
+# LexOPS::lexops %>% matchby(2, list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)), stringCol = "string")
 #
-# matchby("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)), stringCol = 3*1)
+# LexOPS::lexops %>% matchby("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)), stringCol = 3*1)
 #
 # # these should work
 #
-# matchby("thicket", list(c("Zipf.SUBTLEX_UK", -0.2, 0.2)))
+# LexOPS::lexops %>% matchby("thicket", list(c("Zipf.SUBTLEX_UK", -0.2, 0.2)))
 #
-# matchby("thicket", list(c("Length", 0, 0)))
+# LexOPS::lexops %>% matchby("thicket", list(c("Length", 0, 0)))
 #
-# matchby("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -0.2, 0.2)))
+# LexOPS::lexops %>% matchby("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -0.2, 0.2)))
 #
-# matchby("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -0.2, 0.2), "Rhyme.eSpeak.br"))
+# LexOPS::lexops %>% matchby("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -0.2, 0.2), "Rhyme.eSpeak.br"))
 
 
