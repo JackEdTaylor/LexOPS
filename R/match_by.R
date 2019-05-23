@@ -98,7 +98,7 @@ match_by <- function(df = LexOPS::lexops, target, vars, stringCol = "string", fi
     numOut <- numFilt %>%
       purrr::map(~df %>%
                    dplyr::filter(dplyr::between(
-                     rlang::UQ(dplyr::sym(.x[1])),
+                     !!(dplyr::sym(.x[1])),
                      as.numeric(.x[2]),
                      as.numeric(.x[3])
                    ))) %>%
@@ -108,7 +108,7 @@ match_by <- function(df = LexOPS::lexops, target, vars, stringCol = "string", fi
     charOut <- charFilt %>%
       purrr::map(~df %>%
                    dplyr::filter(
-                     rlang::UQ(dplyr::sym(.x[1])) == as.character(.x[2])
+                     !!(dplyr::sym(.x[1])) == as.character(.x[2])
                    )) %>%
       purrr::reduce(dplyr::inner_join, by = colnames(df))
   }
@@ -123,11 +123,11 @@ match_by <- function(df = LexOPS::lexops, target, vars, stringCol = "string", fi
   }
 
   # remove the target word
-  out <- dplyr::filter(out, rlang::UQ(dplyr::sym(stringCol)) != target)
+  out <- dplyr::filter(out, !!(dplyr::sym(stringCol)) != target)
 
   # if the filter argument is FALSE, return the original df, but with new column matchFilter
   if (!filter) {
-    out <- dplyr::mutate(df, matchFilter = rlang::UQ(dplyr::sym(stringCol)) %in% out[[stringCol]])
+    out <- dplyr::mutate(df, matchFilter = !!(dplyr::sym(stringCol)) %in% out[[stringCol]])
   }
 
   # return the result
