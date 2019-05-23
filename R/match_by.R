@@ -12,16 +12,20 @@
 #' @examples
 #'
 #' # Match by number of syllables exactly
-#' LexOPS::lexops %>% match_by("thicket", "Syllables.CMU")
+#' lexops %>%
+#'   match_by("thicket", "Syllables.CMU")
 #'
-#' # Match by number of syllables exactly, but keep the original dataframe
-#' LexOPS::lexops %>% match_by("thicket", "Syllables.CMU", filter = FALSE)
+#' # Match by number of syllables exactly, but keep all entries in the original dataframe
+#' lexops %>%
+#'   match_by("thicket", "Syllables.CMU", filter = FALSE)
 #'
 #' # Match by number of syllables exactly, and rhyme
-#' LexOPS::lexops %>% match_by("thicket", list("Syllables.CMU", "Rhyme.CMU"))
+#' lexops %>%
+#'   match_by("thicket", list("Syllables.CMU", "Rhyme.CMU"))
 #'
 #' # Match by length exactly, and closely by frequency (within 0.2 Zipf either way)
-#' LexOPS::lexops %>% match_by("thicket", list("Length", c("Zipf.SUBTLEX_UK", -0.2, 0.2)))
+#' lexops %>%
+#'   match_by("thicket", list("Length", c("Zipf.SUBTLEX_UK", -0.2, 0.2)))
 #'
 #' @seealso \code{\link{lexops}} for the default data frame and associated variables.
 #'

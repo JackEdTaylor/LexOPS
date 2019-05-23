@@ -27,10 +27,17 @@ Specifies splits for one IV for a factorial design. NOT YET FUNCTIONAL
 \examples{
 
 # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables
-LexOPS::lexops \%>\% split_by(list("Syllables.CMU", c(1, 3), c(4, 6), c(7, 20)))
+lexops \%>\%
+  split_by(list("Syllables.CMU", c(1, 3), c(4, 6), c(7, 20)))
 
-# Create two levels of position of speech, noun and verb
-LexOPS::lexops \%>\% split_by(list("PoS.SUBTLEX_UK", "noun", "verb"))
+# Create 2 levels of position of speech, noun and verb
+lexops \%>\%
+  split_by(list("PoS.SUBTLEX_UK", "noun", "verb"))
+
+# Perform two splits
+lexops \%>\%
+  split_by(list("Syllables.CMU", c(1, 3), c(4, 6), c(7, 20))) \%>\%
+  split_by(list("PoS.SUBTLEX_UK", "noun", "verb"))
 
 }
 \seealso{
