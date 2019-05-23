@@ -1,4 +1,4 @@
-#' runShiny
+#' run_shiny
 #'
 #' Runs the LexOPS Shiny App.
 #'
@@ -6,7 +6,7 @@
 #'
 #' @export
 
-runShiny <- function(...) {
+run_shiny <- function(...) {
   appDir <- system.file("shiny-app", package = "LexOPS")
   if (appDir == "") {
     stop("Could not find the directory for the LexOPS Shiny App. Try re-installing `LexOPS`.")
