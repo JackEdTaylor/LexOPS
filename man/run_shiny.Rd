@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_shiny.R
 \name{run_shiny}
 \alias{run_shiny}
-\title{run_shiny}
+\title{Run the LeXOPS Shiny App}
 \usage{
 run_shiny(...)
 }
@@ -10,5 +10,5 @@ run_shiny(...)
 \item{...}{optional arguments to \code{shiny::runApp()}}
 }
 \description{
-Runs the LexOPS Shiny App.
+Runs the LexOPS Shiny App, with optional additional arguments.
 }

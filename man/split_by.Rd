@@ -2,7 +2,7 @@
 % Please edit documentation in R/split_by.R
 \name{split_by}
 \alias{split_by}
-\title{split_by}
+\title{Add a split to the data.}
 \usage{
 split_by(df = LexOPS::lexops, split, filter = TRUE,
   stringCol = "string", condCol = "splitCond")
@@ -22,7 +22,7 @@ split_by(df = LexOPS::lexops, split, filter = TRUE,
 Returns \code{df}, with a new (or edited) column which is a character vector of form c("A1", "A3", "B1", "B1"...), identifying which condition each string belongs to. The data frame will also be grouped by this variable (see \link[dplyr]{group_by}).
 }
 \description{
-Specifies splits for one IV for a factorial design. NOT YET FUNCTIONAL
+Specifies splits for one IV for a factorial design. Can be called multiple times for multiple splits.
 }
 \examples{
 

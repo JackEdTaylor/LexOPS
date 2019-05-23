@@ -1,6 +1,6 @@
-#' run_shiny
+#' Run the LeXOPS Shiny App
 #'
-#' Runs the LexOPS Shiny App.
+#' Runs the LexOPS Shiny App, with optional additional arguments.
 #'
 #' @param ... optional arguments to `shiny::runApp()`
 #'

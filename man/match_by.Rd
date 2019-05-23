@@ -2,7 +2,7 @@
 % Please edit documentation in R/match_by.R
 \name{match_by}
 \alias{match_by}
-\title{match_by}
+\title{Get suitable matches for a single word on one or several dimensions.}
 \usage{
 match_by(df = LexOPS::lexops, target, vars, stringCol = "string",
   filter = TRUE)

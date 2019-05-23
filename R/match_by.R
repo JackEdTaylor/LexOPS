@@ -1,4 +1,4 @@
-#' match_by
+#' Get suitable matches for a single word on one or several dimensions.
 #'
 #' Suggests strings that are suitable matches for a target string, based on
 #' selected variables of a data frame.

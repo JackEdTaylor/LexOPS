@@ -1,6 +1,6 @@
-#' split_by
+#' Add a split to the data.
 #'
-#' Specifies splits for one IV for a factorial design. NOT YET FUNCTIONAL
+#' Specifies splits for one IV for a factorial design. Can be called multiple times for multiple splits.
 #'
 #' @param df A data frame to reorder, containing the target string (default = LexOPS::lexops).
 #' @param split A list object specifying the splits in the form, `list("IV_column", c(1, 3), c(4, 6), ...)`, where the first item is the column that specified the IV. Subsequent arguments specify all levels of the split. Splits must be non-overlapping.
