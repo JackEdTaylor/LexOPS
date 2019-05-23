@@ -28,5 +28,5 @@ devtools::install_github("JackEdTaylor/LexOPS")
 The LexOPS Shiny App can be run with:
 
 ``` r
-LexOPS::runShiny()
+LexOPS::run_shiny()
 ```
