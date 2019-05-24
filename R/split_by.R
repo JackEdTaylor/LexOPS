@@ -6,7 +6,7 @@
 #' @param split A list object specifying the levels of the split in the form, `list("IV_column", c(1, 3), c(4, 6), ...)`, where the first item is the column that specified the IV. Subsequent arguments specify all levels of the split. Splits must be non-overlapping.
 #' @param filter Logical. If TRUE, words which fit no conditions are removed.
 #' @param stringCol The column containing the strings (default = "string").
-#' @param condCol Prefix with which to name the column where the condition will be stored (default = "splitCond"). Each time split_by() is run on a dataframe, a new condCol is added to the data frame, e.g., the first time will add splitCond_A, the second time will ad split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of condCol must be the same each time the function is called. The default is usually sufficient.
+#' @param condCol Prefix with which to name the column where the condition will be stored (default = "splitCond"). Each time split_by() is run on a dataframe, a new condCol is added to the data frame, e.g., the first time will add splitCond_A, the second time will ad split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of condCol must be the same each time the function is called. The default is usually sufficient. This values will be stored in the data frame's attributes.
 #'
 #' @return Returns `df`, with a new column (name defined by `condCol` argument) identifying which level of the IV each string belongs to.
 #' @examples
@@ -40,6 +40,15 @@ split_by <- function(df = LexOPS::lexops, split, filter = TRUE, stringCol = "str
     stop("Expected numeric tolerances for numeric variable.")
   } else if (!is.numeric(df[[split[[1]]]]) & all(sapply(split[2:length(split)], is.numeric))) {
     stop("Expected non-numeric tolerances for non-numeric variable.")
+  }
+
+  # check the attributes, and add the condCol if not already defined. Throw error if condCol is not the same as that in the previous split
+  if (is.null(attr(df, "LexOPS_splitcol"))) {
+    attr(df, "LexOPS_splitcol") <- condCol
+  } else {
+    if (attr(df, "LexOPS_splitcol") != condCol) {
+      stop(sprintf("Inconsistent naming of condCol ('%s' != '%s'). The condCol argument must have the same value each time split_by() is run on the data.", condCol, attr(df, "LexOPS_splitcol")))
+    }
   }
 
   # detect any other condCols in the df, and work out what to suffix this new condCol
@@ -99,15 +108,11 @@ split_by <- function(df = LexOPS::lexops, split, filter = TRUE, stringCol = "str
 #
 # "non_df_object" %>% split_by(list("Syllables.CMU", c(1, 2), c(3, 4), c(5, 9)))
 #
-# LexOPS::lexops %>% split_by(list("Syllables.CMU", c(1, 2), c(3, 4), c(5, 9)))
-#
 # LexOPS::lexops %>% split_by(list("Syllables.CMU", "few", "lots"))
 #
 # LexOPS::lexops %>% split_by(list("PoS.SUBTLEX_UK", c(1, 3), c(4, 6)))
 #
-# # should throw a warning
-#
-# LexOPS::lexops %>% dplyr::mutate(splitCond=1:dplyr::n()) %>% split_by(list("Syllables.CMU", c(1, 2), c(3, 4), c(5, 9)))
+# LexOPS::lexops %>% split_by(list("PoS.SUBTLEX_UK", "noun", "verb")) %>% split_by(list("Length", c(1, 3), c(4, 7), c(8, 30)), condCol = "spliteroo")
 #
 # # should work
 #
