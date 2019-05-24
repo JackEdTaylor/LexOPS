@@ -52,7 +52,8 @@ split_by <- function(df = LexOPS::lexops, split, filter = TRUE, stringCol = "str
   }
 
   # detect any other condCols in the df, and work out what to suffix this new condCol
-  other_splits <- colnames(df)[grepl(condCol, colnames(df))]
+  condCol_regex <- sprintf("^%s_[A-Z]$", condCol)
+  other_splits <- colnames(df)[grepl(condCol_regex, colnames(df))]
 
   last_split_nr <- if (length(other_splits) > 0) {
     other_splits %>%  # detect any other condCols in the df
