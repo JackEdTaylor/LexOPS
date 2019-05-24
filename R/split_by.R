@@ -8,7 +8,7 @@
 #' @param stringCol The column containing the strings (default = "string").
 #' @param condCol Prefix with which to name the column where the condition will be stored (default = "splitCond"). Each time split_by() is run on a dataframe, a new condCol is added to the data frame, e.g., the first time will add splitCond_A, the second time will ad split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of condCol must be the same each time the function is called. The default is usually sufficient.
 #'
-#' @return Returns `df`, with a new (or edited) column which is a character vector of form c("A1", "A3", "B1", "B1"...), identifying which condition each string belongs to. The data frame will also be grouped by this variable (see \link[dplyr]{group_by}).
+#' @return Returns `df`, with a new column (name defined by `condCol` argument) identifying which level of the IV each string belongs to.
 #' @examples
 #'
 #' # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables
