@@ -10,7 +10,7 @@ split_by(df = LexOPS::lexops, split, filter = TRUE,
 \arguments{
 \item{df}{A data frame to reorder, containing the target string (default = LexOPS::lexops).}
 
-\item{split}{A list object specifying the splits in the form, \code{list("IV_column", c(1, 3), c(4, 6), ...)}, where the first item is the column that specified the IV. Subsequent arguments specify all levels of the split. Splits must be non-overlapping.}
+\item{split}{A list object specifying the levels of the split in the form, \code{list("IV_column", c(1, 3), c(4, 6), ...)}, where the first item is the column that specified the IV. Subsequent arguments specify all levels of the split. Splits must be non-overlapping.}
 
 \item{filter}{Logical. If TRUE, words which fit no conditions are removed.}
 

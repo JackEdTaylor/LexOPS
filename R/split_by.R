@@ -3,7 +3,7 @@
 #' Specifies splits for one IV for a factorial design. Can be called multiple times for multiple splits.
 #'
 #' @param df A data frame to reorder, containing the target string (default = LexOPS::lexops).
-#' @param split A list object specifying the splits in the form, `list("IV_column", c(1, 3), c(4, 6), ...)`, where the first item is the column that specified the IV. Subsequent arguments specify all levels of the split. Splits must be non-overlapping.
+#' @param split A list object specifying the levels of the split in the form, `list("IV_column", c(1, 3), c(4, 6), ...)`, where the first item is the column that specified the IV. Subsequent arguments specify all levels of the split. Splits must be non-overlapping.
 #' @param filter Logical. If TRUE, words which fit no conditions are removed.
 #' @param stringCol The column containing the strings (default = "string").
 #' @param condCol Prefix with which to name the column where the condition will be stored (default = "splitCond"). Each time split_by() is run on a dataframe, a new condCol is added to the data frame, e.g., the first time will add splitCond_A, the second time will ad split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of condCol must be the same each time the function is called. The default is usually sufficient.
