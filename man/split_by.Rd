@@ -8,7 +8,7 @@ split_by(df = LexOPS::lexops, split, filter = TRUE,
   stringCol = "string", condCol = "splitCond")
 }
 \arguments{
-\item{df}{A data frame to reorder, containing the target string (default = LexOPS::lexops).}
+\item{df}{A data frame containing the IV and strings.}
 
 \item{split}{A list object specifying the levels of the split in the form, \code{list("IV_column", c(1, 3), c(4, 6), ...)}, where the first item is the column that specified the IV. Subsequent arguments specify all levels of the split. Splits must be non-overlapping.}
 
