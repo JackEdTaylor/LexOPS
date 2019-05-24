@@ -90,7 +90,7 @@ split_by <- function(df = LexOPS::lexops, split, filter = TRUE, stringCol = "str
     } else if (all(!row)) {
       NA
     } else {
-      which(row)
+      sprintf("%s%i" LETTERS[last_split_nr+1], which(row))
     }
   }))
 
