@@ -37,8 +37,11 @@ control_for <- function(df, var, stringCol = "string", condCol = NA) {
   }
   if (length(var)==1 & is.numeric(df[[var[[1]]]])) warning(sprintf("No tolerance given for non-numeric variable '%s', will control for exactly.", var[[1]]))
 
+  # get attributes
+  LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
+
   # check that the splits have been performed (will be stored in the attributes)
-  if (is.null(attr(df, "LexOPS_splitcol")) & is.na(condCol)) {
+  if (is.null(LexOPS_attrs$splitCol) & is.na(condCol)) {
     stop("Unknown split conditions column! Make sure you run split_by() before control_for().")
   } else if (!is.na(condCol)) {
     condCol_regex <- sprintf("^%s_[A-Z]$", condCol)
@@ -46,11 +49,14 @@ control_for <- function(df, var, stringCol = "string", condCol = NA) {
   }
 
   # add the specified controls to df's attributes
-  if (is.null(attr(df, "LexOPS_controls"))) {
-    attr(df, "LexOPS_controls") <- list(var)
+  if (is.null(LexOPS_attrs$controls)) {
+    LexOPS_attrs$controls <- list(var)
   } else {
-    attr(df, "LexOPS_controls") <- append(attr(df, "LexOPS_controls"), var)
+    LexOPS_attrs$controls <- append(LexOPS_attrs$controls, var)
   }
+
+  # add the attributes to the output object
+  attr(df, "LexOPS_attrs") <- LexOPS_attrs
 
   df
 }

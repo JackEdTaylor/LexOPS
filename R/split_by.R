@@ -42,12 +42,15 @@ split_by <- function(df = LexOPS::lexops, split, filter = TRUE, stringCol = "str
     stop("Expected non-numeric tolerances for non-numeric variable.")
   }
 
+  # get attributes
+  LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
+
   # check the attributes, and add the condCol if not already defined. Throw error if condCol is not the same as that in the previous split
-  if (is.null(attr(df, "LexOPS_splitcol"))) {
-    attr(df, "LexOPS_splitcol") <- condCol
+  if (is.null(LexOPS_attrs$splitCol)) {
+    LexOPS_attrs$splitCol <- condCol
   } else {
-    if (attr(df, "LexOPS_splitcol") != condCol) {
-      stop(sprintf("Inconsistent naming of condCol ('%s' != '%s'). The condCol argument must have the same value each time split_by() is run on the data.", condCol, attr(df, "LexOPS_splitcol")))
+    if (LexOPS_attrs$splitCol != condCol) {
+      stop(sprintf("Inconsistent naming of condCol ('%s' != '%s'). The condCol argument must have the same value each time split_by() is run on the data.", condCol, LexOPS_attrs$splitCol))
     }
   }
 
@@ -101,6 +104,9 @@ split_by <- function(df = LexOPS::lexops, split, filter = TRUE, stringCol = "str
   if (filter) {
     df <- dplyr::filter(df, !is.na(!!(dplyr::sym(condCol_this_split))))
   }
+
+  # add the attributes to the output object
+  attr(df, "LexOPS_attrs") <- LexOPS_attrs
 
   df
 }
