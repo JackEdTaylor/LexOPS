@@ -11,6 +11,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+library(LexOPS)
 ```
 # LexOPS
 
@@ -33,4 +34,30 @@ The LexOPS Shiny App can be run with:
 
 ```{r, eval=FALSE}
 LexOPS::run_shiny()
+```
+
+## Reproducible Code
+
+Stimuli can also be generated using reproducible code. For example, the following code generates 20 words per condition (120 in total), for a study with a concreteness (low, high) by emotional valence (negative, neutral, positive) experimental design. Words are controlled for by length exactly, and by word frequency within a tolerance of ±0.2 Zipf.
+
+```{r, eval=FALSE}
+lexops %>%
+  split_by(list("CNC.Brysbaert", c(1, 2), c(4, 5))) %>%
+  split_by(list("VAL.Warriner", c(1, 3), c(4.5, 5.5), c(7, 9))) %>%
+  control_for(list("Zipf.SUBTLEX_UK", c(-0.25, 0.25))) %>%
+  control_for("Length") %>%
+  generate(n = 20, match_null = "A2_B2")
+```
+
+```{r, include=FALSE}
+generate_example <- lexops %>%
+  split_by(list("CNC.Brysbaert", c(1, 2), c(4, 5))) %>%
+  split_by(list("VAL.Warriner", c(1, 3), c(4.5, 5.5), c(7, 9))) %>%
+  control_for(list("Zipf.SUBTLEX_UK", c(-0.25, 0.25))) %>%
+  control_for("Length") %>%
+  generate(n = 20, match_null = "A2_B2")
+```
+
+```{r, echo=FALSE}
+knitr::kable(generate_example)
 ```
