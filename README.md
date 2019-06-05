@@ -34,13 +34,15 @@ LexOPS::run_shiny()
 ## Reproducible Code
 
 Stimuli can also be generated using reproducible code. For example, the
-following code generates 20 words per condition (120 in total), for a
-study with a concreteness (low, high) by emotional valence (negative,
-neutral, positive) experimental design. Words are controlled for by
-length exactly, and by word frequency within a tolerance of ±0.2 Zipf.
+following example pipeline generates 20 words per condition (120 in
+total), for a study with a 2 x 3, concreteness (low, high) by emotional
+valence (negative, neutral, positive) experimental design. Words are
+controlled for by length exactly, and by word frequency within a
+tolerance of ±0.2 Zipf.
 
 ``` r
 lexops %>%
+  subset(PoS.SUBTLEX_UK == "noun") %>%
   split_by(list("CNC.Brysbaert", c(1, 2), c(4, 5))) %>%
   split_by(list("VAL.Warriner", c(1, 3), c(4.5, 5.5), c(7, 9))) %>%
   control_for(list("Zipf.SUBTLEX_UK", c(-0.25, 0.25))) %>%
@@ -48,25 +50,25 @@ lexops %>%
   generate(n = 20, match_null = "A2_B2")
 ```
 
-| A1\_B1     | A1\_B2     | A1\_B3     | A2\_B1     | A2\_B2     | A2\_B3     | match\_null |
-| :--------- | :--------- | :--------- | :--------- | :--------- | :--------- | :---------- |
-| insane     | slight     | wisdom     | litter     | ladder     | muffin     | A2\_B2      |
-| hopeless   | conclude   | thankful   | asbestos   | morphine   | laughter   | A2\_B2      |
-| fascism    | spatial    | optimum    | cyanide    | leotard    | tropics    | A2\_B2      |
-| unromantic | indisposed | hospitable | pickpocket | sauerkraut | lovemaking | A2\_B2      |
-| stupid     | manage     | superb     | prison     | tackle     | rabbit     | A2\_B2      |
-| paranoia   | probable   | carefree   | incision   | gauntlet   | erection   | A2\_B2      |
-| illicit    | sarcasm    | empathy    | cyanide    | catfish    | tropics    | A2\_B2      |
-| hectic     | endure     | heroic     | heroin     | stitch     | kitten     | A2\_B2      |
-| unfit      | hyper      | amaze      | filth      | hinge      | brook      | A2\_B2      |
-| unromantic | submissive | hospitable | chickenpox | kickboxing | lovemaking | A2\_B2      |
-| ashamed    | ongoing    | liberty    | crushed    | cabbage    | rainbow    | A2\_B2      |
-| greed      | macho      | bliss      | venom      | dwarf      | doggy      | A2\_B2      |
-| negative   | convince   | accurate   | prisoner   | trousers   | comedian   | A2\_B2      |
-| crappy     | untold     | excite     | rapist     | crease     | stereo     | A2\_B2      |
-| annoy      | alpha      | bliss      | trash      | forge      | fudge      | A2\_B2      |
-| guilt      | alpha      | bliss      | thief      | sperm      | mommy      | A2\_B2      |
-| loathing   | holiness   | carefree   | incision   | ballpark   | macaroni   | A2\_B2      |
-| annoy      | heady      | amaze      | stain      | forty      | tulip      | A2\_B2      |
-| stupid     | reduce     | unique     | prison     | county     | silver     | A2\_B2      |
-| insolent   | gumption   | wellness   | glaucoma   | payphone   | paycheck   | A2\_B2      |
+| A1\_B1    | A1\_B2    | A1\_B3    | A2\_B1    | A2\_B2    | A2\_B3    | match\_null |
+| :-------- | :-------- | :-------- | :-------- | :-------- | :-------- | :---------- |
+| ignorance | mentality | greatness | courtroom | publisher | blueberry | A2\_B2      |
+| hatred    | motive    | wisdom    | bomber    | buzzer    | pillow    | A2\_B2      |
+| sadness   | analogy   | clarity   | burglar   | bedding   | pumpkin   | A2\_B2      |
+| distrust  | audacity  | fondness  | gangrene  | scaffold  | beverage  | A2\_B2      |
+| boredom   | paradox   | empathy   | asshole   | pageant   | pianist   | A2\_B2      |
+| betrayal  | protocol  | kindness  | assassin  | pussycat  | doughnut  | A2\_B2      |
+| paranoia  | theology  | optimist  | dictator  | fragment  | doughnut  | A2\_B2      |
+| distrust  | subtlety  | serenity  | gangrene  | scaffold  | duckling  | A2\_B2      |
+| fascism   | whatnot   | empathy   | garbage   | foreman   | mermaid   | A2\_B2      |
+| madness   | closure   | bravery   | missile   | carrier   | popcorn   | A2\_B2      |
+| treachery | euphemism | amazement | kidnapper | margarine | snowflake | A2\_B2      |
+| betrayal  | protocol  | optimism  | asbestos  | backside  | lollipop  | A2\_B2      |
+| boredom   | quantum   | empathy   | hostage   | bracket   | blossom   | A2\_B2      |
+| jealousy  | mischief  | kindness  | asbestos  | pipeline  | lollipop  | A2\_B2      |
+| madness   | concept   | bravery   | tsunami   | terrace   | concert   | A2\_B2      |
+| revenge   | bonkers   | fantasy   | coroner   | plaster   | blanket   | A2\_B2      |
+| treachery | sociology | dreamland | cellulite | bystander | lifesaver | A2\_B2      |
+| boredom   | concise   | empathy   | monsoon   | mascara   | tropics   | A2\_B2      |
+| hatred    | motive    | wisdom    | litter    | tenant    | cookie    | A2\_B2      |
+| inability | euphemism | sincerity | excrement | guerrilla | starlight | A2\_B2      |

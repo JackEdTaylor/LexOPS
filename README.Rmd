@@ -38,10 +38,11 @@ LexOPS::run_shiny()
 
 ## Reproducible Code
 
-Stimuli can also be generated using reproducible code. For example, the following code generates 20 words per condition (120 in total), for a study with a concreteness (low, high) by emotional valence (negative, neutral, positive) experimental design. Words are controlled for by length exactly, and by word frequency within a tolerance of ±0.2 Zipf.
+Stimuli can also be generated using reproducible code. For example, the following example pipeline generates 20 words (all nouns) per condition (120 words in total), for a study with a 2 x 3, concreteness (low, high) by emotional valence (negative, neutral, positive) experimental design. Words are controlled for by length exactly, and by word frequency within a tolerance of ±0.2 Zipf.
 
 ```{r, eval=FALSE}
 lexops %>%
+  subset(PoS.SUBTLEX_UK == "noun") %>%
   split_by(list("CNC.Brysbaert", c(1, 2), c(4, 5))) %>%
   split_by(list("VAL.Warriner", c(1, 3), c(4.5, 5.5), c(7, 9))) %>%
   control_for(list("Zipf.SUBTLEX_UK", c(-0.25, 0.25))) %>%
@@ -50,7 +51,9 @@ lexops %>%
 ```
 
 ```{r, include=FALSE}
+set.seed(31415)
 generate_example <- lexops %>%
+  subset(PoS.SUBTLEX_UK == "noun") %>%
   split_by(list("CNC.Brysbaert", c(1, 2), c(4, 5))) %>%
   split_by(list("VAL.Warriner", c(1, 3), c(4.5, 5.5), c(7, 9))) %>%
   control_for(list("Zipf.SUBTLEX_UK", c(-0.25, 0.25))) %>%
