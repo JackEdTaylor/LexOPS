@@ -5,7 +5,7 @@
 \title{Add a split to the data.}
 \usage{
 split_by(df = LexOPS::lexops, split, filter = TRUE,
-  stringCol = "string", condCol = "splitCond")
+  stringCol = "string", condCol = "LexOPS_splitCond")
 }
 \arguments{
 \item{df}{A data frame containing the IV and strings.}
@@ -16,7 +16,7 @@ split_by(df = LexOPS::lexops, split, filter = TRUE,
 
 \item{stringCol}{The column containing the strings (default = "string").}
 
-\item{condCol}{Prefix with which to name the column where the condition will be stored (default = "splitCond"). Each time split_by() is run on a dataframe, a new condCol is added to the data frame, e.g., the first time will add splitCond_A, the second time will ad split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of condCol must be the same each time the function is called. The default is usually sufficient. This values will be stored in the data frame's attributes.}
+\item{condCol}{Prefix with which to name the column where the condition will be stored (default = "LexOPS_splitCond"). Each time split_by() is run on a dataframe, a new condCol is added to the data frame, e.g., the first time will add splitCond_A, the second time will ad split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of condCol must be the same each time the function is called. The default is usually sufficient. This values will be stored in the data frame's attributes.}
 }
 \value{
 Returns \code{df}, with a new column (name defined by \code{condCol} argument) identifying which level of the IV each string belongs to.
