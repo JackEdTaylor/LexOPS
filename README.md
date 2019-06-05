@@ -38,7 +38,7 @@ following example pipeline generates 10 words (all nouns) per condition
 (60 words in total), for a study with a 2 x 3, concreteness (low, high)
 by emotional valence (negative, neutral, positive) experimental design.
 Words are controlled for by length exactly, and by word frequency within
-a tolerance of ±0.2 Zipf, relative to neutral abstract words.
+a tolerance of ±0.25 Zipf, relative to neutral abstract words.
 
 ``` r
 lexops %>%
