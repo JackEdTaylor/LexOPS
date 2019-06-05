@@ -52,7 +52,7 @@ control_for <- function(df, var, stringCol = "string", condCol = NA) {
   if (is.null(LexOPS_attrs$controls)) {
     LexOPS_attrs$controls <- list(var)
   } else {
-    LexOPS_attrs$controls <- append(LexOPS_attrs$controls, var)
+    LexOPS_attrs$controls[[length(LexOPS_attrs$controls)+1]] <- var
   }
 
   # add the attributes to the output object
