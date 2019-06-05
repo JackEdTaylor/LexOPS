@@ -45,6 +45,9 @@ split_by <- function(df = LexOPS::lexops, split, filter = TRUE, stringCol = "str
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
 
+  # add split info
+  LexOPS_attrs$splits <- if (is.null(LexOPS_attrs$splits)) list(split) else append(LexOPS_attrs$splits, split)
+
   # check the attributes, and add the condCol if not already defined. Throw error if condCol is not the same as that in the previous split
   if (is.null(LexOPS_attrs$splitCol)) {
     LexOPS_attrs$splitCol <- condCol
