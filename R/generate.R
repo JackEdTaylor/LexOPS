@@ -148,7 +148,7 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
       cat(sprintf("\rIteration: %i, Generated: %i/%i", n_tried, n_generated, n))
 
       this_match_null <- null_conds[n_generated+1]
-      null_word_bank <- df[[stringCol]][!df[[stringCol]] %in% out[all_conds] & df$LexOPS_cond == this_match_null & !df[[stringCol]] %in% words_tried_this_generated]
+      null_word_bank <- df[[stringCol]][!df[[stringCol]] %in% out & df$LexOPS_cond == this_match_null & !df[[stringCol]] %in% words_tried_this_generated]
 
       if (length(null_word_bank) == 0) {
         warning(sprintf("Failed to generate any new matches for matched row %i null condition %s (all %i candidate null words were tried)", n_generated + 1, this_match_null, n_tried_this_n_generated))
@@ -160,7 +160,7 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
 
       matches <- sapply(all_conds[all_conds != this_match_null], function(c) {
         m <- find_matches(
-          df = df[(!df[[stringCol]] %in% out[all_conds] & df$LexOPS_cond == c) | df[[stringCol]]==this_word, ],
+          df = df[(!df[[stringCol]] %in% out & df$LexOPS_cond == c) | df[[stringCol]]==this_word, ],
           target = this_word,
           vars = LexOPS_attrs$controls,
           matchCond = "A1",
