@@ -34,11 +34,11 @@ LexOPS::run_shiny()
 ## Reproducible Code
 
 Stimuli can also be generated using reproducible code. For example, the
-following example pipeline generates 20 words per condition (120 in
-total), for a study with a 2 x 3, concreteness (low, high) by emotional
-valence (negative, neutral, positive) experimental design. Words are
-controlled for by length exactly, and by word frequency within a
-tolerance of ±0.2 Zipf.
+following example pipeline generates 20 words (all nouns) per condition
+(120 words in total), for a study with a 2 x 3, concreteness (low, high)
+by emotional valence (negative, neutral, positive) experimental design.
+Words are controlled for by length exactly, and by word frequency within
+a tolerance of ±0.2 Zipf, relative to neutral abstract words.
 
 ``` r
 lexops %>%
