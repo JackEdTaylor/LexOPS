@@ -116,7 +116,12 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
       dplyr::pull(n) %>%
       dplyr::first()
     # if n is "all", set to the largest possible number of match rows
-    if (n == "all") n <- min_nr_of_match_rows
+    if (n == "all") {
+      n <- min_nr_of_match_rows
+      n_all <- TRUE
+    } else {
+      n_all <- FALSE
+    }
     # give warning if min_nr_of_match_rows < n, as this means n is definitely not achievable
     if (min_nr_of_match_rows < n) {
       warning(sprintf("n is too large; requested n of %i, but the condition with the fewest members has %i entries. Ensure n < %i. Will generate as many stimuli as possible.", n, min_nr_of_match_rows, min_nr_of_match_rows))
@@ -131,6 +136,7 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
     } else if (match_null == "random") {
       sample(all_conds, null_cond_n, replace = TRUE)
     } else if (match_null == "balanced") {
+      if (n_all) warning('`match_null="balanced"` may not work when `n="all"`. Check distributions of match_null in the output.')
       # As close to equal number of each condition as possible, randomly ordered.
       # If doesn't perfectly divide, the condition(s) which are over-represented are also randomly chosen.
       all_conds %>%
@@ -156,7 +162,11 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
       null_word_bank <- df[[stringCol]][!df[[stringCol]] %in% out & df$LexOPS_cond == this_match_null & !df[[stringCol]] %in% words_tried_this_generated]
 
       if (length(null_word_bank) == 0) {
-        warning(sprintf("Failed to generate any new matches for matched row %i null condition %s (all %i candidate null words were tried)", n_generated + 1, this_match_null, n_tried_this_n_generated))
+        if (n_all) {
+          cat(sprintf("Generated a total of %i stimuli per condition\n", n_generated))
+        } else {
+          warning(sprintf("Failed to generate any new matches for matched row %i null condition %s (all %i candidate null words were tried)", n_generated + 1, this_match_null, n_tried_this_n_generated))
+        }
         break
       }
 
@@ -187,13 +197,14 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
         n_generated <- n_generated + 1
         n_tried_this_n_generated <- 0
         words_tried_this_generated <- c()
-        if (n_generated %in% printing_points) cat(sprintf("Generated %i/%i (%i%%). %i total iterations.\n", n_generated, n, round(n_generated/n*100), n_tried))
+        if (n_generated %in% printing_points & !n_all) cat(sprintf("Generated %i/%i (%i%%). %i total iterations.\n", n_generated, n, round(n_generated/n*100), n_tried))
       }
 
     }
     sprintf("\n")
 
-    df <- as.data.frame(out)
+    df <- as.data.frame(out) %>%
+      na.omit()
     colnames(df) <- c(all_conds, "match_null")
 
   }
