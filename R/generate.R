@@ -142,10 +142,10 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
     n_generated <- 0
     words_tried_this_generated <- c()
     out <- matrix(ncol=length(all_conds)+1, nrow=n)
+    printing_points <- seq(0, n, n/10)
     while(n_generated < n) {
       n_tried <- n_tried + 1
       n_tried_this_n_generated <- n_tried_this_n_generated + 1
-      cat(sprintf("\rIteration: %i, Generated: %i/%i", n_tried, n_generated, n))
 
       this_match_null <- null_conds[n_generated+1]
       null_word_bank <- df[[stringCol]][!df[[stringCol]] %in% out & df$LexOPS_cond == this_match_null & !df[[stringCol]] %in% words_tried_this_generated]
@@ -182,6 +182,7 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
         n_generated <- n_generated + 1
         n_tried_this_n_generated <- 0
         words_tried_this_generated <- c()
+        if (n_generated %in% printing_points) cat(sprintf("Generated %i/%i (%i%%). %i total iterations.\n", n_generated, n, round(n_generated/n*100), n_tried))
       }
 
     }
