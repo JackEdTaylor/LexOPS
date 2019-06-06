@@ -153,7 +153,7 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
     n_generated <- 0
     words_tried_this_generated <- c()
     out <- matrix(ncol=length(all_conds)+1, nrow=n)
-    printing_points <- seq(0, n, n/10)
+    printing_points <- round(seq(0, n, n/10))
     while(n_generated < n) {
       n_tried <- n_tried + 1
       n_tried_this_n_generated <- n_tried_this_n_generated + 1
