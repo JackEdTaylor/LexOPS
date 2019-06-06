@@ -39,7 +39,7 @@ lexops \%>\%
   split_by(list("BG.SUBTLEX_UK", c(0.001, 0.003), c(0.009, 0.011))) \%>\%
   control_for(list("Zipf.SUBTLEX_UK", c(-0.2, 0.2))) \%>\%
   control_for("Length") \%>\%
-  generate(n = 50, match_null = "balanced")
+  generate(n = 1000, match_null = "balanced")
 
 # Generate stimuli for a concreteness x valence (2 x 3) design
 # (Note that abstract, neutral is set as the matching null)
