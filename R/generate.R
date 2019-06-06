@@ -3,10 +3,10 @@
 #' Generates the stimuli from the data frame after it has been passed through `split_by()`, and optionally, `control_for()`. Will generate `n` items per condition. If <`n` items can be generated, will generate as many as possible given the experiment's design. Can be reproducible with `set.seed()`.
 #'
 #' @param df A data frame that is the result from `control_for()` or `split_by()`.
-#' @param n The number of strings per condition (default = 20). Set to `Inf` to generate as many as possible.
-#' @param match_null The condition words should be matched to. Should be a string indicating condition (e.g. "A1_B2_C1"), or a string indicating one of the following options: first" for the lowest condition (e.g. "A1" or "A1_B1_C1_D1", etc.), "random" for randomly selected null condition each iteration, "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition.
-#' @param stringCol The column containing the strings (default = "string").
-#' @param condCol Prefix with which the columns detailing the splits were labelled by `split_by()`. This is rarely needed (default = NA), as by default the function gets this information from `df`'s attributes.
+#' @param n The number of strings per condition (default = 20). Set to `"all"` to generate as many as possible.
+#' @param match_null The condition words should be matched to. Should be a string indicating condition (e.g. `"A1_B2_C1"`), or a string indicating one of the following options: first" for the lowest condition (e.g. `"A1"` or `"A1_B1_C1_D1"`, etc.), "random" for randomly selected null condition each iteration, "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition.
+#' @param stringCol The column containing the strings (default = `"string"`).
+#' @param condCol Prefix with which the columns detailing the splits were labelled by `split_by()`. This is rarely needed (default = `NA`), as by default the function gets this information from `df`'s attributes.
 #'
 #' @return Returns the generated stimuli.
 #' @examples
@@ -115,25 +115,30 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
       dplyr::arrange(n) %>%
       dplyr::pull(n) %>%
       dplyr::first()
+    # if n is "all", set to the largest possible number of match rows
+    if (n == "all") n <- min_nr_of_match_rows
     # give warning if min_nr_of_match_rows < n, as this means n is definitely not achievable
     if (min_nr_of_match_rows < n) {
       warning(sprintf("n is too large; requested n of %i, but the condition with the fewest members has %i entries. Ensure n < %i. Will generate as many stimuli as possible.", n, min_nr_of_match_rows, min_nr_of_match_rows))
     }
 
+    # specify exactly how many null conditions are needed
+    null_cond_n <- if (n < min_nr_of_match_rows) n else min_nr_of_match_rows
+
     # specify the null conditions
     null_conds <- if (match_null == "first") {
-      rep(sort(all_conds)[1], min_nr_of_match_rows)
+      rep(sort(all_conds)[1], null_cond_n)
     } else if (match_null == "random") {
-      sample(all_conds, min_nr_of_match_rows, replace = TRUE)
+      sample(all_conds, null_cond_n, replace = TRUE)
     } else if (match_null == "balanced") {
       # As close to equal number of each condition as possible, randomly ordered.
       # If doesn't perfectly divide, the condition(s) which are over-represented are also randomly chosen.
       all_conds %>%
         sample(length(all_conds)) %>%
-        rep_len(min_nr_of_match_rows) %>%
-        sample(min_nr_of_match_rows)
+        rep_len(null_cond_n) %>%
+        sample(null_cond_n)
     } else if (match_null %in% all_conds) {
-      rep(match_null, n)
+      rep(match_null, null_cond_n)
     }
 
     # iterate over all items in the null_condition, and for each, generate row of matched stimuli if possible
