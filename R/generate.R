@@ -24,7 +24,7 @@
 #'   split_by(list("BG.SUBTLEX_UK", c(0.001, 0.003), c(0.009, 0.011))) %>%
 #'   control_for(list("Zipf.SUBTLEX_UK", c(-0.2, 0.2))) %>%
 #'   control_for("Length") %>%
-#'   generate(n = 50, match_null = "balanced")
+#'   generate(n = 1000, match_null = "balanced")
 #'
 #' # Generate stimuli for a concreteness x valence (2 x 3) design
 #' # (Note that abstract, neutral is set as the matching null)
@@ -163,7 +163,7 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
           df = df[(!df[[stringCol]] %in% out & df$LexOPS_cond == c) | df[[stringCol]]==this_word, ],
           target = this_word,
           vars = LexOPS_attrs$controls,
-          matchCond = "A1",
+          matchCond = this_match_null,
           stringCol = stringCol
           )
         if (nrow(m)==0) NA else{
@@ -220,14 +220,14 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
 #   split_by(list("Length", c(1, 3), c(4, 6), c(7, 20))) %>%
 #   control_for(list("Zipf.SUBTLEX_UK", c(-0.2, 0.2))) %>%
 #   control_for("PoS.SUBTLEX_UK") %>%
-#   generate()
+#   generate(n = 50)
 #
 # lexops %>%
 #   dplyr::filter(PK.Brysbaert >= .75) %>%
 #   split_by(list("BG.SUBTLEX_UK", c(0.001, 0.003), c(0.009, 0.011))) %>%
 #   control_for(list("Zipf.SUBTLEX_UK", c(-0.2, 0.2))) %>%
 #   control_for("Length") %>%
-#   generate(n = 50)
+#   generate(n = 1000, match_null = "balanced")
 #
 # lexops %>%
 #   split_by(list("Syllables.CMU", c(1, 3), c(4, 6), c(7, 20))) %>%
