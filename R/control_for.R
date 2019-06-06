@@ -35,7 +35,7 @@ control_for <- function(df, var, stringCol = "string", condCol = NA) {
     if (length(var)!=2) stop(sprintf("Expected list length of 1 (variable) or 2 (variable, tolerance), not %i.", length(var)))
     if (!is.numeric(df[[var[[1]]]]) & is.numeric(var[[2]])) stop("Did not expect tolerance for non-numeric variable.")
   }
-  if (length(var)==1 & is.numeric(df[[var[[1]]]])) warning(sprintf("No tolerance given for non-numeric variable '%s', will control for exactly.", var[[1]]))
+  if (length(var)==1 & is.numeric(df[[var[[1]]]])) warning(sprintf("No tolerance given for numeric variable '%s', will control for exactly.", var[[1]]))
 
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
