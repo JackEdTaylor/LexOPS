@@ -41,6 +41,8 @@ Words are controlled for by length exactly, and by word frequency within
 a tolerance of ±0.25 Zipf, relative to neutral abstract words.
 
 ``` r
+library(LexOPS)
+
 lexops %>%
   subset(PoS.SUBTLEX_UK == "noun") %>%
   split_by(list("CNC.Brysbaert", c(1, 2), c(4, 5))) %>%
