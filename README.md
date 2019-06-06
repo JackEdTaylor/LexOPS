@@ -47,18 +47,18 @@ lexops %>%
   split_by(list("VAL.Warriner", c(1, 3), c(4.5, 5.5), c(7, 9))) %>%
   control_for(list("Zipf.SUBTLEX_UK", c(-0.25, 0.25))) %>%
   control_for("Length") %>%
-  generate(n = 10, match_null = "A2_B2")
+  generate(n = 10, match_null = "A1_B2")
 ```
 
-| A1\_B1    | A1\_B2    | A1\_B3    | A2\_B1    | A2\_B2    | A2\_B3    | match\_null |
-| :-------- | :-------- | :-------- | :-------- | :-------- | :-------- | :---------- |
-| fascism   | sarcasm   | empathy   | blister   | sawdust   | tropics   | A2\_B2      |
-| treachery | formality | amazement | cockroach | wolverine | blueberry | A2\_B2      |
-| betrayal  | tendency  | intimacy  | intruder  | radiator  | lemonade  | A2\_B2      |
-| revenge   | bonkers   | fantasy   | coroner   | venison   | massage   | A2\_B2      |
-| inability | obscurity | sincerity | frostbite | parchment | speedboat | A2\_B2      |
-| hardship  | protocol  | kindness  | asbestos  | employee  | doughnut  | A2\_B2      |
-| mistake   | version   | ability   | traffic   | officer   | husband   | A2\_B2      |
-| jealousy  | suspense  | tranquil  | incision  | preacher  | lollipop  | A2\_B2      |
-| sadness   | quantum   | clarity   | tsunami   | laundry   | popcorn   | A2\_B2      |
-| loathing  | recourse  | fondness  | wildfire  | ointment  | duckling  | A2\_B2      |
+| A1\_B1     | A1\_B2     | A1\_B3     | A2\_B1     | A2\_B2     | A2\_B3     | match\_null |
+| :--------- | :--------- | :--------- | :--------- | :--------- | :--------- | :---------- |
+| treachery  | semblance  | dreamland  | kidnapper  | waistline  | lifesaver  | A1\_B2      |
+| arrogance  | mortality  | greatness  | orphanage  | propeller  | waterfall  | A1\_B2      |
+| fascism    | whatnot    | empathy    | autopsy    | charger    | nightie    | A1\_B2      |
+| repression | moderation | politeness | guillotine | tablecloth | waterfront | A1\_B2      |
+| revenge    | closure    | bravery    | tsunami    | carrier    | blanket    | A1\_B2      |
+| distrust   | validity   | fondness   | swastika   | banister   | erection   | A1\_B2      |
+| hardship   | mischief   | tranquil   | attacker   | pussycat   | handmade   | A1\_B2      |
+| hypocrisy  | formality  | amazement  | courtroom  | pacemaker  | starlight  | A1\_B2      |
+| paranoia   | holiness   | serenity   | wildfire   | scaffold   | macaroni   | A1\_B2      |
+| betrayal   | tendency   | optimism   | asbestos   | pavement   | laughter   | A1\_B2      |

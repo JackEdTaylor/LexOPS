@@ -47,18 +47,18 @@ lexops %>%
   split_by(list("VAL.Warriner", c(1, 3), c(4.5, 5.5), c(7, 9))) %>%
   control_for(list("Zipf.SUBTLEX_UK", c(-0.25, 0.25))) %>%
   control_for("Length") %>%
-  generate(n = 10, match_null = "A2_B2")
+  generate(n = 10, match_null = "A1_B2")
 ```
 
 ```{r, include=FALSE}
-set.seed(100)
+set.seed(99)
 generate_example <- lexops %>%
   subset(PoS.SUBTLEX_UK == "noun") %>%
   split_by(list("CNC.Brysbaert", c(1, 2), c(4, 5))) %>%
   split_by(list("VAL.Warriner", c(1, 3), c(4.5, 5.5), c(7, 9))) %>%
   control_for(list("Zipf.SUBTLEX_UK", c(-0.25, 0.25))) %>%
   control_for("Length") %>%
-  generate(n = 10, match_null = "A2_B2")
+  generate(n = 10, match_null = "A1_B2")
 ```
 
 ```{r, echo=FALSE}
