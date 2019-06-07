@@ -205,7 +205,7 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
 
     meta_df <- df[df[[stringCol]] %in% out, ]
     df <- as.data.frame(out, stringsAsFactors = FALSE) %>%
-      na.omit()
+      stats::na.omit()
     colnames(df) <- c(all_conds, "match_null")
     # add the item number as item_nr
     df <- dplyr::mutate(df, item_nr = dplyr::row_number()) %>%
