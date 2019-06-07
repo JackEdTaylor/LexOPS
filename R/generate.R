@@ -203,12 +203,20 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
     }
     sprintf("\n")
 
-    df <- as.data.frame(out) %>%
+    meta_df <- df[df[[stringCol]] %in% out, ]
+    df <- as.data.frame(out, stringsAsFactors = FALSE) %>%
       na.omit()
     colnames(df) <- c(all_conds, "match_null")
+    # add the item number as item_nr
+    df <- dplyr::mutate(df, item_nr = dplyr::row_number()) %>%
+      dplyr::select(item_nr, dplyr::everything())
+    # add the original df to the attributes
+    LexOPS_attrs$meta_df <- meta_df
 
   }
 
+  # add a marker to the attributes that df has gone through the generate function
+  LexOPS_attrs$generated <- TRUE
   # add the attributes to the output object
   attr(df, "LexOPS_attrs") <- LexOPS_attrs
 
