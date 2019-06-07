@@ -3,6 +3,7 @@
 export("%>%")
 export(control_for)
 export(generate)
+export(long_format)
 export(match_word)
 export(run_shiny)
 export(split_by)
