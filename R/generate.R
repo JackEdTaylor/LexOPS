@@ -44,6 +44,9 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
   # check stringCol is a string
   if (!is.character(stringCol)) stop(sprintf("Expected stringCol to be of class string, not %s", class(stringCol)))
 
+  # check n is a number or expected string
+  if (!is.numeric(n) & n != "all") stop(sprintf('n must be numeric or a string of value "all"'))
+
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
 
@@ -77,6 +80,9 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
     # remove strings that are members of no condition (i.e. if filter=FALSE in previous functions)
     dplyr::filter(!is.na(LexOPS_cond))
   all_conds <- sort(unique(df$LexOPS_cond))
+
+  # check match_null is an expected value
+  if (!match_null %in% c(all_conds, "balanced", "random", "first")) stop('Unknown match_null; expected "random", "balanced", "first", or a specific condition (e.g. "A2_B1_C1")')
 
   # if no controls, just return the df with the condition variable, otherwise generate matches
   if (!is.null(LexOPS_attrs$controls)) {
