@@ -169,9 +169,9 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
 
       if (length(null_word_bank) == 0) {
         if (n_all) {
-          cat(sprintf("Generated a total of %i stimuli per condition\n", n_generated))
+          cat(sprintf("\nGenerated a total of %i stimuli per condition (%i total iterations)\n", n_generated, n_tried))
         } else {
-          warning(sprintf("Failed to generate any new matches for matched row %i null condition %s (all %i candidate null words were tried)", n_generated + 1, this_match_null, n_tried_this_n_generated))
+          warning(sprintf("\nFailed to generate any new matches for matched row %i null condition %s (all %i candidate null words were tried)", n_generated + 1, this_match_null, n_tried_this_n_generated))
         }
         break
       }
@@ -198,12 +198,23 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
       # ensure ordered correctly (e.g. A1, A2, A3)
       matches <- matches[order(factor(names(matches)))]
 
+      # if n=="all", print progress every 250 iterations
+      if (n_tried%%250==0 & n_all) {
+        if (all(!is.na(matches))) {
+          cat(sprintf("Generated %i (%i iterations, %.2f success rate)\n", n_generated+1, n_tried, (n_generated+1)/n_tried))
+        } else {
+          cat(sprintf("Generated %i (%i iterations, %.2f success rate)\n", n_generated, n_tried, n_generated/n_tried))
+        }
+      }
+
       if (all(!is.na(matches))) {
         out[n_generated + 1, ] <- c(matches, this_match_null)
         n_generated <- n_generated + 1
         n_tried_this_n_generated <- 0
         words_tried_this_generated <- c()
-        if (n_generated %in% printing_points & !n_all) cat(sprintf("Generated %i/%i (%i%%). %i total iterations.\n", n_generated, n, round(n_generated/n*100), n_tried))
+        if (n_generated %in% printing_points & !n_all) {
+          cat(sprintf("Generated %i/%i (%i%%). %i total iterations, %.2f success rate.\n", n_generated, n, round(n_generated/n*100), n_tried, n_generated/n_tried))
+        }
       }
 
     }
