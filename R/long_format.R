@@ -60,7 +60,8 @@ long_format <- function(df, include = "design", stringCol = "string") {
   # put in long format, and include the specified variables
   out <- tidyr::gather(df, "condition", !!stringCol, -match_null, -item_nr) %>%
     dplyr::left_join(meta_df, by = stringCol) %>%
-    dplyr::select(item_nr, condition, match_null, dplyr::everything())
+    dplyr::select(item_nr, condition, match_null, dplyr::everything()) %>%
+    dplyr::arrange(item_nr)
 
   # add the attrributes to the data frame
   attr(out, "LexOPS_attrs") <- LexOPS_attrs
