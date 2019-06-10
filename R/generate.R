@@ -4,7 +4,7 @@
 #'
 #' @param df A data frame that is the result from `control_for()` or `split_by()`.
 #' @param n The number of strings per condition (default = 20). Set to `"all"` to generate as many as possible.
-#' @param match_null The condition words should be matched to. Should be a string indicating condition (e.g. `"A1_B2_C1"`), or a string indicating one of the following options: first" for the lowest condition (e.g. `"A1"` or `"A1_B1_C1_D1"`, etc.), "random" for randomly selected null condition each iteration, "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition.
+#' @param match_null The condition words should be matched to. Should be a string indicating condition (e.g. `"A1_B2_C1"`), or a string indicating one of the following options: "first" for the lowest condition (e.g. `"A1"` or `"A1_B1_C1_D1"`, etc.), "random" for randomly selected null condition each iteration, "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition.
 #' @param stringCol The column containing the strings (default = `"string"`).
 #' @param condCol Prefix with which the columns detailing the splits were labelled by `split_by()`. This is rarely needed (default = `NA`), as by default the function gets this information from `df`'s attributes.
 #'
