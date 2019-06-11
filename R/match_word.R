@@ -34,6 +34,11 @@
 match_word <- function(df = LexOPS::lexops, target, vars, stringCol = "string", filter = TRUE) {
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
+  # check this dataframe doesn't include a column called Euclidean.Distance; if it does, remove it and throw a warning
+  if ("Euclidean.Distance" %in% colnames(df)) {
+    warning('"Euclidean.Distance" column will be ignored, as this is overwritten by `match_word()`')
+    df$Euclidean.Distance <- NULL
+  }
   # check stringCol is a string
   if (!is.character(stringCol)) stop(sprintf("Expected stringCol to be of class string, not %s", class(stringCol)))
   # check target is a string
@@ -73,6 +78,14 @@ match_word <- function(df = LexOPS::lexops, target, vars, stringCol = "string", 
   if (!stringCol %in% colnames(df)) stop(sprintf("'%s' column not found in df", stringCol))
   # check target word in stringCol
   if (!target %in% df[[stringCol]]) stop(sprintf("'%s' not found in '%s' column of df", target, stringCol))
+
+  # get the euclidean distance, and add as a new column, 2nd after the stringCol column
+  vars_sans_tols <- sapply(vars, dplyr::first, USE.NAMES = FALSE)
+  numeric_vars <- vars_sans_tols[sapply(df[, vars_sans_tols], is.numeric)]
+  df <- df %>%
+    dplyr::mutate(Euclidean.Distance = LexOPS::euc_dists(., target = target, vars = numeric_vars, stringCol = stringCol)) %>%
+    dplyr::arrange(Euclidean.Distance) %>%
+    dplyr::select(!!(dplyr::sym(stringCol)), Euclidean.Distance, dplyr::everything())
 
   # get the numeric and character tolerances relative to the target word
   numFilt <- lapply(vars, function(listObj) {
@@ -126,13 +139,13 @@ match_word <- function(df = LexOPS::lexops, target, vars, stringCol = "string", 
     out <- charOut
   }
 
-  # remove the target word
-  out <- dplyr::filter(out, !!(dplyr::sym(stringCol)) != target)
-
   # if the filter argument is FALSE, return the original df, but with new column matchFilter
   if (!filter) {
     out <- dplyr::mutate(df, matchFilter = !!(dplyr::sym(stringCol)) %in% out[[stringCol]])
   }
+
+  # remove the target word
+  out <- dplyr::filter(out, !!(dplyr::sym(stringCol)) != target)
 
   # return the result
   out
