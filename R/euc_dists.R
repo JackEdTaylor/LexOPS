@@ -22,7 +22,7 @@
 #'
 #' @export
 
-euc_dists <- function(df, target, vars = "all", stringCol = "string") {
+euc_dists <- function(df = LexOPS::lexops, target, vars = "all", stringCol = "string") {
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
   # if there are no vars specified (e.g. empty vector) return NAs
