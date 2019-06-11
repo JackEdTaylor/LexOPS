@@ -2,6 +2,7 @@
 
 export("%>%")
 export(control_for)
+export(euc_dists)
 export(generate)
 export(long_format)
 export(match_word)
