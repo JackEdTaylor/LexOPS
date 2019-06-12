@@ -341,8 +341,8 @@ tagList(
                                     column(12, br()),
                                     column(4, align="center",
                                            fluidRow(
-                                             column(12, tags$a(href = 'http://lexops.co.uk', icon('book-open'), style='font-size:75px; color:black;')),
-                                             column(12, tags$a(href = 'http://lexops.co.uk', 'lexops.co.uk', style='font-size:25px; color:black;'))
+                                             column(12, tags$a(href = 'https://jackt.shinyapps.io/lexops/', icon('book-open'), style='font-size:75px; color:black;')),
+                                             column(12, tags$a(href = 'https://jackt.shinyapps.io/lexops/', 'shinyapps.io', style='font-size:25px; color:black;'))
                                            )),
                                     column(4, align="center",
                                            fluidRow(
