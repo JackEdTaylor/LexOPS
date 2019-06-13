@@ -38,9 +38,9 @@
 #'  \item{PN.PLD20.eSpeak.br}{Phonological Neighbourhood size, indexed by phonological levenshtein distance 20, calculated using all words with an eSpeak standard British English pronunciation.}
 #'  \item{PN.Log_PLD20.CMU}{The log of `PN.PLD20.CMU`.}
 #'  \item{PN.Log_PLD20.eSpeak.br}{The log of `PN.PLD20.eSpeak.br`.}
-#'  \item{PN.Coltheart's_N.CMU}{Phonological Neighbourhood size, indexed by Coltheart's N, calculated using all words with a CMU pronunciation.}
+#'  \item{PN.Colthearts_N.CMU}{Phonological Neighbourhood size, indexed by Coltheart's N, calculated using all words with a CMU pronunciation.}
 #'  \item{PN.Colthearts_N.eSpeak.br}{Phonological Neighbourhood size, indexed by Coltheart's N, calculated using all words with an eSpeak standard British English pronunciation.}
-#'  \item{PN.Log_Coltheart's_N.CMU}{The log of `PN.Coltheart's_N.CMU`.}
+#'  \item{PN.Log_Colthearts_N.CMU}{The log of `PN.Coltheart's_N.CMU`.}
 #'  \item{PN.Log_Colthearts_N.eSpeak.br}{The log of `PN.Coltheart's_N.eSpeak.br`.}
 #'  \item{FAM.Glasgow_Norms}{Familiarity ratings (1-7; low-high) from the Glasgow Norms (\url{http://doi.org/10.3758/s13428-018-1099-3}).}
 #'  \item{FAM.Clark_and_Paivio}{Familiarity ratings (1-7; low-high) from the Clark and Paivio (2004) norms (\url{http://doi.org/10.3758/BF03195584}).}
