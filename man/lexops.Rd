@@ -44,8 +44,8 @@
 \item{PN.Log_PLD20.eSpeak.br}{The log of \code{PN.PLD20.eSpeak.br}.}
 \item{PN.Colthearts_N.CMU}{Phonological Neighbourhood size, indexed by Coltheart's N, calculated using all words with a CMU pronunciation.}
 \item{PN.Colthearts_N.eSpeak.br}{Phonological Neighbourhood size, indexed by Coltheart's N, calculated using all words with an eSpeak standard British English pronunciation.}
-\item{PN.Log_Colthearts_N.CMU}{The log of \code{PN.Coltheart's_N.CMU}.}
-\item{PN.Log_Colthearts_N.eSpeak.br}{The log of \code{PN.Coltheart's_N.eSpeak.br}.}
+\item{PN.Log_Colthearts_N.CMU}{The log of \code{PN.Colthearts_N.CMU}.}
+\item{PN.Log_Colthearts_N.eSpeak.br}{The log of \code{PN.Colthearts_N.eSpeak.br}.}
 \item{FAM.Glasgow_Norms}{Familiarity ratings (1-7; low-high) from the Glasgow Norms (\url{http://doi.org/10.3758/s13428-018-1099-3}).}
 \item{FAM.Clark_and_Paivio}{Familiarity ratings (1-7; low-high) from the Clark and Paivio (2004) norms (\url{http://doi.org/10.3758/BF03195584}).}
 \item{AoA.Kuperman}{Age of Acquisition ratings (1-25; early-late) from the Kuperman et al. (2012) norms (\url{http://doi.org/10.3758/s13428-012-0210-4}).}
