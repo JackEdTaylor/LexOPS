@@ -4,19 +4,21 @@
 \alias{split_by}
 \title{Add a split to the data.}
 \usage{
-split_by(df = LexOPS::lexops, split, filter = TRUE,
-  stringCol = "string", condCol = "LexOPS_splitCond")
+split_by(df, split, condCol = "LexOPS_splitCond", filter = TRUE)
 }
 \arguments{
 \item{df}{A data frame containing the IV and strings.}
 
-\item{split}{A list object specifying the levels of the split in the form, \code{list("IV_column", c(1, 3), c(4, 6), ...)}, where the first item is the column that specified the IV. Subsequent arguments specify all levels of the split. Splits must be non-overlapping.}
+\item{split}{A list object specifying the levels of the split in the form, \code{list("IV_column", c(1, 3), c(4, 6), ...)} for
+integer columns; the form \code{list("IV_column", c(1, 4, 7))} for continuous columns; the form \code{list("IV_column", c("noun", "verb"))}
+for factor columns. Splits must be non-overlapping.}
+
+\item{condCol}{Prefix with which to name the column where the condition will be stored (default = "LexOPS_splitCond"). Each time
+split_by() is run on a dataframe, a new condCol is added to the data frame, e.g., the first time will add splitCond_A, the second
+time will ad split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of condCol
+must be the same each time the function is called. The default is usually sufficient.}
 
 \item{filter}{Logical. If TRUE, words which fit no conditions are removed.}
-
-\item{stringCol}{The column containing the strings (default = "string").}
-
-\item{condCol}{Prefix with which to name the column where the condition will be stored (default = "LexOPS_splitCond"). Each time split_by() is run on a dataframe, a new condCol is added to the data frame, e.g., the first time will add splitCond_A, the second time will ad split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of condCol must be the same each time the function is called. The default is usually sufficient. This values will be stored in the data frame's attributes.}
 }
 \value{
 Returns \code{df}, with a new column (name defined by \code{condCol} argument) identifying which level of the IV each string belongs to.

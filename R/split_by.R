@@ -81,7 +81,7 @@ split_by <- function(df, split, condCol = "LexOPS_splitCond", filter = TRUE){
     }
 
     if(col_type == "double"){
-      breaks <- split[[-1]]
+      breaks <- split[-1]
       df <- split_by.double(df, column, breaks, new_column, prefix, filter)
     }
   }
@@ -113,11 +113,35 @@ split_by.integer <- function(df, column, breaks, new_column, prefix, filter){
 
 split_by.double <- function(df, column, breaks, new_column, prefix, filter){
 
-  labels <- paste0(prefix, 1:(length(breaks) - 1))
+  # Check that splits are ordered and don't overlap
+  check_breaks(breaks)
 
-  df[[new_column]] <- cut(df[[column]], breaks, labels, right = FALSE)
+  cont_breaks = check_continuous(breaks)
 
-  if(filter) df <- tidyr::drop_na(df, new_column)
+  if(!cont_breaks){
+    # Label gaps between cuts as NA
+    n_cuts <- length(breaks)
+    cut_labs <- c(paste0(prefix, 1))
+
+    for(i in 2:n_cuts){
+      cut_labs <- c(cut_labs, NA, paste0(prefix, i))
+    }
+
+    cuts <- unlist(breaks)
+
+  }else{
+    cuts <- unique(unlist(breaks))
+    cut_labs <- paste0(prefix, 1:(length(cuts) - 1))
+  }
+
+  df[[new_column]] <- cut(df[[column]], cuts, cut_labs, right = FALSE)
+  df$tmp <- as.character(df[[new_column]])
+
+  if(filter){
+    df <- df %>%
+      tidyr::drop_na(tmp) %>%
+      dplyr::select(-tmp)
+  }
 
   return(df)
 }
@@ -146,3 +170,43 @@ split_by.factor <- function(df, column, breaks, new_column, prefix, filter){
 
 # Use rlang ':=' within LexOPS
 `:=` <- rlang::`:=`
+
+# Checks
+check_breaks <- function(x){
+  check_order <- purrr::map(x, ~.x[1] < .x[2]) %>%
+    unlist() %>%
+    all()
+
+  if(!check_order) stop("lower bounds must be lower than upper bounds")
+
+  overlap_check <- logical()
+
+  for(i in 1:(length(x) - 1)){
+    overlap_check <- c(overlap_check, x[[i]][2] <= x[[i + 1]][1])
+  }
+
+  overlap_check <- all(overlap_check)
+
+  if(!overlap_check) stop("breaks must not overlap")
+}
+
+check_continuous <- function(breaks){
+  n_breaks <- length(breaks)
+
+  if(n_breaks == 1) return(TRUE)
+
+  cont_check <- logical()
+
+  for(i in 1:(n_breaks - 1)){
+    cont_check <- c(cont_check, breaks[[1]][2] == breaks[[2]][1])
+  }
+
+  if(all(cont_check)){
+    return(TRUE)
+  }else if(any(cont_check)){
+    warning("Mixture of continuous and discontinuous breaks provided. Result will include gaps between breaks.")
+    return(TRUE)
+  }else{
+    return(FALSE)
+  }
+}
