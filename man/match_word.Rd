@@ -4,7 +4,7 @@
 \alias{match_word}
 \title{Get suitable matches for a single word on one or several dimensions.}
 \usage{
-match_word(df = LexOPS::lexops, target, vars, stringCol = "string",
+match_word(df = LexOPS::lexops, target, vars, string_col = "string",
   filter = TRUE)
 }
 \arguments{
@@ -14,7 +14,7 @@ match_word(df = LexOPS::lexops, target, vars, stringCol = "string",
 
 \item{vars}{Can be a list of vars from df to match by, in the form list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName"). Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.}
 
-\item{stringCol}{The column containing the strings (default = "string")}
+\item{string_col}{The column containing the strings (default = "string")}
 
 \item{filter}{Logical. If TRUE, matches outside the tolerances specified in vars are removed. If FALSE, a new column, matchFilter is calculated indicating whether or not the string is within all variables' tolerances. (Default = TRUE.)}
 }

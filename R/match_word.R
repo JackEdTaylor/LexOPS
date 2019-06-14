@@ -6,7 +6,7 @@
 #' @param df A data frame to reorder, containing the target string (default = LexOPS::lexops).
 #' @param target The target string
 #' @param vars Can be a list of vars from df to match by, in the form list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName"). Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.
-#' @param stringCol The column containing the strings (default = "string")
+#' @param string_col The column containing the strings (default = "string")
 #' @param filter Logical. If TRUE, matches outside the tolerances specified in vars are removed. If FALSE, a new column, matchFilter is calculated indicating whether or not the string is within all variables' tolerances. (Default = TRUE.)
 #' @return Returns data frame based on `df`. If `filter` == TRUE, will only contain matches. If `filter` == FALSE, will be the original `df` object, with a new column, "matchFilter".
 #' @examples
@@ -31,7 +31,7 @@
 #'
 #' @export
 
-match_word <- function(df = LexOPS::lexops, target, vars, stringCol = "string", filter = TRUE) {
+match_word <- function(df = LexOPS::lexops, target, vars, string_col = "string", filter = TRUE) {
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
   # check this dataframe doesn't include a column called Euclidean.Distance; if it does, remove it and throw a warning
@@ -39,8 +39,8 @@ match_word <- function(df = LexOPS::lexops, target, vars, stringCol = "string", 
     warning('"Euclidean.Distance" column will be ignored, as this is overwritten by `match_word()`')
     df$Euclidean.Distance <- NULL
   }
-  # check stringCol is a string
-  if (!is.character(stringCol)) stop(sprintf("Expected stringCol to be of class string, not %s", class(stringCol)))
+  # check string_col is a string
+  if (!is.character(string_col)) stop(sprintf("Expected string_col to be of class string, not %s", class(string_col)))
   # check target is a string
   if (!is.character(target)) stop(sprintf("Expected target to be of class string, not %s", class(target)))
   # check all variables in vars are in the dataframe
@@ -74,27 +74,27 @@ match_word <- function(df = LexOPS::lexops, target, vars, stringCol = "string", 
       )
     )
   }
-  # check stringCol is a column in df
-  if (!stringCol %in% colnames(df)) stop(sprintf("'%s' column not found in df", stringCol))
-  # check target word in stringCol
-  if (!target %in% df[[stringCol]]) stop(sprintf("'%s' not found in '%s' column of df", target, stringCol))
+  # check string_col is a column in df
+  if (!string_col %in% colnames(df)) stop(sprintf("'%s' column not found in df", string_col))
+  # check target word in string_col
+  if (!target %in% df[[string_col]]) stop(sprintf("'%s' not found in '%s' column of df", target, string_col))
 
-  # get the euclidean distance, and add as a new column, 2nd after the stringCol column
+  # get the euclidean distance, and add as a new column, 2nd after the string_col column
   vars_sans_tols <- sapply(vars, dplyr::first, USE.NAMES = FALSE)
   numeric_vars <- vars_sans_tols[sapply(df[, vars_sans_tols], is.numeric)]
   df <- df %>%
-    dplyr::mutate(Euclidean.Distance = LexOPS::euc_dists(., target = target, vars = numeric_vars, stringCol = stringCol)) %>%
+    dplyr::mutate(Euclidean.Distance = LexOPS::euc_dists(., target = target, vars = numeric_vars, string_col = string_col)) %>%
     dplyr::arrange(Euclidean.Distance) %>%
-    dplyr::select(!!(dplyr::sym(stringCol)), Euclidean.Distance, dplyr::everything())
+    dplyr::select(!!(dplyr::sym(string_col)), Euclidean.Distance, dplyr::everything())
 
   # get the numeric and character tolerances relative to the target word
   numFilt <- lapply(vars, function(listObj) {
     if (is.numeric(df[[listObj[1]]])) {
       out <- listObj
       if (length(listObj) == 3) {
-        out[2:3] <- as.numeric(out[2:3]) + df[[listObj[1]]][df[[stringCol]]==target]
+        out[2:3] <- as.numeric(out[2:3]) + df[[listObj[1]]][df[[string_col]]==target]
       } else if (length(listObj) == 1) {
-        out[2:3] <- df[[listObj[1]]][df[[stringCol]]==target]
+        out[2:3] <- df[[listObj[1]]][df[[string_col]]==target]
       }
       return(out)
     }
@@ -104,7 +104,7 @@ match_word <- function(df = LexOPS::lexops, target, vars, stringCol = "string", 
   charFilt <- lapply(vars, function(listObj) {
     if (!is.numeric(df[[listObj[1]]])) {
       out <- listObj
-      out[2] <- df[[listObj]][df[[stringCol]]==target]
+      out[2] <- df[[listObj]][df[[string_col]]==target]
       return(out)
     }
   })
@@ -141,11 +141,11 @@ match_word <- function(df = LexOPS::lexops, target, vars, stringCol = "string", 
 
   # if the filter argument is FALSE, return the original df, but with new column matchFilter
   if (!filter) {
-    out <- dplyr::mutate(df, matchFilter = !!(dplyr::sym(stringCol)) %in% out[[stringCol]])
+    out <- dplyr::mutate(df, matchFilter = !!(dplyr::sym(string_col)) %in% out[[string_col]])
   }
 
   # remove the target word
-  out <- dplyr::filter(out, !!(dplyr::sym(stringCol)) != target)
+  out <- dplyr::filter(out, !!(dplyr::sym(string_col)) != target)
 
   # return the result
   out
@@ -165,9 +165,9 @@ match_word <- function(df = LexOPS::lexops, target, vars, stringCol = "string", 
 #
 # LexOPS::lexops %>% match_word("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)), df="hi")
 #
-# LexOPS::lexops %>% match_word(2, list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)), stringCol = "string")
+# LexOPS::lexops %>% match_word(2, list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)), string_col = "string")
 #
-# LexOPS::lexops %>% match_word("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)), stringCol = 3*1)
+# LexOPS::lexops %>% match_word("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)), string_col = 3*1)
 #
 # # these should work
 #
