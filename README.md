@@ -50,22 +50,22 @@ library(LexOPS)
 
 stim <- lexops %>%
   subset(PoS.SUBTLEX_UK == "noun") %>%
-  split_by(list("CNC.Brysbaert", c(1, 2), c(4, 5))) %>%
-  split_by(list("VAL.Warriner", c(1, 3), c(4.5, 5.5), c(7, 9))) %>%
-  control_for(list("Zipf.SUBTLEX_UK", c(-0.25, 0.25))) %>%
-  control_for("Length") %>%
+  split_by(CNC.Brysbaert, c(1, 2) ~ c(4, 5)) %>%
+  split_by(VAL.Warriner, c(1, 3) ~ c(4.5, 5.5) ~ c(7, 9)) %>%
+  control_for(Zipf.SUBTLEX_UK, c(-0.25, 0.25)) %>%
+  control_for(Length) %>%
   generate(n = 5, match_null = "A1_B2")
 
 print(stim)
 ```
 
-| item\_nr | A1\_B1     | A1\_B2     | A1\_B3     | A2\_B1     | A2\_B2     | A2\_B3     | match\_null |
-| -------: | :--------- | :--------- | :--------- | :--------- | :--------- | :--------- | :---------- |
-|        1 | treachery  | semblance  | dreamland  | kidnapper  | waistline  | lifesaver  | A1\_B2      |
-|        2 | arrogance  | mortality  | greatness  | orphanage  | propeller  | waterfall  | A1\_B2      |
-|        3 | fascism    | whatnot    | empathy    | autopsy    | charger    | nightie    | A1\_B2      |
-|        4 | repression | moderation | politeness | guillotine | tablecloth | waterfront | A1\_B2      |
-|        5 | revenge    | closure    | bravery    | tsunami    | carrier    | blanket    | A1\_B2      |
+| item\_nr | A1\_B1    | A1\_B2    | A1\_B3    | A2\_B1    | A2\_B2    | A2\_B3    | match\_null |
+| -------: | :-------- | :-------- | :-------- | :-------- | :-------- | :-------- | :---------- |
+|        1 | loathing  | dominion  | epiphany  | catheter  | forklift  | daybreak  | A1\_B2      |
+|        2 | hardship  | mischief  | tranquil  | dictator  | pendulum  | smoothie  | A1\_B2      |
+|        3 | betrayal  | protocol  | kindness  | smallpox  | textbook  | doughnut  | A1\_B2      |
+|        4 | fascism   | paradox   | empathy   | measles   | lacquer   | sunrise   | A1\_B2      |
+|        5 | ignorance | precedent | greatness | courtroom | columnist | milkshake | A1\_B2      |
 
 The generated stimuli can then also be easily converted into long
 format, with the `long_format()`
@@ -75,35 +75,35 @@ function.
 long_format(stim)
 ```
 
-| item\_nr | condition | match\_null | string     | Zipf.SUBTLEX\_UK | Length | CNC.Brysbaert | VAL.Warriner |
-| -------: | :-------- | :---------- | :--------- | ---------------: | -----: | ------------: | -----------: |
-|        1 | A1\_B1    | A1\_B2      | treachery  |         2.778521 |      9 |          1.69 |         2.70 |
-|        1 | A1\_B2    | A1\_B2      | semblance  |         2.640218 |      9 |          2.00 |         5.00 |
-|        1 | A1\_B3    | A1\_B2      | dreamland  |         2.645126 |      9 |          1.73 |         7.00 |
-|        1 | A2\_B1    | A1\_B2      | kidnapper  |         2.668864 |      9 |          4.29 |         1.77 |
-|        1 | A2\_B2    | A1\_B2      | waistline  |         2.678007 |      9 |          4.34 |         4.90 |
-|        1 | A2\_B3    | A1\_B2      | lifesaver  |         2.752641 |      9 |          4.28 |         7.24 |
-|        2 | A1\_B1    | A1\_B2      | arrogance  |         3.387701 |      9 |          1.74 |         2.55 |
-|        2 | A1\_B2    | A1\_B2      | mortality  |         3.396439 |      9 |          1.46 |         5.15 |
-|        2 | A1\_B3    | A1\_B2      | greatness  |         3.344096 |      9 |          1.69 |         7.76 |
-|        2 | A2\_B1    | A1\_B2      | orphanage  |         3.376071 |      9 |          4.65 |         2.95 |
-|        2 | A2\_B2    | A1\_B2      | propeller  |         3.259217 |      9 |          4.90 |         4.95 |
-|        2 | A2\_B3    | A1\_B2      | waterfall  |         3.564967 |      9 |          4.90 |         7.79 |
-|        3 | A1\_B1    | A1\_B2      | fascism    |         3.007490 |      7 |          1.83 |         2.50 |
-|        3 | A1\_B2    | A1\_B2      | whatnot    |         3.097136 |      7 |          1.92 |         5.48 |
-|        3 | A1\_B3    | A1\_B2      | empathy    |         3.195423 |      7 |          1.63 |         7.29 |
-|        3 | A2\_B1    | A1\_B2      | autopsy    |         2.996766 |      7 |          4.29 |         2.62 |
-|        3 | A2\_B2    | A1\_B2      | charger    |         3.262762 |      7 |          4.39 |         5.28 |
-|        3 | A2\_B3    | A1\_B2      | nightie    |         2.886067 |      7 |          4.30 |         7.11 |
-|        4 | A1\_B1    | A1\_B2      | repression |         3.162603 |     10 |          1.66 |         2.81 |
-|        4 | A1\_B2    | A1\_B2      | moderation |         2.969894 |     10 |          1.90 |         5.30 |
-|        4 | A1\_B3    | A1\_B2      | politeness |         2.756434 |     10 |          1.79 |         7.33 |
-|        4 | A2\_B1    | A1\_B2      | guillotine |         3.093676 |     10 |          4.64 |         1.63 |
-|        4 | A2\_B2    | A1\_B2      | tablecloth |         2.883256 |     10 |          4.85 |         5.33 |
-|        4 | A2\_B3    | A1\_B2      | waterfront |         3.162603 |     10 |          4.67 |         7.50 |
-|        5 | A1\_B1    | A1\_B2      | revenge    |         4.016505 |      7 |          1.54 |         2.75 |
-|        5 | A1\_B2    | A1\_B2      | closure    |         3.976769 |      7 |          1.78 |         5.21 |
-|        5 | A1\_B3    | A1\_B2      | bravery    |         3.834670 |      7 |          1.96 |         7.38 |
-|        5 | A2\_B1    | A1\_B2      | tsunami    |         3.793340 |      7 |          4.33 |         2.33 |
-|        5 | A2\_B2    | A1\_B2      | carrier    |         3.884383 |      7 |          4.20 |         5.19 |
-|        5 | A2\_B3    | A1\_B2      | blanket    |         3.925162 |      7 |          5.00 |         7.05 |
+| item\_nr | condition | match\_null | string    | Zipf.SUBTLEX\_UK | Length | CNC.Brysbaert | VAL.Warriner |
+| -------: | :-------- | :---------- | :-------- | ---------------: | -----: | ------------: | -----------: |
+|        1 | A1\_B1    | A1\_B2      | loathing  |         2.865997 |      8 |          1.89 |         2.42 |
+|        1 | A1\_B2    | A1\_B2      | dominion  |         2.716925 |      8 |          1.96 |         4.62 |
+|        1 | A1\_B3    | A1\_B2      | epiphany  |         2.806325 |      8 |          1.60 |         7.06 |
+|        1 | A2\_B1    | A1\_B2      | catheter  |         2.789157 |      8 |          4.48 |         2.84 |
+|        1 | A2\_B2    | A1\_B2      | forklift  |         2.888860 |      8 |          4.79 |         4.74 |
+|        1 | A2\_B3    | A1\_B2      | daybreak  |         2.926185 |      8 |          4.21 |         7.16 |
+|        2 | A1\_B1    | A1\_B2      | hardship  |         3.521810 |      8 |          1.79 |         2.80 |
+|        2 | A1\_B2    | A1\_B2      | mischief  |         3.483196 |      8 |          1.90 |         4.78 |
+|        2 | A1\_B3    | A1\_B2      | tranquil  |         3.443924 |      8 |          1.90 |         7.11 |
+|        2 | A2\_B1    | A1\_B2      | dictator  |         3.510649 |      8 |          4.29 |         2.77 |
+|        2 | A2\_B2    | A1\_B2      | pendulum  |         3.303191 |      8 |          4.69 |         5.17 |
+|        2 | A2\_B3    | A1\_B2      | smoothie  |         3.273227 |      8 |          4.62 |         7.89 |
+|        3 | A1\_B1    | A1\_B2      | betrayal  |         3.437675 |      8 |          1.76 |         2.24 |
+|        3 | A1\_B2    | A1\_B2      | protocol  |         3.513962 |      8 |          1.97 |         5.10 |
+|        3 | A1\_B3    | A1\_B2      | kindness  |         3.557867 |      8 |          1.74 |         7.65 |
+|        3 | A2\_B1    | A1\_B2      | smallpox  |         3.266279 |      8 |          4.25 |         2.02 |
+|        3 | A2\_B2    | A1\_B2      | textbook  |         3.383265 |      8 |          4.86 |         5.00 |
+|        3 | A2\_B3    | A1\_B2      | doughnut  |         3.500556 |      8 |          4.96 |         7.50 |
+|        4 | A1\_B1    | A1\_B2      | fascism   |         3.007490 |      7 |          1.83 |         2.50 |
+|        4 | A1\_B2    | A1\_B2      | paradox   |         3.242278 |      7 |          1.54 |         5.40 |
+|        4 | A1\_B3    | A1\_B2      | empathy   |         3.195423 |      7 |          1.63 |         7.29 |
+|        4 | A2\_B1    | A1\_B2      | measles   |         3.123871 |      7 |          4.69 |         2.57 |
+|        4 | A2\_B2    | A1\_B2      | lacquer   |         3.055571 |      7 |          4.28 |         4.95 |
+|        4 | A2\_B3    | A1\_B2      | sunrise   |         3.385045 |      7 |          4.69 |         7.35 |
+|        5 | A1\_B1    | A1\_B2      | ignorance |         3.483904 |      9 |          1.60 |         2.84 |
+|        5 | A1\_B2    | A1\_B2      | precedent |         3.414237 |      9 |          1.63 |         5.25 |
+|        5 | A1\_B3    | A1\_B2      | greatness |         3.344096 |      9 |          1.69 |         7.76 |
+|        5 | A2\_B1    | A1\_B2      | courtroom |         3.324125 |      9 |          4.63 |         2.84 |
+|        5 | A2\_B2    | A1\_B2      | columnist |         3.267445 |      9 |          4.14 |         5.47 |
+|        5 | A2\_B3    | A1\_B2      | milkshake |         3.283447 |      9 |          4.97 |         7.26 |
