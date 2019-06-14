@@ -5,7 +5,7 @@
 \title{Calculate a word's Euclidean distance from other words}
 \usage{
 euc_dists(df = LexOPS::lexops, target, vars = "all",
-  stringCol = "string")
+  string_col = "string")
 }
 \arguments{
 \item{df}{A data frame.}
@@ -14,7 +14,7 @@ euc_dists(df = LexOPS::lexops, target, vars = "all",
 
 \item{vars}{The variables to be used as dimensions which Euclidean distance should be calculated over. Can be a vector of strings giving the variable names (e.g. \code{c("Zipf.SUBTLEX_UK", "Length")}, or, \code{"all"}, to use all numeric variables in the data frame). The default is \code{"all"}.}
 
-\item{stringCol}{The column containing the strings (default = \code{"string"}).}
+\item{string_col}{The column containing the strings (default = \code{"string"}).}
 }
 \value{
 Returns a vector of Euclidean distances, in the order of rows in \code{df}.

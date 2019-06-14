@@ -4,16 +4,18 @@
 \alias{control_for}
 \title{Control for confounding variables.}
 \usage{
-control_for(df, var, stringCol = "string", condCol = NA)
+control_for(df, var, tol = NA, string_col = "string", cond_col = NA)
 }
 \arguments{
 \item{df}{A data frame that is the result from \code{split_by()}.}
 
-\item{var}{A list object specifying the variable to be controlled for in the form, \code{list("variable_column", c(-0.2, 0.2))}, where the first item is the column that specified the IV, and the second argument is a vector indicating the tolerance.}
+\item{var}{The column to treat as an independent variable (non-standard evaluation).}
 
-\item{stringCol}{The column containing the strings (default = "string").}
+\item{tol}{The boundaries to use as levels of this variable (non-standard evaluation). These should be specified in the form \code{c(1, 3) ~ c(4, 6) ~ c(7 ~ 9)} for numeric variables, and \code{noun ~ verb ~ adjective} for character variables, where levels are separated by the \code{~} operator. Levels must be non-overlapping.}
 
-\item{condCol}{Prefix with which the columns detailing the splits were labelled by \code{split_by()}. This is rarely needed (default = NA), as by default the function gets this information from \code{df}'s attributes.}
+\item{string_col}{The column containing the strings (default = "string").}
+
+\item{cond_col}{Prefix with which the columns detailing the splits were labelled by \code{split_by()}. This is rarely needed (default = NA), as by default the function gets this information from \code{df}'s attributes.}
 }
 \value{
 Returns \code{df}, with details on the variables to be controlled for added to the attributes. Run the \code{generate()} function to then generate the actual stimuli.
@@ -25,13 +27,13 @@ Specifies variables that should be controlled for in the generated stimuli, afte
 
 # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables, and control for word frequency
 lexops \%>\%
-  split_by(list("Syllables.CMU", c(1, 3), c(4, 6), c(7, 20))) \%>\%
-  control_for(list("Zipf.SUBTLEX_UK", c(-0.2, 0.2)))
+  split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) \%>\%
+  control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2))
 
 # Control for multiple variables
 lexops \%>\%
-  split_by(list("Syllables.CMU", c(1, 3), c(4, 6), c(7, 20))) \%>\%
-  control_for(list("Zipf.SUBTLEX_UK", c(-0.2, 0.2))) \%>\%
-  control_for("PoS.SUBTLEX_UK")
+  split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) \%>\%
+  control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2)) \%>\%
+  control_for(PoS.SUBTLEX_UK)
 
 }

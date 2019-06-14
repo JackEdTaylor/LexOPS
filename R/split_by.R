@@ -3,36 +3,38 @@
 #' Specifies splits for one IV for a factorial design. Can be called multiple times for multiple splits.
 #'
 #' @param df A data frame containing the IV and strings.
-#' @param split A list object specifying the levels of the split in the form, `list("IV_column", c(1, 3), c(4, 6), ...)` for
-#' integer columns; the form `list("IV_column", c(1, 4, 7))` for continuous columns; the form `list("IV_column", c("noun", "verb"))`
-#' for factor columns. Splits must be non-overlapping.
+#' @param var The column to treat as an independent variable (non-standard evaluation).
+#' @param levels The boundaries to use as levels of this variable (non-standard evaluation). These should be specified in the form `c(1, 3) ~ c(4, 6) ~ c(7 ~ 9)` for numeric variables, and `noun ~ verb ~ adjective` for character variables, where levels are separated by the `~` operator. Levels must be non-overlapping.
 #' @param filter Logical. If TRUE, words which fit no conditions are removed.
-#' @param condCol Prefix with which to name the column where the condition will be stored (default = "LexOPS_splitCond"). Each time
-#' split_by() is run on a dataframe, a new condCol is added to the data frame, e.g., the first time will add splitCond_A, the second
-#' time will ad split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of condCol
+#' @param cond_col Prefix with which to name the column where the condition will be stored (default = "LexOPS_splitCond"). Each time
+#' split_by() is run on a dataframe, a new cond_col is added to the data frame, e.g., the first time will add splitCond_A, the second
+#' time will ad split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of cond_col
 #' must be the same each time the function is called. The default is usually sufficient.
 #'
-#' @return Returns `df`, with a new column (name defined by `condCol` argument) identifying which level of the IV each string belongs to.
+#' @return Returns `df`, with a new column (name defined by `cond_col` argument) identifying which level of the IV each string belongs to.
 #' @examples
 #'
 #' # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables
 #' lexops %>%
-#'   split_by(list("Syllables.CMU", c(1, 3), c(4, 6), c(7, 20)))
+#'   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20))
 #'
 #' # Create 2 levels of position of speech, noun and verb
 #' lexops %>%
-#'   split_by(list("PoS.SUBTLEX_UK", "noun", "verb"))
+#'   split_by(PoS.SUBTLEX_UK, "noun" ~ "verb")
 #'
 #' # Perform two splits
-#' lexops %>%
-#'   split_by(list("Syllables.CMU", c(1, 3), c(4, 6), c(7, 20))) %>%
-#'   split_by(list("PoS.SUBTLEX_UK", "noun", "verb"))
+# lexops %>%
+#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
+#   split_by(PoS.SUBTLEX_UK, c("noun", "name") ~ ("verb", "adjective"))
 #'
 #' @seealso \code{\link{lexops}} for the default data frame and associated variables.
 #'
 #' @export
 
-split_by <- function(df, split, condCol = "LexOPS_splitCond", filter = TRUE){
+split_by <- function(df, var, levels, cond_col = "LexOPS_splitCond", filter = TRUE){
+
+  # convert var and levels to a list, `split`, which will be added to the attributes
+  split <- parse_levels(substitute(var), substitute(levels))
 
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
@@ -44,26 +46,26 @@ split_by <- function(df, split, condCol = "LexOPS_splitCond", filter = TRUE){
     LexOPS_attrs$splits[[length(LexOPS_attrs$splits)+1]] <- split
   }
 
-  # check the attributes, and add the condCol if not already defined. Throw error if condCol is not the same as that in the previous split
+  # check the attributes, and add the cond_col if not already defined. Throw error if cond_col is not the same as that in the previous split
   if (is.null(LexOPS_attrs$splitCol)) {
-    LexOPS_attrs$splitCol <- condCol
+    LexOPS_attrs$splitCol <- cond_col
   } else {
-    if (LexOPS_attrs$splitCol != condCol) {
-      stop(sprintf("Inconsistent naming of condCol ('%s' != '%s'). The condCol argument must have the same value each time split_by() is run on the data.", condCol, LexOPS_attrs$splitCol))
+    if (LexOPS_attrs$splitCol != cond_col) {
+      stop(sprintf("Inconsistent naming of cond_col ('%s' != '%s'). The cond_col argument must have the same value each time split_by() is run on the data.", cond_col, LexOPS_attrs$splitCol))
     }
   }
 
   # Get next column name and split prefix
-  current_splits <- names(df)[stringr::str_which(names(df), paste0("^", condCol, "_[:upper:]$"))]
+  current_splits <- names(df)[stringr::str_which(names(df), paste0("^", cond_col, "_[:upper:]$"))]
 
   if(length(current_splits) == 0){
     prefix <-  "A"
     }else{
-      current_prefix <- stringr::str_extract(current_splits, sprintf("(?<=^%s_)[:upper:]", condCol))
+      current_prefix <- stringr::str_extract(current_splits, sprintf("(?<=^%s_)[:upper:]", cond_col))
       prefix <- dplyr::first(LETTERS[LETTERS != current_prefix])
     }
 
-  new_column <- paste(condCol, prefix, sep = "_")
+  new_column <- paste(cond_col, prefix, sep = "_")
 
   # Extract column from split list
   column <- split[[1]]

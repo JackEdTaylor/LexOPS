@@ -5,44 +5,44 @@
 #' @param df A data frame that is the result from `control_for()` or `split_by()`.
 #' @param n The number of strings per condition (default = 20). Set to `"all"` to generate as many as possible.
 #' @param match_null The condition words should be matched to. Should be a string indicating condition (e.g. `"A1_B2_C1"`), or a string indicating one of the following options: "first" for the lowest condition (e.g. `"A1"` or `"A1_B1_C1_D1"`, etc.), "random" for randomly selected null condition each iteration, "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition.
-#' @param stringCol The column containing the strings (default = `"string"`).
-#' @param condCol Prefix with which the columns detailing the splits were labelled by `split_by()`. This is rarely needed (default = `NA`), as by default the function gets this information from `df`'s attributes.
+#' @param string_col The column containing the strings (default = `"string"`).
+#' @param cond_col Prefix with which the columns detailing the splits were labelled by `split_by()`. This is rarely needed (default = `NA`), as by default the function gets this information from `df`'s attributes.
 #'
 #' @return Returns the generated stimuli.
 #' @examples
 #'
 #' # Generate 20 words per condition, for design with 3 levels of syllables, controlled for frequency
 #' lexops %>%
-#'   split_by(list("Syllables.CMU", c(1, 3), c(4, 6), c(7, 20))) %>%
-#'   control_for(list("Zipf.SUBTLEX_UK", c(-0.2, 0.2))) %>%
+#'   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
+#'   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2)) %>%
 #'   generate(n = 20)
 #'
 #' # Generate 2 levels of bigram probability, controlling for frequency and length
 #' # (Note that the matching null is balanced across all stimuli)
 #' lexops %>%
 #'   dplyr::filter(PK.Brysbaert >= .75) %>%
-#'   split_by(list("BG.SUBTLEX_UK", c(0.001, 0.003), c(0.009, 0.011))) %>%
-#'   control_for(list("Zipf.SUBTLEX_UK", c(-0.2, 0.2))) %>%
-#'   control_for("Length") %>%
+#'   split_by(BG.SUBTLEX_UK, c(0.001, 0.003) ~ c(0.009, 0.011)) %>%
+#'   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2)) %>%
+#'   control_for(Length) %>%
 #'   generate(n = 1000, match_null = "balanced")
 #'
 #' # Generate stimuli for a concreteness x valence (2 x 3) design
 #' # (Note that abstract, neutral is set as the matching null)
 #' # (Also note that the data is filtered by proportion known to be >75%)
 #' lexops %>%
-#'   split_by(list("CNC.Brysbaert", c(1, 2), c(4, 5))) %>%
-#'   split_by(list("VAL.Warriner", c(1, 3), c(4.5, 5.5), c(7, 9))) %>%
-#'   control_for(list("Zipf.SUBTLEX_UK", c(-0.25, 0.25))) %>%
-#'   control_for("Length") %>%
+#'   split_by(CNC.Brysbaert, c(1, 2) ~ c(4, 5)) %>%
+#'   split_by(VAL.Warriner, c(1, 3) ~ c(4.5, 5.5) ~ c(7, 9)) %>%
+#'   control_for(Zipf.SUBTLEX_UK, c(-0.25, 0.25)) %>%
+#'   control_for(Length) %>%
 #'   generate(n = 30, match_null = "A2_B2")
 #'
 #' @export
 
-generate <- function(df, n=20, match_null = "first", stringCol = "string", condCol = NA) {
+generate <- function(df, n=20, match_null = "first", string_col = "string", cond_col = NA) {
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
-  # check stringCol is a string
-  if (!is.character(stringCol)) stop(sprintf("Expected stringCol to be of class string, not %s", class(stringCol)))
+  # check string_col is a string
+  if (!is.character(string_col)) stop(sprintf("Expected string_col to be of class string, not %s", class(string_col)))
 
   # check n is a number or expected string
   if (!is.numeric(n) & n != "all") stop(sprintf('n must be numeric or a string of value "all"'))
@@ -51,13 +51,13 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
 
   # check that the conditions are present in the attributes
-  if (is.null(LexOPS_attrs$splitCol) & is.na(condCol)) {
+  if (is.null(LexOPS_attrs$splitCol) & is.na(cond_col)) {
     # if the column containing the condition info is missing and not defined manually, throw error
     stop("Could not identify split conditions column! Make sure you run split_by() before generate().")
-  } else if (!is.na(condCol)) {
+  } else if (!is.na(cond_col)) {
     # if the column containing condition info is defined manually, check exists
-    condCol_regex <- sprintf("^%s_[A-Z]$", condCol)
-    if (length(colnames(df)[grepl(condCol_regex, colnames(df))]) == 0) stop(sprintf("No columns found for the manually defined condCol '%s'.", condCol))
+    cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
+    if (length(colnames(df)[grepl(cond_col_regex, colnames(df))]) == 0) stop(sprintf("No columns found for the manually defined cond_col '%s'.", cond_col))
   }
   # if control_for() has been run (can tell from attributes), check the specified columns exist
   if (!is.null(LexOPS_attrs$controls)) {
@@ -65,14 +65,14 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
     if (!(all(controls_exist))) stop(sprintf("%i unknown control columns. Check columns specified in control_for() are in df.", length(controls_exist[!controls_exist])))
   }
 
-  # get condCol from the attributes if not manually defined
-  if (is.na(condCol)) {
-    condCol <- LexOPS_attrs$splitCol
-    condCol_regex <- sprintf("^%s_[A-Z]$", condCol)
+  # get cond_col from the attributes if not manually defined
+  if (is.na(cond_col)) {
+    cond_col <- LexOPS_attrs$splitCol
+    cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
   }
 
   # get the columns containing the split data
-  LexOPS_splitCols <- colnames(df)[grepl(condCol_regex, colnames(df))]
+  LexOPS_splitCols <- colnames(df)[grepl(cond_col_regex, colnames(df))]
 
   df <- df %>%
     # create new column, which will give the cell of the design that each string belongs to
@@ -88,12 +88,12 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
   if (!is.null(LexOPS_attrs$controls)) {
 
     # function to find matches for a particular word (better than current match_word() function?)
-    find_matches <- function(df, target, vars, matchCond, stringCol) {
+    find_matches <- function(df, target, vars, matchCond, string_col) {
       # get a copy of df excluding the null condition and the target word
-      df_matches <- df[df$LexOPS_cond != matchCond & df[[stringCol]] != target, ]
+      df_matches <- df[df$LexOPS_cond != matchCond & df[[string_col]] != target, ]
       # add a 2nd (for non-numeric) or 3rd (for numeric) item to each control's list, indicating the value for the string being matched to
       vars <- lapply(vars, function(cont) {
-        cont_val <- df[[cont[[1]]]][df[[stringCol]]==target]
+        cont_val <- df[[cont[[1]]]][df[[string_col]]==target]
         #if (is.factor(cont_val)) cont_val <- as.character(cont_val)
         if (is.list(cont)) append(cont, cont_val) else list(cont, cont_val)
       })
@@ -165,7 +165,7 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
       n_tried_this_n_generated <- n_tried_this_n_generated + 1
 
       this_match_null <- null_conds[n_generated+1]
-      null_word_bank <- df[[stringCol]][!df[[stringCol]] %in% out & df$LexOPS_cond == this_match_null & !df[[stringCol]] %in% words_tried_this_generated]
+      null_word_bank <- df[[string_col]][!df[[string_col]] %in% out & df$LexOPS_cond == this_match_null & !df[[string_col]] %in% words_tried_this_generated]
 
       if (length(null_word_bank) == 0) {
         if (n_all) {
@@ -181,15 +181,15 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
 
       matches <- sapply(all_conds[all_conds != this_match_null], function(c) {
         m <- find_matches(
-          df = df[(!df[[stringCol]] %in% out & df$LexOPS_cond == c) | df[[stringCol]]==this_word, ],
+          df = df[(!df[[string_col]] %in% out & df$LexOPS_cond == c) | df[[string_col]]==this_word, ],
           target = this_word,
           vars = LexOPS_attrs$controls,
           matchCond = this_match_null,
-          stringCol = stringCol
+          string_col = string_col
           )
         if (nrow(m)==0) NA else{
           m %>%
-            dplyr::pull(stringCol) %>%
+            dplyr::pull(string_col) %>%
             sample(1)
         }
       })
@@ -220,7 +220,7 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
     }
     sprintf("\n")
 
-    meta_df <- df[df[[stringCol]] %in% out, ]
+    meta_df <- df[df[[string_col]] %in% out, ]
     df <- as.data.frame(out, stringsAsFactors = FALSE) %>%
       stats::na.omit()
     colnames(df) <- c(all_conds, "match_null")
@@ -243,17 +243,17 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
 # # should throw errors
 #
 # lexops %>%
-#   control_for(list("Zipf.SUBTLEX_UK", c(-0.2, 0.2)))
+#   control_for(list(Zipf.SUBTLEX_UK, c(-0.2, 0.2))
 #
 # lexops %>%
-#   split_by(list("Syllables.CMU", c(1, 3), c(4, 6), c(7, 20))) %>%
-#   control_for(list("Zipf.SUBTLEX_UK", c(-0.2, 0.2)), condCol = "splitID")
+#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
+#   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2), cond_col = "splitID")
 #
 # # should not be enough data (all words of 7-20 syllables are nouns), so should only generate as many conditions as possible
 # lexops %>%
-#    split_by(list("Syllables.CMU", c(1, 3), c(4, 6), c(7, 20))) %>%
-#    split_by(list("PoS.SUBTLEX_UK", "noun", "verb")) %>%
-#    control_for(list("Zipf.SUBTLEX_UK", c(-0.2, 0.2))) %>%
+#    split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
+#    split_by(PoS.SUBTLEX_UK, "noun" ~ "verb")) %>%
+#    control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2)) %>%
 #    generate()
 
 # should work
@@ -266,19 +266,19 @@ generate <- function(df, n=20, match_null = "first", stringCol = "string", condC
 #
 # lexops %>%
 #   dplyr::filter(PK.Brysbaert >= .75) %>%
-#   split_by(list("BG.SUBTLEX_UK", c(0.001, 0.003), c(0.009, 0.011))) %>%
-#   control_for(list("Zipf.SUBTLEX_UK", c(-0.2, 0.2))) %>%
-#   control_for("Length") %>%
+#   split_by(BG.SUBTLEX_UK, c(0.001, 0.003) ~ c(0.009, 0.011)) %>%
+#   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2)) %>%
+#   control_for(Length) %>%
 #   generate(n = 1000, match_null = "balanced")
 #
 # lexops %>%
-#   split_by(list("Syllables.CMU", c(1, 3), c(4, 6), c(7, 20))) %>%
-#   control_for(list("Zipf.SUBTLEX_UK", c(-0.2, 0.2))) %>%
+#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
+#   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2)) %>%
 #   generate(n = 20)
 #
 # lexops %>%
-#   split_by(list("CNC.Brysbaert", c(1, 2), c(4, 5))) %>%
-#   split_by(list("VAL.Warriner", c(1, 3), c(4.5, 5.5), c(7, 9))) %>%
-#   control_for(list("Zipf.SUBTLEX_UK", c(-0.25, 0.25))) %>%
-#   control_for("Length") %>%
+#   split_by(CNC.Brysbaert, c(1, 2) ~ c(4, 5)) %>%
+#   split_by(VAL.Warriner, c(1, 3) ~ c(4.5, 5.5) ~ c(7, 9)) %>%
+#   control_for(Zipf.SUBTLEX_UK, c(-0.25, 0.25)) %>%
+#   control_for(Length) %>%
 #   generate(30, "A2_B2")

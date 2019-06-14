@@ -5,7 +5,7 @@
 #' @param df A data frame.
 #' @param target The target string (word) that euclidean distances are required for.
 #' @param vars The variables to be used as dimensions which Euclidean distance should be calculated over. Can be a vector of strings giving the variable names (e.g. `c("Zipf.SUBTLEX_UK", "Length")`, or, `"all"`, to use all numeric variables in the data frame). The default is `"all"`.
-#' @param stringCol The column containing the strings (default = `"string"`).
+#' @param string_col The column containing the strings (default = `"string"`).
 #' @return Returns a vector of Euclidean distances, in the order of rows in `df`.
 #' @examples
 #'
@@ -22,7 +22,7 @@
 #'
 #' @export
 
-euc_dists <- function(df = LexOPS::lexops, target, vars = "all", stringCol = "string") {
+euc_dists <- function(df = LexOPS::lexops, target, vars = "all", string_col = "string") {
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
   # if there are no vars specified (e.g. empty vector) return NAs
@@ -50,8 +50,8 @@ euc_dists <- function(df = LexOPS::lexops, target, vars = "all", stringCol = "st
     non_numeric_cols <- colnames(df[, vars])[!sapply(df[, vars], is.numeric)]
     stop(sprintf("%i non-numeric columns specified in `vars`: %s", length(non_numeric_cols), paste(non_numeric_cols, collapse = ", ")))
   }
-  # check stringCol is a string
-  if (!is.character(stringCol)) stop(sprintf("Expected stringCol to be of class string, not %s", class(stringCol)))
+  # check string_col is a string
+  if (!is.character(string_col)) stop(sprintf("Expected string_col to be of class string, not %s", class(string_col)))
 
   # calculate Euclidean distance of word from all others on specified dimensions
 
@@ -59,7 +59,7 @@ euc_dists <- function(df = LexOPS::lexops, target, vars = "all", stringCol = "st
   df[, vars] <- lapply(df[, vars], scale)
 
   # get the vector for the target word
-  target_dims <- df[df[[stringCol]] == target, vars]
+  target_dims <- df[df[[string_col]] == target, vars]
 
   # get all the other vectors (including the target)
   dims <- df[, vars]

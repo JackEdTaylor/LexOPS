@@ -4,24 +4,24 @@
 \alias{split_by}
 \title{Add a split to the data.}
 \usage{
-split_by(df, split, condCol = "LexOPS_splitCond", filter = TRUE)
+split_by(df, var, levels, cond_col = "LexOPS_splitCond", filter = TRUE)
 }
 \arguments{
 \item{df}{A data frame containing the IV and strings.}
 
-\item{split}{A list object specifying the levels of the split in the form, \code{list("IV_column", c(1, 3), c(4, 6), ...)} for
-integer columns; the form \code{list("IV_column", c(1, 4, 7))} for continuous columns; the form \code{list("IV_column", c("noun", "verb"))}
-for factor columns. Splits must be non-overlapping.}
+\item{var}{The column to treat as an independent variable (non-standard evaluation).}
 
-\item{condCol}{Prefix with which to name the column where the condition will be stored (default = "LexOPS_splitCond"). Each time
-split_by() is run on a dataframe, a new condCol is added to the data frame, e.g., the first time will add splitCond_A, the second
-time will ad split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of condCol
+\item{levels}{The boundaries to use as levels of this variable (non-standard evaluation). These should be specified in the form \code{c(1, 3) ~ c(4, 6) ~ c(7 ~ 9)} for numeric variables, and \code{noun ~ verb ~ adjective} for character variables, where levels are separated by the \code{~} operator. Levels must be non-overlapping.}
+
+\item{cond_col}{Prefix with which to name the column where the condition will be stored (default = "LexOPS_splitCond"). Each time
+split_by() is run on a dataframe, a new cond_col is added to the data frame, e.g., the first time will add splitCond_A, the second
+time will ad split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of cond_col
 must be the same each time the function is called. The default is usually sufficient.}
 
 \item{filter}{Logical. If TRUE, words which fit no conditions are removed.}
 }
 \value{
-Returns \code{df}, with a new column (name defined by \code{condCol} argument) identifying which level of the IV each string belongs to.
+Returns \code{df}, with a new column (name defined by \code{cond_col} argument) identifying which level of the IV each string belongs to.
 }
 \description{
 Specifies splits for one IV for a factorial design. Can be called multiple times for multiple splits.
@@ -30,16 +30,13 @@ Specifies splits for one IV for a factorial design. Can be called multiple times
 
 # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables
 lexops \%>\%
-  split_by(list("Syllables.CMU", c(1, 3), c(4, 6), c(7, 20)))
+  split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20))
 
 # Create 2 levels of position of speech, noun and verb
 lexops \%>\%
-  split_by(list("PoS.SUBTLEX_UK", "noun", "verb"))
+  split_by(PoS.SUBTLEX_UK, "noun" ~ "verb")
 
 # Perform two splits
-lexops \%>\%
-  split_by(list("Syllables.CMU", c(1, 3), c(4, 6), c(7, 20))) \%>\%
-  split_by(list("PoS.SUBTLEX_UK", "noun", "verb"))
 
 }
 \seealso{
