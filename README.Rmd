@@ -47,9 +47,9 @@ library(LexOPS)
 
 stim <- lexops %>%
   subset(PoS.SUBTLEX_UK == "noun") %>%
-  split_by(CNC.Brysbaert, c(1, 2) ~ c(4, 5)) %>%
-  split_by(VAL.Warriner, c(1, 3) ~ c(4.5, 5.5) ~ c(7, 9)) %>%
-  control_for(Zipf.SUBTLEX_UK, c(-0.25, 0.25)) %>%
+  split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
+  split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
+  control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
   control_for(Length) %>%
   generate(n = 5, match_null = "A1_B2")
 
@@ -60,9 +60,9 @@ print(stim)
 set.seed(999)
 stim <- lexops %>%
   subset(PoS.SUBTLEX_UK == "noun") %>%
-  split_by(CNC.Brysbaert, c(1, 2) ~ c(4, 5)) %>%
-  split_by(VAL.Warriner, c(1, 3) ~ c(4.5, 5.5) ~ c(7, 9)) %>%
-  control_for(Zipf.SUBTLEX_UK, c(-0.25, 0.25)) %>%
+  split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
+  split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
+  control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
   control_for(Length) %>%
   generate(n = 5, match_null = "A1_B2")
 ```
