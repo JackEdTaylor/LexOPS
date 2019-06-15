@@ -9,8 +9,8 @@
 #' @examples
 #'
 #' lexops %>%
-#'   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
-#'   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2)) %>%
+#'   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) %>%
+#'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
 #'   generate(n = 20) %>%
 #'   long_format(include = "all")
 #'
@@ -74,8 +74,8 @@ long_format <- function(df, include = "design", stringCol = "string") {
 # # should work
 # lexops %>%
 #   dplyr::filter(PK.Brysbaert >= .75) %>%
-#   split_by(list("Length", c(1, 3), c(4, 6), c(7, 20))) %>%
-#   control_for(list("Zipf.SUBTLEX_UK", c(-0.2, 0.2))) %>%
-#   control_for("PoS.SUBTLEX_UK") %>%
+#   split_by(Length, 1:3 ~ 4:6 ~ 7:20) %>%
+#   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
+#   control_for(PoS.SUBTLEX_UK) %>%
 #   generate(n = 50) %>%
 #   long_format()

@@ -28,16 +28,16 @@ Generates the stimuli from the data frame after it has been passed through \code
 
 # Generate 20 words per condition, for design with 3 levels of syllables, controlled for frequency
 lexops \%>\%
-  split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) \%>\%
-  control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2)) \%>\%
+  split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) \%>\%
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) \%>\%
   generate(n = 20)
 
 # Generate 2 levels of bigram probability, controlling for frequency and length
 # (Note that the matching null is balanced across all stimuli)
 lexops \%>\%
   dplyr::filter(PK.Brysbaert >= .75) \%>\%
-  split_by(BG.SUBTLEX_UK, c(0.001, 0.003) ~ c(0.009, 0.011)) \%>\%
-  control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2)) \%>\%
+  split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) \%>\%
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) \%>\%
   control_for(Length) \%>\%
   generate(n = 1000, match_null = "balanced")
 
@@ -45,9 +45,9 @@ lexops \%>\%
 # (Note that abstract, neutral is set as the matching null)
 # (Also note that the data is filtered by proportion known to be >75\%)
 lexops \%>\%
-  split_by(CNC.Brysbaert, c(1, 2) ~ c(4, 5)) \%>\%
-  split_by(VAL.Warriner, c(1, 3) ~ c(4.5, 5.5) ~ c(7, 9)) \%>\%
-  control_for(Zipf.SUBTLEX_UK, c(-0.25, 0.25)) \%>\%
+  split_by(CNC.Brysbaert, 1:2 ~ 4:5) \%>\%
+  split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) \%>\%
+  control_for(Zipf.SUBTLEX_UK, -0.25:0.25) \%>\%
   control_for(Length) \%>\%
   generate(n = 30, match_null = "A2_B2")
 

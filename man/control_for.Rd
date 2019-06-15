@@ -27,13 +27,13 @@ Specifies variables that should be controlled for in the generated stimuli, afte
 
 # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables, and control for word frequency
 lexops \%>\%
-  split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) \%>\%
-  control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2))
+  split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) \%>\%
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2)
 
 # Control for multiple variables
 lexops \%>\%
-  split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) \%>\%
-  control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2)) \%>\%
+  split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) \%>\%
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) \%>\%
   control_for(PoS.SUBTLEX_UK)
 
 }

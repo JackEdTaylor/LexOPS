@@ -16,7 +16,7 @@
 #'
 #' # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables
 #' lexops %>%
-#'   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20))
+#'   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20)
 #'
 #' # Create 2 levels of position of speech, noun and verb
 #' lexops %>%
@@ -24,7 +24,7 @@
 #'
 #' # Perform two splits
 # lexops %>%
-#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
+#   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) %>%
 #   split_by(PoS.SUBTLEX_UK, c("noun", "name") ~ ("verb", "adjective"))
 #'
 #' @seealso \code{\link{lexops}} for the default data frame and associated variables.
