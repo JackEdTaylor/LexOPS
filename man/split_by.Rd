@@ -30,7 +30,7 @@ Specifies splits for one IV for a factorial design. Can be called multiple times
 
 # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables
 lexops \%>\%
-  split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20))
+  split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20)
 
 # Create 2 levels of position of speech, noun and verb
 lexops \%>\%
