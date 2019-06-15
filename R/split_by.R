@@ -18,6 +18,10 @@
 #' lexops %>%
 #'   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20)
 #'
+#' # Same split as above, but supplying boundaries as vectors
+#' lexops %>%
+#'   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20))
+#'
 #' # Create 2 levels of position of speech, noun and verb
 #' lexops %>%
 #'   split_by(PoS.SUBTLEX_UK, "noun" ~ "verb")
@@ -25,7 +29,7 @@
 #' # Perform two splits
 # lexops %>%
 #   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) %>%
-#   split_by(PoS.SUBTLEX_UK, c("noun", "name") ~ ("verb", "adjective"))
+#   split_by(PoS.SUBTLEX_UK, c("noun", "name") ~ c("verb", "adjective"))
 #'
 #' @seealso \code{\link{lexops}} for the default data frame and associated variables.
 #'
