@@ -4,8 +4,8 @@
 #'
 #' @param df A data frame that is the result from `control_for()` or `split_by()`.
 #' @param include A string indicating whether the long-format result should include all variables in the original data frame (`"all"`), only those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Set to `NA` for only the data in the data frame. The default is `"design"`.
-#' @param stringCol The column containing the strings (default = `"string"`).
-#' @return Returns the generated stimuli, but converted into long format.
+#' @param string_col The column containing the strings (default = `"string"`).
+#' @return Returns the generated stimuli, but converted into long format, containing requested variables from the original `df`, and the variables of `item_nr`, `condition`, `euclidean_distance` (from the match_null).
 #' @examples
 #'
 #' lexops %>%
@@ -16,13 +16,13 @@
 #'
 #' @export
 
-long_format <- function(df, include = "design", stringCol = "string") {
+long_format <- function(df, include = "design", string_col = "string") {
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
   # check that include is an expected input
   if (!include %in% c("all", "design", "splits", "controls", NA)) stop('`include` must be one of "all", "design", "splits", "controls", or NA')
-  # check stringCol is a string
-  if (!is.character(stringCol)) stop(sprintf("Expected stringCol to be of class string, not %s", class(stringCol)))
+  # check string_col is a string
+  if (!is.character(string_col)) stop(sprintf("Expected string_col to be of class string, not %s", class(string_col)))
 
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
@@ -39,7 +39,7 @@ long_format <- function(df, include = "design", stringCol = "string") {
 
   # get a vector specifying which columns to include
   long_cols <- if (include == "all") {
-    colnames(LexOPS_attrs$meta_df)[!colnames(LexOPS_attrs$meta_df) %in% c(stringCol, "LexOPS_cond")]
+    colnames(LexOPS_attrs$meta_df)[!colnames(LexOPS_attrs$meta_df) %in% c(string_col, "LexOPS_cond")]
   } else if (is.na(include)) {
     NA
   } else {
@@ -55,11 +55,11 @@ long_format <- function(df, include = "design", stringCol = "string") {
   }
 
   # the specified columns from meta_df
-  meta_df <- LexOPS_attrs$meta_df[, colnames(LexOPS_attrs$meta_df) %in% c(long_cols, stringCol)]
+  meta_df <- LexOPS_attrs$meta_df[, colnames(LexOPS_attrs$meta_df) %in% c(long_cols, string_col)]
 
   # put in long format, and include the specified variables
-  out <- tidyr::gather(df, "condition", !!stringCol, -match_null, -item_nr) %>%
-    dplyr::left_join(meta_df, by = stringCol) %>%
+  out <- tidyr::gather(df, "condition", !!string_col, -match_null, -item_nr) %>%
+    dplyr::left_join(meta_df, by = string_col) %>%
     dplyr::select(item_nr, condition, match_null, dplyr::everything()) %>%
     dplyr::arrange(item_nr)
 
