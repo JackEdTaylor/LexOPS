@@ -10,6 +10,7 @@
 #' split_by() is run on a dataframe, a new cond_col is added to the data frame, e.g., the first time will add splitCond_A, the second
 #' time will ad split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of cond_col
 #' must be the same each time the function is called. The default is usually sufficient.
+#' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `var` and `levels`. If `TRUE`, `var` should be a character vector referring to a column in `df` (e.g. `"Zipf.SUBTLEX_UK"`), and `levels` should be a list containing multiple vectors of length 2, each specifying the boundaries of one level's bin (e.g. `list(c(1, 3), c(4, 6), c(7, 20))`). Default = `FALSE`.
 #'
 #' @return Returns `df`, with a new column (name defined by `cond_col` argument) identifying which level of the IV each string belongs to.
 #' @examples
@@ -27,18 +28,31 @@
 #'   split_by(PoS.SUBTLEX_UK, "noun" ~ "verb")
 #'
 #' # Perform two splits
+#' lexops %>%
+#'   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) %>%
+#'   split_by(PoS.SUBTLEX_UK, c("noun", "name") ~ c("verb", "adjective"))
+#'
+#' # Bypass non-standard evaluation
 # lexops %>%
-#   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) %>%
-#   split_by(PoS.SUBTLEX_UK, c("noun", "name") ~ c("verb", "adjective"))
+#   split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) %>%
+#   split_by("PoS.SUBTLEX_UK", list(c("noun", "name"), c("verb", "adjective")), standard_eval = TRUE)
 #'
 #' @seealso \code{\link{lexops}} for the default data frame and associated variables.
 #'
 #' @export
 
-split_by <- function(df, var, levels, cond_col = "LexOPS_splitCond", filter = TRUE){
+split_by <- function(df, var, levels, cond_col = "LexOPS_splitCond", filter = TRUE, standard_eval = FALSE){
 
   # convert var and levels to a list, `split`, which will be added to the attributes
-  split <- parse_levels(substitute(var), substitute(levels))
+  split <- if (standard_eval) {
+    if (is.list(levels)) {
+      rlang::prepend(levels, var)
+    } else {
+      list(var, levels)
+    }
+  } else {
+    parse_levels(substitute(var), substitute(levels))
+  }
 
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
@@ -110,7 +124,6 @@ split_by.integer <- function(df, column, breaks, new_column, prefix, filter){
   }else{
     df <- dplyr::left_join(df, df_filter, by = column)
   }
-
 
   df[[new_column]] <- as.factor(df[[new_column]])
 

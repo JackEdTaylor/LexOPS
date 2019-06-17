@@ -4,7 +4,8 @@
 \alias{control_for}
 \title{Control for confounding variables.}
 \usage{
-control_for(df, var, tol = NA, string_col = "string", cond_col = NA)
+control_for(df, var, tol = NA, string_col = "string", cond_col = NA,
+  standard_eval = FALSE)
 }
 \arguments{
 \item{df}{A data frame that is the result from \code{split_by()}.}
@@ -16,6 +17,8 @@ control_for(df, var, tol = NA, string_col = "string", cond_col = NA)
 \item{string_col}{The column containing the strings (default = "string").}
 
 \item{cond_col}{Prefix with which the columns detailing the splits were labelled by \code{split_by()}. This is rarely needed (default = NA), as by default the function gets this information from \code{df}'s attributes.}
+
+\item{standard_eval}{Logical; bypasses non-standard evaluation, and allows more standard R objects in \code{var} and \code{tol}. If \code{TRUE}, \code{var} should be a character vector referring to a column in \code{df} (e.g. \code{"Zipf.SUBTLEX_UK"}), and \code{tol} should be a vector of length 2, specifying the tolerance (e.g. \code{c(-0.1, 0.5)}). Default = \code{FALSE}.}
 }
 \value{
 Returns \code{df}, with details on the variables to be controlled for added to the attributes. Run the \code{generate()} function to then generate the actual stimuli.
@@ -35,5 +38,11 @@ lexops \%>\%
   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) \%>\%
   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) \%>\%
   control_for(PoS.SUBTLEX_UK)
+
+# Bypass non-standard evaluation
+lexops \%>\%
+ split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) \%>\%
+ control_for("Zipf.SUBTLEX_UK", c(-0.2, 0.2), standard_eval = TRUE) \%>\%
+ control_for("PoS.SUBTLEX_UK", standard_eval = TRUE)
 
 }

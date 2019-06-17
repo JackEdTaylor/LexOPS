@@ -7,6 +7,7 @@
 #' @param tol The boundaries to use as levels of this variable (non-standard evaluation). These should be specified in the form `c(1, 3) ~ c(4, 6) ~ c(7 ~ 9)` for numeric variables, and `noun ~ verb ~ adjective` for character variables, where levels are separated by the `~` operator. Levels must be non-overlapping.
 #' @param string_col The column containing the strings (default = "string").
 #' @param cond_col Prefix with which the columns detailing the splits were labelled by `split_by()`. This is rarely needed (default = NA), as by default the function gets this information from `df`'s attributes.
+#' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `var` and `tol`. If `TRUE`, `var` should be a character vector referring to a column in `df` (e.g. `"Zipf.SUBTLEX_UK"`), and `tol` should be a vector of length 2, specifying the tolerance (e.g. `c(-0.1, 0.5)`). Default = `FALSE`.
 #'
 #' @return Returns `df`, with details on the variables to be controlled for added to the attributes. Run the `generate()` function to then generate the actual stimuli.
 #' @examples
@@ -22,11 +23,25 @@
 #'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
 #'   control_for(PoS.SUBTLEX_UK)
 #'
+#' # Bypass non-standard evaluation
+#' lexops %>%
+#'  split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) %>%
+#'  control_for("Zipf.SUBTLEX_UK", c(-0.2, 0.2), standard_eval = TRUE) %>%
+#'  control_for("PoS.SUBTLEX_UK", standard_eval = TRUE)
+#'
 #' @export
 
-control_for <- function(df, var, tol = NA, string_col = "string", cond_col = NA) {
+control_for <- function(df, var, tol = NA, string_col = "string", cond_col = NA, standard_eval = FALSE) {
   # parse the column name and tolerance into a list object
-  var <- parse_levels(substitute(var), substitute(tol))
+  var <- if (standard_eval) {
+    if (all(is.na(tol))) {
+      list(var)
+    } else {
+      list(var, tol)
+    }
+  } else {
+    parse_levels(substitute(var), substitute(tol))
+  }
 
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
@@ -89,5 +104,11 @@ control_for <- function(df, var, tol = NA, string_col = "string", cond_col = NA)
 #
 # lexops %>%
 #   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
-#   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2))) %>%
+#   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
 #   control_for(PoS.SUBTLEX_UK)
+#
+# # should be identical output to above
+# lexops %>%
+#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
+#   control_for("Zipf.SUBTLEX_UK", c(-0.2, 0.2), standard_eval = TRUE) %>%
+#   control_for("PoS.SUBTLEX_UK", standard_eval = TRUE)

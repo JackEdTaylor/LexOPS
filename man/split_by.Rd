@@ -4,7 +4,8 @@
 \alias{split_by}
 \title{Add a split to the data.}
 \usage{
-split_by(df, var, levels, cond_col = "LexOPS_splitCond", filter = TRUE)
+split_by(df, var, levels, cond_col = "LexOPS_splitCond", filter = TRUE,
+  standard_eval = FALSE)
 }
 \arguments{
 \item{df}{A data frame containing the IV and strings.}
@@ -19,6 +20,8 @@ time will ad split_cond_B, etc. If multiple split_by() functions are used on a d
 must be the same each time the function is called. The default is usually sufficient.}
 
 \item{filter}{Logical. If TRUE, words which fit no conditions are removed.}
+
+\item{standard_eval}{Logical; bypasses non-standard evaluation, and allows more standard R objects in \code{var} and \code{levels}. If \code{TRUE}, \code{var} should be a character vector referring to a column in \code{df} (e.g. \code{"Zipf.SUBTLEX_UK"}), and \code{levels} should be a list containing multiple vectors of length 2, each specifying the boundaries of one level's bin (e.g. \code{list(c(1, 3), c(4, 6), c(7, 20))}). Default = \code{FALSE}.}
 }
 \value{
 Returns \code{df}, with a new column (name defined by \code{cond_col} argument) identifying which level of the IV each string belongs to.
@@ -41,6 +44,11 @@ lexops \%>\%
   split_by(PoS.SUBTLEX_UK, "noun" ~ "verb")
 
 # Perform two splits
+lexops \%>\%
+  split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) \%>\%
+  split_by(PoS.SUBTLEX_UK, c("noun", "name") ~ c("verb", "adjective"))
+
+# Bypass non-standard evaluation
 
 }
 \seealso{

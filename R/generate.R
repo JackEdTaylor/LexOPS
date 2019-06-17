@@ -36,6 +36,12 @@
 #'   control_for(Length) %>%
 #'   generate(n = 30, match_null = "A2_B2")
 #'
+#' # Bypass non-standard evaluation
+#' lexops %>%
+#'  split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) %>%
+#'  control_for("Zipf.SUBTLEX_UK", c(-0.2, 0.2), standard_eval = TRUE) %>%
+#'  generate(n = 20)
+#'
 #' @export
 
 generate <- function(df, n=20, match_null = "first", string_col = "string", cond_col = NA) {
