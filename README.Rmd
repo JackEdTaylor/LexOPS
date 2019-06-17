@@ -20,8 +20,6 @@ library(LexOPS)
 
 LexOPS is an R package for generating word stimuli, for use in Psychology experiments. It can generate stimuli for a factorial design specified by the user, controlling for selected lexical variables. The package has an inbuilt database of features for English words (`LexOPS::lexops`), but the user can also use their own list of features, for English words and/or for words in other languages.
 
-The package features an interactive shiny app, with several useful features for visualising variables' distributions and relationships while generating stimuli. The LexOPS shiny app is available online at [https://jackt.shinyapps.io/lexops/](https://jackt.shinyapps.io/lexops/), but it is usually faster and more relilable to [run it locally](#shiny-app).
-
 ## Installation
 
 LexOPS can be installed as an R package with:
@@ -33,15 +31,15 @@ devtools::install_github("JackEdTaylor/LexOPS")
 
 ## Shiny App
 
-The LexOPS Shiny App can be run locally with:
+The package features an interactive shiny app, with several useful features for visualising variables' distributions and relationships while generating stimuli. The LexOPS shiny app is available online at [https://jackt.shinyapps.io/lexops/](https://jackt.shinyapps.io/lexops/), but it is usually faster and more relilable to run it locally, with:
 
 ```{r, eval=FALSE}
 LexOPS::run_shiny()
 ```
 
-## Reproducible Code
+## Generating Stimuli
 
-Stimuli can also be generated using reproducible code. For example, the following example pipeline generates 10 words (all nouns) per condition (60 words in total), for a study with a 2 x 3, concreteness (low, high) by emotional valence (negative, neutral, positive) experimental design. Words are controlled for by length exactly, and by word frequency within a tolerance of ±0.25 Zipf, relative to neutral abstract words.
+Stimuli can also be generated using reproducible code. For example, the following example pipeline generates 5 words (all nouns) per condition (30 words in total), for a study with a 2 x 3, concreteness (low, high) by emotional valence (negative, neutral, positive) experimental design. Words are controlled for by length exactly, and by word frequency within a tolerance of ±0.25 Zipf, relative to neutral abstract words.
 
 ```{r, eval=FALSE}
 library(LexOPS)
