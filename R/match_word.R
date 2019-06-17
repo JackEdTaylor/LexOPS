@@ -34,10 +34,10 @@
 match_word <- function(df = LexOPS::lexops, target, vars, string_col = "string", filter = TRUE) {
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
-  # check this dataframe doesn't include a column called Euclidean.Distance; if it does, remove it and throw a warning
-  if ("Euclidean.Distance" %in% colnames(df)) {
-    warning('"Euclidean.Distance" column will be ignored, as this is overwritten by `match_word()`')
-    df$Euclidean.Distance <- NULL
+  # check this dataframe doesn't include a column called euclidean_distance; if it does, remove it and throw a warning
+  if ("euclidean_distance" %in% colnames(df)) {
+    warning('"euclidean_distance" column will be ignored, as this is overwritten by `match_word()`')
+    df$euclidean_distance <- NULL
   }
   # check string_col is a string
   if (!is.character(string_col)) stop(sprintf("Expected string_col to be of class string, not %s", class(string_col)))
@@ -83,9 +83,9 @@ match_word <- function(df = LexOPS::lexops, target, vars, string_col = "string",
   vars_sans_tols <- sapply(vars, dplyr::first, USE.NAMES = FALSE)
   numeric_vars <- vars_sans_tols[sapply(df[, vars_sans_tols], is.numeric)]
   df <- df %>%
-    dplyr::mutate(Euclidean.Distance = LexOPS::euc_dists(., target = target, vars = numeric_vars, string_col = string_col)) %>%
-    dplyr::arrange(Euclidean.Distance) %>%
-    dplyr::select(!!(dplyr::sym(string_col)), Euclidean.Distance, dplyr::everything())
+    dplyr::mutate(euclidean_distance = LexOPS::euc_dists(., target = target, vars = numeric_vars, string_col = string_col)) %>%
+    dplyr::arrange(euclidean_distance) %>%
+    dplyr::select(!!(dplyr::sym(string_col)), euclidean_distance, dplyr::everything())
 
   # get the numeric and character tolerances relative to the target word
   numFilt <- lapply(vars, function(listObj) {
