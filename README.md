@@ -25,6 +25,7 @@ relilable to [run it locally](#shiny-app).
 LexOPS can be installed as an R package with:
 
 ``` r
+if (!require("devtools")) install.packages("devtools")
 devtools::install_github("JackEdTaylor/LexOPS")
 ```
 

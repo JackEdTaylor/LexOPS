@@ -27,6 +27,7 @@ The package features an interactive shiny app, with several useful features for 
 LexOPS can be installed as an R package with:
 
 ```{r, eval=FALSE}
+if (!require("devtools")) install.packages("devtools")
 devtools::install_github("JackEdTaylor/LexOPS")
 ```
 
