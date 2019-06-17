@@ -32,6 +32,10 @@ Specifies splits for one IV for a factorial design. Can be called multiple times
 lexops \%>\%
   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20)
 
+# Same split as above, but supplying boundaries as vectors
+lexops \%>\%
+  split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20))
+
 # Create 2 levels of position of speech, noun and verb
 lexops \%>\%
   split_by(PoS.SUBTLEX_UK, "noun" ~ "verb")
