@@ -8,7 +8,7 @@
 #' @param filter Logical. If TRUE, words which fit no conditions are removed.
 #' @param cond_col Prefix with which to name the column where the condition will be stored (default = "LexOPS_splitCond"). Each time
 #' split_by() is run on a dataframe, a new cond_col is added to the data frame, e.g., the first time will add splitCond_A, the second
-#' time will ad split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of cond_col
+#' time will add split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of cond_col
 #' must be the same each time the function is called. The default is usually sufficient.
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `var` and `levels`. If `TRUE`, `var` should be a character vector referring to a column in `df` (e.g. `"Zipf.SUBTLEX_UK"`), and `levels` should be a list containing multiple vectors of length 2, each specifying the boundaries of one level's bin (e.g. `list(c(1, 3), c(4, 6), c(7, 20))`). Default = `FALSE`.
 #'

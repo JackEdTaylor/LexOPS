@@ -16,7 +16,7 @@ split_by(df, var, levels, cond_col = "LexOPS_splitCond", filter = TRUE,
 
 \item{cond_col}{Prefix with which to name the column where the condition will be stored (default = "LexOPS_splitCond"). Each time
 split_by() is run on a dataframe, a new cond_col is added to the data frame, e.g., the first time will add splitCond_A, the second
-time will ad split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of cond_col
+time will add split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of cond_col
 must be the same each time the function is called. The default is usually sufficient.}
 
 \item{filter}{Logical. If TRUE, words which fit no conditions are removed.}
