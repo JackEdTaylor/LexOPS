@@ -206,7 +206,7 @@ check_breaks <- function(x){
 
   overlap_check <- all(overlap_check)
 
-  if(!overlap_check) stop("breaks must not overlap")
+  if(!overlap_check) warning("overlapping breaks: two levels of this variable will overlap")
 }
 
 check_continuous <- function(breaks){
