@@ -49,6 +49,9 @@ lexops \%>\%
   split_by(PoS.SUBTLEX_UK, c("noun", "name") ~ c("verb", "adjective"))
 
 # Bypass non-standard evaluation
+lexops \%>\%
+  split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) \%>\%
+  split_by("PoS.SUBTLEX_UK", list(c("noun", "name"), c("verb", "adjective")), standard_eval = TRUE)
 
 }
 \seealso{
