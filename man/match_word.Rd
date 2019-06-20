@@ -12,7 +12,7 @@ match_word(df = LexOPS::lexops, target, vars, string_col = "string",
 
 \item{target}{The target string}
 
-\item{vars}{Can be a list of vars from df to match by, in the form list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName"). Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly. Some variable names}
+\item{vars}{Can be a list of vars from df to match by, in the form list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName"). Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.}
 
 \item{string_col}{The column containing the strings (default = "string")}
 
