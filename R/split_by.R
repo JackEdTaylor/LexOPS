@@ -27,15 +27,19 @@
 #' lexops %>%
 #'   split_by(PoS.SUBTLEX_UK, "noun" ~ "verb")
 #'
+#' # split into two levels: (1) nouns or names, and (2) adjectives or adverbs
+#' lexops %>%
+#'  split_by(PoS.SUBTLEX_UK, c("noun", "name") ~ c("adjective", "adverb"))
+#'
 #' # Perform two splits
 #' lexops %>%
 #'   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) %>%
-#'   split_by(PoS.SUBTLEX_UK, c("noun", "name") ~ c("verb", "adjective"))
+#'   split_by(PoS.SUBTLEX_UK, c("noun", "name") ~ c("adjective", "adverb"))
 #'
 #' # Bypass non-standard evaluation
 #' lexops %>%
 #'   split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) %>%
-#'   split_by("PoS.SUBTLEX_UK", list(c("noun", "name"), c("verb", "adjective")), standard_eval = TRUE)
+#'   split_by("PoS.SUBTLEX_UK", list(c("noun", "name"), "verb"), standard_eval = TRUE)
 #'
 #' @seealso \code{\link{lexops}} for the default data frame and associated variables.
 #'
@@ -90,8 +94,14 @@ split_by <- function(df, var, levels, cond_col = "LexOPS_splitCond", filter = TR
 
   # Run appropriate split_by function
   if(is.factor(df[[column]])){
-    breaks <- unlist(split[-1])
-    df <- split_by.factor(df, column, breaks, new_column, prefix, filter)
+    breaks_lengths <- lapply(split[-1], length)
+    if(any(breaks_lengths > 1)) {
+      breaks <- split[-1]
+      df <- split_by.factor_group(df, column, breaks, new_column, prefix, filter)
+    } else {
+      breaks <- unlist(split[-1])
+      df <- split_by.factor(df, column, breaks, new_column, prefix, filter)
+    }
   }else{
     col_type <- typeof(df[[column]])
 
@@ -181,6 +191,41 @@ split_by.factor <- function(df, column, breaks, new_column, prefix, filter){
   }else{
     df <- dplyr::left_join(df, df_filter, by = column)
   }
+
+  df[[new_column]] <- as.factor(df[[new_column]])
+
+  return(df)
+}
+
+split_by.factor_group <- function(df, column, breaks, new_column, prefix, filter){
+
+  if(all(unlist(breaks) %in% levels(df[[column]]))){
+    breaks <- lapply(breaks, factor, levels = levels(df[[column]]))
+  }else{
+    stop("not all breaks are existing factors")
+  }
+
+  breaks_lengths <- sapply(breaks, length)
+
+  breaks_base <- paste0(prefix, 1:length(breaks))
+
+  breaks_IDs <- lapply(1:length(breaks), function(i) {
+      paste(breaks_base[i], letters[1:breaks_lengths[i]], sep="_")
+  }) %>%
+    unlist()
+
+  df_filter <- tibble::tibble(!!column := unlist(breaks),
+                              !!new_column := breaks_IDs)
+
+  if(filter){
+    df <- dplyr::inner_join(df, df_filter, by = column)
+  }else{
+    df <- dplyr::left_join(df, df_filter, by = column)
+  }
+
+  # remove the last section of the new_column, which will be _a, _b, _c, etc.
+  # note that \K is a special escape for PERL
+  df[[new_column]] <- gsub("([A-Z]{1,2}\\d*)\\K(_[a-z]{1,2})", "", df[[new_column]], perl = TRUE)
 
   df[[new_column]] <- as.factor(df[[new_column]])
 
