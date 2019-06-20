@@ -12,7 +12,7 @@ match_word(df = LexOPS::lexops, target, vars, string_col = "string",
 
 \item{target}{The target string}
 
-\item{vars}{Can be a list of vars from df to match by, in the form list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName"). Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.}
+\item{vars}{Can be a list of vars from df to match by, in the form list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName"). Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly. Some variable names}
 
 \item{string_col}{The column containing the strings (default = "string")}
 
@@ -22,8 +22,7 @@ match_word(df = LexOPS::lexops, target, vars, string_col = "string",
 Returns data frame based on \code{df}. If \code{filter} == TRUE, will only contain matches. If \code{filter} == FALSE, will be the original \code{df} object, with a new column, "matchFilter".
 }
 \description{
-Suggests strings that are suitable matches for a target string, based on
-selected variables of a data frame.
+Suggests strings that are suitable matches for a target string, based on selected variables of a data frame. Note that unlike functions in the generate pipeline (e.g. \code{control_for()}), multiple variables' tolerances can be defined in one function.
 }
 \examples{
 

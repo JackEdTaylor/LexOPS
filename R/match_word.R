@@ -1,11 +1,10 @@
 #' Get suitable matches for a single word on one or several dimensions.
 #'
-#' Suggests strings that are suitable matches for a target string, based on
-#' selected variables of a data frame.
+#' Suggests strings that are suitable matches for a target string, based on selected variables of a data frame. Note that unlike functions in the generate pipeline (e.g. `control_for()`), multiple variables' tolerances can be defined in one function.
 #'
 #' @param df A data frame to reorder, containing the target string (default = LexOPS::lexops).
 #' @param target The target string
-#' @param vars Can be a list of vars from df to match by, in the form list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName"). Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.
+#' @param vars Can be a list of vars from df to match by, in the form list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName"). Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly. Some variable names
 #' @param string_col The column containing the strings (default = "string")
 #' @param filter Logical. If TRUE, matches outside the tolerances specified in vars are removed. If FALSE, a new column, matchFilter is calculated indicating whether or not the string is within all variables' tolerances. (Default = TRUE.)
 #' @return Returns data frame based on `df`. If `filter` == TRUE, will only contain matches. If `filter` == FALSE, will be the original `df` object, with a new column, "matchFilter".
