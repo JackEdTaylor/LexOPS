@@ -21,7 +21,7 @@
 
 recode_corpus_apa <- function(var, first_cite = TRUE, default = "", standard_eval = FALSE) {
   if (!standard_eval) var <- substitute(var)
-  var_name <- corpus_recode_name(var)
+  var_name <- corpus_recode_name_source(var)
   if (!is.null(var_name) & !is.na(var_name)) {
     if (first_cite) {
       dplyr::recode(
@@ -71,7 +71,7 @@ recode_corpus_apa <- function(var, first_cite = TRUE, default = "", standard_eva
   }
 }
 
-corpus_recode_name <- function(var) {
+corpus_recode_name_source <- function(var) {
   # where var should be a character vector
   var_names <- c("CMU", "eSpeak", "SUBTLEX_UK", "SUBTLEX_US", "BNC.Written", "BNC.Spoken", "Glasgow_Norms", "Clark_and_Paivio", "AoA.Kuperman", "AoA.BrysbaertBiemiller", "CNC.Brysbaert", "Warriner", "EngelthalerHills", "PREV.Brysbaert", "PK.Brysbaert", "ELP", "BLP", "Length")
   matches <- sapply(var_names, grepl, var, USE.NAMES = FALSE)
