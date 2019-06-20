@@ -97,13 +97,12 @@ generate <- function(df, n=20, match_null = "first", string_col = "string", cond
     find_matches <- function(df, target, vars, matchCond, string_col) {
       # get a copy of df excluding the null condition and the target word
       df_matches <- df[df$LexOPS_cond != matchCond & df[[string_col]] != target, ]
-      # add a 2nd (for non-numeric) or 3rd (for numeric) item to each control's list, indicating the value for the string being matched to
+      # add a 2nd (for categorical) or 3rd (for numeric) item to each control's list, indicating the value for the string being matched to
       vars <- lapply(vars, function(cont) {
         cont_val <- df[[cont[[1]]]][df[[string_col]]==target]
-        #if (is.factor(cont_val)) cont_val <- as.character(cont_val)
         if (is.list(cont)) append(cont, cont_val) else list(cont, cont_val)
       })
-      # function to filter exactly for non-numeric, and with tolerances for numeric
+      # function to filter exactly for categories, and with tolerances for numeric
       filter_tol <- function(tol, df_matches) {
         if(is.numeric(df_matches[[tol[[1]]]]) & length(tol)>=3) {
           dplyr::filter(df_matches, dplyr::between(!!dplyr::sym(tol[[1]]),
