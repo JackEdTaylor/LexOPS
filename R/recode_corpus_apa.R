@@ -11,23 +11,23 @@
 #'
 #' @examples
 #'
-#' corpus_recoder_apa(Zipf.SUBTLEX_UK)
+#' recode_corpus_apa(Zipf.SUBTLEX_UK)
 #'
-#' corpus_recoder_apa("AROU.Glasgow_Norms", standard_eval = TRUE)
+#' recode_corpus_apa("AROU.Glasgow_Norms", standard_eval = TRUE)
 #'
-#' corpus_recoder_apa(AoA.Kuperman, first_cite = FALSE)
+#' recode_corpus_apa(AoA.Kuperman, first_cite = FALSE)
 #'
 #' @export
 
-corpus_recoder_apa <- function(var, first_cite = TRUE, default = "", standard_eval = FALSE) {
+recode_corpus_apa <- function(var, first_cite = TRUE, default = "", standard_eval = FALSE) {
   if (!standard_eval) var <- substitute(var)
   var_name <- corpus_recode_name(var)
   if (!is.null(var_name) & !is.na(var_name)) {
     if (first_cite) {
       dplyr::recode(
         var_name,
-        "BNC.Written" = 'written sources of the British National Corpus (BNC; “The British National Corpus, version 3 (BNC XML Edition),” 2007)',
-        "BNC.Spoken" = 'spoken sources of the British National Corpus (BNC; “The British National Corpus, version 3 (BNC XML Edition),” 2007)',
+        "BNC.Written" = 'written sources of the British National Corpus (BNC; "The British National Corpus, version 3 (BNC XML Edition)," 2007)',
+        "BNC.Spoken" = 'spoken sources of the British National Corpus (BNC; "The British National Corpus, version 3 (BNC XML Edition)," 2007)',
         "SUBTLEX_UK" = "SUBTLEX-UK (van Heuven, Mandera, Keuleers, & Brysbaert, 2014)",
         "SUBTLEX_US" = "SUBTLEX-US (Brysbaert & New, 2009)",
         "CMU" = "the CMU Pronouncing Dictionary (Weide, 2014)",
@@ -47,8 +47,8 @@ corpus_recoder_apa <- function(var, first_cite = TRUE, default = "", standard_ev
     } else {
       dplyr::recode(
         var_name,
-        "BNC.Written" = 'written sources of the BNC',
-        "BNC.Spoken" = 'spoken sources of the BNC',
+        "BNC.Written" = "written sources of the BNC",
+        "BNC.Spoken" = "spoken sources of the BNC",
         "SUBTLEX_UK" = "SUBTLEX-UK (van Heuven et al., 2014)",
         "SUBTLEX_US" = "SUBTLEX-US (Brysbaert & New, 2009)",
         "CMU" = "the CMU Pronouncing Dictionary (Weide, 2014)",
