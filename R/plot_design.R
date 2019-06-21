@@ -32,6 +32,11 @@ plot_design <- function(df, dodge_width = 0.2, point_size = 0.75) {
   # get vector of splits (IVs)
   splits <- sapply(LexOPS_attrs$splits, dplyr::first)
 
+  # remove random splits
+  if (!is.null(LexOPS_attrs$random_splits)) {
+    splits <- splits[-LexOPS_attrs$random_splits]
+  }
+
   # get vector of control variables
   controls <- sapply(LexOPS_attrs$controls, dplyr::first)
 

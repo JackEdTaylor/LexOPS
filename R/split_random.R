@@ -59,6 +59,13 @@ split_random <- function(df, nlevels = 2, cond_col = "LexOPS_splitCond"){
     LexOPS_attrs$splits[[length(LexOPS_attrs$splits)+1]] <- split
   }
 
+  # also add that this split is random
+  if (is.null(LexOPS_attrs$random_splits)) {
+    LexOPS_attrs$random_splits <- c(length(current_splits)+1)
+  } else {
+    LexOPS_attrs$random_splits <- c(LexOPS_attrs$random_splits, length(current_splits)+1)
+  }
+
   # add the attributes to the output object
   attr(df, "LexOPS_attrs") <- LexOPS_attrs
 
