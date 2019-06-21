@@ -4,7 +4,7 @@
 #'
 #' @param df Output from `generate()` or `long_format()`
 #' @param dodge_width The width to give to `ggplot2::position_dodge` (default is 0.2)
-#' @param point_size Size of points (default = 0.5)
+#' @param point_size Size of points (default = 0.75)
 #'
 #' @return A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
 #'
@@ -21,7 +21,7 @@
 #'
 #' @export
 
-plot_design <- function(df, dodge_width = 0.2, point_size = 0.5) {
+plot_design <- function(df, dodge_width = 0.2, point_size = 0.75) {
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
   # check is generated stimuli

@@ -4,14 +4,14 @@
 \alias{plot_design}
 \title{Plot the generated stimuli's design}
 \usage{
-plot_design(df, dodge_width = 0.2, point_size = 0.5)
+plot_design(df, dodge_width = 0.2, point_size = 0.75)
 }
 \arguments{
 \item{df}{Output from \code{generate()} or \code{long_format()}}
 
 \item{dodge_width}{The width to give to \code{ggplot2::position_dodge} (default is 0.2)}
 
-\item{point_size}{Size of points (default = 0.5)}
+\item{point_size}{Size of points (default = 0.75)}
 }
 \value{
 A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
