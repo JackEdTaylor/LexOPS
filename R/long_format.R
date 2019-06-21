@@ -63,6 +63,9 @@ long_format <- function(df, include = "design", string_col = "string") {
     dplyr::select(item_nr, condition, match_null, dplyr::everything()) %>%
     dplyr::arrange(item_nr)
 
+  # make note that the df is long format
+  LexOPS_attrs$is.long_format <- TRUE
+
   # add the attrributes to the data frame
   attr(out, "LexOPS_attrs") <- LexOPS_attrs
 
