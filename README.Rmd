@@ -39,47 +39,53 @@ LexOPS::run_shiny()
 
 ## Generating Stimuli
 
-Stimuli can also be generated using reproducible code. For example, the following example pipeline generates 5 words (all nouns) per condition (30 words in total), for a study with a 2 x 3, concreteness (low, high) by emotional valence (negative, neutral, positive) experimental design. Words are controlled for by length exactly, and by word frequency within a tolerance of ±0.25 Zipf, relative to neutral abstract words.
+In addition to the shiny app, LexOPS' functions allow you to easily generate stimuli in a reproducible way.
 
-```{r, eval=FALSE}
-library(LexOPS)
+### The "Generate Pipeline"
 
-stim <- lexops %>%
-  subset(PoS.SUBTLEX_UK == "noun") %>%
-  split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
-  split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
-  control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
-  control_for(Length) %>%
-  generate(n = 5, match_null = "A1_B2")
-
-print(stim)
-```
+The following example pipeline generates 50 words (all nouns) per condition (200 words in total), for a study with a 2 x 2, concreteness (low, high) by bigram probability (low, high) experimental design. Words are controlled for by length exactly, and by word frequency within a tolerance of ±0.2 Zipf. Matches are generated relative to each condition an equal number of times (`match_null="balanced"`).
 
 ```{r, include=FALSE}
 set.seed(999)
+```
+
+```{r, warning = FALSE}
+library(LexOPS)
+
+# generate stimuli
 stim <- lexops %>%
   subset(PoS.SUBTLEX_UK == "noun") %>%
+  split_by(BG.SUBTLEX_UK, 0.001:0.004 ~ 0.008:0.011) %>%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
-  split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
-  control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
   control_for(Length) %>%
-  generate(n = 5, match_null = "A1_B2")
+  generate(n = 50, match_null = "balanced")
 ```
 
-```{r, echo=FALSE}
-knitr::kable(stim)
+Let's have a quick preview of what we generated!
+
+```{r}
+# create a table of the first 20 words (4 per row) as an example
+stim %>%
+  head(5) %>%
+  knitr::kable()
 ```
 
-The generated stimuli can then also be easily converted into long format, with the `long_format()` function.
+### Review Generated Stimuli
 
-```{r, eval=FALSE}
-long_format(stim)
+Now we've generated our stimuli, we'll want to check our pipeline has done what we expected. The `plot_design()` function is a handy way to do this. This function plots how distributions of variables that were split by or controlled for differ between conditions. Variables used as splits (i.e. independent variables) should differ between conditions, while variables used as controls should show similar distributions. Words from the same `item_nr` row (see previous table) are joined by lines, and presented in matching colours.
+
+```{r}
+plot_design(stim)
 ```
 
-```{r, include=FALSE}
-lf_stim <- long_format(stim)
-```
+### Convert to Long Format
 
-```{r, echo=FALSE}
-knitr::kable(lf_stim)
+The `long_format()` function is a handy way to convert the generated stimuli to long format, which is useful for wrangling the data further. By default, this function returns the generated stimuli in long format, including all the variables specified in the Generate Pipeline (though the `include` argument also allows you to request all variables from the original dataframe).
+
+```{r}
+# present the same 20 words as in the last table
+long_format(stim) %>%
+  head(20) %>%
+  knitr::kable()
 ```

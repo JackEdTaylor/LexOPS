@@ -37,72 +37,110 @@ LexOPS::run_shiny()
 
 ## Generating Stimuli
 
-Stimuli can also be generated using reproducible code. For example, the
-following example pipeline generates 5 words (all nouns) per condition
-(30 words in total), for a study with a 2 x 3, concreteness (low, high)
-by emotional valence (negative, neutral, positive) experimental design.
-Words are controlled for by length exactly, and by word frequency within
-a tolerance of ±0.25 Zipf, relative to neutral abstract words.
+In addition to the shiny app, LexOPS’ functions allow you to easily
+generate stimuli in a reproducible way.
+
+### The “Generate Pipeline”
+
+The following example pipeline generates 50 words (all nouns) per
+condition (200 words in total), for a study with a 2 x 2, concreteness
+(low, high) by bigram probability (low, high) experimental design. Words
+are controlled for by length exactly, and by word frequency within a
+tolerance of ±0.2 Zipf. Matches are generated relative to each condition
+an equal number of times (`match_null="balanced"`).
 
 ``` r
 library(LexOPS)
 
+# generate stimuli
 stim <- lexops %>%
   subset(PoS.SUBTLEX_UK == "noun") %>%
+  split_by(BG.SUBTLEX_UK, 0.001:0.004 ~ 0.008:0.011) %>%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
-  split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
-  control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
   control_for(Length) %>%
-  generate(n = 5, match_null = "A1_B2")
-
-print(stim)
+  generate(n = 50, match_null = "balanced")
+#> Generated 5/50 (10%). 7 total iterations, 0.71 success rate.
+#> Generated 10/50 (20%). 13 total iterations, 0.77 success rate.
+#> Generated 15/50 (30%). 18 total iterations, 0.83 success rate.
+#> Generated 20/50 (40%). 24 total iterations, 0.83 success rate.
+#> Generated 25/50 (50%). 34 total iterations, 0.74 success rate.
+#> Generated 30/50 (60%). 44 total iterations, 0.68 success rate.
+#> Generated 35/50 (70%). 55 total iterations, 0.64 success rate.
+#> Generated 40/50 (80%). 65 total iterations, 0.62 success rate.
+#> Generated 45/50 (90%). 72 total iterations, 0.62 success rate.
+#> Generated 50/50 (100%). 85 total iterations, 0.59 success rate.
 ```
 
-| item\_nr | A1\_B1    | A1\_B2    | A1\_B3    | A2\_B1    | A2\_B2    | A2\_B3    | match\_null |
-| -------: | :-------- | :-------- | :-------- | :-------- | :-------- | :-------- | :---------- |
-|        1 | loathing  | dominion  | epiphany  | catheter  | forklift  | daybreak  | A1\_B2      |
-|        2 | hardship  | mischief  | tranquil  | dictator  | pendulum  | smoothie  | A1\_B2      |
-|        3 | betrayal  | protocol  | kindness  | smallpox  | textbook  | doughnut  | A1\_B2      |
-|        4 | fascism   | paradox   | empathy   | measles   | lacquer   | sunrise   | A1\_B2      |
-|        5 | ignorance | precedent | greatness | courtroom | columnist | milkshake | A1\_B2      |
-
-The generated stimuli can then also be easily converted into long
-format, with the `long_format()`
-function.
+Let’s have a quick preview of what we generated\!
 
 ``` r
-long_format(stim)
+# create a table of the first 20 words (4 per row) as an example
+stim %>%
+  head(5) %>%
+  knitr::kable()
 ```
 
-| item\_nr | condition | match\_null | string    | Zipf.SUBTLEX\_UK | Length | CNC.Brysbaert | VAL.Warriner |
-| -------: | :-------- | :---------- | :-------- | ---------------: | -----: | ------------: | -----------: |
-|        1 | A1\_B1    | A1\_B2      | loathing  |         2.865997 |      8 |          1.89 |         2.42 |
-|        1 | A1\_B2    | A1\_B2      | dominion  |         2.716925 |      8 |          1.96 |         4.62 |
-|        1 | A1\_B3    | A1\_B2      | epiphany  |         2.806325 |      8 |          1.60 |         7.06 |
-|        1 | A2\_B1    | A1\_B2      | catheter  |         2.789157 |      8 |          4.48 |         2.84 |
-|        1 | A2\_B2    | A1\_B2      | forklift  |         2.888860 |      8 |          4.79 |         4.74 |
-|        1 | A2\_B3    | A1\_B2      | daybreak  |         2.926185 |      8 |          4.21 |         7.16 |
-|        2 | A1\_B1    | A1\_B2      | hardship  |         3.521810 |      8 |          1.79 |         2.80 |
-|        2 | A1\_B2    | A1\_B2      | mischief  |         3.483196 |      8 |          1.90 |         4.78 |
-|        2 | A1\_B3    | A1\_B2      | tranquil  |         3.443924 |      8 |          1.90 |         7.11 |
-|        2 | A2\_B1    | A1\_B2      | dictator  |         3.510649 |      8 |          4.29 |         2.77 |
-|        2 | A2\_B2    | A1\_B2      | pendulum  |         3.303191 |      8 |          4.69 |         5.17 |
-|        2 | A2\_B3    | A1\_B2      | smoothie  |         3.273227 |      8 |          4.62 |         7.89 |
-|        3 | A1\_B1    | A1\_B2      | betrayal  |         3.437675 |      8 |          1.76 |         2.24 |
-|        3 | A1\_B2    | A1\_B2      | protocol  |         3.513962 |      8 |          1.97 |         5.10 |
-|        3 | A1\_B3    | A1\_B2      | kindness  |         3.557867 |      8 |          1.74 |         7.65 |
-|        3 | A2\_B1    | A1\_B2      | smallpox  |         3.266279 |      8 |          4.25 |         2.02 |
-|        3 | A2\_B2    | A1\_B2      | textbook  |         3.383265 |      8 |          4.86 |         5.00 |
-|        3 | A2\_B3    | A1\_B2      | doughnut  |         3.500556 |      8 |          4.96 |         7.50 |
-|        4 | A1\_B1    | A1\_B2      | fascism   |         3.007490 |      7 |          1.83 |         2.50 |
-|        4 | A1\_B2    | A1\_B2      | paradox   |         3.242278 |      7 |          1.54 |         5.40 |
-|        4 | A1\_B3    | A1\_B2      | empathy   |         3.195423 |      7 |          1.63 |         7.29 |
-|        4 | A2\_B1    | A1\_B2      | measles   |         3.123871 |      7 |          4.69 |         2.57 |
-|        4 | A2\_B2    | A1\_B2      | lacquer   |         3.055571 |      7 |          4.28 |         4.95 |
-|        4 | A2\_B3    | A1\_B2      | sunrise   |         3.385045 |      7 |          4.69 |         7.35 |
-|        5 | A1\_B1    | A1\_B2      | ignorance |         3.483904 |      9 |          1.60 |         2.84 |
-|        5 | A1\_B2    | A1\_B2      | precedent |         3.414237 |      9 |          1.63 |         5.25 |
-|        5 | A1\_B3    | A1\_B2      | greatness |         3.344096 |      9 |          1.69 |         7.76 |
-|        5 | A2\_B1    | A1\_B2      | courtroom |         3.324125 |      9 |          4.63 |         2.84 |
-|        5 | A2\_B2    | A1\_B2      | columnist |         3.267445 |      9 |          4.14 |         5.47 |
-|        5 | A2\_B3    | A1\_B2      | milkshake |         3.283447 |      9 |          4.97 |         7.26 |
+| item\_nr | A1\_B1      | A1\_B2      | A2\_B1      | A2\_B2      | match\_null |
+| -------: | :---------- | :---------- | :---------- | :---------- | :---------- |
+|        1 | subjection  | nightlight  | literalism  | bandmaster  | A1\_B1      |
+|        2 | idiocy      | keypad      | renown      | minnow      | A2\_B1      |
+|        3 | quasi       | lapel       | angst       | shank       | A1\_B1      |
+|        4 | smugness    | ammonium    | whomever    | derriere    | A1\_B1      |
+|        5 | phraseology | racquetball | nonchalance | mountaintop | A2\_B2      |
+
+### Review Generated Stimuli
+
+Now we’ve generated our stimuli, we’ll want to check our pipeline has
+done what we expected. The `plot_design()` function is a handy way to do
+this. This function plots how distributions of variables that were split
+by or controlled for differ between conditions. Variables used as splits
+(i.e. independent variables) should differ between conditions, while
+variables used as controls should show similar distributions. Words from
+the same `item_nr` row (see previous table) are joined by lines, and
+presented in matching colours.
+
+``` r
+plot_design(stim)
+```
+
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+
+### Convert to Long Format
+
+The `long_format()` function is a handy way to convert the generated
+stimuli to long format, which is useful for wrangling the data further.
+By default, this function returns the generated stimuli in long format,
+including all the variables specified in the Generate Pipeline (though
+the `include` argument also allows you to request all variables from the
+original dataframe).
+
+``` r
+# present the same 20 words as in the last table
+long_format(stim) %>%
+  head(20) %>%
+  knitr::kable()
+```
+
+| item\_nr | condition | match\_null | string      | Zipf.SUBTLEX\_UK | Length | BG.SUBTLEX\_UK | CNC.Brysbaert |
+| -------: | :-------- | :---------- | :---------- | ---------------: | -----: | -------------: | ------------: |
+|        1 | A1\_B1    | A1\_B1      | subjection  |         1.695736 |     10 |      0.0037287 |          1.70 |
+|        1 | A1\_B2    | A1\_B1      | nightlight  |         1.649978 |     10 |      0.0030758 |          4.93 |
+|        1 | A2\_B1    | A1\_B1      | literalism  |         1.774917 |     10 |      0.0090696 |          1.57 |
+|        1 | A2\_B2    | A1\_B1      | bandmaster  |         1.540834 |     10 |      0.0096045 |          4.25 |
+|        2 | A1\_B1    | A2\_B1      | idiocy      |         2.466588 |      6 |      0.0020867 |          1.75 |
+|        2 | A1\_B2    | A2\_B1      | keypad      |         2.367834 |      6 |      0.0026913 |          4.81 |
+|        2 | A2\_B1    | A2\_B1      | renown      |         2.420012 |      6 |      0.0086858 |          1.68 |
+|        2 | A2\_B2    | A2\_B1      | minnow      |         2.263937 |      6 |      0.0082544 |          4.84 |
+|        3 | A1\_B1    | A1\_B1      | quasi       |         2.848024 |      5 |      0.0034945 |          1.73 |
+|        3 | A1\_B2    | A1\_B1      | lapel       |         2.748814 |      5 |      0.0038931 |          4.56 |
+|        3 | A2\_B1    | A1\_B1      | angst       |         3.047918 |      5 |      0.0106373 |          1.96 |
+|        3 | A2\_B2    | A1\_B1      | shank       |         2.981293 |      5 |      0.0103729 |          4.18 |
+|        4 | A1\_B1    | A1\_B1      | smugness    |         2.339188 |      8 |      0.0033250 |          1.96 |
+|        4 | A1\_B2    | A1\_B1      | ammonium    |         2.339188 |      8 |      0.0035710 |          4.04 |
+|        4 | A2\_B1    | A1\_B1      | whomever    |         2.227215 |      8 |      0.0083446 |          1.85 |
+|        4 | A2\_B2    | A1\_B1      | derriere    |         2.275519 |      8 |      0.0104492 |          4.65 |
+|        5 | A1\_B1    | A2\_B2      | phraseology |         2.057464 |     11 |      0.0032117 |          1.69 |
+|        5 | A1\_B2    | A2\_B2      | racquetball |         1.841864 |     11 |      0.0036144 |          4.66 |
+|        5 | A2\_B1    | A2\_B2      | nonchalance |         1.841864 |     11 |      0.0082801 |          1.81 |
+|        5 | A2\_B2    | A2\_B2      | mountaintop |         1.899856 |     11 |      0.0093209 |          4.56 |
