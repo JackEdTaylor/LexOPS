@@ -4,6 +4,7 @@
 #'
 #' @param df Output from `generate()` or `long_format()`
 #' @param dodge_width The width to give to `ggplot2::position_dodge` (default is 0.2)
+#' @param point_size Size of points (default = 0.5)
 #'
 #' @return A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
 #'
@@ -20,7 +21,7 @@
 #'
 #' @export
 
-plot_design <- function(df, dodge_width = 0.2) {
+plot_design <- function(df, dodge_width = 0.2, point_size = 0.5) {
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
   # check is generated stimuli
@@ -56,7 +57,7 @@ plot_design <- function(df, dodge_width = 0.2) {
     tidyr::gather("variable", "value", plot_vars_headings) %>%
     ggplot2::ggplot(ggplot2::aes(x = condition, y = value)) +
     ggplot2::geom_violin(colour = NA, fill = "grey", alpha = 0.5) +
-    ggplot2::geom_point(ggplot2::aes(colour = as.factor(item_nr)), position = point_pos, alpha = 0.75) +
+    ggplot2::geom_point(ggplot2::aes(colour = as.factor(item_nr)), position = point_pos, alpha = 0.75, size = point_size) +
     ggplot2::geom_line(ggplot2::aes(group = as.factor(item_nr), colour = as.factor(item_nr)), position = point_pos, alpha = 0.25) +
     ggplot2::facet_wrap(~variable, scales = "free") +
     ggplot2::theme_minimal() +
