@@ -75,7 +75,7 @@ stim %>%
 
 Now we've generated our stimuli, we'll want to check our pipeline has done what we expected. The `plot_design()` function is a handy way to do this. This function plots how distributions of variables that were split by or controlled for differ between conditions. Variables used as splits (i.e. independent variables) should differ between conditions, while variables used as controls should show similar distributions. Words from the same `item_nr` row (see previous table) are joined by lines, and presented in matching colours.
 
-```{r}
+```{r fig1, dpi=400}
 plot_design(stim)
 ```
 

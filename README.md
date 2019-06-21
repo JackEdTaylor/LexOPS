@@ -104,7 +104,7 @@ presented in matching colours.
 plot_design(stim)
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+<img src="man/figures/README-fig1-1.png" width="100%" />
 
 ### Convert to Long Format
 
