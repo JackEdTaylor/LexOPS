@@ -5,7 +5,7 @@
 \title{Convert a variable name to its measure}
 \usage{
 recode_measure(var, first_cite = TRUE, default = "",
-  standard_eval = FALSE)
+  title_caps = FALSE, standard_eval = FALSE)
 }
 \arguments{
 \item{var}{The variable name (non-standard evaluation)}
@@ -13,6 +13,8 @@ recode_measure(var, first_cite = TRUE, default = "",
 \item{first_cite}{Logical; if \code{TRUE}, gives full name (e.g. frequency per million words), if \code{FALSE}, gives abbreviated name (e.g. FPMW)}
 
 \item{default}{The character string that should be returned if the variable does not have a known cietable source}
+
+\item{title_caps}{Logical; use title capitalisation (e.g. "Familiarity Ratings" rather than "famliarity ratings"). Default is \code{FALSE}.}
 
 \item{standard_eval}{Logical; bypasses non-standard evaluation. If \code{TRUE}, \code{var} should be a column name in quotation marks. If \code{FALSE}, the quotation marks are not necessary. Default = \code{FALSE}.}
 }
