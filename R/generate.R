@@ -99,7 +99,11 @@ generate <- function(df, n=20, match_null = "first", string_col = "string", cond
       df_matches <- df[df$LexOPS_cond != matchCond & df[[string_col]] != target, ]
       # add a 2nd (for categorical) or 3rd (for numeric) item to each control's list, indicating the value for the string being matched to
       vars <- lapply(vars, function(cont) {
-        cont_val <- df[[cont[[1]]]][df[[string_col]]==target]
+        cont_val <- if (is.factor(df[[cont[[1]]]])) {
+          as.character(df[[cont[[1]]]][df[[string_col]]==target])
+        } else {
+          df[[cont[[1]]]][df[[string_col]]==target]
+        }
         if (is.list(cont)) append(cont, cont_val) else list(cont, cont_val)
       })
       # function to filter exactly for categories, and with tolerances for numeric
