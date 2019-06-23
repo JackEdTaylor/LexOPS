@@ -42,6 +42,26 @@ lexops \%>\%
 lexops \%>\%
   match_word("thicket", list("Length", c("Zipf.SUBTLEX_UK", -0.2, 0.2)))
 
+# Match by to within an orthographic levenshtein distance of 5 from "thicket":
+library(dplyr)
+library(vwr)
+targ_word <- "thicket"
+lexops \%>\%
+  mutate(old = levenshtein.distance(targ_word, string)) \%>\%
+  match_word(targ_word, list(c("old", 0, 5)))
+
+# Match by to within an phonological levenshtein distance of 2 from "thicket":
+# (note that this method requires 1-letter phonological transcriptions)
+library(dplyr)
+library(vwr)
+targ_word <- "thicket"
+targ_word_pronun <- lexops \%>\%
+  filter(string == "thicket") \%>\%
+  pull(eSpeak.br_1letter)
+lexops \%>\%
+  mutate(pld = levenshtein.distance(targ_word_pronun, eSpeak.br_1letter)) \%>\%
+  match_word(targ_word, list(c("pld", 0, 2)))
+
 }
 \seealso{
 \code{\link{lexops}} for the default data frame and associated variables.
