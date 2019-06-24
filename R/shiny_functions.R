@@ -50,7 +50,7 @@ get_box_colour <- function(box_type) {
 
 sensible_slider_vals <- function(numeric_vec, n_levels, is_tolerance = FALSE) {
   # filter out NaN and NA values
-  numeric_vec <- numeric_vec(!is.na(numeric_vec) & !is.nan(numeric_vec))
+  numeric_vec <- numeric_vec[!is.na(numeric_vec) & !is.nan(numeric_vec)]
 
   # where type can be "filter" or "tolerance"
   step <- if (is.integer(numeric_vec)) 1 else round(min(diff(hist(numeric_vec, 50, plot = FALSE)$breaks)), digits=4)
