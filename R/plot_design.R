@@ -48,8 +48,8 @@ plot_design <- function(df, dodge_width = 0.2, point_size = 0.75) {
 
   # function to recode a variable name as a heading
   plot_vars_headings <- sapply(plot_vars, function(v) {
-    measure <- LexOPS::recode_measure(v, first_cite = FALSE, title_caps = TRUE, standard_eval = TRUE)
-    source <- LexOPS::recode_corpus_apa(v, first_cite = FALSE, standard_eval = TRUE)
+    measure <- LexOPS::var_to_measure(v, first_cite = FALSE, title_caps = TRUE, standard_eval = TRUE)
+    source <- LexOPS::var_to_source(v, first_cite = FALSE, standard_eval = TRUE)
     sprintf("%s\n%s", measure, source)
   }, USE.NAMES = FALSE)
 

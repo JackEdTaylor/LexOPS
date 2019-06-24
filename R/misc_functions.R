@@ -12,15 +12,15 @@
 #'
 #' @examples
 #'
-#' recode_measure(Zipf.SUBTLEX_UK)
+#' var_to_measure(Zipf.SUBTLEX_UK)
 #'
-#' recode_measure("AROU.Glasgow_Norms", standard_eval = TRUE)
+#' var_to_measure("AROU.Glasgow_Norms", standard_eval = TRUE)
 #'
-#' recode_measure(AoA.Kuperman, first_cite = FALSE)
+#' var_to_measure(AoA.Kuperman, first_cite = FALSE)
 #'
 #' @export
 
-recode_measure <- function(var, first_cite = TRUE, default = "", title_caps = FALSE, standard_eval = FALSE) {
+var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FALSE, standard_eval = FALSE) {
   if (!standard_eval) var <- substitute(var)
   var_name <- corpus_recode_name_measure(var)
   if (!is.null(var_name) & !is.na(var_name)) {
@@ -130,15 +130,15 @@ corpus_recode_name_measure <- function(var) {
 #'
 #' @examples
 #'
-#' recode_corpus_apa(Zipf.SUBTLEX_UK)
+#' var_to_source(Zipf.SUBTLEX_UK)
 #'
-#' recode_corpus_apa("AROU.Glasgow_Norms", standard_eval = TRUE)
+#' var_to_source("AROU.Glasgow_Norms", standard_eval = TRUE)
 #'
-#' recode_corpus_apa(AoA.Kuperman, first_cite = FALSE)
+#' var_to_source(AoA.Kuperman, first_cite = FALSE)
 #'
 #' @export
 
-recode_corpus_apa <- function(var, first_cite = TRUE, default = "", standard_eval = FALSE) {
+var_to_source <- function(var, first_cite = TRUE, default = "", standard_eval = FALSE) {
   if (!standard_eval) var <- substitute(var)
   var_name <- corpus_recode_name_source(var)
   if (!is.null(var_name) & !is.na(var_name)) {
