@@ -160,6 +160,7 @@ var_to_source <- function(var, first_cite = TRUE, default = "", standard_eval = 
         "SUBTLEX_UK" = "SUBTLEX-UK (van Heuven, Mandera, Keuleers, & Brysbaert, 2014)",
         "SUBTLEX_US" = "SUBTLEX-US (Brysbaert & New, 2009)",
         "CMU" = "the CMU Pronouncing Dictionary (Weide, 2014)",
+        "eSpeak" = "eSpeak version 1.48.15. (2015)",
         "Glasgow_Norms" = "the Glasgow Norms (Scott, Keitel, Becirspahic, Yao, & Sereno, 2018)",
         "Clark_and_Paivio" = "Clark and Paivio (2004)",
         "AoA.Kuperman" = "Kuperman, Stadthagen-Gonzalez and Brysbaert (2012)",
@@ -181,7 +182,8 @@ var_to_source <- function(var, first_cite = TRUE, default = "", standard_eval = 
         "SUBTLEX_UK" = "SUBTLEX-UK (van Heuven et al., 2014)",
         "SUBTLEX_US" = "SUBTLEX-US (Brysbaert & New, 2009)",
         "CMU" = "the CMU Pronouncing Dictionary (Weide, 2014)",
-        "Glasgow_Norms" = "the Glasgow Norms",
+        "eSpeak" = "eSpeak (2015)",
+        "Glasgow_Norms" = "the Glasgow Norms (Scott et al., 2018)",
         "Clark_and_Paivio" = "Clark and Paivio (2004)",
         "AoA.Kuperman" = "Kuperman et al. (2012)",
         "AoA.BrysbaertBiemiller" = "Brysbaert and Biemiller (2017)",
@@ -190,8 +192,8 @@ var_to_source <- function(var, first_cite = TRUE, default = "", standard_eval = 
         "EngelthalerHills" = "Engelthaler and Hills (2018)",
         "PREV.Brysbaert" = "Brysbaert et al. (2018)",
         "PK.Brysbaert" = "Brysbaert et al. (2018)",
-        "ELP" = "the ELP",
-        "BLP" = "the BLP",
+        "ELP" = "the ELP (Balota et al., 2007)",
+        "BLP" = "the BLP (Keuleers et al., 2012)",
         .default = default
       )
     }
