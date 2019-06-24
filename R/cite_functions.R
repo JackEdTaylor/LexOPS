@@ -6,6 +6,7 @@
 #' @param first_cite Logical; if `TRUE`, gives full name (e.g. frequency per million words), if `FALSE`, gives abbreviated name (e.g. FPMW)
 #' @param default The character string that should be returned if the variable does not have a known cietable source
 #' @param title_caps Logical; use title capitalisation (e.g. "Familiarity Ratings" rather than "famliarity ratings"). Default is `FALSE`.
+#' @param include_pronunciations Logical; allow pronunciation transpositions as measures (e.g. CMU.1letter). Default is `TRUE`.
 #' @param standard_eval Logical; bypasses non-standard evaluation. If `TRUE`, `var` should be a column name in quotation marks. If `FALSE`, the quotation marks are not necessary. Default = `FALSE`.
 #'
 #' @return A citation of a variable's source in APA format. Returns `default` if not recognised as a citeabile source.
@@ -20,9 +21,9 @@
 #'
 #' @export
 
-var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FALSE, standard_eval = FALSE) {
+var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FALSE, include_pronunciations = TRUE, standard_eval = FALSE) {
   if (!standard_eval) var <- substitute(var)
-  var_name <- var_to_measure_name(var)
+  var_name <- var_to_measure_name(var, include_pronunciations)
   if (!is.null(var_name) & !is.na(var_name)) {
     if (first_cite) {
       out <- dplyr::recode(
@@ -116,9 +117,10 @@ var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FA
   out
 }
 
-var_to_measure_name <- function(var) {
+var_to_measure_name <- function(var, include_pronunciations=TRUE) {
   # where var should be a character vector
   var_names <- c(".1letter", ".PrN", ".br_IPA", "Zipf.", "fpmw.", "PoS.", "Length", "BG.", "ON.OLD20", "ON.Colthearts_N", "ON.Log_OLD20", "ON.Log_Colthearts_N", "Syllables.", "Phonemes.", "PN.PLD20", "PN.Colthearts_N", "PN.Log_PLD20", "PN.Log_Colthearts_N", "Rhyme.", "FAM.", "AoA.", "CNC.", "IMAG.", "AROU.", "VAL.", "DOM.", "SIZE.", "GEND.", "HUM.", "RT.", "Accuracy.", "PREV.", "PK.")
+  if (!include_pronunciations) var_names <- varnames[!var_names %in% c(".1letter", ".br_IPA")]
   matches <- sapply(var_names, grepl, var, USE.NAMES = FALSE)
   if (length(matches[matches])==0) return(NA)
   if (length(matches[matches])>1) warning(sprintf("Multiple (%i) sources found. Will return all matches.", length(matches[matches])))
