@@ -49,13 +49,16 @@ get_box_colour <- function(box_type) {
 #' @importFrom stats quantile
 
 sensible_slider_vals <- function(numeric_vec, n_levels, is_tolerance = FALSE) {
+  # filter out NaN and NA values
+  numeric_vec <- numeric_vec(!is.na(numeric_vec) & !is.nan(numeric_vec))
+
   # where type can be "filter" or "tolerance"
   step <- if (is.integer(numeric_vec)) 1 else round(min(diff(hist(numeric_vec, 50, plot = FALSE)$breaks)), digits=4)
   # functions to calculate the floor to..., and ceiling to... (e.g. fl(0.15, 0.1) gives 0.1; the floor of 0.15 to the nearest 0.1)
   fl <- function(x, to=step) to*floor(x/to)
   ce <- function(x, to=step) to*ceiling(x/to)
 
-  pct_quant <- quantile(numeric_vec, c(0, 0.025, 0.1, 0.45, 0.55, 0.9, 0.975, 1), na.rm=TRUE)
+  pct_quant <- quantile(numeric_vec, c(0, 0.025, 0.1, 0.45, 0.55, 0.9, 0.975, 1))
 
   value <- if (n_levels == 1) {
     if (!is_tolerance) {
@@ -78,8 +81,8 @@ sensible_slider_vals <- function(numeric_vec, n_levels, is_tolerance = FALSE) {
   value <- if (is.list(value)) lapply(value, unname) else unname(value)
 
   list(
-    min = ifelse(is_tolerance, -step*10, fl(min(numeric_vec, na.rm=TRUE))),
-    max = ifelse(is_tolerance, step*10, ce(max(numeric_vec, na.rm=TRUE))),
+    min = ifelse(is_tolerance, -step*10, fl(min(numeric_vec))),
+    max = ifelse(is_tolerance, step*10, ce(max(numeric_vec))),
     step = ifelse(is_tolerance, ifelse(is.integer(numeric_vec), step, step/2), step),
     value = value
   )
