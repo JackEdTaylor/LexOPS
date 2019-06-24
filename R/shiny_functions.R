@@ -239,3 +239,26 @@ box_vis.categorical <- function(var, box_type, cat_to_highlight, df) {
     ggplot2::labs(y=NULL, x=NULL)
 }
 
+#' Generate a question mark plot
+#'
+#' Function for generating a visualisation of question marks surrounding a message
+#'
+#' @param message A string; the message to display.
+#' @param box_type The type of box the visualisation is presented in.
+#'
+#' @return A ggplot/ggwordcloud object with the required visualisation.
+#'
+#' @examples
+#'
+#' #box_vis.question_marks("Unknown!", "info")
+
+box_vis.question_marks <- function(message, box_type) {
+  dplyr::tibble(qm = c(message, rep("?", 99)),
+         wordcloudsize = c(6, rep(1, 99)),
+         wordcloudalpha = c(1, rep(0.6, 99))) %>%
+    ggplot2::ggplot(aes(label=qm, size=wordcloudsize, alpha=wordcloudalpha)) +
+    ggwordcloud::geom_text_wordcloud(colour=get_box_colour(box_type), rm_outside=T, shape='circle') +
+    ggplot2::theme_minimal() +
+    ggplot2::scale_size_area(max_size=15) +
+    ggplot2::scale_alpha_identity()
+}
