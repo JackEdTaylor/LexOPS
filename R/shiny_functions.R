@@ -189,7 +189,7 @@ box_vis <- function(var, box_type = "primary", tol = NA, match_string = NA, shad
       } else if (!all(is.na(tol))) {
         tol
       } else {
-        unique(df[[var]])
+        c()
       }
       pl <- box_vis.categorical(var, box_type, cat_to_highlight, df)
     }
