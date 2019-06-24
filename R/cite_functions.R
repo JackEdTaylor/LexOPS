@@ -120,7 +120,7 @@ var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FA
 var_to_measure_name <- function(var, include_pronunciations=TRUE) {
   # where var should be a character vector
   var_names <- c(".1letter", ".PrN", ".br_IPA", "Zipf.", "fpmw.", "PoS.", "Length", "BG.", "ON.OLD20", "ON.Colthearts_N", "ON.Log_OLD20", "ON.Log_Colthearts_N", "Syllables.", "Phonemes.", "PN.PLD20", "PN.Colthearts_N", "PN.Log_PLD20", "PN.Log_Colthearts_N", "Rhyme.", "FAM.", "AoA.", "CNC.", "IMAG.", "AROU.", "VAL.", "DOM.", "SIZE.", "GEND.", "HUM.", "RT.", "Accuracy.", "PREV.", "PK.")
-  if (!include_pronunciations) var_names <- varnames[!var_names %in% c(".1letter", ".br_IPA")]
+  if (!include_pronunciations) var_names <- var_names[!var_names %in% c(".1letter", ".br_IPA")]
   matches <- sapply(var_names, grepl, var, USE.NAMES = FALSE)
   if (length(matches[matches])==0) return(NA)
   if (length(matches[matches])>1) warning(sprintf("Multiple (%i) sources found. Will return all matches.", length(matches[matches])))
