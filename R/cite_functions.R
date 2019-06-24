@@ -22,7 +22,7 @@
 
 var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FALSE, standard_eval = FALSE) {
   if (!standard_eval) var <- substitute(var)
-  var_name <- corpus_recode_name_measure(var)
+  var_name <- var_to_measure_name(var)
   if (!is.null(var_name) & !is.na(var_name)) {
     if (first_cite) {
       out <- dplyr::recode(
@@ -36,11 +36,15 @@ var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FA
         "Length" = "Length (Number of Characters)",
         "BG." = "Bigram Probability",
         "ON.OLD20" = "Orthographic Levenshtein Distance 20 (OLD20)",
-        "ON.Colthearts_N" = "Coltheart's N",
-        "ON.Log_OLD20" = "Log Orthographic Levenshtein Distance 20 (OLD20)",
-        "ON.Log_Colthearts_N" = "Log Coltheart's N",
+        "ON.Colthearts_N" = "Orthographic Coltheart's N",
+        "ON.Log_OLD20" = "Log Orthographic Levenshtein Distance 20 (Log OLD20)",
+        "ON.Log_Colthearts_N" = "Log Orthographic Coltheart's N",
         "Syllables." = "Number of Syllables",
         "Phonemes." = "Number of Phonemes",
+        "PN.PLD20" = "Phonological Levenshtein Distance 20 (PLD20)",
+        "PN.Colthearts_N" = "Phonological Coltheart's N",
+        "PN.Log_PLD20" = "Log Phonological Levenshtein Distance 20 (Log PLD20)",
+        "PN.Log_Colthearts_N" = "Log Phonological Coltheart's N",
         "Rhyme." = "Rhyme",
         "FAM." = "Familiarity Ratings",
         "AoA." = "Age of Acquisition",
@@ -70,11 +74,15 @@ var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FA
         "Length" = "Length",
         "BG." = "Bigram Probability",
         "ON.OLD20" = "OLD20",
-        "ON.Colthearts_N" = "Coltheart's N",
+        "ON.Colthearts_N" = "Orthographic Coltheart's N",
         "ON.Log_OLD20" = "Log OLD20",
-        "ON.Log_Colthearts_N" = "Log Coltheart's N",
+        "ON.Log_Colthearts_N" = "Log Orthographic Coltheart's N",
         "Syllables." = "Number of Syllables",
         "Phonemes." = "Number of Phonemes",
+        "PN.PLD20" = "PLD20",
+        "PN.Colthearts_N" = "Phonological Coltheart's N",
+        "PN.Log_PLD20" = "Log PLD20",
+        "PN.Log_Colthearts_N" = "Log Phonological Coltheart's N",
         "Rhyme." = "Rhyme",
         "FAM." = "Familiarity Ratings",
         "AoA." = "Age of Acquisition",
@@ -108,7 +116,7 @@ var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FA
   out
 }
 
-corpus_recode_name_measure <- function(var) {
+var_to_measure_name <- function(var) {
   # where var should be a character vector
   var_names <- c(".1letter", ".PrN", ".br_IPA", "Zipf.", "fpmw.", "PoS.", "Length", "BG.", "ON.OLD20", "ON.Colthearts_N", "ON.Log_OLD20", "ON.Log_Colthearts_N", "Syllables.", "Phonemes.", "PN.PLD20", "PN.Colthearts_N", "PN.Log_PLD20", "PN.Log_Colthearts_N", "Rhyme.", "FAM.", "AoA.", "CNC.", "IMAG.", "AROU.", "VAL.", "DOM.", "SIZE.", "GEND.", "HUM.", "RT.", "Accuracy.", "PREV.", "PK.")
   matches <- sapply(var_names, grepl, var, USE.NAMES = FALSE)
