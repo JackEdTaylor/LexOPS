@@ -4,7 +4,7 @@
 #'
 #' @param df A data frame that is the result from `split_by()`.
 #' @param var The column to treat as an independent variable (non-standard evaluation).
-#' @param tol The boundaries to use as levels of this variable (non-standard evaluation). These should be specified in the form `c(1, 3) ~ c(4, 6) ~ c(7 ~ 9)` for numeric variables, and `noun ~ verb ~ adjective` for character variables, where levels are separated by the `~` operator. Levels must be non-overlapping.
+#' @param tol The tolerance of the control. For numeric variables, this should be in the form lower:upper (e.g. `-0.1:0.1` will control within +/- 0.1). For categorical variables, this can be kept as `NA`.
 #' @param string_col The column containing the strings (default = "string").
 #' @param cond_col Prefix with which the columns detailing the splits were labelled by `split_by()`. This is rarely needed (default = NA), as by default the function gets this information from `df`'s attributes.
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `var` and `tol`. If `TRUE`, `var` should be a character vector referring to a column in `df` (e.g. `"Zipf.SUBTLEX_UK"`), and `tol` should be a vector of length 2, specifying the tolerance (e.g. `c(-0.1, 0.5)`). Default = `FALSE`.

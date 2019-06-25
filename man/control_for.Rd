@@ -12,7 +12,7 @@ control_for(df, var, tol = NA, string_col = "string", cond_col = NA,
 
 \item{var}{The column to treat as an independent variable (non-standard evaluation).}
 
-\item{tol}{The boundaries to use as levels of this variable (non-standard evaluation). These should be specified in the form \code{c(1, 3) ~ c(4, 6) ~ c(7 ~ 9)} for numeric variables, and \code{noun ~ verb ~ adjective} for character variables, where levels are separated by the \code{~} operator. Levels must be non-overlapping.}
+\item{tol}{The tolerance of the control. For numeric variables, this should be in the form lower:upper (e.g. \code{-0.1:0.1} will control within +/- 0.1). For categorical variables, this can be kept as \code{NA}.}
 
 \item{string_col}{The column containing the strings (default = "string").}
 
