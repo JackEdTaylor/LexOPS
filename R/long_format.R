@@ -38,19 +38,21 @@ long_format <- function(df, include = "design", string_col = "string") {
   }
 
   # get a vector specifying which columns to include
-  long_cols <- if (include == "all") {
-    colnames(LexOPS_attrs$meta_df)[!colnames(LexOPS_attrs$meta_df) %in% c(string_col, "LexOPS_cond")]
-  } else if (is.na(include)) {
-    NA
+  long_cols <- if (is.na(include)) {
+    NULL
   } else {
-    splits <- sapply(LexOPS_attrs$splits, dplyr::first)
-    controls <- sapply(LexOPS_attrs$controls, dplyr::first)
-    if (include == "design") {
-      colnames(LexOPS_attrs$meta_df)[colnames(LexOPS_attrs$meta_df) %in% c(splits, controls)]
-    } else if (include == "splits") {
-      colnames(LexOPS_attrs$meta_df)[colnames(LexOPS_attrs$meta_df) %in% splits]
-    } else if (include == "controls") {
-      colnames(LexOPS_attrs$meta_df)[colnames(LexOPS_attrs$meta_df) %in% controls]
+    if (include == "all") {
+      colnames(LexOPS_attrs$meta_df)[!colnames(LexOPS_attrs$meta_df) %in% c(string_col, "LexOPS_cond")]
+    } else {
+      splits <- sapply(LexOPS_attrs$splits, dplyr::first)
+      controls <- sapply(LexOPS_attrs$controls, dplyr::first)
+      if (include == "design") {
+        colnames(LexOPS_attrs$meta_df)[colnames(LexOPS_attrs$meta_df) %in% c(splits, controls)]
+      } else if (include == "splits") {
+        colnames(LexOPS_attrs$meta_df)[colnames(LexOPS_attrs$meta_df) %in% splits]
+      } else if (include == "controls") {
+        colnames(LexOPS_attrs$meta_df)[colnames(LexOPS_attrs$meta_df) %in% controls]
+      }
     }
   }
 
