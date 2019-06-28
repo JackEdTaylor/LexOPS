@@ -22,7 +22,7 @@
 #'
 #' @export
 
-plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 0.75, standard_eval = FALSE) {
+plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 0.75) {
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
   # check is generated stimuli
