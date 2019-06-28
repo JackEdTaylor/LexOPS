@@ -169,6 +169,7 @@ generate <- function(df, n=20, match_null = "first", string_col = "string", cond
     words_tried_this_generated <- c()
     out <- matrix(ncol=length(all_conds)+1, nrow=n)
     printing_points <- round(seq(0, n, n/10))
+    successful_iterations <- c()
     while(n_generated < n) {
       n_tried <- n_tried + 1
       n_tried_this_n_generated <- n_tried_this_n_generated + 1
@@ -219,6 +220,7 @@ generate <- function(df, n=20, match_null = "first", string_col = "string", cond
       if (all(!is.na(matches))) {
         out[n_generated + 1, ] <- c(matches, this_match_null)
         n_generated <- n_generated + 1
+        successful_iterations <- c(successful_iterations, n_tried)
         n_tried_this_n_generated <- 0
         words_tried_this_generated <- c()
         if (n_generated %in% printing_points & !n_all) {
@@ -240,6 +242,8 @@ generate <- function(df, n=20, match_null = "first", string_col = "string", cond
     LexOPS_attrs$meta_df <- meta_df
     # add the success rate to the attributes
     LexOPS_attrs$success_rate <- n_generated/n_tried
+    # add a vector of the iteratons that were successful
+    LexOPS_attrs$successful_iterations <- successful_iterations
 
   }
 
