@@ -6,6 +6,7 @@
 #' @param include A string indicating which variables to include in the plot. This can be those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Alternatively, this can be a character vector of the variables that should be plotted, that were in the original dataframe. Default is `"design"`.
 #' @param dodge_width The width to give to `ggplot2::position_dodge` (default is 0.2)
 #' @param point_size Size of points (default = 0.75)
+#' @param line_width Thickness of lines (default = 1)
 #'
 #' @return A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
 #'
@@ -22,7 +23,7 @@
 #'
 #' @export
 
-plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 0.75) {
+plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 0.75, line_width = 1) {
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
   # check is generated stimuli
@@ -79,7 +80,7 @@ plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 
     ggplot2::ggplot(ggplot2::aes(x = condition, y = value)) +
     ggplot2::geom_violin(colour = NA, fill = "grey", alpha = 0.5) +
     ggplot2::geom_point(ggplot2::aes(colour = as.factor(item_nr)), position = point_pos, alpha = 0.75, size = point_size) +
-    ggplot2::geom_line(ggplot2::aes(group = as.factor(item_nr), colour = as.factor(item_nr)), position = point_pos, alpha = 0.25) +
+    ggplot2::geom_line(ggplot2::aes(group = as.factor(item_nr), colour = as.factor(item_nr)), position = point_pos, alpha = 0.25, size = line_width) +
     ggplot2::facet_wrap(~variable, scales = "free") +
     ggplot2::theme_minimal() +
     ggplot2::theme(legend.position = "none") +

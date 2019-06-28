@@ -5,7 +5,7 @@
 \title{Plot the generated stimuli's design}
 \usage{
 plot_design(df, include = "design", dodge_width = 0.2,
-  point_size = 0.75, standard_eval = FALSE)
+  point_size = 0.75, line_width = 1)
 }
 \arguments{
 \item{df}{Output from \code{generate()} or \code{long_format()}}
@@ -15,6 +15,8 @@ plot_design(df, include = "design", dodge_width = 0.2,
 \item{dodge_width}{The width to give to \code{ggplot2::position_dodge} (default is 0.2)}
 
 \item{point_size}{Size of points (default = 0.75)}
+
+\item{line_width}{Thickness of lines (default = 1)}
 }
 \value{
 A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
