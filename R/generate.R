@@ -238,6 +238,8 @@ generate <- function(df, n=20, match_null = "first", string_col = "string", cond
       dplyr::select(item_nr, dplyr::everything())
     # add the original df to the attributes
     LexOPS_attrs$meta_df <- meta_df
+    # add the success rate to the attributes
+    LexOPS_attrs$success_rate <- n_generated/n_tried
 
   }
 
