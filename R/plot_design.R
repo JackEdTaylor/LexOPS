@@ -3,6 +3,7 @@
 #' Takes the output from `generate()` or `long_format()`, and plots conditions' distributions on numeric variables used in the generate pipeline (i.e. indepdent variables, controls).
 #'
 #' @param df Output from `generate()` or `long_format()`
+#' @param include A string indicating which variables to include in the plot. This can be those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Alternatively, this can be a character vector of the variables that should be plotted, that were in the original dataframe. Default is `"design"`.
 #' @param dodge_width The width to give to `ggplot2::position_dodge` (default is 0.2)
 #' @param point_size Size of points (default = 0.75)
 #'
@@ -21,7 +22,7 @@
 #'
 #' @export
 
-plot_design <- function(df, dodge_width = 0.2, point_size = 0.75) {
+plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 0.75, standard_eval = FALSE) {
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
   # check is generated stimuli
@@ -40,11 +41,26 @@ plot_design <- function(df, dodge_width = 0.2, point_size = 0.75) {
   # get vector of control variables
   controls <- sapply(LexOPS_attrs$controls, dplyr::first)
 
+  # get df which contains all the original variables for the generated stimuli
+  meta_df <- LexOPS_attrs$meta_df
+
+  # join this to df
+  plot_df <- dplyr::select(df, c(item_nr, condition, match_null, string)) %>%
+    dplyr::right_join(meta_df, by = "string")
+
   # factor vector of variables to plot
-  plot_vars <- c(splits, controls)
+  plot_vars <- if (include == "design") {
+    c(splits, controls)
+  } else if (include == "splits") {
+    splits
+  } else if (include == "controls") {
+    controls
+  } else {
+    include
+  }
 
   # remove non-numeric variables
-  plot_vars <- plot_vars[sapply(df[plot_vars], is.numeric)]
+  plot_vars <- plot_vars[sapply(meta_df[plot_vars], is.numeric)]
 
   # function to recode a variable name as a heading
   plot_vars_headings <- sapply(plot_vars, function(v) {
@@ -57,7 +73,7 @@ plot_design <- function(df, dodge_width = 0.2, point_size = 0.75) {
   point_pos <- ggplot2::position_dodge(dodge_width)
 
   # plot the numeric variables
-  df %>%
+  plot_df %>%
     dplyr::rename_at(plot_vars, ~ plot_vars_headings) %>%
     tidyr::gather("variable", "value", plot_vars_headings) %>%
     ggplot2::ggplot(ggplot2::aes(x = condition, y = value)) +
