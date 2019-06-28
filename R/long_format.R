@@ -3,7 +3,7 @@
 #' Converts the generated stimuli from the `generate()` function into long format.
 #'
 #' @param df A data frame that is the result from `control_for()` or `split_by()`.
-#' @param include A string indicating whether the long-format result should include all variables in the original data frame (`"all"`), only those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Set to `NA` for only the data in the data frame. The default is `"design"`.
+#' @param include A string indicating whether the long-format result should include all variables in the original data frame (`"all"`), only those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Set to `NA` for only the data in the wide-format data frame. The default is `"design"`.
 #' @param string_col The column containing the strings (default = `"string"`).
 #' @return Returns the generated stimuli, but converted into long format, containing requested variables from the original `df`, and the variables of `item_nr`, `condition`, `euclidean_distance` (from the match_null).
 #' @examples
