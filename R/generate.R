@@ -5,6 +5,7 @@
 #' @param df A data frame that is the result from `control_for()` or `split_by()`.
 #' @param n The number of strings per condition (default = 20). Set to `"all"` to generate as many as possible.
 #' @param match_null The condition words should be matched to. Should be a string indicating condition (e.g. `"A1_B2_C1"`), or a string indicating one of the following options: "first" for the lowest condition (e.g. `"A1"` or `"A1_B1_C1_D1"`, etc.), "random" for randomly selected null condition each iteration, "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition.
+#' @param seed An integer specifying the random seed, allowing reproduction of exact stimuli lists. If `NA`, will not set the seed. Default is `NA`.
 #' @param string_col The column containing the strings (default = `"string"`).
 #' @param cond_col Prefix with which the columns detailing the splits were labelled by `split_by()`. This is rarely needed (default = `NA`), as by default the function gets this information from `df`'s attributes.
 #' @param is_shiny Allows printing in a shiny context with `shinyjs::html()`. Outputs from the cat() function are stored in the div with id "gen_console". Default is FALSE.
@@ -45,7 +46,7 @@
 #'
 #' @export
 
-generate <- function(df, n=20, match_null = "first", string_col = "string", cond_col = NA, is_shiny = FALSE) {
+generate <- function(df, n=20, match_null = "first", seed = NA, string_col = "string", cond_col = NA, is_shiny = FALSE) {
   if (is_shiny) {
     # if in a shiny context, replace the base cat() function with one which captures the console output
     cat <- function(str) shinyjs::html("gen_console", sprintf("%s", str))
@@ -95,6 +96,9 @@ generate <- function(df, n=20, match_null = "first", string_col = "string", cond
 
   # check match_null is an expected value
   if (!match_null %in% c(all_conds, "balanced", "random", "first")) stop('Unknown match_null; expected "random", "balanced", "first", or a specific condition (e.g. "A2_B1_C1")')
+
+  # set the seed if specified
+  if (!is.na(seed)) set.seed(seed)
 
   # if no controls, just return the df with the condition variable, otherwise generate matches
   if (!is.null(LexOPS_attrs$controls)) {
