@@ -97,6 +97,7 @@ sensible_slider_vals <- function(numeric_vec, n_levels, is_tolerance = FALSE) {
 #' @param tol The area which should be highlighted. Can be a numeric vector of length two, a character vector of acceptable categories, or a list of such vectors. Each item in a `tol` list specifies one level.
 #' @param match_string If the variable is being matched for, which string is it relative to. Leave as `NA` if not a matching box.
 #' @param shade_label A character vector specifying what to label the levels. Order should match that of `tol`. Leave as `NA` if not doing a split.
+#' @param shade_relative If `TRUE`, the value of tol is taken to be relative to the value for match_string. If `FALSE`, the raw values of tol are used. If `match_string` is not defined, `shade_relative` has no effect. Default is `TRUE`.
 #' @param df A dataframe. Default is `LexOPS::lexops`.
 #'
 #' @return A ggplot/ggwordcloud object with the required visualisation.
@@ -118,7 +119,7 @@ sensible_slider_vals <- function(numeric_vec, n_levels, is_tolerance = FALSE) {
 #' # ignore shade_label for categorical histogram?
 #' #box_vis("PoS.SUBTLEX_UK", "warning", list("noun", "verb"), shade_label = c("B1", "B2"))
 
-box_vis <- function(var, box_type = "primary", tol = NA, match_string = NA, shade_label = NA, df = LexOPS::lexops) {
+box_vis <- function(var, box_type = "primary", tol = NA, match_string = NA, shade_label = NA, shade_relative = TRUE, df = LexOPS::lexops) {
 
   match_string_val <- if (is.na(match_string)) NA else df[[var]][df$string==match_string]
 
@@ -141,7 +142,7 @@ box_vis <- function(var, box_type = "primary", tol = NA, match_string = NA, shad
     if (!is.na(match_string_val)) {
       pl <- pl + ggplot2::geom_vline(xintercept=match_string_val, colour="red", size=1.25)
       # also adjust the values in `shade` to make them relative to `match_string_val`
-      shade <- lapply(shade, function(i) match_string_val + i)
+      if (shade_relative) shade <- lapply(shade, function(i) match_string_val + i)
     }
     # shade in the selected tolerance
     if (!all(is.na(tol))) {

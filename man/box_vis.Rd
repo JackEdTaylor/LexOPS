@@ -5,7 +5,7 @@
 \title{Generate a box's visualisation}
 \usage{
 box_vis(var, box_type = "primary", tol = NA, match_string = NA,
-  shade_label = NA, df = LexOPS::lexops)
+  shade_label = NA, shade_relative = TRUE, df = LexOPS::lexops)
 }
 \arguments{
 \item{var}{Character vector specifying which variable is selected}
@@ -17,6 +17,8 @@ box_vis(var, box_type = "primary", tol = NA, match_string = NA,
 \item{match_string}{If the variable is being matched for, which string is it relative to. Leave as \code{NA} if not a matching box.}
 
 \item{shade_label}{A character vector specifying what to label the levels. Order should match that of \code{tol}. Leave as \code{NA} if not doing a split.}
+
+\item{shade_relative}{If \code{TRUE}, the value of tol is taken to be relative to the value for match_string. If \code{FALSE}, the raw values of tol are used. If \code{match_string} is not defined, \code{shade_relative} has no effect. Default is \code{TRUE}.}
 
 \item{df}{A dataframe. Default is \code{LexOPS::lexops}.}
 }
