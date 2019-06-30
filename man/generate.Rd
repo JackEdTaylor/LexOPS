@@ -5,7 +5,7 @@
 \title{Generate stimuli}
 \usage{
 generate(df, n = 20, match_null = "first", string_col = "string",
-  cond_col = NA)
+  cond_col = NA, is_shiny = FALSE)
 }
 \arguments{
 \item{df}{A data frame that is the result from \code{control_for()} or \code{split_by()}.}
@@ -17,6 +17,8 @@ generate(df, n = 20, match_null = "first", string_col = "string",
 \item{string_col}{The column containing the strings (default = \code{"string"}).}
 
 \item{cond_col}{Prefix with which the columns detailing the splits were labelled by \code{split_by()}. This is rarely needed (default = \code{NA}), as by default the function gets this information from \code{df}'s attributes.}
+
+\item{is_shiny}{Allows printing in a shiny context with \code{shinyjs::html()}. Outputs from the cat() function are stored in the div with id "gen_console". Default is FALSE.}
 }
 \value{
 Returns the generated stimuli.

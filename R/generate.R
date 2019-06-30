@@ -7,6 +7,7 @@
 #' @param match_null The condition words should be matched to. Should be a string indicating condition (e.g. `"A1_B2_C1"`), or a string indicating one of the following options: "first" for the lowest condition (e.g. `"A1"` or `"A1_B1_C1_D1"`, etc.), "random" for randomly selected null condition each iteration, "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition.
 #' @param string_col The column containing the strings (default = `"string"`).
 #' @param cond_col Prefix with which the columns detailing the splits were labelled by `split_by()`. This is rarely needed (default = `NA`), as by default the function gets this information from `df`'s attributes.
+#' @param is_shiny Allows printing in a shiny context with `shinyjs::html()`. Outputs from the cat() function are stored in the div with id "gen_console". Default is FALSE.
 #'
 #' @return Returns the generated stimuli.
 #' @examples
@@ -44,7 +45,12 @@
 #'
 #' @export
 
-generate <- function(df, n=20, match_null = "first", string_col = "string", cond_col = NA) {
+generate <- function(df, n=20, match_null = "first", string_col = "string", cond_col = NA, is_shiny = FALSE) {
+  if (is_shiny) {
+    # if in a shiny context, replace the base cat() function with one which captures the console output
+    cat <- function(str) shinyjs::html("gen_console", sprintf("%s", str))
+  }
+
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
   # check string_col is a string
@@ -181,7 +187,12 @@ generate <- function(df, n=20, match_null = "first", string_col = "string", cond
         if (n_all) {
           cat(sprintf("\nGenerated a total of %i stimuli per condition (%i total iterations)\n", n_generated, n_tried))
         } else {
-          warning(sprintf("\nFailed to generate any new matches for matched row %i null condition %s (all %i candidate null words were tried)", n_generated + 1, this_match_null, n_tried_this_n_generated))
+          warning_text <- sprintf("\nFailed to generate any new matches for matched row %i null condition %s (all %i candidate null words were tried)", n_generated + 1, this_match_null, n_tried_this_n_generated)
+          if (is_shiny) {
+            cat(warning_text)
+          } else {
+            warning(warning_text)
+          }
         }
         break
       }
