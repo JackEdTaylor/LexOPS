@@ -4,6 +4,7 @@
 #'
 #' @param df A data frame containing the IV and strings.
 #' @param nlevels An integer, specifying how many levels this random split should have (default = 2).
+#' @param seed An integer used to set the seed, to reproduce random splits. If `NA`, a random seed will not be set. Default is `NA`.
 #' @param cond_col Prefix with which to name the column where the condition will be stored (default = "LexOPS_splitCond"). Each time split_by() or split_random() is run on a dataframe, a new cond_col is added to the data frame, e.g., the first time will add splitCond_A, the second time will add split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of cond_col must be the same each time the function is called. The default is usually sufficient.
 #'
 #' @return Returns `df`, with a new column (name defined by `cond_col` argument) identifying which level of the randomly generated IV each string belongs to.
@@ -18,7 +19,7 @@
 #'
 #' @export
 
-split_random <- function(df, nlevels = 2, cond_col = "LexOPS_splitCond"){
+split_random <- function(df, nlevels = 2, seed = NA, cond_col = "LexOPS_splitCond"){
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
 
@@ -45,6 +46,7 @@ split_random <- function(df, nlevels = 2, cond_col = "LexOPS_splitCond"){
 
   # generate the random variable
   random_levels <- paste(prefix, 1:nlevels, sep = "")
+  if (!is.na(seed)) set.seed(seed)
   random_var <- sample(random_levels, nrow(df), replace = TRUE)
 
   df[[new_column]] <- random_var
