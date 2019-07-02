@@ -47,7 +47,7 @@ parse_levels <- function(var, levels = NA) {
   out <- if (all(is.na(levels))) {
     list(var)
   } else {
-    rlang::prepend(levels, var)
+    prepend(levels, var)
   }
 
   out

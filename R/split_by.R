@@ -50,7 +50,7 @@ split_by <- function(df, var, levels, cond_col = "LexOPS_splitCond", filter = TR
   # convert var and levels to a list, `split`, which will be added to the attributes
   split <- if (standard_eval) {
     if (is.list(levels)) {
-      LexOPS:::prepend(levels, var)
+      prepend(levels, var)
     } else {
       list(var, levels)
     }

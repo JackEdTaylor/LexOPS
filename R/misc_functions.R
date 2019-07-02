@@ -7,12 +7,8 @@
 #' @param before a subscript, before which the values are to be appended.
 #'
 #' @return A merged vector.
-#'
-#' @examples
-#'
-#' #get_box_colour("primary")
 
-function (x, values, before = 1) {
+prepend <- function (x, values, before = 1) {
   n <- length(x)
   stopifnot(before > 0 && before <= n)
   if (before == 1) {
