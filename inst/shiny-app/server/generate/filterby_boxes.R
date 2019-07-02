@@ -1,3 +1,6 @@
+# initialise number of boxes
+gen_filterby_boxes_N <- reactiveVal(0)
+
 # Counting N boxes
 observeEvent(input$gen_filterby_add, {
   gen_filterby_boxes_N(gen_filterby_boxes_N() + 1)
@@ -11,7 +14,7 @@ observeEvent(input$gen_filterby_minus, {
 # Display N boxes
 observeEvent(gen_filterby_boxes_N(), {
   lapply (1:25, function(i) {
-    boxid <- sprintf('gen_filterby_%i', i)
+    boxid <- sprintf("gen_filterby_%i", i)
     if (i <= gen_filterby_boxes_N()) {
       shinyjs::show(id = boxid)
     } else {
@@ -20,45 +23,113 @@ observeEvent(gen_filterby_boxes_N(), {
   })
 })
 
-# Build boxes' UIs
+# Build boxes" UIs
 lapply(1:25, function(i) {
-  boxid <- sprintf('gen_filterby_%i', i)
-  output[[sprintf('%s_ui', boxid)]] <- renderUI({ filterby_UI(input[[sprintf("%s_vtype", boxid)]],
-                                                              boxid) })
-  output[[sprintf('%s_ui_sliders', boxid)]] <- renderUI({ filterby_UI_sliders(input[[sprintf("%s_vtype", boxid)]],
-                                                                              boxid,
-                                                                              input[[sprintf("%s.opt", boxid)]],
-                                                                              input[[sprintf("%s.log", boxid)]],
-                                                                              lexopsReact(),
-                                                                              toleranceUIopt = input$preference.toleranceUI) })
-  box_sliders <- reactive({
-    vtype <- input[[sprintf("%s_vtype", boxid)]]
-    if (vtype %in% c("Part of Speech", "Rhyme")) {
-      input[[sprintf("%s_sl", boxid)]]
-    } else if (input$preference.toleranceUI == 'slider') {
-      input[[sprintf("%s_sl", boxid)]]
+  boxid <- sprintf("gen_filterby_%i", i)
+
+  # source selection
+  output[[sprintf("%s_v_source_ui", boxid)]] <- renderUI({
+    measure <- input[[sprintf("%s_v_measure", boxid)]]
+    if (is.null(measure)) {
+      out <- NULL
+    } else if (measure == "(None)") {
+      out <- NULL
+    } else if (measure == "Length") {
+      out <- NULL
     } else {
-      c(input[[sprintf("%s_tol_lower", boxid)]], input[[sprintf("%s_tol_upper", boxid)]])
+      vars_sources <- names(lexops_react_var_measures())[lexops_react_var_measures()==measure] %>%
+        sapply(function(v) LexOPS::var_to_source(v, first_cite = FALSE, standard_eval = TRUE)) %>%
+        unname()
+      out <- selectInput(sprintf("%s_v_source", boxid), "according to...", vars_sources)
+    }
+    out
+  })
+
+  # tolerance/levels selection
+  output[[sprintf("%s_v_selection_ui", boxid)]] <- renderUI({
+    measure <- input[[sprintf("%s_v_measure", boxid)]]
+    source <- input[[sprintf("%s_v_source", boxid)]]
+
+    if (is.null(source) & measure!="Length") {
+      out <- NULL
+    } else {
+      if (measure=="Length") {
+        var <- "Length"
+      } else {
+        possible_vars <- names(lexops_react_var_measures()[lexops_react_var_measures()==measure])
+        possible_vars_sources <- sapply(possible_vars, function(v) LexOPS::var_to_source(v, first_cite = FALSE, standard_eval = TRUE))
+        var <- possible_vars[possible_vars_sources == source]
+      }
+      out <- if (is.numeric(lexops_react()[[var]])) {
+        sl <- LexOPS:::sensible_slider_vals(lexops_react()[[var]], n_levels=1, is_tolerance=FALSE)
+
+        if (input$preference_toleranceUI == "slider") {
+          sliderInput(sprintf("%s_v_selection", boxid), label = "including variables within...", min = sl$min, max = sl$max, value = sl$value, step = sl$step)
+        } else {
+          fluidRow(
+            column(6, numericInput(sprintf("%s_v_selection_1", boxid), label = "filter min", value = sl$value[1], step = sl$step)),
+            column(6, numericInput(sprintf("%s_v_selection_2", boxid), label = "filter max", value = sl$value[2], step = sl$step))
+          )
+        }
+      } else {
+        var_cats <- lexops_react() %>%
+          dplyr::filter(!is.na(!!(dplyr::sym(var)))) %>%
+          dplyr::group_by(!!(dplyr::sym(var))) %>%
+          dplyr::summarise(n = dplyr::n()) %>%
+          dplyr::arrange(desc(n)) %>%
+          pull(!!(dplyr::sym(var)))
+        checkboxGroupInput(sprintf("%s_v_selection", boxid), label = "including variables in the categories of...", choices = var_cats, selected = var_cats[1], inline=TRUE)
+      }
+    }
+    out
+  })
+
+  # plot the visualisation
+  output[[sprintf("%s_v_plot", boxid)]] <- renderPlot({
+    measure <- input[[sprintf("%s_v_measure", boxid)]]
+    source <- input[[sprintf("%s_v_source", boxid)]]
+
+    if (measure=="Length") {
+      var <- "Length"
+    } else {
+      possible_vars <- names(lexops_react_var_measures()[lexops_react_var_measures()==measure])
+      possible_vars_sources <- sapply(possible_vars, function(v) LexOPS::var_to_source(v, first_cite = FALSE, standard_eval = TRUE))
+      var <- possible_vars[possible_vars_sources == source]
+    }
+
+    selection <- if (input$preference_toleranceUI == "slider") {
+      input[[sprintf("%s_v_selection", boxid)]]
+    } else {
+      c(input[[sprintf("%s_v_selection_1", boxid)]], input[[sprintf("%s_v_selection_2", boxid)]])
+    }
+
+    out <- LexOPS:::box_vis(var, box_type = "info", tol = selection, df = lexops_react())
+
+    out
+  })
+
+  # put the plot in a UI (this removes the whitespace if no plot is rendered)
+  output[[sprintf("%s_v_plot_ui", boxid)]] <- renderUI({
+    measure <- input[[sprintf("%s_v_measure", boxid)]]
+    source <- input[[sprintf("%s_v_source", boxid)]]
+    if ((is.null(source) & measure != "Length") | measure == "(None)") {
+      NULL
+    } else {
+      plotOutput(sprintf("%s_v_plot", boxid), height="170px")
     }
   })
-  output[[sprintf('%s_ui_vis', boxid)]] <- renderPlot({ filterby_UI_vis(input[[sprintf("%s_vtype", boxid)]],
-                                                                        boxid,
-                                                                        input[[sprintf("%s.opt", boxid)]],
-                                                                        input[[sprintf("%s.log", boxid)]],
-                                                                        input[[sprintf("%s.source", boxid)]],
-                                                                        lexopsReact(),
-                                                                        box_sliders()) })
+
 })
 
 # Put the UIs built above into their boxes
 lapply(1:25, function(i) {
-  boxid <- sprintf('gen_filterby_%i', i)
-  output[[sprintf('%s', boxid)]] <- renderUI({
-    box(title=i, width=12, status='info', solidHeader=T,
-        selectInput(sprintf('%s_vtype', boxid), NULL, c('(None)', vis.cats[vis.cats!="Rhyme"])),
-        uiOutput(sprintf('%s_ui', boxid)),
-        uiOutput(sprintf('%s_ui_sliders', boxid)),
-        plotOutput(sprintf('%s_ui_vis', boxid), height='170px'),
+  boxid <- sprintf("gen_filterby_%i", i)
+  output[[boxid]] <- renderUI({
+    box(title=i, width=12, status="info", solidHeader=T,
+        selectInput(sprintf("%s_v_measure", boxid), "Filter by...", c("(None)", unname(lexops_react_var_measures()) )),
+        uiOutput(sprintf("%s_v_source_ui", boxid)),
+        uiOutput(sprintf("%s_v_selection_ui", boxid)),
+        uiOutput(sprintf("%s_v_plot_ui", boxid), height="170px"),
         id = boxid
     )
   })

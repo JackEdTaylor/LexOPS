@@ -1,583 +1,331 @@
-gensplits <- reactive({
-  
-  splits <- list()
-  for (i in 1:gen_splitby_boxes_N()) {
-    boxid <- sprintf('gen_splitby_%i', i)
-    Nlevels <- input[[sprintf("%s_Nlevels", boxid)]]
-    i_lttr <- LETTERS[i]
-    if (!is.null(Nlevels)) {
-      for (lvl in 1:Nlevels) {
-        splits[[i_lttr]] <- append(splits[[i_lttr]], sprintf("%s%i", i_lttr, lvl))
+filter_opts_react <- reactive({
+  if (gen_filterby_boxes_N() > 0) {
+    lapply(1:gen_filterby_boxes_N(), function(i) {
+      # collect input data about all the controls
+      boxid <- sprintf("gen_filterby_%i", i)
+      measure <- input[[sprintf("%s_v_measure", boxid)]]
+      source <- input[[sprintf("%s_v_source", boxid)]]
+
+      if (measure=="Length") {
+        var <- "Length"
+      } else {
+        possible_vars <- names(lexops_react_var_measures()[lexops_react_var_measures()==measure])
+        possible_vars_sources <- sapply(possible_vars, function(v) LexOPS::var_to_source(v, first_cite = FALSE, standard_eval = TRUE))
+        var <- possible_vars[possible_vars_sources == source]
+      }
+
+      selection <- if (input$preference_toleranceUI == "slider" | !is.numeric(lexops_react()[[var]])) {
+        input[[sprintf("%s_v_selection", boxid)]]
+      } else {
+        c(input[[sprintf("%s_v_selection_1", boxid)]], input[[sprintf("%s_v_selection_2", boxid)]])
+      }
+
+      # return a list with everything we need
+      list(var = var, selection = selection)
+    })
+  } else {
+    NA
+  }
+})
+
+split_opts_react <- reactive({
+  if (gen_splitby_boxes_N() > 0) {
+    lapply(1:gen_splitby_boxes_N(), function(i) {
+      # collect input data about all the splits
+      boxid <- sprintf("gen_splitby_%i", i)
+      measure <- input[[sprintf("%s_v_measure", boxid)]]
+      source <- input[[sprintf("%s_v_source", boxid)]]
+      n_levels <- input[[sprintf("%s_v_n_levels", boxid)]]
+
+      if (measure %in% c("Length", "Random")) {
+        var <- measure
+      } else {
+        possible_vars <- names(lexops_react_var_measures()[lexops_react_var_measures()==measure])
+        possible_vars_sources <- sapply(possible_vars, function(v) LexOPS::var_to_source(v, first_cite = FALSE, standard_eval = TRUE))
+        var <- possible_vars[possible_vars_sources == source]
+      }
+
+      selection <- if (measure == "Random") {
+        NA
+      } else if (input$preference_toleranceUI == "slider" | !is.numeric(lexops_react()[[var]])) {
+        lapply(1:n_levels, function(lvl_i) input[[sprintf("%s_v_selection_%i", boxid, lvl_i)]])
+      } else {
+        lapply(1:n_levels, function(lvl_i) c(input[[sprintf("%s_v_selection_%i_1", boxid, lvl_i)]], input[[sprintf("%s_v_selection_%i_2", boxid, lvl_i)]]))
+      }
+
+      # return a list with everything we need
+      list(var = var, selection = selection, n_levels = n_levels)
+    })
+  } else {
+    NA
+  }
+})
+
+control_opts_react <- reactive({
+  if (gen_controlfor_boxes_N() > 0) {
+    lapply(1:gen_controlfor_boxes_N(), function(i) {
+      # collect input data about all the controls
+      boxid <- sprintf("gen_controlfor_%i", i)
+      measure <- input[[sprintf("%s_v_measure", boxid)]]
+      source <- input[[sprintf("%s_v_source", boxid)]]
+
+      if (measure=="Length") {
+        var <- "Length"
+      } else {
+        possible_vars <- names(lexops_react_var_measures()[lexops_react_var_measures()==measure])
+        possible_vars_sources <- sapply(possible_vars, function(v) LexOPS::var_to_source(v, first_cite = FALSE, standard_eval = TRUE))
+        var <- possible_vars[possible_vars_sources == source]
+      }
+
+      selection <- if (input$preference_toleranceUI == "slider" | !is.numeric(lexops_react()[[var]])) {
+        input[[sprintf("%s_v_selection", boxid)]]
+      } else {
+        c(input[[sprintf("%s_v_selection_1", boxid)]], input[[sprintf("%s_v_selection_2", boxid)]])
+      }
+
+      # return a list with everything we need
+      list(var = var, selection = selection)
+    })
+  } else {
+    NA
+  }
+})
+
+generated_stim <- reactive({
+
+  # trigger regeneration if regenerate button is clicked
+  input$gen_regenerate
+
+  # get the filters
+  filter_opts <- filter_opts_react()
+
+  # get the splits
+  split_opts <- split_opts_react()
+
+  # get the controls
+  control_opts <- control_opts_react()
+
+  df <- lexops_react()
+
+  # filters
+  if (gen_filterby_boxes_N() > 0) {
+    for (i in 1:gen_filterby_boxes_N()) {
+      filt_var <- filter_opts[[i]]$var
+      filt_sel <- filter_opts[[i]]$selection
+      if (is.numeric(df[[filt_var]])) {
+        # numeric filter
+        df <- df %>%
+          dplyr::filter(dplyr::between(!!(dplyr::sym(filt_var)), filt_sel[1], filt_sel[2]))
+      } else {
+        # categorical filter
+        df <- df %>%
+          dplyr::filter(!!(dplyr::sym(filt_var)) %in% filt_sel)
       }
     }
   }
-  
-  splits
-  
-})
 
-genlevels <- reactive({
-  levels <- expand.grid(gensplits())
-  unite(levels, "Level", 1:ncol(levels), sep="_", remove=F)
-})
-
-
-genresults_prematching <- reactive({
-  
-  input$gen_generate  # trigger recalculation if regenerate button is clicked
-  
-  res <- lexopsReact() %>%
-    select(string)
-  
-  # Filter by...
-  
-  lexops_filt <- lexopsReact()
-  
-  if (gen_filterby_boxes_N() >= 1) {
-    
-    withProgress(message="Applying Filters...", {
-      
-      for (i in 1:gen_filterby_boxes_N()) {
-        lexops_custom_cols <- lexopsReact()
-        boxid <- sprintf('gen_filterby_%i', i)
-        boxv <- input[[sprintf('%s_vtype', boxid)]]
-        boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
-        boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
-        boxsource <- input[[sprintf("%s.source", boxid)]]
-        boxsource <- if(!is.null(boxsource)) {boxsource} else {boxopt}  # handle for when the source is stored under opt
-        
-        # get the box's filter
-        sl <- if (boxv %in% c("Part of Speech", "Rhyme")) {
-          input[[sprintf("%s_sl", boxid)]]
-        } else if (input$preference.toleranceUI == 'slider') {
-          input[[sprintf("%s_sl", boxid)]]
-        } else if (input$preference.toleranceUI == 'numericinput') {
-          c(input[[sprintf("%s_tol_lower", boxid)]], input[[sprintf("%s_tol_upper", boxid)]])
-        }
-        
-        # get target column
-        column <- corpus_recode_columns(boxopt, boxv, boxlog, boxsource)
-        
-        # remove duplicates (fixes bug in rendering order)
-        column <- unique(column)
-        if (length(column)>1) {
-          # create new column, which will be the average of the variables selected
-          if (!(boxv %in% vis.cats.non_Zscore)) {
-            lexops_custom_cols[column] <- lapply(lexops_custom_cols[column], scale)
-          }
-          colmeans_name <- sprintf("Avg.%s", viscat2prefix(boxv, boxlog))
-          lexops_custom_cols[[colmeans_name]] <- rowMeans(select(lexops_custom_cols, one_of(column)), dims=1, na.rm=T)
-          if (colmeans_name %in% colnames(lexops_filt)) {lexops_filt <- select(lexops_filt, -UQ(sym(colmeans_name)))}  # avoid duplicate column names in lexops_filt
-          lexops_filt <- inner_join(lexops_filt, select(lexops_custom_cols, "string", UQ(sym(colmeans_name))), by="string")
-          column <- colmeans_name
-        }
-        # Handle Multiple Columns with Same Source
-        # rename to colname.2, colname.3, colname.4 etc
-        columnname_raw <- column
-        columnname_raw_prefixed <- sprintf("filt.%s", columnname_raw)
-        col_iter <- 1
-        while (sprintf("filt.%s", column) %in% colnames(res)) {
-          col_iter <- col_iter + 1
-          column <- sprintf("%s.%i", columnname_raw, col_iter)
-        }
-        if (column != columnname_raw) {
-          colnames(lexops_custom_cols)[colnames(lexops_custom_cols)==columnname_raw] <- column
-          colnames(lexops_filt)[colnames(lexops_filt)==columnname_raw] <- column
-        }
-        # rename the original Avg.%s to Avg.%s.1 for consistency
-        if (columnname_raw_prefixed %in% colnames(res) & !sprintf("%s.1", columnname_raw_prefixed) %in% colnames(res)) {
-          colnames(res)[colnames(res)==columnname_raw_prefixed] <- sprintf("%s.1", columnname_raw_prefixed)
-        }
-        
-        res[[column]] <- lexops_custom_cols[[column]]  # copy over the column to the results df
-        
-        # Add "split", "cont" or "filt" as a prefix
-        colnames(res)[colnames(res)==column] <- sprintf("filt.%s", column)
-        
-        if (is.numeric(lexops_filt[[column]])) {
-          lexops_filt <- filter(lexops_filt, UQ(sym(column)) >= sl[[1]] & UQ(sym(column)) <= sl[[2]])
-        } else {
-          lexops_filt <- filter(lexops_filt, UQ(sym(column)) %in% sl)
-        }
-        
-        incProgress(detail=sprintf("%s%%", round((i/gen_filterby_boxes_N())*100)))
+  # splits
+  if (gen_splitby_boxes_N() > 0) {
+    for (i in 1:gen_splitby_boxes_N()) {
+      if (split_opts[[i]]$var == "Random") {
+        gen_seed <- if (input$preference_use_a_random_seed) input$preference_random_seed else NA
+        df <- df %>%
+          LexOPS::split_random(split_opts[[i]]$n_levels, seed = gen_seed)
+      } else {
+        df <- df %>%
+          LexOPS::split_by(split_opts[[i]]$var, split_opts[[i]]$selection, standard_eval = TRUE)
       }
-      
-    })
-    
-    res <- filter(res, string %in% lexops_filt$string)
+    }
   }
-  
-  
-  # Split by...
-  
-  if (gen_splitby_boxes_N() >= 1) {
-    
-    res <- mutate(res, Condition = NA)
-    
-    levels <- genlevels()
-    
-    iterated_letters <- c()
-    
-    withProgress(message="Processing Splits...", {
-      
-      splitprogress = 0
-      splitcomplete = nrow(levels)
-      
-      for (lvl in 1:nrow(levels)) {
-        rowlevel <- levels[lvl, ]
-        lexops_filt <- lexopsReact()[lexopsReact()$string %in% res$string, ]
-        
-        for (i in 1:gen_splitby_boxes_N()) {
-          lexops_custom_cols <- lexopsReact()[lexopsReact()$string %in% res$string, ]
-          i_lttr <- LETTERS[i]
-          i_lttr_lvl <- as.numeric(rowlevel[[i_lttr]])  # get which level of the variable this cell belongs to
-          boxid <- sprintf('gen_splitby_%i', i)
-          boxv <- input[[sprintf('%s_vtype', boxid)]]
-          boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
-          boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
-          boxsource <- input[[sprintf("%s.source", boxid)]]
-          boxsource <- if(!is.null(boxsource)) {boxsource} else {boxopt}  # handle for when the source is stored under opt
-          
-          # get the level's filter
-          sl <- if (boxv %in% c("Part of Speech", "Rhyme")) {
-            input[[sprintf("%s_sl%i", boxid, i_lttr_lvl)]]
-          } else if (input$preference.toleranceUI == 'slider') {
-            input[[sprintf('%s_sl%i', boxid, i_lttr_lvl)]]
-          } else if (input$preference.toleranceUI == 'numericinput') {
-            c(input[[sprintf("%s_tol_lower%i", boxid, i_lttr_lvl)]], input[[sprintf("%s_tol_upper%i", boxid, i_lttr_lvl)]])
-          }
-          
-          # get target column
-          column <- corpus_recode_columns(boxopt, boxv, boxlog, boxsource)
-          
-          # remove duplicates (fixes bug from rendering order)
-          column <- unique(column)
-          if (length(column)>1) {
-            # create new column, which will be the average of the variables selected
-            if (!(boxv %in% vis.cats.non_Zscore)) {
-              lexops_custom_cols[column] <- lapply(lexops_custom_cols[column], scale)
-            }
-            colmeans_name <- sprintf("Avg.%s", viscat2prefix(boxv, boxlog))
-            lexops_custom_cols[[colmeans_name]] <- rowMeans(select(lexops_custom_cols, one_of(column)), dims=1, na.rm=T)
-            if (colmeans_name %in% colnames(lexops_filt)) {lexops_filt <- select(lexops_filt, -UQ(sym(colmeans_name)))}  # avoid duplicate column names in lexops_filt
-            lexops_filt <- inner_join(lexops_filt, select(lexops_custom_cols, "string", UQ(sym(colmeans_name))), by="string")
-            column <- colmeans_name
-          }
-          
-          # Handle Multiple Columns with Same Source
-          # rename to colname.2, colname.3, colname.4 etc
-          columnname_raw <- column
-          column_newname <- sprintf("split.%s", column)
-          col_iter <- 1
-          while (column_newname %in% colnames(res)) {
-            col_iter <- col_iter + 1
-            column_newname <- sprintf("split.%s.%i", columnname_raw, col_iter)
-          }
-          
-          if (i_lttr_lvl==1 & !i_lttr %in% iterated_letters) {  # only add the variable the first time a box refers to this variable (otherwise it'll be added twice)
-            if (sprintf("split.%s", columnname_raw) %in% colnames(res)) {
-              colnames(res)[colnames(res)==sprintf("split.%s", columnname_raw)] <- sprintf("split.%s.1", columnname_raw)  # rename the original Avg.%s to Avg.%s.1 for consistency
-            }
-            res[[column_newname]] <- lexops_custom_cols[[column]]  # copy over the column to the results df
-          }
-          if (is.numeric(lexops_filt[[column]])) {
-            lexops_filt <- filter(lexops_filt, UQ(sym(column)) >= sl[[1]] & UQ(sym(column)) <= sl[[2]])
-          } else {
-            lexops_filt <- filter(lexops_filt, UQ(sym(column)) %in% sl)
-          }
-          
-          iterated_letters <- c(iterated_letters, i_lttr)
-          
-        }
-        
-        res$Condition[res$string %in% lexops_filt$string] <- rowlevel$Level
-        
-        splitprogress <- splitprogress + 1
-        incProgress(detail=sprintf("%s%%", round((splitprogress/splitcomplete)*100)))
-      }
-      
-      res <- filter(res, !is.na(Condition))
-      
-    })
-    
-  }
-  
-  
-  res
-})
 
-
-genresults_preformatting <- reactive({
-  
-  res <- genresults_prematching()
-  
-  # Control for...
-  
-  # Add relevant columns and store details
-  if (gen_controlfor_boxes_N() >= 1 & gen_splitby_boxes_N() >= 1) {
-    
-    # Add relevant columns and store details
-    control_tols <- list()  # will contain all controlled variables' names (in the res df) and associated tolerances
-    columns_needing_1suffix <- c()  # will contain all columns which need renaming to have a ".1" suffix after for loop
-    withProgress(message="Getting Control Variables...", {
-      
-      for (i in 1:gen_controlfor_boxes_N()) {
-        lexops_custom_cols <- lexopsReact()[lexopsReact()$string %in% res$string, ]
-        boxid <- sprintf('gen_controlfor_%i', i)
-        boxv <- input[[sprintf('%s_vtype', boxid)]]
-        boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
-        boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
-        boxsource <- input[[sprintf("%s.source", boxid)]]
-        boxsource <- if(!is.null(boxsource)) {boxsource} else {boxopt}  # handle for when the source is stored under opt
-        
-        # get target column
-        column <- corpus_recode_columns(boxopt, boxv, boxlog, boxsource)
-        
-        # remove duplicates (fixes bug from rendering order)
-        column <- unique(column)
-        if (length(column)>1) {
-          # create new column, which will be the average of the variables selected
-          if (!(boxv %in% vis.cats.non_Zscore)) {
-            lexops_custom_cols[column] <- lapply(lexops_custom_cols[column], scale)
-          }
-          colmeans_name <- sprintf("Avg.%s", viscat2prefix(boxv, boxlog))
-          
-          # Handle Multiple Columns with Same Source
-          if (colmeans_name %in% colnames(res)) {
-            colmeans_name_orig <- colmeans_name
-            colnr <- 1
-            while (colmeans_name %in% colnames(res)) {
-              colnr <- colnr + 1
-              colmeans_name <- sprintf("%s.%i", colmeans_name_orig, colnr)
-            }
-            colnames(lexops_custom_cols)[colnames(lexops_custom_cols)==colmeans_name_orig] <- colmeans_name
-            # store variable name to rename original to Avg.%s.1 for consistency
-            columns_needing_1suffix <- c(columns_needing_1suffix, colmeans_name_orig)
-          }
-          
-          lexops_custom_cols[[colmeans_name]] <- rowMeans(select(lexops_custom_cols, one_of(column)), dims=1, na.rm=T)
-          column <- colmeans_name
-        }
-        res[[column]] <- lexops_custom_cols[[column]]  # copy over the column to res df
-        
-        #get the box's tolerance
-        sl <- if (boxv %in% c("Part of Speech", "Rhyme")) {
-          input[[sprintf("%s_sl", boxid)]]
-        } else if (input$preference.toleranceUI == 'slider') {
-          input[[sprintf("%s_sl", boxid)]]
-        } else {
-          c(input[[sprintf("%s_tol_lower", boxid)]], input[[sprintf("%s_tol_upper", boxid)]])
-        }
-        
-        if (is.numeric(res[[column]])) {
-          control_tols[[column]] <- sl  # store the box's tolerance under the column's name
-        } else {
-          control_tols[[column]] <- NA
-        }
-        incProgress(detail=sprintf("%s%%", round((i/gen_controlfor_boxes_N())*100)))
-      }
-      
-    })
-    
-    # rename original variables to Avg.%s.1 for consistency
-    for (column in columns_needing_1suffix) {
-      colnames(res)[colnames(res)==column] <- sprintf("%s.1", column)
-      names(control_tols)[names(control_tols)==column] <- sprintf("%s.1", column)
-    }
-    
-    # add cont. prefix to indicate a "control for..." variable
-    for (column in names(control_tols)) {
-      colnames(res)[colnames(res)==column] <- sprintf("cont.%s", column)
-      names(control_tols)[names(control_tols)==column] <- sprintf("cont.%s", column)
-    }
-    
-    # get design's cells
-    cells <- genlevels() %>%
-      select(Level) %>%
-      unlist(use.names=F)
-    
-    # control for the selected variables
-    
-    if (input$gen_check.dist) {
-      dist_func <- if (input$gen_dist.opt=="cb") {get_cityblock_distance} else {get_euclidean_distance}
-    }
-    gen_controlnull <- if (is.null(input$gen_controlnull)) {cells[1]} else {input$gen_controlnull}  # assume first cell if selection not rendered yet
-    numerics <- colnames(select_if(res, is.numeric))  # get a list of the numeric variables
-    
-    if (gen_controlnull == "random") {
-      # randomly select one condition as "null condition" for each row of output (each item)
-      newres <- res %>%
-        select(Condition, string) %>%
-        mutate(spread_id=1:n()) %>%
-        spread(Condition, string) %>%
-        select(-spread_id) %>%
-        slice(sample(1:n()))
-      newres$rownullcond <- sample(names(newres), nrow(newres), replace=T)
-      
-    } else {
-      # all stimuli (for all conditions) must be within tolerance relative to selected condition ("null" condition)
-      nullcond <- gen_controlnull
-      otherconds <- cells[cells!=nullcond]
-      newres <- res %>%
-        select(Condition, string) %>%
-        mutate(spread_id=1:n()) %>%
-        spread(Condition, string) %>%
-        select(-spread_id) %>%
-        slice(sample(1:n()))
-      
-    }
-    
-    withProgress(message="Generating matches...", {
-      
-      none_NAs_items <- 0
-      for (itemnr in 1:nrow(newres)) {
-        
-        if (gen_controlnull=="random") {
-          nullcond <- newres$rownullcond[itemnr]
-          otherconds <- cells[cells!=nullcond]
-        }
-        
-        item_str <- newres[[nullcond]][itemnr]
-        
-        # get pool of potential matches, and shuffle randomly
-        match_str_pool_base <- res
-        if (input$gen_check.dist) {match_str_pool_base <- mutate(match_str_pool_base, dist = dist_func(res, item_str, names(control_tols)[names(control_tols) %in% numerics]))}
-        
-        none_NAs_this_item <- 0
-        for (condnr in 1:length(otherconds)) {
-          condname <- otherconds[condnr]
-          
-          # get pool of potential matches, and shuffle randomly
-          match_str_pool <- match_str_pool_base %>%
-            filter(Condition == condname) %>%
-            slice(sample(1:n()))
-          
-          for (control_nr in 1:length(names(control_tols))) {
-            control_name <- names(control_tols)[control_nr]
-            control_value <- res[[control_name]][res$string==item_str]
-            if (all(is.na(control_value))) {
-              
-              match_str_pool <- match_str_pool[0,]
-              
-            } else {
-              
-              if (control_name %in% numerics) {
-                control_tol <- control_tols[[control_name]] + control_value
-                if (input$gen_check.dist) {match_str_pool <- filter(match_str_pool, dist <= input$gen_dist_tol)}
-                match_str_pool <- filter(match_str_pool, UQ(sym(control_name))>=control_tol[1] & UQ(sym(control_name))<=control_tol[2])
-              } else {
-                match_str_pool <- filter(match_str_pool, UQ(sym(control_name)) == control_value)
-              }
-              
-            }
-          }
-          
-          if (nrow(match_str_pool)>=1) {
-            # choose random match from pool of possibilities
-            match_str <- match_str_pool %>%
-              sample_n(1) %>%
-              select(string) %>%
-              unlist(use.names=F)
-            if (length(match_str)==0) {match_str <- NA}
-            # remove from future pools to avoid duplications in stimuli list
-            res <- filter(res, string != match_str)
-          } else {
-            match_str <- NA
-          }
-          
-          # if (is.null(newres[[condname]])) {newres[[condname]] <- NA}  # ensure column exists
-          newres[[condname]][itemnr] <- match_str
-          
-          if (!is.na(match_str)) {
-            none_NAs_this_item <- none_NAs_this_item + 1
-          }
-        }
-        
-        if (none_NAs_this_item==length(otherconds)) {
-          none_NAs_items <- none_NAs_items + 1
-        }
-        
-        newres_test <- newres[1:itemnr, ]
-        if (input$gen_limit_N == "N") {
-          if (is.null(input$gen_N_stim)) {
-            max_entries <- 50  # default if not yet rendered
-          } else {
-            max_entries <- input$gen_N_stim
-          }
-          incProgress(nrow(na.omit(newres_test))/max_entries, detail=sprintf("%i%%", round((nrow(na.omit(newres_test))/max_entries*100))))
-        } else {
-          max_entries <- Inf
-          incProgress(itemnr/nrow(newres), detail=sprintf("%i%%", round(itemnr/nrow(newres)*100)))
-        }
-        
-        if (none_NAs_items >= max_entries) {
-          break
-        }
-        
-      }
-      
-    })
-    
-    newres <- na.omit(newres)
-    if (gen_controlnull=="random") {
-      newres <- plyr::rename(newres, c("rownullcond"="Match_Null"))
-    } else {
-      newres <- mutate(newres, Match_Null=nullcond)
-    }
-    
-    if (input$gen_limit_N == "N") {
-      validate(
-        need(nrow(newres) >= input$gen_N_stim,
-             sprintf("Insufficient pool size (requested random sample of %i words per condition, from total of %i combinations in generated pool). Consider regenerating, increasing tolerances, increasing sizes of splits, or reducing desired stimulus list size.", input$gen_N_stim, nrow(newres)))
-      )
-    }
-    
-    newres <- newres %>%
-      mutate(Item = row_number()) %>%
-      select(Item, everything())
-    
-    res <- newres
-    
-  }
-  
-  res
-  
-})
-
-genresults_longformat <- reactive({
-  
-  if (gen_controlfor_boxes_N() >= 1 & gen_splitby_boxes_N() >= 1) {
-    
-    res <- genresults_prematching()
-    
-    # Add relevant columns and store details
-    control_tols <- list()  # will contain all controlled variables' names (in the res df) and associated tolerances
-    columns_needing_1suffix <- c()  # will contain all columns which need renaming to have a ".1" suffix after for loop
+  # controls
+  if (gen_controlfor_boxes_N() > 0 & gen_splitby_boxes_N() > 0) {
     for (i in 1:gen_controlfor_boxes_N()) {
-      lexops_custom_cols <- lexopsReact()[lexopsReact()$string %in% res$string, ]
-      boxid <- sprintf('gen_controlfor_%i', i)
-      boxlog <- if (is.null(input[[sprintf('%s.log', boxid)]])) {F} else {input[[sprintf('%s.log', boxid)]]}
-      boxopt <- if (is.null(input[[sprintf('%s.opt', boxid)]])) {""} else {input[[sprintf('%s.opt', boxid)]]}
-      boxv <- input[[sprintf('%s_vtype', boxid)]]
-      boxsource <- input[[sprintf("%s.source", boxid)]]
-      
-      if (boxv == "Phonological Neighbourhood") {
-        column <- sprintf("%s.%s", corpus_recode(boxopt, "PN", logprefix=boxlog), corpus_recode(boxsource))
-      } else {
-        column <- corpus_recode_columns(boxopt, boxv, boxlog)
-      }
-      # remove duplicates (fixes bug from rendering order)
-      column <- unique(column)
-      if (length(column)>1) {
-        # create new column, which will be the average of the variables selected
-        if (!(boxv %in% vis.cats.non_Zscore)) {
-          lexops_custom_cols[column] <- lapply(lexops_custom_cols[column], scale)
-        }
-        colmeans_name <- sprintf("Avg.%s", viscat2prefix(boxv, boxlog))
-        
-        # Handle Multiple Columns with Same Source
-        if (colmeans_name %in% colnames(res)) {
-          colmeans_name_orig <- colmeans_name
-          colnr <- 1
-          while (colmeans_name %in% colnames(res)) {
-            colnr <- colnr + 1
-            colmeans_name <- sprintf("%s.%i", colmeans_name_orig, colnr)
-          }
-          colnames(lexops_custom_cols)[colnames(lexops_custom_cols)==colmeans_name_orig] <- colmeans_name
-          # store variable name to rename original to Avg.%s.1 for consistency
-          columns_needing_1suffix <- c(columns_needing_1suffix, colmeans_name_orig)
-        }
-        
-        lexops_custom_cols[[colmeans_name]] <- rowMeans(select(lexops_custom_cols, one_of(column)), dims=1, na.rm=T)
-        column <- colmeans_name
-      }
-      res[[column]] <- lexops_custom_cols[[column]]  # copy over the column to res df
-      #get the box's tolerance
-      sl <- if (input$preference.toleranceUI == 'slider') {
-        input[[sprintf("%s_sl", boxid)]]
-      } else if (input$preference.toleranceUI == 'numericinput') {
-        c(input[[sprintf("%s_tol_lower", boxid)]], input[[sprintf("%s_tol_upper", boxid)]])
-      }
-      
-      if (is.numeric(res[[column]])) {
-        control_tols[[column]] <- sl  # store the box's tolerance under the column's name
-      } else {
-        control_tols[[column]] <- NA
-      }
+      df <- df %>%
+        LexOPS::control_for(control_opts[[i]]$var, control_opts[[i]]$selection, standard_eval = TRUE)
     }
-    
-    # rename original variables to Avg.%s.1 for consistency
-    for (column in columns_needing_1suffix) {
-      colnames(res)[colnames(res)==column] <- sprintf("%s.1", column)
-      names(control_tols)[names(control_tols)==column] <- sprintf("%s.1", column)
-    }
-    
-    # add cont. prefix to indicate a "control for..." variable
-    for (column in names(control_tols)) {
-      colnames(res)[colnames(res)==column] <- sprintf("cont.%s", column)
-      names(control_tols)[names(control_tols)==column] <- sprintf("cont.%s", column)
-    }
-    
-    res <- genresults_preformatting() %>%
-      gather("Condition", "string", 2:(ncol(genresults_preformatting())-1)) %>%
-      left_join(res, by=c("string", "Condition")) %>%
-      mutate(is_null = ifelse(Condition == Match_Null, T, F))
-    
-    # simple & fast euclidean and citblock distance functions
-    euc.dist <- function(x1, x2) as.numeric(dist(rbind(x1, x2), method="euclidean"))
-    cb.dist <- function(x1, x2) as.numeric(dist(rbind(x1, x2), method="manhattan"))
-    
-    # add euclidean and cityblock distance measures
-    cont_cols <- colnames(res)[startsWith(colnames(res), "cont.") & sapply(res, is.numeric)]  # get list of the numeric columns that refer to controls
-    res$cont.Euclidean.Distance <- NA
-    res$cont.CityBlock.Distance <- NA
-    if (length(cont_cols)>0) {
-      for (itemnr in unique(res$Item)) {
-        null_cols <- as.numeric(res[res$is_null==T & res$Item==itemnr, cont_cols])
-        for (condname in unique(res$Condition)) {
-          x_cols <- as.numeric(res[res$Condition==condname & res$Item==itemnr, cont_cols])
-          res$cont.Euclidean.Distance[res$Condition==condname & res$Item==itemnr] <- euc.dist(x_cols, null_cols)
-          res$cont.CityBlock.Distance[res$Condition==condname & res$Item==itemnr] <- cb.dist(x_cols, null_cols)
-        }
-      }
-    }
-    
-    res <- res %>%
-      select(-is_null) %>%
-      select(Item, string, Condition, Match_Null, cont.Euclidean.Distance, cont.CityBlock.Distance, everything())
-    
-    # remove the distance columns if empty (e.g. only controlling for categorical variables)
-    if (all(is.na(res$cont.Euclidean.Distance))) {
-      res <- select(res, -cont.Euclidean.Distance)
-    }
-    if (all(is.na(res$cont.CityBlock.Distance))) {
-      res <- select(res, -cont.CityBlock.Distance)
-    }
-    
-  } else {
-    
-    res <- genresults_preformatting()
-    
   }
-  
-  res
+
+  if (gen_controlfor_boxes_N() > 0 & gen_splitby_boxes_N() > 0) {
+    n <- if (input$gen_stim_n_all) "all" else input$gen_stim_n
+    match_null <- gen_match_null()
+
+    shinyjs::html("gen_console", "Generating...")
+    gen_seed <- if (input$preference_use_a_random_seed) input$preference_random_seed else NA
+    out <- LexOPS::generate(df, n = n, match_null = match_null, seed = gen_seed, is_shiny = TRUE)
+
+    if (n != "all") {
+      if (nrow(out) == n) {
+        shinyjs::html("gen_console", sprintf("Done! Generated %i stimuli per condition", nrow(out)))
+      }
+    }
+
+    out
+  } else {
+    if (gen_splitby_boxes_N() > 0 & gen_controlfor_boxes_N() == 0 & gen_filterby_boxes_N() == 0) {
+      shinyjs::html("gen_console", "Only splits were specified. Will return the dataset with the specified splits.")
+    } else if (gen_splitby_boxes_N() == 0 & gen_controlfor_boxes_N() > 0 & gen_filterby_boxes_N() == 0) {
+      shinyjs::html("gen_console", "Only controls were specified, but controls require splits! This has no effect on the results.")
+    } else if (gen_splitby_boxes_N() == 0 & gen_controlfor_boxes_N() == 0 & gen_filterby_boxes_N() > 0) {
+      shinyjs::html("gen_console", "Only filters were specified. Will return the filtered dataset.")
+    }
+
+    df
+  }
+
 })
 
-genresults <- reactive({
-  # wide (default) or long format
-  
-  if (!is.null(input$gen_dataformat)) {
-    
-    if (input$gen_dataformat=="long" & gen_controlfor_boxes_N() >= 1 & gen_splitby_boxes_N() >= 1) {
-      res <- genresults_longformat()
-    } else {
-      res <- genresults_preformatting()
+generated_stim_formatted <- reactive({
+
+  if (gen_splitby_boxes_N() > 0 & gen_controlfor_boxes_N() > 0) {
+    if (input$gen_data_format == "wide") {
+      out <- generated_stim()
+    } else if (input$gen_data_format == "long") {
+      out <- LexOPS::long_format(generated_stim(), include = input$gen_res_include)
     }
-    
   } else {
-    res <- genresults_preformatting()
+    if (input$gen_res_include == "all") {
+      if (input$gen_data_format == "wide") {
+        return(dplyr::select(generated_stim(), string))
+      } else if (input$gen_data_format == "long") {
+        return(generated_stim())
+      }
+    } else {
+      out <- dplyr::select(generated_stim(), string)
+    }
   }
-  
-  res
+
+  if (input$gen_res_include != "all") {
+    # add filter variables if any (even if no splits or controls specified)
+    if (gen_filterby_boxes_N() > 0 & input$gen_data_format == "long") {
+      filter_vars <- sapply(1:gen_filterby_boxes_N(), function(i) {
+        boxid <- sprintf("gen_filterby_%i", i)
+        measure <- input[[sprintf("%s_v_measure", boxid)]]
+        source <- input[[sprintf("%s_v_source", boxid)]]
+        if (measure=="Length") {
+          "Length"
+        } else {
+          possible_vars <- names(lexops_react_var_measures()[lexops_react_var_measures()==measure])
+          possible_vars_sources <- sapply(possible_vars, function(v) LexOPS::var_to_source(v, first_cite = FALSE, standard_eval = TRUE))
+          possible_vars[possible_vars_sources == source]
+        }
+      })
+      out <- left_join(out, select(lexops_react(), c(string, filter_vars)), by = "string")
+    }
+    # if no controls are specified (so generate() function is never triggered), but the data is still split, add the variables used as splits too
+    if (gen_controlfor_boxes_N() == 0 & gen_splitby_boxes_N() > 0) {
+      split_vars <- sapply(1:gen_splitby_boxes_N(), function(i) {
+        boxid <- sprintf("gen_splitby_%i", i)
+        measure <- input[[sprintf("%s_v_measure", boxid)]]
+        source <- input[[sprintf("%s_v_source", boxid)]]
+        if (measure == "Random") {
+          NULL
+        } else if (measure=="Length") {
+          "Length"
+        } else {
+          possible_vars <- names(lexops_react_var_measures()[lexops_react_var_measures()==measure])
+          possible_vars_sources <- sapply(possible_vars, function(v) LexOPS::var_to_source(v, first_cite = FALSE, standard_eval = TRUE))
+          possible_vars[possible_vars_sources == source]
+        }
+      })
+      if (length(unlist(split_vars)) > 0) {
+        out <- left_join(out, select(lexops_react(), c(string, split_vars)), by = "string")
+      }
+    }
+  }
+
+  out
+
+})
+
+# put in a data table
+output$generated_stim_dt <- DT::renderDataTable({
+  DT::datatable(generated_stim_formatted(), options=list(pageLength=25, scrollX=T), rownames=F)
+})
+
+# link to download
+output$generated_stim_download <- downloadHandler(
+  filename = 'generated_stimuli.csv',
+  content = function(file) {
+    withProgress(message="Writing stimuli to .csv file...", value=1, {
+      write.csv(generated_stim_formatted(), file, row.names = FALSE)
+    })
+  }
+)
+
+# generate code to codify the stimulus generation
+output$gen_codify_text <- renderText({
+
+  # get the filters
+  filter_opts <- filter_opts_react()
+
+  # get the splits
+  split_opts <- split_opts_react()
+
+  # get the controls
+  control_opts <- control_opts_react()
+
+  # get the random seed info
+  gen_seed <- gen_seed <- if (input$preference_use_a_random_seed) input$preference_random_seed else NA
+  gen_seed_arg <- if (is.na(gen_seed)) "" else sprintf(", seed = %i", gen_seed)
+
+  codify_var <- function(x) {
+    if (grepl(" ", x)) {
+      sprintf("`%s`", x)
+    } else {
+      x
+    }
+  }
+  out <- "library(LexOPS)\n\nLexOPS::lexops"
+
+  if (gen_filterby_boxes_N() > 0) {
+    for (i in 1:gen_filterby_boxes_N()) {
+      if (is.numeric(lexops_react()[[filter_opts[[i]]$var]])) {
+        out <- sprintf("%s %%>%%\n\tsubset(%s >= %s & %s <= %s)", out, codify_var(filter_opts[[i]]$var), formatC(filter_opts[[i]]$selection[1], format = "f", drop0trailing = TRUE), codify_var(filter_opts[[i]]$var), formatC(filter_opts[[i]]$selection[2], format = "f", drop0trailing = TRUE))
+      } else {
+        out <- sprintf("%s %%>%%\n\tsubset(%s %%in%% c(%s))", out, codify_var(filter_opts[[i]]$var), paste(sprintf("\"%s\"", filter_opts[[i]]$selection), collapse = ", "))
+      }
+    }
+  }
+
+  if (gen_splitby_boxes_N() > 0) {
+    for (i in 1:gen_splitby_boxes_N()) {
+      if (split_opts[[i]]$var == "Random") {
+        out <- sprintf("%s %%>%%\n\tsplit_random(%i%s)", out, split_opts[[i]]$n_levels, gen_seed_arg)
+      } else {
+        if (is.numeric(lexops_react()[[split_opts[[i]]$var]])) {
+          split_sel_code <- paste(sapply(split_opts[[i]]$selection, function(l) sprintf("%g:%g", l[1], l[2])), collapse = " ~ ")
+          out <- sprintf("%s %%>%%\n\tsplit_by(%s, %s)", out, split_opts[[i]]$var, split_sel_code)
+        } else {
+          split_sel_quoted <- lapply(split_opts[[i]]$selection, function(l) {
+            if (length(l) == 1) {
+              sprintf("\"%s\"", l)
+            } else {
+              l
+            }
+          })
+          split_sel_code <- paste(sprintf("%s", split_sel_quoted), collapse = " ~ ")
+          out <- sprintf("%s %%>%%\n\tsplit_by(%s, %s)", out, split_opts[[i]]$var, split_sel_code)
+        }
+      }
+    }
+  }
+
+  if (gen_controlfor_boxes_N() > 0) {
+    for (i in 1:gen_controlfor_boxes_N()) {
+      if (is.numeric(lexops_react()[[control_opts[[i]]$var]])) {
+        out <- sprintf("%s %%>%%\n\tcontrol_for(%s, %s)", out, control_opts[[i]]$var, sprintf("%g:%g", control_opts[[i]]$selection[1], control_opts[[i]]$selection[2]))
+      } else {
+        out <- sprintf("%s %%>%%\n\tcontrol_for(%s)", out, control_opts[[i]]$var)
+      }
+    }
+  }
+
+  if (gen_splitby_boxes_N() > 0 & gen_controlfor_boxes_N() > 0) {
+    n <- if (input$gen_stim_n_all) "\"all\"" else input$gen_stim_n
+    match_null <- gen_match_null()
+    out <- sprintf("%s %%>%%\n\tgenerate(%s, \"%s\"%s)", out, n, match_null, gen_seed_arg)
+  }
+
+  out
 })

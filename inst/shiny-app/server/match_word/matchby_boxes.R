@@ -1,21 +1,21 @@
 # initialise number of boxes
-gen_controlfor_boxes_N <- reactiveVal(0)
+match_matchby_boxes_N <- reactiveVal(0)
 
 # Counting N boxes
-observeEvent(input$gen_controlfor_add, {
-  gen_controlfor_boxes_N(gen_controlfor_boxes_N() + 1)
+observeEvent(input$match_matchby_add, {
+  match_matchby_boxes_N(match_matchby_boxes_N() + 1)
 })
-observeEvent(input$gen_controlfor_minus, {
-  if (gen_controlfor_boxes_N()>0) {
-    gen_controlfor_boxes_N(gen_controlfor_boxes_N() - 1)
+observeEvent(input$match_matchby_minus, {
+  if (match_matchby_boxes_N()>0) {
+    match_matchby_boxes_N(match_matchby_boxes_N() - 1)
   }
 })
 
 # Display N boxes
-observeEvent(gen_controlfor_boxes_N(), {
+observeEvent(match_matchby_boxes_N(), {
   lapply (1:25, function(i) {
-    boxid <- sprintf("gen_controlfor_%i", i)
-    if (i <= gen_controlfor_boxes_N()) {
+    boxid <- sprintf("match_matchby_%i", i)
+    if (i <= match_matchby_boxes_N()) {
       shinyjs::show(id = boxid)
     } else {
       shinyjs::hide(id = boxid)
@@ -25,7 +25,7 @@ observeEvent(gen_controlfor_boxes_N(), {
 
 # Build boxes" UIs
 lapply(1:25, function(i) {
-  boxid <- sprintf("gen_controlfor_%i", i)
+  boxid <- sprintf("match_matchby_%i", i)
 
   # source selection
   output[[sprintf("%s_v_source_ui", boxid)]] <- renderUI({
@@ -92,11 +92,6 @@ lapply(1:25, function(i) {
       var <- possible_vars[possible_vars_sources == source]
     }
     out <- if (is.numeric(lexops_react()[[var]])) {
-      # randomly select a match_string
-      random_match_string <- lexops_react() %>%
-        dplyr::filter(!is.na(!!(dplyr::sym(var)))) %>%
-        dplyr::sample_n(1) %>%
-        dplyr::pull(string)
 
       selection <- if (input$preference_toleranceUI == "slider") {
         input[[sprintf("%s_v_selection", boxid)]]
@@ -104,7 +99,7 @@ lapply(1:25, function(i) {
         c(input[[sprintf("%s_v_selection_1", boxid)]], input[[sprintf("%s_v_selection_2", boxid)]])
       }
 
-      LexOPS:::box_vis(var, box_type = "warning", tol = selection, match_string = random_match_string, df = lexops_react())
+      LexOPS:::box_vis(var, box_type = "warning", tol = selection, match_string = input$match_string, df = lexops_react())
     } else {
       # no selection for categorical matching; control for exactly
       LexOPS:::box_vis(var, box_type = "warning", df = lexops_react())
@@ -128,7 +123,7 @@ lapply(1:25, function(i) {
 
 # Put the UIs built above into their boxes
 lapply(1:25, function(i) {
-  boxid <- sprintf("gen_controlfor_%i", i)
+  boxid <- sprintf("match_matchby_%i", i)
   output[[boxid]] <- renderUI({
     box(title=i, width=12, status="warning", solidHeader=T,
         selectInput(sprintf("%s_v_measure", boxid), "Control for...", c("(None)", unname(lexops_react_var_measures()) )),

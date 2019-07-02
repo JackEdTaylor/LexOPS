@@ -61,3 +61,16 @@
 .shiny-output-error-validation {
 	color: red;
 }
+
+.nav-tabs {
+  font-size: 17px
+}
+
+#match_string_input .form-group {
+  display: table-row;
+}
+
+#match_string_input label {
+  display: table-cell;
+  padding-right: 10px;
+}
