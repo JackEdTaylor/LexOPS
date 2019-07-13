@@ -36,6 +36,8 @@ lapply(1:25, function(i) {
       out <- NULL
     } else if (measure == "Length") {
       out <- NULL
+    } else if (grepl("^custom.", measure)) {
+      out <- NULL
     } else {
       vars_sources <- names(lexops_react_var_measures())[lexops_react_var_measures()==measure] %>%
         sapply(function(v) LexOPS::var_to_source(v, first_cite = FALSE, standard_eval = TRUE)) %>%
@@ -50,11 +52,13 @@ lapply(1:25, function(i) {
     measure <- input[[sprintf("%s_v_measure", boxid)]]
     source <- input[[sprintf("%s_v_source", boxid)]]
 
-    if (is.null(source) & measure!="Length") {
+    if (is.null(source) & measure!="Length" & !grepl("^custom.", measure)) {
       out <- NULL
     } else {
       if (measure=="Length") {
         var <- "Length"
+      } else if (grepl("^custom.", measure)) {
+        var <- measure
       } else {
         possible_vars <- names(lexops_react_var_measures()[lexops_react_var_measures()==measure])
         possible_vars_sources <- sapply(possible_vars, function(v) LexOPS::var_to_source(v, first_cite = FALSE, standard_eval = TRUE))
@@ -86,6 +90,8 @@ lapply(1:25, function(i) {
 
     if (measure=="Length") {
       var <- "Length"
+    } else if (grepl("^custom.", measure)) {
+      var <- measure
     } else {
       possible_vars <- names(lexops_react_var_measures()[lexops_react_var_measures()==measure])
       possible_vars_sources <- sapply(possible_vars, function(v) LexOPS::var_to_source(v, first_cite = FALSE, standard_eval = TRUE))
@@ -112,7 +118,7 @@ lapply(1:25, function(i) {
   output[[sprintf("%s_v_plot_ui", boxid)]] <- renderUI({
     measure <- input[[sprintf("%s_v_measure", boxid)]]
     source <- input[[sprintf("%s_v_source", boxid)]]
-    if ((is.null(source) & measure != "Length") | measure == "(None)") {
+    if ((is.null(source) & measure != "Length" & !grepl("^custom.", measure)) | measure == "(None)") {
       NULL
     } else {
       plotOutput(sprintf("%s_v_plot", boxid), height="170px")
