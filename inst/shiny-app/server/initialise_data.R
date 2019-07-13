@@ -7,7 +7,7 @@ lexops_react <- reactive({
       selcols <- colnames(cust_df_raw())
       selcols <- selcols[selcols!=input$cust_opts_column]
     } else {
-      selcols <- colnames(select(cust_df_raw(), input$cust.opts))
+      selcols <- colnames(select(cust_df_raw(), input$cust_opts))
       selcols <- selcols[selcols!=input$cust_opts_column]
     }
     targstringcolname <- input$cust_opts_column
@@ -40,7 +40,7 @@ lexops_react_vars <- reactive({
 lexops_react_var_measures <- reactive({
   out <- lexops_react_vars() %>%
     sapply(function(v) LexOPS::var_to_measure(v, first_cite = FALSE, title_caps = TRUE, include_pronunciations = FALSE, standard_eval = TRUE))
-
+  if (!is.null(input$cust_opts_inputfile)) out <- c(out, colnames(lexops_react())[grepl("^custom.", colnames(lexops_react()))])
   out
 })
 
