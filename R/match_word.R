@@ -102,7 +102,7 @@ match_word <- function(df = LexOPS::lexops, target, vars, string_col = "string",
   vars_sans_tols <- sapply(vars, dplyr::first, USE.NAMES = FALSE)
   numeric_vars <- vars_sans_tols[sapply(df[, vars_sans_tols], is.numeric)]
   df <- df %>%
-    dplyr::mutate(euclidean_distance = LexOPS::euc_dists(., target = target, vars = numeric_vars, string_col = string_col)) %>%
+    dplyr::mutate(euclidean_distance = ifelse(length(numeric_vars)>0, LexOPS::euc_dists(., target = target, vars = numeric_vars, string_col = string_col), NA)) %>%
     dplyr::arrange(euclidean_distance) %>%
     dplyr::select(!!(dplyr::sym(string_col)), euclidean_distance, dplyr::everything())
 
@@ -123,7 +123,7 @@ match_word <- function(df = LexOPS::lexops, target, vars, string_col = "string",
   charFilt <- lapply(vars, function(listObj) {
     if (!is.numeric(df[[listObj[1]]])) {
       out <- listObj
-      out[2] <- df[[listObj]][df[[string_col]]==target]
+      out[2] <- as.character(df[[listObj]][df[[string_col]]==target])
       return(out)
     }
   })
