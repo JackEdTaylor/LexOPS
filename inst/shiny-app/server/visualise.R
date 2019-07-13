@@ -101,7 +101,7 @@ output$vis_colour_source_ui <- renderUI({
     out <- NULL
   } else if (measure == "(None)") {
     out <- NULL
-  } else if (measure == "Length") {
+  } else if (measure %in% c("Length", "Generated Stimuli", "Generated Stimuli Condition", "Target Match Word", "Suggested Matches", "Words Uploaded to Fetch Tab")) {
     out <- NULL
   } else {
     vars_sources <- names(lexops_react_var_measures())[lexops_react_var_measures()==measure] %>%
@@ -153,8 +153,28 @@ output$visualiseplotly <- renderPlotly({
     y = lexops_react()[[axes[["y"]]]]
   )
 
+  # Specify z axis values
   if (input$vis_z_opt!='(None)') pd$z <- lexops_react()[[axes[["z"]]]]
-  if (input$vis_colour_opt!='(None)') pd$colour <- lexops_react()[[axes[["colour"]]]]
+
+  # Specify colour axis values
+  if (input$vis_colour_opt!='(None)') {
+    if (is.null(axes[["colour"]])) {
+      if (input$vis_colour_opt=="Generated Stimuli") {
+        pd$colour <- ifelse(lexops_react()$string %in% LexOPS::long_format(generated_stim())$string, "Generated Stimuli", "Other Strings")
+      } else if (input$vis_colour_opt=="Generated Stimuli Condition") {
+        pd$colour <- dplyr::left_join(lexops_react(), LexOPS::long_format(generated_stim()), by = "string") %>%
+          dplyr::pull(condition)
+      } else if (input$vis_colour_opt=="Target Match Word") {
+        pd$colour <- ifelse(lexops_react()$string == input$match_string, "Target Match Word", "Other Strings")
+      } else if (input$vis_colour_opt=="Suggested Matches") {
+        pd$colour <- ifelse(lexops_react()$string %in% matched_stim()$string, "Suggested Matches", "Other Strings")
+      } else if (input$vis_colour_opt=="Words Uploaded to Fetch Tab") {
+        pd$colour <- ifelse(lexops_react()$string %in% fetch_df_res()$string, "Uploaded Words", "Other Words")
+      }
+    } else {
+      pd$colour <- lexops_react()[[axes[["colour"]]]]
+    }
+  }
 
   pd <- drop_na(pd)
 
@@ -251,8 +271,7 @@ output$visualiseplotly <- renderPlotly({
 
 })
 
-# put visualisation inside of a suitably sized box
-output$visualisation_ui_box <- renderUI({
+visualisation_ui_box_generated <- eventReactive(input$vis_generateplot, {
   if (is.null(plotlyOutput('visualiseplotly'))) {
     NULL
   } else {
@@ -260,4 +279,9 @@ output$visualisation_ui_box <- renderUI({
       box(width=12, plotlyOutput('visualiseplotly'), height=screenheight()-150)
     )
   }
+})
+
+# put visualisation inside of a suitably sized box
+output$visualisation_ui_box <- renderUI({
+  visualisation_ui_box_generated()
 })
