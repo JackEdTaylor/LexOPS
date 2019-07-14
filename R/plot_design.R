@@ -67,7 +67,8 @@ plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 
   plot_vars_headings <- sapply(plot_vars, function(v) {
     measure <- LexOPS::var_to_measure(v, first_cite = FALSE, title_caps = TRUE, standard_eval = TRUE)
     source <- LexOPS::var_to_source(v, first_cite = FALSE, standard_eval = TRUE)
-    sprintf("%s\n%s", measure, source)
+    out <- if (nchar(measure) == 0 & nchar(source) == 0) sprintf("%s\n", v) else sprintf("%s\n%s", measure, source)
+    out
   }, USE.NAMES = FALSE)
 
   # generate the point positions
