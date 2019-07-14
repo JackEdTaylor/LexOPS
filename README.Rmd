@@ -20,7 +20,7 @@ library(LexOPS)
 `r usethis::use_lifecycle_badge("maturing")`
 `r usethis::use_badge(sprintf("Version: %s", packageVersion("LexOPS")), "", sprintf("https://img.shields.io/badge/version-%s-blue.svg", packageVersion("LexOPS")))`
 [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
-[![Version: 0.0.0.9000](https://img.shields.io/badge/version-0.0.0.9000-blue.svg)]()
+[![Version: 0.0.0.9001](https://img.shields.io/badge/version-0.0.0.9001-blue.svg)]()
 <!-- badges: end -->
 
 LexOPS is an R package for generating word stimuli, for use in Psychology experiments. It can generate stimuli for a factorial design specified by the user, controlling for selected lexical variables. The package has an inbuilt database of features for English words (`LexOPS::lexops`), but the user can also use their own list of features, for English words and/or for words in other languages.
