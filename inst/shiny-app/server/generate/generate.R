@@ -8,6 +8,8 @@ filter_opts_react <- reactive({
 
       if (measure=="Length") {
         var <- "Length"
+      } else if (grepl("^custom.", measure)) {
+        var <- measure
       } else {
         possible_vars <- names(lexops_react_var_measures()[lexops_react_var_measures()==measure])
         possible_vars_sources <- sapply(possible_vars, function(v) LexOPS::var_to_source(v, first_cite = FALSE, standard_eval = TRUE))
@@ -37,7 +39,7 @@ split_opts_react <- reactive({
       source <- input[[sprintf("%s_v_source", boxid)]]
       n_levels <- input[[sprintf("%s_v_n_levels", boxid)]]
 
-      if (measure %in% c("Length", "Random")) {
+      if (measure %in% c("Length", "Random") | grepl("^custom.", measure)) {
         var <- measure
       } else {
         possible_vars <- names(lexops_react_var_measures()[lexops_react_var_measures()==measure])
@@ -71,6 +73,8 @@ control_opts_react <- reactive({
 
       if (measure=="Length") {
         var <- "Length"
+      } else if (grepl("^custom.", measure)) {
+        var <- measure
       } else {
         possible_vars <- names(lexops_react_var_measures()[lexops_react_var_measures()==measure])
         possible_vars_sources <- sapply(possible_vars, function(v) LexOPS::var_to_source(v, first_cite = FALSE, standard_eval = TRUE))
