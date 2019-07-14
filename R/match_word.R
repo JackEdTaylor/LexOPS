@@ -98,11 +98,16 @@ match_word <- function(df = LexOPS::lexops, target, vars, string_col = "string",
   # check target word in string_col
   if (!target %in% df[[string_col]]) stop(sprintf("'%s' not found in '%s' column of df", target, string_col))
 
-  # get the euclidean distance, and add as a new column, 2nd after the string_col column
+  # get the euclidean distance, and add as a new column, 2nd after the string_col column; all NA if no numeric variables
   vars_sans_tols <- sapply(vars, dplyr::first, USE.NAMES = FALSE)
   numeric_vars <- vars_sans_tols[sapply(df[, vars_sans_tols], is.numeric)]
+  df <- if (length(numeric_vars)>0) {
+    dplyr::mutate(df, euclidean_distance = LexOPS::euc_dists(., target = target, vars = numeric_vars, string_col = string_col))
+  } else {
+    dplyr::mutate(df, euclidean_distance = NA)
+  }
+
   df <- df %>%
-    dplyr::mutate(euclidean_distance = ifelse(length(numeric_vars)>0, LexOPS::euc_dists(., target = target, vars = numeric_vars, string_col = string_col), NA)) %>%
     dplyr::arrange(euclidean_distance) %>%
     dplyr::select(!!(dplyr::sym(string_col)), euclidean_distance, dplyr::everything())
 
