@@ -102,7 +102,7 @@ match_word <- function(df = LexOPS::lexops, target, vars, string_col = "string",
   vars_sans_tols <- sapply(vars, dplyr::first, USE.NAMES = FALSE)
   numeric_vars <- vars_sans_tols[sapply(df[, vars_sans_tols], is.numeric)]
   df <- if (length(numeric_vars)>0) {
-    dplyr::mutate(df, euclidean_distance = LexOPS::euc_dists(., target = target, vars = numeric_vars, string_col = string_col))
+    dplyr::mutate(df, euclidean_distance = LexOPS::euc_dists(df, target = target, vars = numeric_vars, string_col = string_col))
   } else {
     dplyr::mutate(df, euclidean_distance = NA)
   }
