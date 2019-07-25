@@ -39,7 +39,7 @@ relilable to run it locally, with:
 LexOPS::run_shiny()
 ```
 
-![man/figures/shiny-preview.png]()
+![](man/figures/shiny-preview.png)
 
 ## Code
 
