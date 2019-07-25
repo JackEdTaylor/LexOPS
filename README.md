@@ -39,7 +39,9 @@ relilable to run it locally, with:
 LexOPS::run_shiny()
 ```
 
-## Generating Stimuli
+![man/figures/shiny-preview.png]()
+
+## Code
 
 In addition to the shiny app, LexOPS’ functions allow you to easily
 generate stimuli in a reproducible way.

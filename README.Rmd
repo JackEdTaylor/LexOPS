@@ -42,7 +42,9 @@ The package features an interactive shiny app, with several useful features for 
 LexOPS::run_shiny()
 ```
 
-## Generating Stimuli
+![man/figures/shiny-preview.png]()
+
+## Code
 
 In addition to the shiny app, LexOPS' functions allow you to easily generate stimuli in a reproducible way.
 
