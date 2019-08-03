@@ -232,7 +232,7 @@ box_vis.categorical <- function(var, box_type, cat_to_highlight, df) {
     dplyr::filter(!is.na(!!(dplyr::sym(var)))) %>%
     dplyr::group_by(!!(dplyr::sym(var))) %>%
     dplyr::summarise(n = dplyr::n()) %>%
-    dplyr::arrange(desc(n)) %>%
+    dplyr::arrange(dplyr::desc(n)) %>%
     dplyr::mutate(x = factor(!!(dplyr::sym(var)), levels = !!(dplyr::sym(var)))) %>%
     dplyr::mutate(alpha_level = ifelse(!!(dplyr::sym(var)) %in% cat_to_highlight, 0.75, 0.25)) %>%
     ggplot2::ggplot(ggplot2::aes(x = x, y = n, alpha = alpha_level)) +
@@ -260,7 +260,7 @@ box_vis.question_marks <- function(message, box_type) {
   dplyr::tibble(qm = c(message, rep("?", 99)),
          wordcloudsize = c(6, rep(1, 99)),
          wordcloudalpha = c(1, rep(0.6, 99))) %>%
-    ggplot2::ggplot(aes(label=qm, size=wordcloudsize, alpha=wordcloudalpha)) +
+    ggplot2::ggplot(ggplot2::aes(label=qm, size=wordcloudsize, alpha=wordcloudalpha)) +
     ggwordcloud::geom_text_wordcloud(colour=get_box_colour(box_type), rm_outside=T, shape='circle') +
     ggplot2::theme_minimal() +
     ggplot2::scale_size_area(max_size=15) +
