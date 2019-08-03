@@ -27,10 +27,19 @@ if (!require("devtools")) install.packages("devtools")
 devtools::install_github("JackEdTaylor/LexOPS")
 ```
 
-## Shiny App
+## Walkthrough
+
+An introductory walkthrough of the main features of LexOPS is available
+here:
+
+<https://jackedtaylor.github.io/LexOPSdocs/>
+
+## tl;dr
+
+### Shiny App
 
 The package features an interactive shiny app, with several useful
-features for visualising variables’ distributions and relationships
+features such as visualising variables’ distributions and relationships
 while generating stimuli. The LexOPS shiny app is available online at
 <https://jackt.shinyapps.io/lexops/>, but it is usually faster and more
 relilable to run it locally, with:
@@ -41,12 +50,12 @@ LexOPS::run_shiny()
 
 ![](man/figures/shiny-preview.png)
 
-## Code
+### Code
 
 In addition to the shiny app, LexOPS’ functions allow you to easily
 generate stimuli in a reproducible way.
 
-### The “Generate Pipeline”
+#### The “Generate Pipeline”
 
 The following example pipeline generates 50 words (all nouns) per
 condition (200 words in total), for a study with a 2 x 2, concreteness
@@ -78,7 +87,7 @@ stim <- lexops %>%
 #> Generated 50/50 (100%). 85 total iterations, 0.59 success rate.
 ```
 
-Let’s have a quick preview of what we generated\!
+A preview of what was generated:
 
 ``` r
 # create a table of the first 20 words (4 per row) as an example
@@ -95,16 +104,10 @@ stim %>%
 |        4 | smugness    | ammonium    | whomever    | derriere    | A1\_B1      |
 |        5 | phraseology | racquetball | nonchalance | mountaintop | A2\_B2      |
 
-### Review Generated Stimuli
+#### Review Generated Stimuli
 
-Now we’ve generated our stimuli, we’ll want to check our pipeline has
-done what we expected. The `plot_design()` function is a handy way to do
-this. This function plots how distributions of variables that were split
-by or controlled for differ between conditions. Variables used as splits
-(i.e. independent variables) should differ between conditions, while
-variables used as controls should show similar distributions. Words from
-the same `item_nr` row (see previous table) are joined by lines, and
-presented in matching colours.
+The `plot_design()` function produces a plot summarising the generated
+stimuli.
 
 ``` r
 plot_design(stim)
@@ -112,14 +115,10 @@ plot_design(stim)
 
 <img src="man/figures/README-fig1-1.png" width="100%" />
 
-### Convert to Long Format
+#### Convert to Long Format
 
-The `long_format()` function is a handy way to convert the generated
-stimuli to long format, which is useful for wrangling the data further.
-By default, this function returns the generated stimuli in long format,
-including all the variables specified in the Generate Pipeline (though
-the `include` argument also allows you to request all variables from the
-original dataframe).
+The `long_format()` function makes it easy to convert generated stimuli
+into long format.
 
 ``` r
 # present the same 20 words as in the last table
