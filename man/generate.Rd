@@ -4,7 +4,7 @@
 \alias{generate}
 \title{Generate stimuli}
 \usage{
-generate(df, n = 20, match_null = "first", seed = NA,
+generate(df, n = 20, match_null = "balanced", seed = NA,
   string_col = "string", cond_col = NA, is_shiny = FALSE)
 }
 \arguments{
