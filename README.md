@@ -52,8 +52,8 @@ The following example pipeline generates 50 words (all nouns) per
 condition (200 words in total), for a study with a 2 x 2, concreteness
 (low, high) by bigram probability (low, high) experimental design. Words
 are controlled for by length exactly, and by word frequency within a
-tolerance of Ã‚Â±0.2 Zipf. Matches are generated relative to each
-condition an equal number of times (`match_null="balanced"`).
+tolerance of ±0.2 Zipf. Matches are generated relative to each condition
+an equal number of times (`match_null="balanced"`).
 
 ``` r
 library(LexOPS)
