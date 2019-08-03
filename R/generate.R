@@ -46,7 +46,7 @@
 #'
 #' @export
 
-generate <- function(df, n=20, match_null = "first", seed = NA, string_col = "string", cond_col = NA, is_shiny = FALSE) {
+generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = "string", cond_col = NA, is_shiny = FALSE) {
   if (is_shiny) {
     # if in a shiny context, replace the base cat() function with one which captures the console output
     cat <- function(str) shinyjs::html("gen_console", sprintf("%s", str))
