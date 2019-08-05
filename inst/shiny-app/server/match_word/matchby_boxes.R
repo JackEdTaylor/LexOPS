@@ -105,7 +105,8 @@ lapply(1:25, function(i) {
         c(input[[sprintf("%s_v_selection_1", boxid)]], input[[sprintf("%s_v_selection_2", boxid)]])
       }
 
-      LexOPS:::box_vis(var, box_type = "warning", tol = selection, match_string = input$match_string, df = lexops_react())
+      match_string <- if (is.null(input$match_string)) NA else input$match_string
+      LexOPS:::box_vis(var, box_type = "warning", tol = selection, match_string = match_string, df = lexops_react())
     } else {
       # no selection for categorical matching; control for exactly
       LexOPS:::box_vis(var, box_type = "warning", df = lexops_react())
