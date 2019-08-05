@@ -80,11 +80,11 @@ matched_stim <- reactive({
       if (is.numeric(df[[filt_var]])) {
         # numeric filter
         df <- df %>%
-          dplyr::filter(dplyr::between(!!(dplyr::sym(filt_var)), filt_sel[1], filt_sel[2]))
+          dplyr::filter(dplyr::between(!!(dplyr::sym(filt_var)), filt_sel[1], filt_sel[2]) | string==input$match_string)
       } else {
         # categorical filter
         df <- df %>%
-          dplyr::filter(!!(dplyr::sym(filt_var)) %in% filt_sel)
+          dplyr::filter(!!(dplyr::sym(filt_var)) %in% filt_sel | string==input$match_string)
       }
     }
   }
