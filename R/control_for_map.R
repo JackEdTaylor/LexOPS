@@ -41,7 +41,7 @@ control_for_map <- function(df, fun, var, tol = NA, name = NA, string_col = "str
   }
 
   # prepend var list with the function
-  var <- LexOPS:::prepend(var, fun)
+  var <- prepend(var, fun)
 
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
@@ -62,9 +62,9 @@ control_for_map <- function(df, fun, var, tol = NA, name = NA, string_col = "str
   # prepend var with what the output should be called
   # var's final structure should be `list(name, fun, var, tol)`
   var <- if (is.na(name)) {
-    LexOPS:::prepend(var, sprintf("control_fun_%i", length(LexOPS_attrs$control_functions)+1 ))
+    prepend(var, sprintf("control_fun_%i", length(LexOPS_attrs$control_functions)+1 ))
   } else {
-    LexOPS:::prepend(var, name)
+    prepend(var, name)
   }
 
   # check that the splits have been performed (will be stored in the attributes)
