@@ -131,6 +131,17 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
   # if no controls, just return the df with the condition variable, otherwise generate matches
   if (!is.null(LexOPS_attrs$controls) | !is.null(LexOPS_attrs$control_functions)) {
 
+    # function to filter exactly for categories, and with tolerances for numeric
+    filter_tol <- function(tol, df_matches) {
+      if(is.numeric(df_matches[[tol[[1]]]]) & length(tol)>=3) {
+        dplyr::filter(df_matches, dplyr::between(!!dplyr::sym(tol[[1]]),
+                                                 tol[[3]]+tol[[2]][1],
+                                                 tol[[3]]+tol[[2]][2]))
+      } else {
+        dplyr::filter(df_matches, !!dplyr::sym(tol[[1]]) == tol[[2]])
+      }
+    }
+
     # function to find matches for a particular word (better than current match_word() function?)
     find_matches <- function(df, target, vars, matchCond, string_col) {
       # if no controls, return the df unchanged
@@ -146,16 +157,6 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
         }
         if (is.list(cont)) append(cont, cont_val) else list(cont, cont_val)
       })
-      # function to filter exactly for categories, and with tolerances for numeric
-      filter_tol <- function(tol, df_matches) {
-        if(is.numeric(df_matches[[tol[[1]]]]) & length(tol)>=3) {
-          dplyr::filter(df_matches, dplyr::between(!!dplyr::sym(tol[[1]]),
-                                                   tol[[3]]+tol[[2]][1],
-                                                   tol[[3]]+tol[[2]][2]))
-        } else {
-          dplyr::filter(df_matches, !!dplyr::sym(tol[[1]]) == tol[[2]])
-        }
-      }
       # for each control, filter out non-suitable matches for this word
       df_matches_filt <- vars %>%
         purrr::map(~ filter_tol(., df_matches = df_matches)) %>%
@@ -207,17 +208,6 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
         cont_val <- target_vals[[cont_nr]]
         if (is.list(cont)) append(cont, cont_val) else list(cont, cont_val)
       })
-
-      # function to filter exactly for categories, and with tolerances for numeric
-      filter_tol <- function(tol, df_matches) {
-        if(is.numeric(df_matches[[tol[[1]]]]) & length(tol)>=3) {
-          dplyr::filter(df_matches, dplyr::between(!!dplyr::sym(tol[[1]]),
-                                                   tol[[3]]+tol[[2]][1],
-                                                   tol[[3]]+tol[[2]][2]))
-        } else {
-          dplyr::filter(df_matches, !!dplyr::sym(tol[[1]]) == tol[[2]])
-        }
-      }
 
       # for each control, filter out non-suitable matches for this word
       df_matches_filt <- vars %>%
