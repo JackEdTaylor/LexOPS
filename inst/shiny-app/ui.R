@@ -342,20 +342,21 @@ tagList(
                                                   column(12, align = "center", tags$p(sprintf("LexOPS version %s", packageVersion("LexOPS")), style='font-size:20px; color:black;')),
                                                   column(12, br()),
                                                   column(12, br()),
+
+                                                  column(4, align="center",
+                                                         fluidRow(
+                                                             column(12, tags$a(href = 'https://jackedtaylor.github.io/LexOPSdocs/', icon('file-alt'), style='font-size:75px; color:black;')),
+                                                             column(12, tags$a(href = 'https://jackedtaylor.github.io/LexOPSdocs/', 'LexOPS Walkthrough', style='font-size:25px; color:black;'))
+                                                         )),
                                                   column(4, align="center",
                                                          fluidRow(
                                                              column(12, tags$a(href = 'https://jackt.shinyapps.io/lexops/', icon('book-open'), style='font-size:75px; color:black;')),
-                                                             column(12, tags$a(href = 'https://jackt.shinyapps.io/lexops/', 'shinyapps.io', style='font-size:25px; color:black;'))
+                                                             column(12, tags$a(href = 'https://jackt.shinyapps.io/lexops/', 'LexOPS on shinyapps.io', style='font-size:25px; color:black;'))
                                                          )),
                                                   column(4, align="center",
                                                          fluidRow(
                                                              column(12, tags$a(href = 'https://github.com/JackEdTaylor/LexOPS', icon('github'), style='font-size:75px; color:black;')),
                                                              column(12, tags$a(href = 'https://github.com/JackEdTaylor/LexOPS', 'GitHub Repository', style='font-size:25px; color:black;'))
-                                                         )),
-                                                  column(4, align="center",
-                                                         fluidRow(
-                                                             column(12, tags$a(href = '#???', icon('file-alt'), style='font-size:75px; color:black;')),
-                                                             column(12, tags$a(href = '#???', 'Read the Paper', style='font-size:25px; color:black;'))
                                                          )),
                                                   column(12, br()),
                                                   column(12, br())
