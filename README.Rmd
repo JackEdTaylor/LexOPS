@@ -31,7 +31,7 @@ LexOPS can be installed as an R package with:
 
 ```{r, eval=FALSE}
 if (!require("devtools")) install.packages("devtools")
-devtools::install_github("JackEdTaylor/LexOPS")
+devtools::install_github("JackEdTaylor/LexOPS@*release")
 ```
 
 ## Walkthrough
