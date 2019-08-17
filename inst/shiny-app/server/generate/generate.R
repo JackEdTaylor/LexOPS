@@ -145,8 +145,13 @@ generated_stim <- reactive({
   # controls
   if (gen_controlfor_boxes_N() > 0 & gen_splitby_boxes_N() > 0) {
     for (i in 1:gen_controlfor_boxes_N()) {
-      df <- df %>%
-        LexOPS::control_for(control_opts[[i]]$var, control_opts[[i]]$selection, standard_eval = TRUE)
+      if (is.numeric(lexops_react()[[control_opts[[i]]$var]])) {
+        df <- df %>%
+          LexOPS::control_for(control_opts[[i]]$var, control_opts[[i]]$selection, standard_eval = TRUE)
+      } else {
+        df <- df %>%
+          LexOPS::control_for(control_opts[[i]]$var, standard_eval = TRUE)
+      }
     }
   }
 
