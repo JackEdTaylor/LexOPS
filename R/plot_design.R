@@ -40,10 +40,13 @@ plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 
   }
 
   # get vector of control variables
-  controls <- sapply(LexOPS_attrs$controls, dplyr::first)
+  controls <- c( sapply(LexOPS_attrs$controls, dplyr::first), sapply(LexOPS_attrs$control_functions, dplyr::first) )
 
   # get df which contains all the original variables for the generated stimuli
   meta_df <- LexOPS_attrs$meta_df
+
+  # convert to numeric if appropriate
+  meta_df <- suppressWarnings(dplyr::mutate_if(meta_df, function(x) all(!is.na(as.numeric(x))), as.numeric))
 
   # join this to df
   plot_df <- dplyr::select(df, c(item_nr, condition, match_null, string)) %>%
@@ -59,6 +62,9 @@ plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 
   } else {
     include
   }
+
+  # flatten to vector
+  plot_vars <- unlist(plot_vars)
 
   # remove non-numeric variables
   plot_vars <- plot_vars[sapply(meta_df[plot_vars], is.numeric)]
