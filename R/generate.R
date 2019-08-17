@@ -62,7 +62,7 @@
 #' library(vwr)
 #' lexops %>%
 #'  split_by(AROU.Warriner, 1:3 ~ 6:9) %>%
-#'  control_for(Rhyme.eSpeak.br)
+#'  control_for(Rhyme.eSpeak.br) %>%
 #'  control_for_map(levenshtein.distance, eSpeak.br_1letter, 0:2) %>%
 #'  generate(20)
 #'
