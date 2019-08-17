@@ -62,7 +62,7 @@ control_for_map <- function(df, fun, var, tol = NA, name = NA, string_col = "str
   # prepend var with what the output should be called
   # var's final structure should be `list(name, fun, var, tol)`
   var <- if (is.na(name)) {
-    prepend(var, sprintf("control_fun_%i", length(LexOPS_attrs$control_functions)+1 ))
+    prepend(var, sprintf("control_map_%i", length(LexOPS_attrs$control_functions)+1 ))
   } else {
     prepend(var, name)
   }
