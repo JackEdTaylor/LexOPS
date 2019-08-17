@@ -45,7 +45,7 @@ long_format <- function(df, include = "design", string_col = "string") {
       colnames(LexOPS_attrs$meta_df)[!colnames(LexOPS_attrs$meta_df) %in% c(string_col, "LexOPS_cond")]
     } else {
       splits <- sapply(LexOPS_attrs$splits, dplyr::first)
-      controls <- sapply(LexOPS_attrs$controls, dplyr::first)
+      controls <- c( sapply(LexOPS_attrs$controls, dplyr::first), sapply(LexOPS_attrs$control_functions, dplyr::first) )
       if (include == "design") {
         colnames(LexOPS_attrs$meta_df)[colnames(LexOPS_attrs$meta_df) %in% c(splits, controls)]
       } else if (include == "splits") {

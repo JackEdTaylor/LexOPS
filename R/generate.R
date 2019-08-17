@@ -264,6 +264,8 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
     out <- matrix(ncol=length(all_conds)+1, nrow=n)
     printing_points <- round(seq(0, n, n/10))
     successful_iterations <- c()
+    control_for_map_values <- dplyr::tibble()
+
     while(n_generated < n) {
       n_tried <- n_tried + 1
       n_tried_this_n_generated <- n_tried_this_n_generated + 1
@@ -304,12 +306,45 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
           )
         # remove the target word
         m <- m[m[[string_col]]!=this_word, ]
-        # pick a match randomly
-        if (nrow(m)==0) NA else {
-          m %>%
-            dplyr::pull(string_col) %>%
-            sample(1)
-        }
+
+        if (nrow(m)==0) {
+          item_out <- NA
+          } else {
+            # pick a match randomly
+            item_out <- m %>%
+              dplyr::pull(string_col) %>%
+              sample(1)
+            # store any control_for_map values
+            if (length(LexOPS_attrs$control_functions) > 0) {
+              out_cont_map_val <- sapply(LexOPS_attrs$control_functions, function(cont) {
+                # get the representations of the words in the given column
+                this_word_rep <- df[[ cont[[3]] ]][df[[string_col]]==this_word]
+                out_rep <- df[[ cont[[3]] ]][df[[string_col]]==item_out]
+                # get the value from the function
+                unname(cont[[2]](out_rep, this_word_rep))
+              })
+              names(out_cont_map_val) <- sapply(LexOPS_attrs$control_functions, function(cont) cont[[1]] )
+              out_val <- item_out
+              names(out_val) <- string_col
+              control_for_map_values <<- dplyr::bind_rows(control_for_map_values, c(out_val, out_cont_map_val))
+
+              if (!this_word %in% control_for_map_values[[string_col]]) {
+                this_word_map_val <- sapply(LexOPS_attrs$control_functions, function(cont) {
+                  # get the representation in the given column
+                  this_word_rep <- df[[ cont[[3]] ]][df[[string_col]]==this_word]
+                  # get the value from the function
+                  unname(cont[[2]](this_word, this_word))
+                })
+                names(this_word_map_val) <- sapply(LexOPS_attrs$control_functions, function(cont) cont[[1]] )
+                this_word_val <- this_word
+                names(this_word_val) <- string_col
+                control_for_map_values <<- dplyr::bind_rows(control_for_map_values, c(this_word_val, this_word_map_val))
+              }
+
+            }
+          }
+
+        item_out
       })
       # add the target word
       matches[this_match_null] <- this_word
@@ -337,9 +372,16 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
       }
 
     }
-    sprintf("\n")
+    cat(sprintf("\n"))
 
+    # create meta_df
     meta_df <- df[df[[string_col]] %in% out, ]
+
+    # add control_for_map() values if any
+    if (length(LexOPS_attrs$control_functions) > 0) {
+      meta_df <- dplyr::left_join(meta_df, control_for_map_values, by=string_col)
+    }
+
     df <- as.data.frame(out, stringsAsFactors = FALSE) %>%
       stats::na.omit()
     colnames(df) <- c(all_conds, "match_null")
