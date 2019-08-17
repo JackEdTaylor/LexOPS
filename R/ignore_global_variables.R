@@ -1,0 +1,27 @@
+.onLoad <- function(libname, pkgname) {
+  # prevent note about global variables in devtools::check()
+
+  utils::globalVariables(".")
+
+  utils::globalVariables("x")
+  utils::globalVariables("n")
+  utils::globalVariables("alpha_level")
+  utils::globalVariables("qm")
+  utils::globalVariables("wordcloudsize")
+  utils::globalVariables("wordcloudalpha")
+  utils::globalVariables("x")
+  utils::globalVariables("string")
+  utils::globalVariables("PK.Brysbaert")
+  utils::globalVariables("LexOPS_cond")
+  utils::globalVariables("item_nr")
+  utils::globalVariables("condition")
+  utils::globalVariables("match_null")
+  utils::globalVariables("value")
+  utils::globalVariables("iteration")
+  utils::globalVariables("was_successful")
+  utils::globalVariables("stim_generated")
+  utils::globalVariables("tmp")
+  utils::globalVariables("euclidean_distance")
+
+  invisible()
+}
