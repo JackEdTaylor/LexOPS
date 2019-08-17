@@ -116,11 +116,11 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
 
   df <- df %>%
     # create new column, which will give the cell of the design that each string belongs to
-    tidyr::unite(LexOPS_cond, LexOPS_splitCols, sep = "_") %>%
+    tidyr::unite(!!dplyr::sym(cond_col), LexOPS_splitCols, sep = "_") %>%
     # remove strings that are members of no condition (i.e. if filter=FALSE in previous functions)
-    dplyr::filter(!is.na(LexOPS_cond))
+    dplyr::filter(!is.na(!!dplyr::sym(cond_col)))
 
-  all_conds <- sort(unique(df$LexOPS_cond))
+  all_conds <- sort(unique(df[[cond_col]]))
 
   # check match_null is an expected value
   if (!match_null %in% c(all_conds, "balanced", "random", "first")) stop('Unknown match_null; expected "random", "balanced", "first", or a specific condition (e.g. "A2_B1_C1")')
@@ -136,7 +136,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
       # if no controls, return the df unchanged
       if (length(vars)==0) return(df)
       # get a copy of df excluding the null condition, but keep the target word
-      df_matches <- df[df$LexOPS_cond != matchCond | df[[string_col]] == target, ]
+      df_matches <- df[df[[cond_col]] != matchCond | df[[string_col]] == target, ]
       # add a 2nd (for categorical) or 3rd (for numeric) item to each control's list, indicating the value for the string being matched to
       vars <- lapply(vars, function(cont) {
         cont_val <- if (is.factor(df[[cont[[1]]]])) {
@@ -178,7 +178,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
       })
 
       # get a copy of df excluding the null condition and the target word
-      df_matches <- df[df$LexOPS_cond != matchCond | df[[string_col]] == target, ]
+      df_matches <- df[df[[cond_col]] != matchCond | df[[string_col]] == target, ]
 
       # calculate the new columns based on the supplied functions and arguments
       # (each item of var should have a structure of `list(name, fun, var, tol)`)
@@ -229,7 +229,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
 
     # get the absolute smallest number of possible match rows (a count of the least frequent condition)
     min_nr_of_match_rows <- df %>%
-      dplyr::group_by(LexOPS_cond) %>%
+      dplyr::group_by(!!dplyr::sym(cond_col)) %>%
       dplyr::count() %>%
       dplyr::arrange(n) %>%
       dplyr::pull(n) %>%
@@ -279,7 +279,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
       n_tried_this_n_generated <- n_tried_this_n_generated + 1
 
       this_match_null <- null_conds[n_generated+1]
-      null_word_bank <- df[[string_col]][!df[[string_col]] %in% out & df$LexOPS_cond == this_match_null & !df[[string_col]] %in% words_tried_this_generated]
+      null_word_bank <- df[[string_col]][!df[[string_col]] %in% out & df[[cond_col]] == this_match_null & !df[[string_col]] %in% words_tried_this_generated]
 
       if (length(null_word_bank) == 0) {
         if (n_all) {
@@ -298,8 +298,8 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
       this_word <- sample(null_word_bank, 1)
       words_tried_this_generated <- c(words_tried_this_generated, this_word)
 
-      matches <- sapply(all_conds[all_conds != this_match_null], function(c) {
-        m <- df[(!df[[string_col]] %in% out & df$LexOPS_cond == c) | df[[string_col]]==this_word, ] %>%
+      matches <- sapply(all_conds[all_conds != this_match_null], function(cnd) {
+        m <- df[(!df[[string_col]] %in% out & df[[cond_col]] == cnd) | df[[string_col]]==this_word, ] %>%
           find_matches(
             target = this_word,
             vars = LexOPS_attrs$controls,
