@@ -61,4 +61,26 @@ lexops \%>\%
  control_for("Zipf.SUBTLEX_UK", c(-0.2, 0.2), standard_eval = TRUE) \%>\%
  generate(n = 20)
 
+# Create two levels of arousal, controlling for orthographic similarity
+library(vwr)
+lexops \%>\%
+ split_by(AROU.Warriner, 1:3 ~ 6:9) \%>\%
+ control_for_map(levenshtein.distance, string, 0:4) \%>\%
+ generate(20)
+
+# Create two levels of arousal, controlling for phonological similarity
+library(vwr)
+lexops \%>\%
+ split_by(AROU.Warriner, 1:3 ~ 6:9) \%>\%
+ control_for_map(levenshtein.distance, eSpeak.br_1letter, 0:2) \%>\%
+ generate(20)
+
+# Create two levels of arousal, controlling for phonological similarity, and rhyme
+library(vwr)
+lexops \%>\%
+ split_by(AROU.Warriner, 1:3 ~ 6:9) \%>\%
+ control_for(Rhyme.eSpeak.br) \%>\%
+ control_for_map(levenshtein.distance, eSpeak.br_1letter, 0:2) \%>\%
+ generate(20)
+
 }
