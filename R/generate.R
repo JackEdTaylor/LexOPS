@@ -44,6 +44,28 @@
 #'  control_for("Zipf.SUBTLEX_UK", c(-0.2, 0.2), standard_eval = TRUE) %>%
 #'  generate(n = 20)
 #'
+#' # Create two levels of arousal, controlling for orthographic similarity
+#' library(vwr)
+#' lexops %>%
+#'  split_by(AROU.Warriner, 1:3 ~ 6:9) %>%
+#'  control_for_map(levenshtein.distance, string, 0:4) %>%
+#'  generate(20)
+#'
+#' # Create two levels of arousal, controlling for phonological similarity
+#' library(vwr)
+#' lexops %>%
+#'  split_by(AROU.Warriner, 1:3 ~ 6:9) %>%
+#'  control_for_map(levenshtein.distance, eSpeak.br_1letter, 0:2) %>%
+#'  generate(20)
+#'
+#' # Create two levels of arousal, controlling for phonological similarity, and rhyme
+#' library(vwr)
+#' lexops %>%
+#'  split_by(AROU.Warriner, 1:3 ~ 6:9) %>%
+#'  control_for(Rhyme.eSpeak.br)
+#'  control_for_map(levenshtein.distance, eSpeak.br_1letter, 0:2) %>%
+#'  generate(20)
+#'
 #' @export
 
 generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = "string", cond_col = NA, is_shiny = FALSE) {
@@ -77,6 +99,11 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
     controls_exist <- sapply(LexOPS_attrs$controls, function(cont) {cont[[1]] %in% colnames(df)})
     if (!(all(controls_exist))) stop(sprintf("%i unknown control columns. Check columns specified in control_for() are in df.", length(controls_exist[!controls_exist])))
   }
+  # if control_for_fun() has been run, check the column to be fed to the function exists in df
+  if (!is.null(LexOPS_attrs$control_functions)) {
+    controls_exist <- sapply(LexOPS_attrs$control_functions, function(cont) {cont[[3]] %in% colnames(df)})
+    if (!(all(controls_exist))) stop(sprintf("%i unknown control columns. Check columns specified in control_for() are in df.", length(controls_exist[!controls_exist])))
+  }
 
   # get cond_col from the attributes if not manually defined
   if (is.na(cond_col)) {
@@ -92,6 +119,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
     tidyr::unite(LexOPS_cond, LexOPS_splitCols, sep = "_") %>%
     # remove strings that are members of no condition (i.e. if filter=FALSE in previous functions)
     dplyr::filter(!is.na(LexOPS_cond))
+
   all_conds <- sort(unique(df$LexOPS_cond))
 
   # check match_null is an expected value
@@ -101,12 +129,14 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
   if (!is.na(seed)) set.seed(seed)
 
   # if no controls, just return the df with the condition variable, otherwise generate matches
-  if (!is.null(LexOPS_attrs$controls)) {
+  if (!is.null(LexOPS_attrs$controls) | !is.null(LexOPS_attrs$control_functions)) {
 
     # function to find matches for a particular word (better than current match_word() function?)
     find_matches <- function(df, target, vars, matchCond, string_col) {
-      # get a copy of df excluding the null condition and the target word
-      df_matches <- df[df$LexOPS_cond != matchCond & df[[string_col]] != target, ]
+      # if no controls, return the df unchanged
+      if (length(vars)==0) return(df)
+      # get a copy of df excluding the null condition, but keep the target word
+      df_matches <- df[df$LexOPS_cond != matchCond | df[[string_col]] == target, ]
       # add a 2nd (for categorical) or 3rd (for numeric) item to each control's list, indicating the value for the string being matched to
       vars <- lapply(vars, function(cont) {
         cont_val <- if (is.factor(df[[cont[[1]]]])) {
@@ -120,8 +150,8 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
       filter_tol <- function(tol, df_matches) {
         if(is.numeric(df_matches[[tol[[1]]]]) & length(tol)>=3) {
           dplyr::filter(df_matches, dplyr::between(!!dplyr::sym(tol[[1]]),
-                                           tol[[3]]+tol[[2]][1],
-                                           tol[[3]]+tol[[2]][2]))
+                                                   tol[[3]]+tol[[2]][1],
+                                                   tol[[3]]+tol[[2]][2]))
         } else {
           dplyr::filter(df_matches, !!dplyr::sym(tol[[1]]) == tol[[2]])
         }
@@ -130,6 +160,70 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
       df_matches_filt <- vars %>%
         purrr::map(~ filter_tol(., df_matches = df_matches)) %>%
         purrr::reduce(dplyr::inner_join, by = colnames(df_matches))
+      df_matches_filt
+    }
+
+    # function to find matches for a particular word using functions defined by `control_for_fun()`
+    find_fun_matches <- function(df, target, vars_pre_calc, matchCond, string_col) {
+      # if no control functions, return the df unchanged
+      if (length(vars_pre_calc)==0) return(df)
+
+      # get the new columns' values for the target word
+      target_vals <- sapply(vars_pre_calc, function(x) {
+        fun <- x[[2]]
+        var <- x[[3]]
+        tol <- x[[4]]
+        target_input <- df[[var]][df[[string_col]]==target]
+        fun(target_input, target_input)
+      })
+
+      # get a copy of df excluding the null condition and the target word
+      df_matches <- df[df$LexOPS_cond != matchCond | df[[string_col]] == target, ]
+
+      # calculate the new columns based on the supplied functions and arguments
+      # (each item of var should have a structure of `list(name, fun, var, tol)`)
+      func_col_names <- sapply(vars_pre_calc, function(x) x[[1]])  # get the names (set after `purrr::map()`)
+      df_matches <- vars_pre_calc %>%
+        purrr::map( ~ .x[[2]](df_matches[[ .x[[3]] ]], df[[ .x[[3]] ]][df[[string_col]]==target] ) ) %>%
+        purrr::set_names(func_col_names) %>%
+        dplyr::bind_cols(df_matches, .)
+
+      # create vars list which will be used for matching purposes
+      vars <- lapply(1:length(vars_pre_calc), function(cont_nr) {
+        cont <- vars_pre_calc[[cont_nr]]
+        col_name <- func_col_names[[cont_nr]]
+        if (length(cont) >= 4) {
+          list(col_name, cont[[4]])
+        } else {
+          list(col_name)
+        }
+      })
+
+      # add a 2nd (for categorical) or 3rd (for numeric) item to each control's list, indicating the value for the string being matched to
+      vars <- lapply(1:length(vars), function(cont_nr) {
+        cont <- vars[[cont_nr]]
+        fun <- vars_pre_calc[[cont_nr]][[2]]
+        var <- vars_pre_calc[[cont_nr]][[3]]
+        cont_val <- target_vals[[cont_nr]]
+        if (is.list(cont)) append(cont, cont_val) else list(cont, cont_val)
+      })
+
+      # function to filter exactly for categories, and with tolerances for numeric
+      filter_tol <- function(tol, df_matches) {
+        if(is.numeric(df_matches[[tol[[1]]]]) & length(tol)>=3) {
+          dplyr::filter(df_matches, dplyr::between(!!dplyr::sym(tol[[1]]),
+                                                   tol[[3]]+tol[[2]][1],
+                                                   tol[[3]]+tol[[2]][2]))
+        } else {
+          dplyr::filter(df_matches, !!dplyr::sym(tol[[1]]) == tol[[2]])
+        }
+      }
+
+      # for each control, filter out non-suitable matches for this word
+      df_matches_filt <- vars %>%
+        purrr::map(~ filter_tol(., df_matches = df_matches)) %>%
+        purrr::reduce(dplyr::inner_join, by = colnames(df_matches))
+
       df_matches_filt
     }
 
@@ -205,14 +299,23 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
       words_tried_this_generated <- c(words_tried_this_generated, this_word)
 
       matches <- sapply(all_conds[all_conds != this_match_null], function(c) {
-        m <- find_matches(
-          df = df[(!df[[string_col]] %in% out & df$LexOPS_cond == c) | df[[string_col]]==this_word, ],
-          target = this_word,
-          vars = LexOPS_attrs$controls,
-          matchCond = this_match_null,
-          string_col = string_col
+        m <- df[(!df[[string_col]] %in% out & df$LexOPS_cond == c) | df[[string_col]]==this_word, ] %>%
+          find_matches(
+            target = this_word,
+            vars = LexOPS_attrs$controls,
+            matchCond = this_match_null,
+            string_col = string_col
+          ) %>%
+          find_fun_matches(
+            target = this_word,
+            vars_pre_calc = LexOPS_attrs$control_functions,
+            matchCond = this_match_null,
+            string_col = string_col
           )
-        if (nrow(m)==0) NA else{
+        # remove the target word
+        m <- m[m[[string_col]]!=this_word, ]
+        # pick a match randomly
+        if (nrow(m)==0) NA else {
           m %>%
             dplyr::pull(string_col) %>%
             sample(1)
