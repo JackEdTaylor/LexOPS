@@ -44,4 +44,10 @@ lexops \%>\%
  split_by(AROU.Warriner, 1:3 ~ 7:9) \%>\%
  control_for_map(levenshtein.distance, eSpeak.br_1letter, 0:2)
 
+# Bypass non-standard evaluation
+library(vwr)
+lexops \%>\%
+ split_by(AROU.Warriner, 1:3 ~ 7:9) \%>\%
+ control_for_map(levenshtein.distance, "eSpeak.br_1letter", c(0, 2), standard_eval=TRUE)
+
 }
