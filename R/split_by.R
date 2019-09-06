@@ -77,6 +77,22 @@ split_by <- function(df, var, levels, cond_col = "LexOPS_splitCond", filter = TR
     }
   }
 
+  # check that all the defined levels have at least one possible value in the distribution or values
+  if (is.numeric(df[[split[[1]]]])) {
+    true_levels <- lapply(split[-1], function(x) {
+      split_var <- split[[1]]
+      nrow(dplyr::filter(df, dplyr::between(!!dplyr::sym(split_var), x[1], x[2]))) > 0
+    })
+  } else {
+    true_levels <- lapply(split[-1], function(x) {
+      split_var <- split[[1]]
+      nrow(dplyr::filter(df, any(x %in% !!dplyr::sym(split_var)))) > 0
+    })
+  }
+  if (!all(unlist(true_levels))) {
+    warning(sprintf("No entries could be found for some levels. Check all levels of %s are possible.", split[[1]]))
+  }
+
   # Get next column name and split prefix
   current_splits <- names(df)[stringr::str_which(names(df), paste0("^", cond_col, "_[:upper:]$"))]
 
