@@ -133,7 +133,7 @@ lapply(1:25, function(i) {
   boxid <- sprintf("match_matchby_%i", i)
   output[[boxid]] <- renderUI({
     box(title=i, width=12, status="warning", solidHeader=T,
-        selectInput(sprintf("%s_v_measure", boxid), "Control for...", c("(None)", unname(lexops_react_var_measures()) )),
+        selectInput(sprintf("%s_v_measure", boxid), "Match by...", c("(None)", unname(lexops_react_var_measures()) )),
         uiOutput(sprintf("%s_v_source_ui", boxid)),
         uiOutput(sprintf("%s_v_selection_ui", boxid)),
         uiOutput(sprintf("%s_v_plot_ui", boxid), height="170px"),
