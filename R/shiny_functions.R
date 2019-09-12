@@ -98,6 +98,7 @@ sensible_slider_vals <- function(numeric_vec, n_levels, is_tolerance = FALSE) {
 #' @param match_string If the variable is being matched for, which string is it relative to. Leave as `NA` if not a matching box.
 #' @param shade_label A character vector specifying what to label the levels. Order should match that of `tol`. Leave as `NA` if not doing a split.
 #' @param shade_relative If `TRUE`, the value of tol is taken to be relative to the value for match_string. If `FALSE`, the raw values of tol are used. If `match_string` is not defined, `shade_relative` has no effect. Default is `TRUE`.
+#' @param cat_vis which category should be highlighted (if a categorical variable)? Can be one of `tol` or `match_string_val`.
 #' @param df A dataframe. Default is `LexOPS::lexops`.
 #'
 #' @return A ggplot/ggwordcloud object with the required visualisation.
@@ -112,14 +113,16 @@ sensible_slider_vals <- function(numeric_vec, n_levels, is_tolerance = FALSE) {
 #'
 #' #box_vis("Rhyme.eSpeak.br", "danger", match_string = "thicket")
 #'
-#' #box_vis("PoS.SUBTLEX_UK", "warning", match_string = "laura")
+#' #box_vis("PoS.SUBTLEX_UK", "warning", match_string = "laura", cat_vis = "match_string_val")
+#'
+#' #box_vis("PoS.SUBTLEX_UK", "warning", tol = "noun", match_string = "laura", cat_vis = "tol")
 #'
 #' #box_vis("PoS.ELP", "warning")
 #'
 #' # ignore shade_label for categorical histogram?
 #' #box_vis("PoS.SUBTLEX_UK", "warning", list("noun", "verb"), shade_label = c("B1", "B2"))
 
-box_vis <- function(var, box_type = "primary", tol = NA, match_string = NA, shade_label = NA, shade_relative = TRUE, df = LexOPS::lexops) {
+box_vis <- function(var, box_type = "primary", tol = NA, match_string = NA, shade_label = NA, shade_relative = TRUE, cat_vis = NA, df = LexOPS::lexops) {
 
   match_string_val <- if (is.na(match_string)) NA else df[[var]][df$string==match_string]
 
@@ -185,10 +188,15 @@ box_vis <- function(var, box_type = "primary", tol = NA, match_string = NA, shad
       }
       pl <- box_vis.rhyme(var, box_type, rhyme_word, rhyme_word_val, df)
     } else {
-      cat_to_highlight <- if (!is.na(match_string_val)) {
-        match_string_val
-      } else if (!all(is.na(tol))) {
-        tol
+
+      cat_to_highlight <- if (!is.na(cat_vis)) {
+        if (cat_vis == "tol") {
+          tol
+        } else if (cat_vis == "match_string_val") {
+          match_string_val
+        } else {
+          c()
+        }
       } else {
         c()
       }

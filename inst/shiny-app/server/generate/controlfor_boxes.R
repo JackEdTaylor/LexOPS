@@ -113,7 +113,7 @@ lapply(1:25, function(i) {
       LexOPS:::box_vis(var, box_type = "warning", tol = selection, match_string = random_match_string, df = lexops_react())
     } else {
       # no selection for categorical matching; control for exactly
-      LexOPS:::box_vis(var, box_type = "warning", df = lexops_react())
+      LexOPS:::box_vis(var, box_type = "warning", tol = unique(lexops_react()[[var]]), cat_vis = "tol", df = lexops_react())
     }
 
     out

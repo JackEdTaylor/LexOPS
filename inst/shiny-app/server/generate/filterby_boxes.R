@@ -109,7 +109,7 @@ lapply(1:25, function(i) {
       c(input[[sprintf("%s_v_selection_1", boxid)]], input[[sprintf("%s_v_selection_2", boxid)]])
     }
 
-    out <- LexOPS:::box_vis(var, box_type = "info", tol = selection, df = lexops_react())
+    out <- LexOPS:::box_vis(var, box_type = "info", tol = selection, cat_vis = "tol", df = lexops_react())
 
     out
   })

@@ -136,7 +136,7 @@ lapply(1:25, function(i) {
       lapply(1:n_levels, function(lvl_i) c(input[[sprintf("%s_v_selection_%i_1", boxid, lvl_i)]], input[[sprintf("%s_v_selection_%i_2", boxid, lvl_i)]]))
     }
 
-    out <- LexOPS:::box_vis(var, box_type = "primary", tol = selection, shade_label = shade_label, df = lexops_react())
+    out <- LexOPS:::box_vis(var, box_type = "primary", tol = unlist(selection), shade_label = shade_label, cat_vis = "tol", df = lexops_react())
 
     out
   })
