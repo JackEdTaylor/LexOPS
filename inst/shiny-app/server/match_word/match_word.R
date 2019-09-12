@@ -72,6 +72,16 @@ matched_stim <- reactive({
 
   df <- lexops_react()
 
+  # add match string to database temporarily if unknown
+  if (!input$match_string %in% df$string) {
+    old20val <- as.numeric(vwr::old20(input$match_string, LexOPS::lexops$string))
+    df <- res %>%
+      add_row(string = input$matchstring,
+              Length = nchar(input$matchstring),
+              ON.OLD20 = old20val,
+              ON.Log_OLD20 = log(old20val))
+  }
+
   # filters
   if (match_filterby_boxes_N() > 0) {
     for (i in 1:match_filterby_boxes_N()) {
