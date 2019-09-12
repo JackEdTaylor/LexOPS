@@ -5,7 +5,8 @@
 \title{Generate a box's visualisation}
 \usage{
 box_vis(var, box_type = "primary", tol = NA, match_string = NA,
-  shade_label = NA, shade_relative = TRUE, df = LexOPS::lexops)
+  shade_label = NA, shade_relative = TRUE, cat_vis = NA,
+  df = LexOPS::lexops)
 }
 \arguments{
 \item{var}{Character vector specifying which variable is selected}
@@ -19,6 +20,8 @@ box_vis(var, box_type = "primary", tol = NA, match_string = NA,
 \item{shade_label}{A character vector specifying what to label the levels. Order should match that of \code{tol}. Leave as \code{NA} if not doing a split.}
 
 \item{shade_relative}{If \code{TRUE}, the value of tol is taken to be relative to the value for match_string. If \code{FALSE}, the raw values of tol are used. If \code{match_string} is not defined, \code{shade_relative} has no effect. Default is \code{TRUE}.}
+
+\item{cat_vis}{which category should be highlighted (if a categorical variable)? Can be one of \code{tol} or \code{match_string_val}.}
 
 \item{df}{A dataframe. Default is \code{LexOPS::lexops}.}
 }
@@ -38,7 +41,9 @@ Function for generating a visualisation for a box's selected options
 
 #box_vis("Rhyme.eSpeak.br", "danger", match_string = "thicket")
 
-#box_vis("PoS.SUBTLEX_UK", "warning", match_string = "laura")
+#box_vis("PoS.SUBTLEX_UK", "warning", match_string = "laura", cat_vis = "match_string_val")
+
+#box_vis("PoS.SUBTLEX_UK", "warning", tol = "noun", match_string = "laura", cat_vis = "tol")
 
 #box_vis("PoS.ELP", "warning")
 
