@@ -8,7 +8,7 @@
 [![Lifecycle:
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![Version:
-0.0.0.9005](https://img.shields.io/badge/version-0.0.0.9005-blue.svg)]()
+0.0.0.9006](https://img.shields.io/badge/version-0.0.0.9006-blue.svg)]()
 <!-- badges: end -->
 
 LexOPS is an R package for generating word stimuli, for use in
@@ -29,18 +29,18 @@ devtools::install_github("JackEdTaylor/LexOPS@*release")
 
 ## Walkthrough
 
-An introductory walkthrough of the main features of LexOPS is available
-here:
+An in-depth walkthrough of the package is available here:
 
 <https://jackedtaylor.github.io/LexOPSdocs/>
 
-## tl;dr
+## TL;DR
 
 ### Shiny App
 
 The package features an interactive shiny app, with several useful
 features such as visualising variables’ distributions and relationships
-while generating stimuli. The LexOPS shiny app is available online at
+while generating stimuli. It’s a friendly front-end to the functions
+detailed below. The LexOPS shiny app is available online at
 <https://jackt.shinyapps.io/lexops/>, but it is usually faster and more
 relilable to run it locally, with:
 
@@ -52,8 +52,8 @@ LexOPS::run_shiny()
 
 ### Code
 
-In addition to the shiny app, LexOPS’ functions allow you to easily
-generate stimuli in a reproducible way.
+LexOPS’ functions allow you to easily generate stimuli in a reproducible
+way.
 
 #### The “Generate Pipeline”
 
@@ -61,8 +61,8 @@ The following example pipeline generates 50 words (all nouns) per
 condition (200 words in total), for a study with a 2 x 2, concreteness
 (low, high) by bigram probability (low, high) experimental design. Words
 are controlled for by length exactly, and by word frequency within a
-tolerance of Ã‚Â±0.2 Zipf. Matches are generated relative to each
-condition an equal number of times (`match_null="balanced"`).
+tolerance of ±0.2 Zipf. Matches are generated relative to each condition
+an equal number of times (`match_null="balanced"`).
 
 ``` r
 library(LexOPS)

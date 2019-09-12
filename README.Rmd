@@ -20,7 +20,7 @@ library(LexOPS)
 `r usethis::use_lifecycle_badge("maturing")`
 `r usethis::use_badge(sprintf("Version: %s", packageVersion("LexOPS")), "", sprintf("https://img.shields.io/badge/version-%s-blue.svg", packageVersion("LexOPS")))`
 [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
-[![Version: 0.0.0.9005](https://img.shields.io/badge/version-0.0.0.9005-blue.svg)]()
+[![Version: 0.0.0.9006](https://img.shields.io/badge/version-0.0.0.9006-blue.svg)]()
 <!-- badges: end -->
 
 LexOPS is an R package for generating word stimuli, for use in Psychology experiments. It can generate stimuli for a factorial design specified by the user, controlling for selected lexical variables. The package has an inbuilt database of features for English words (`LexOPS::lexops`), but the user can also use their own list of features, for English words and/or for words in other languages.
@@ -36,15 +36,15 @@ devtools::install_github("JackEdTaylor/LexOPS@*release")
 
 ## Walkthrough
 
-An introductory walkthrough of the main features of LexOPS is available here:
+An in-depth walkthrough of the package is available here:
 
 https://jackedtaylor.github.io/LexOPSdocs/
 
-## tl;dr
+## TL;DR
 
 ### Shiny App
 
-The package features an interactive shiny app, with several useful features such as visualising variables' distributions and relationships while generating stimuli. The LexOPS shiny app is available online at [https://jackt.shinyapps.io/lexops/](https://jackt.shinyapps.io/lexops/), but it is usually faster and more relilable to run it locally, with:
+The package features an interactive shiny app, with several useful features such as visualising variables' distributions and relationships while generating stimuli. It's a friendly front-end to the functions detailed below. The LexOPS shiny app is available online at [https://jackt.shinyapps.io/lexops/](https://jackt.shinyapps.io/lexops/), but it is usually faster and more relilable to run it locally, with:
 
 ```{r, eval=FALSE}
 LexOPS::run_shiny()
@@ -54,11 +54,11 @@ LexOPS::run_shiny()
 
 ### Code
 
-In addition to the shiny app, LexOPS' functions allow you to easily generate stimuli in a reproducible way.
+LexOPS' functions allow you to easily generate stimuli in a reproducible way.
 
 #### The "Generate Pipeline"
 
-The following example pipeline generates 50 words (all nouns) per condition (200 words in total), for a study with a 2 x 2, concreteness (low, high) by bigram probability (low, high) experimental design. Words are controlled for by length exactly, and by word frequency within a tolerance of Ã‚Â±0.2 Zipf. Matches are generated relative to each condition an equal number of times (`match_null="balanced"`).
+The following example pipeline generates 50 words (all nouns) per condition (200 words in total), for a study with a 2 x 2, concreteness (low, high) by bigram probability (low, high) experimental design. Words are controlled for by length exactly, and by word frequency within a tolerance of ±0.2 Zipf. Matches are generated relative to each condition an equal number of times (`match_null="balanced"`).
 
 ```{r, include=FALSE}
 set.seed(999)
