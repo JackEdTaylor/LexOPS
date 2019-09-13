@@ -64,10 +64,21 @@ The following example pipeline generates 50 words (all nouns) per condition (200
 set.seed(999)
 ```
 
-```{r, warning = FALSE}
+```{r, eval = FALSE}
 library(LexOPS)
 
 # generate stimuli
+stim <- lexops %>%
+  subset(PoS.SUBTLEX_UK == "noun") %>%
+  split_by(BG.SUBTLEX_UK, 0.001:0.004 ~ 0.008:0.011) %>%
+  split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
+  control_for(Length) %>%
+  generate(n = 50, match_null = "balanced")
+```
+
+```{r, warning = FALSE, echo = FALSE}
+cat(sprintf("\n"))  # space between code and console output
 stim <- lexops %>%
   subset(PoS.SUBTLEX_UK == "noun") %>%
   split_by(BG.SUBTLEX_UK, 0.001:0.004 ~ 0.008:0.011) %>%

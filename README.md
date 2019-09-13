@@ -75,17 +75,18 @@ stim <- lexops %>%
   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
   control_for(Length) %>%
   generate(n = 50, match_null = "balanced")
-#> Generated 5/50 (10%). 7 total iterations, 0.71 success rate.
-#> Generated 10/50 (20%). 13 total iterations, 0.77 success rate.
-#> Generated 15/50 (30%). 18 total iterations, 0.83 success rate.
-#> Generated 20/50 (40%). 24 total iterations, 0.83 success rate.
-#> Generated 25/50 (50%). 34 total iterations, 0.74 success rate.
-#> Generated 30/50 (60%). 44 total iterations, 0.68 success rate.
-#> Generated 35/50 (70%). 55 total iterations, 0.64 success rate.
-#> Generated 40/50 (80%). 65 total iterations, 0.62 success rate.
-#> Generated 45/50 (90%). 72 total iterations, 0.62 success rate.
-#> Generated 50/50 (100%). 85 total iterations, 0.59 success rate.
 ```
+
+    #> Generated 5/50 (10%). 7 total iterations, 0.71 success rate.
+    #> Generated 10/50 (20%). 13 total iterations, 0.77 success rate.
+    #> Generated 15/50 (30%). 18 total iterations, 0.83 success rate.
+    #> Generated 20/50 (40%). 24 total iterations, 0.83 success rate.
+    #> Generated 25/50 (50%). 34 total iterations, 0.74 success rate.
+    #> Generated 30/50 (60%). 44 total iterations, 0.68 success rate.
+    #> Generated 35/50 (70%). 55 total iterations, 0.64 success rate.
+    #> Generated 40/50 (80%). 65 total iterations, 0.62 success rate.
+    #> Generated 45/50 (90%). 72 total iterations, 0.62 success rate.
+    #> Generated 50/50 (100%). 85 total iterations, 0.59 success rate.
 
 A preview of what was generated:
 
