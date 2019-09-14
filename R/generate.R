@@ -169,6 +169,9 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
       # if no control functions, return the df unchanged
       if (length(vars_pre_calc)==0) return(df)
 
+      # if df has a 0 rows (e.g. if find_matches() found no matches), return df unchanged
+      if (nrow(df)==0) return(df)
+
       # get the new columns' values for the target word
       target_vals <- sapply(vars_pre_calc, function(x) {
         fun <- x[[2]]
