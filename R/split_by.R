@@ -96,37 +96,43 @@ split_by <- function(df, var, levels, cond_col = "LexOPS_splitCond", filter = TR
   # Get next column name and split prefix
   current_splits <- names(df)[stringr::str_which(names(df), paste0("^", cond_col, "_[:upper:]$"))]
 
-  if(length(current_splits) == 0){
+  if (length(current_splits) == 0) {
     prefix <-  "A"
-    }else{
-      current_prefix <- stringr::str_extract(current_splits, sprintf("(?<=^%s_)[:upper:]", cond_col))
-      prefix <- dplyr::first(LETTERS[LETTERS != current_prefix])
-    }
+  } else {
+    current_prefix <- stringr::str_extract(current_splits, sprintf("(?<=^%s_)[:upper:]", cond_col))
+    prefix <- dplyr::first(LETTERS[LETTERS != current_prefix])
+  }
 
   new_column <- paste(cond_col, prefix, sep = "_")
 
   # Extract column from split list
   column <- split[[1]]
 
+  # convert to factor if stored as character
+  if (is.character(df[[column]])) {
+    warning(sprintf("Column %s is type character so will be treated as a factor.", column))
+    df[[column]] <- as.factor(df[[column]])
+  }
+
   # Run appropriate split_by function
-  if(is.factor(df[[column]])){
+  if (is.factor(df[[column]])) {
     breaks_lengths <- lapply(split[-1], length)
-    if(any(breaks_lengths > 1)) {
+    if (any(breaks_lengths > 1)) {
       breaks <- split[-1]
       df <- split_by.factor_group(df, column, breaks, new_column, prefix, filter)
     } else {
       breaks <- unlist(split[-1])
       df <- split_by.factor(df, column, breaks, new_column, prefix, filter)
     }
-  }else{
+  } else {
     col_type <- typeof(df[[column]])
 
-    if(col_type == "integer"){
+    if (col_type == "integer") {
       breaks <- split[-1]
       df <- split_by.integer(df, column, breaks, new_column, prefix, filter)
     }
 
-    if(col_type == "double"){
+    if (col_type == "double") {
       breaks <- split[-1]
       df <- split_by.double(df, column, breaks, new_column, prefix, filter)
     }
