@@ -8,7 +8,7 @@
 [![Lifecycle:
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![Version:
-0.1.0](https://img.shields.io/badge/version-0.1.0-blue.svg)]()
+0.1.1](https://img.shields.io/badge/version-0.1.1-blue.svg)]()
 <!-- badges: end -->
 
 LexOPS is an R package for generating word stimuli, for use in
