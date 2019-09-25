@@ -287,6 +287,24 @@ output$gen_codify_text <- renderText({
   }
   out <- "library(LexOPS)\n\nLexOPS::lexops"
 
+  if (!is.null(input$cust_opts_inputfile)) {
+
+    cust_file_ext <- tools::file_ext(input$cust_opts_inputfile$datapath)
+
+    read_cust_fun <- if (cust_file_ext == "csv") {
+      "read_csv"
+    } else if (cust_file_ext == "tsv") {
+      "read_tsv"
+    } else if (cust_file_ext %in% c("xls", "xlsx", "xlsm")) {
+      "read_excel"
+    }
+
+    read_cust_text <- sprintf("# check the code below correctly locates the file\ncustom_df <- %s(\"%s\") %%>%%\n\trename(string = \"%s\") %%>%%\n\trename_at(vars(-\"string\"), ~ sprintf(\"custom.%%s\", .))", read_cust_fun, input$cust_opts_inputfile$name, input$cust_opts_column)
+    read_cust_package <- if (read_cust_fun == "read_excel") "readxl" else "readr"
+
+    out <- sprintf("library(dplyr)\nlibrary(%s)\n\n%s\n\n%s %%>%%\n\tfull_join(custom_df, by = \"string\")", read_cust_package, read_cust_text, out)
+  }
+
   if (gen_filterby_boxes_N() > 0) {
     for (i in 1:gen_filterby_boxes_N()) {
       if (is.numeric(lexops_react()[[filter_opts[[i]]$var]])) {
