@@ -115,10 +115,12 @@ match_word <- function(df = LexOPS::lexops, target, vars, string_col = "string",
   numFilt <- lapply(vars, function(listObj) {
     if (is.numeric(df[[listObj[1]]])) {
       out <- listObj
+      match_string_val <- dplyr::filter(df, !!dplyr::sym(string_col) == target) %>%
+        dplyr::pull(!!dplyr::sym(listObj[[1]]))
       if (length(listObj) == 3) {
-        out[2:3] <- as.numeric(out[2:3]) + df[[listObj[1]]][df[[string_col]]==target]
+        out[2:3] <- as.numeric(out[2:3]) + match_string_val
       } else if (length(listObj) == 1) {
-        out[2:3] <- df[[listObj[1]]][df[[string_col]]==target]
+        out[2:3] <- match_string_val
       }
       return(out)
     }
@@ -128,7 +130,9 @@ match_word <- function(df = LexOPS::lexops, target, vars, string_col = "string",
   charFilt <- lapply(vars, function(listObj) {
     if (!is.numeric(df[[listObj[1]]])) {
       out <- listObj
-      out[2] <- as.character(df[[listObj]][df[[string_col]]==target])
+      out[2] <- dplyr::filter(df, !!dplyr::sym(string_col) == target) %>%
+        dplyr::pull(!!dplyr::sym(listObj[[1]])) %>%
+        as.character()
       return(out)
     }
   })

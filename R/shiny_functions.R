@@ -124,13 +124,10 @@ sensible_slider_vals <- function(numeric_vec, n_levels, is_tolerance = FALSE) {
 
 box_vis <- function(var, box_type = "primary", tol = NA, match_string = NA, shade_label = NA, shade_relative = TRUE, cat_vis = NA, df = LexOPS::lexops) {
 
-  match_string_val <- if (is.na(match_string)) NA else df[[var]][df$string==match_string]
+  match_string_val <- if (is.na(match_string)) NA else dplyr::filter(df, string == match_string) %>% dplyr::pull(!!dplyr::sym(var))
 
   # filter out missing values to suppress warnings
   df <- dplyr::filter(df, !is.na(!!(dplyr::sym(var))))
-
-  # ensure `shade` is a list
-  shade <- if (!is.list(tol)) list(tol) else tol
 
   if (is.numeric(df[[var]])) {
     # if integer histogram, else density
@@ -141,15 +138,21 @@ box_vis <- function(var, box_type = "primary", tol = NA, match_string = NA, shad
       pl <- box_vis.density(var, box_type, df)
       shade_padding <- 0
     }
-    # add red line for match_string_val if necessary
-    if (!is.na(match_string_val)) {
-      pl <- pl + ggplot2::geom_vline(xintercept=match_string_val, colour="red", size=1.25)
-      # also adjust the values in `shade` to make them relative to `match_string_val`
-      if (shade_relative) shade <- lapply(shade, function(i) match_string_val + i)
-    }
     # shade in the selected tolerance
     if (!all(is.na(tol))) {
+
+      shade_matrix <- matrix(unlist(tol), nrow = 2)
+      shade <- lapply(1:ncol(shade_matrix), function(i) shade_matrix[, i])
+
+      # add red line for match_string_val if necessary
+      if (all(!is.na(match_string_val))) {
+        pl <- pl + ggplot2::geom_vline(xintercept=match_string_val, colour="red", size=1.25)
+        # also adjust the values in `shade` to make them relative to `match_string_val`
+        if (shade_relative) shade <- lapply(shade, function(i) match_string_val + i)
+      }
+
       shade_i_iter <- 0
+
       for (shade_i in shade) {
         shade_i_iter <- shade_i_iter + 1
         pl <- pl +
@@ -172,6 +175,10 @@ box_vis <- function(var, box_type = "primary", tol = NA, match_string = NA, shad
       ggplot2::scale_x_continuous(breaks = scales::pretty_breaks()) +
       ggplot2::theme_minimal()
   } else {
+
+    # ensure `shade` is a list
+    shade <- if (!is.list(tol)) list(tol) else tol
+
     # categorical visualisations here
 
     # get the type of measure
