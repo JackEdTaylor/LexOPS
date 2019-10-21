@@ -21,7 +21,7 @@ output$gen_codify_text <- renderText({
       x
     }
   }
-  out <- "library(LexOPS)\n\nLexOPS::lexops"
+  out <- "library(LexOPS)\n\nstim <- LexOPS::lexops"
 
   if (!is.null(input$cust_opts_inputfile)) {
 
