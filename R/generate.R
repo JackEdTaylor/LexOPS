@@ -131,95 +131,6 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
   # if no controls, just return the df with the condition variable, otherwise generate matches
   if (!is.null(LexOPS_attrs$controls) | !is.null(LexOPS_attrs$control_functions)) {
 
-    # function to filter exactly for categories, and with tolerances for numeric
-    filter_tol <- function(tol, df_matches) {
-      if(is.numeric(df_matches[[tol[[1]]]]) & length(tol)>=3) {
-        dplyr::filter(df_matches, dplyr::between(!!dplyr::sym(tol[[1]]),
-                                                 tol[[3]]+tol[[2]][1],
-                                                 tol[[3]]+tol[[2]][2]))
-      } else {
-        dplyr::filter(df_matches, !!dplyr::sym(tol[[1]]) == tol[[2]])
-      }
-    }
-
-    # function to find matches for a particular word (better than current match_word() function?)
-    find_matches <- function(df, target, vars, matchCond, string_col) {
-      # if no controls, return the df unchanged
-      if (length(vars)==0) return(df)
-      # get a copy of df excluding the null condition, but keep the target word
-      df_matches <- df[df[[cond_col]] != matchCond | df[[string_col]] == target, ]
-      # add a 2nd (for categorical) or 3rd (for numeric) item to each control's list, indicating the value for the string being matched to
-      vars <- lapply(vars, function(cont) {
-        cont_val <- if (is.factor(df[[cont[[1]]]])) {
-          as.character(df[[cont[[1]]]][df[[string_col]]==target])
-        } else {
-          df[[cont[[1]]]][df[[string_col]]==target]
-        }
-        if (is.list(cont)) append(cont, cont_val) else list(cont, cont_val)
-      })
-      # for each control, filter out non-suitable matches for this word
-      df_matches_filt <- vars %>%
-        purrr::map(~ filter_tol(., df_matches = df_matches)) %>%
-        purrr::reduce(dplyr::inner_join, by = colnames(df_matches))
-      df_matches_filt
-    }
-
-    # function to find matches for a particular word using functions defined by `control_for_fun()`
-    find_fun_matches <- function(df, target, vars_pre_calc, matchCond, string_col) {
-      # if no control functions, return the df unchanged
-      if (length(vars_pre_calc)==0) return(df)
-
-      # if df has a 0 rows (e.g. if find_matches() found no matches), return df unchanged
-      if (nrow(df)==0) return(df)
-
-      # get the new columns' values for the target word
-      target_vals <- sapply(vars_pre_calc, function(x) {
-        fun <- x[[2]]
-        var <- x[[3]]
-        tol <- x[[4]]
-        target_input <- df[[var]][df[[string_col]]==target]
-        fun(target_input, target_input)
-      })
-
-      # get a copy of df excluding the null condition and the target word
-      df_matches <- df[df[[cond_col]] != matchCond | df[[string_col]] == target, ]
-
-      # calculate the new columns based on the supplied functions and arguments
-      # (each item of var should have a structure of `list(name, fun, var, tol)`)
-      func_col_names <- sapply(vars_pre_calc, function(x) x[[1]])  # get the names (set after `purrr::map()`)
-      df_matches <- vars_pre_calc %>%
-        purrr::map( ~ .x[[2]](df_matches[[ .x[[3]] ]], df[[ .x[[3]] ]][df[[string_col]]==target] ) ) %>%
-        purrr::set_names(func_col_names) %>%
-        dplyr::bind_cols(df_matches, .)
-
-      # create vars list which will be used for matching purposes
-      vars <- lapply(1:length(vars_pre_calc), function(cont_nr) {
-        cont <- vars_pre_calc[[cont_nr]]
-        col_name <- func_col_names[[cont_nr]]
-        if (length(cont) >= 4) {
-          list(col_name, cont[[4]])
-        } else {
-          list(col_name)
-        }
-      })
-
-      # add a 2nd (for categorical) or 3rd (for numeric) item to each control's list, indicating the value for the string being matched to
-      vars <- lapply(1:length(vars), function(cont_nr) {
-        cont <- vars[[cont_nr]]
-        fun <- vars_pre_calc[[cont_nr]][[2]]
-        var <- vars_pre_calc[[cont_nr]][[3]]
-        cont_val <- target_vals[[cont_nr]]
-        if (is.list(cont)) append(cont, cont_val) else list(cont, cont_val)
-      })
-
-      # for each control, filter out non-suitable matches for this word
-      df_matches_filt <- vars %>%
-        purrr::map(~ filter_tol(., df_matches = df_matches)) %>%
-        purrr::reduce(dplyr::inner_join, by = colnames(df_matches))
-
-      df_matches_filt
-    }
-
     # get the absolute smallest number of possible match rows (a count of the least frequent condition)
     min_nr_of_match_rows <- df %>%
       dplyr::group_by(!!dplyr::sym(cond_col)) %>%
@@ -295,17 +206,19 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
 
       matches <- sapply(all_conds[all_conds != this_match_null], function(cnd) {
         m <- df[(!df[[string_col]] %in% out & df[[cond_col]] == cnd) | df[[string_col]]==this_word, ] %>%
-          find_matches(
+          generate.find_matches(
             target = this_word,
             vars = LexOPS_attrs$controls,
             matchCond = this_match_null,
-            string_col = string_col
+            string_col = string_col,
+            cond_col = cond_col
           ) %>%
-          find_fun_matches(
+          generate.find_fun_matches(
             target = this_word,
             vars_pre_calc = LexOPS_attrs$control_functions,
             matchCond = this_match_null,
-            string_col = string_col
+            string_col = string_col,
+            cond_col = cond_col
           )
         # remove the target word
         m <- m[m[[string_col]]!=this_word, ]
@@ -406,6 +319,95 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
   attr(df, "LexOPS_attrs") <- LexOPS_attrs
 
   df
+}
+
+# function to filter exactly for categories, and with tolerances for numeric
+generate.filter_tol <- function(tol, df_matches) {
+  if(is.numeric(df_matches[[tol[[1]]]]) & length(tol)>=3) {
+    dplyr::filter(df_matches, dplyr::between(!!dplyr::sym(tol[[1]]),
+                                             tol[[3]]+tol[[2]][1],
+                                             tol[[3]]+tol[[2]][2]))
+  } else {
+    dplyr::filter(df_matches, !!dplyr::sym(tol[[1]]) == tol[[2]])
+  }
+}
+
+# function to find matches for a particular word (better than current match_word() function?)
+generate.find_matches <- function(df, target, vars, matchCond, string_col, cond_col) {
+  # if no controls, return the df unchanged
+  if (length(vars)==0) return(df)
+  # get a copy of df excluding the null condition, but keep the target word
+  df_matches <- df[df[[cond_col]] != matchCond | df[[string_col]] == target, ]
+  # add a 2nd (for categorical) or 3rd (for numeric) item to each control's list, indicating the value for the string being matched to
+  vars <- lapply(vars, function(cont) {
+    cont_val <- if (is.factor(df[[cont[[1]]]])) {
+      as.character(df[[cont[[1]]]][df[[string_col]]==target])
+    } else {
+      df[[cont[[1]]]][df[[string_col]]==target]
+    }
+    if (is.list(cont)) append(cont, cont_val) else list(cont, cont_val)
+  })
+  # for each control, filter out non-suitable matches for this word
+  df_matches_filt <- vars %>%
+    purrr::map(~ generate.filter_tol(., df_matches = df_matches)) %>%
+    purrr::reduce(dplyr::inner_join, by = colnames(df_matches))
+  df_matches_filt
+}
+
+# function to find matches for a particular word using functions defined by `control_for_fun()`
+generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, string_col, cond_col) {
+  # if no control functions, return the df unchanged
+  if (length(vars_pre_calc)==0) return(df)
+
+  # if df has a 0 rows (e.g. if generate.find_matches() found no matches), return df unchanged
+  if (nrow(df)==0) return(df)
+
+  # get the new columns' values for the target word
+  target_vals <- sapply(vars_pre_calc, function(x) {
+    fun <- x[[2]]
+    var <- x[[3]]
+    tol <- x[[4]]
+    target_input <- df[[var]][df[[string_col]]==target]
+    fun(target_input, target_input)
+  })
+
+  # get a copy of df excluding the null condition and the target word
+  df_matches <- df[df[[cond_col]] != matchCond | df[[string_col]] == target, ]
+
+  # calculate the new columns based on the supplied functions and arguments
+  # (each item of var should have a structure of `list(name, fun, var, tol)`)
+  func_col_names <- sapply(vars_pre_calc, function(x) x[[1]])  # get the names (set after `purrr::map()`)
+  df_matches <- vars_pre_calc %>%
+    purrr::map( ~ .x[[2]](df_matches[[ .x[[3]] ]], df[[ .x[[3]] ]][df[[string_col]]==target] ) ) %>%
+    purrr::set_names(func_col_names) %>%
+    dplyr::bind_cols(df_matches, .)
+
+  # create vars list which will be used for matching purposes
+  vars <- lapply(1:length(vars_pre_calc), function(cont_nr) {
+    cont <- vars_pre_calc[[cont_nr]]
+    col_name <- func_col_names[[cont_nr]]
+    if (length(cont) >= 4) {
+      list(col_name, cont[[4]])
+    } else {
+      list(col_name)
+    }
+  })
+
+  # add a 2nd (for categorical) or 3rd (for numeric) item to each control's list, indicating the value for the string being matched to
+  vars <- lapply(1:length(vars), function(cont_nr) {
+    cont <- vars[[cont_nr]]
+    fun <- vars_pre_calc[[cont_nr]][[2]]
+    var <- vars_pre_calc[[cont_nr]][[3]]
+    cont_val <- target_vals[[cont_nr]]
+    if (is.list(cont)) append(cont, cont_val) else list(cont, cont_val)
+  })
+
+  # for each control, filter out non-suitable matches for this word
+  df_matches_filt <- vars %>%
+    purrr::map(~ generate.filter_tol(., df_matches = df_matches)) %>%
+    purrr::reduce(dplyr::inner_join, by = colnames(df_matches))
+
+  df_matches_filt
 }
 
 # # should throw errors
