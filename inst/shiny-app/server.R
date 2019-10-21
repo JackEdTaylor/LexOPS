@@ -41,6 +41,9 @@ shinyServer(function(input, output) {
     # generate a review of the stimuli
     source("server/generate/review.R", local = TRUE)
 
+    # codify selected options
+    source("server/generate/codify.R", local = TRUE)
+
     # generate the stimuli
     source("server/generate/generate.R", local = TRUE)
 
