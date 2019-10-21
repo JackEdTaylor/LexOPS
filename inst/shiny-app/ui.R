@@ -312,7 +312,9 @@ tagList(
                                                   title='3) Summary of Uploaded Variables', status='primary',
                                                   collapsible=T, collapsed=F, width=12,
                                                   fluidRow(
-                                                      column(12, tableOutput('cust_uploadedvars'))
+                                                      column(12, tableOutput('cust_uploadedvars')),
+                                                      column(12, br()),
+                                                      column(12, tags$p("Note: These variables can be accessed in other tabs at the bottom of drop-down selection menus. They will have the prefix, \"custom.\" (e.g. a variable named \"disgust_rating\" will be stored as \"custom.disgust_rating\")."))
                                                   )
                                               )
                                           )),
