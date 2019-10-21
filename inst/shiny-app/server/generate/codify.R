@@ -35,7 +35,7 @@ output$gen_codify_text <- renderText({
       "read_excel"
     }
 
-    read_cust_text <- sprintf("# check the code below correctly locates the file\ncustom_df <- %s(\"%s\") %%>%%\n\trename(string = \"%s\") %%>%%\n\trename_at(vars(-\"string\"), ~ sprintf(\"custom.%%s\", .))", read_cust_fun, input$cust_opts_inputfile$name, input$cust_opts_column)
+    read_cust_text <- sprintf("# check the code below correctly locates the file\n# (may require setting working directory)\ncustom_df <- %s(\"%s\") %%>%%\n\trename(string = \"%s\") %%>%%\n\trename_at(vars(-\"string\"), ~ sprintf(\"custom.%%s\", .))", read_cust_fun, input$cust_opts_inputfile$name, input$cust_opts_column)
     read_cust_package <- if (read_cust_fun == "read_excel") "readxl" else "readr"
 
     out <- sprintf("library(dplyr)\nlibrary(%s)\n\n%s\n\n%s %%>%%\n\tfull_join(custom_df, by = \"string\")", read_cust_package, read_cust_text, out)
