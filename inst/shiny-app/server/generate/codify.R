@@ -54,11 +54,11 @@ output$gen_codify_text <- renderText({
   if (gen_splitby_boxes_N() > 0) {
     for (i in 1:gen_splitby_boxes_N()) {
       if (split_opts[[i]]$var == "Random") {
-        out <- sprintf("%s %%>%%\n\tsplit_random(%i%s)", out, split_opts[[i]]$n_levels, gen_seed_arg)
+        out <- sprintf("%s %%>%%\n\tsplit_random(%i%s)", out, codify_var(split_opts[[i]]$n_levels), gen_seed_arg)
       } else {
         if (is.numeric(lexops_react()[[split_opts[[i]]$var]])) {
           split_sel_code <- paste(sapply(split_opts[[i]]$selection, function(l) sprintf("%g:%g", l[1], l[2])), collapse = " ~ ")
-          out <- sprintf("%s %%>%%\n\tsplit_by(%s, %s)", out, split_opts[[i]]$var, split_sel_code)
+          out <- sprintf("%s %%>%%\n\tsplit_by(%s, %s)", out, codify_var(split_opts[[i]]$var), split_sel_code)
         } else {
           split_sel_quoted <- lapply(split_opts[[i]]$selection, function(l) {
             if (length(l) == 1) {
@@ -68,7 +68,7 @@ output$gen_codify_text <- renderText({
             }
           })
           split_sel_code <- paste(sprintf("%s", split_sel_quoted), collapse = " ~ ")
-          out <- sprintf("%s %%>%%\n\tsplit_by(%s, %s)", out, split_opts[[i]]$var, split_sel_code)
+          out <- sprintf("%s %%>%%\n\tsplit_by(%s, %s)", out, codify_var(split_opts[[i]]$var), split_sel_code)
         }
       }
     }
@@ -77,9 +77,9 @@ output$gen_codify_text <- renderText({
   if (gen_controlfor_boxes_N() > 0) {
     for (i in 1:gen_controlfor_boxes_N()) {
       if (is.numeric(lexops_react()[[control_opts[[i]]$var]])) {
-        out <- sprintf("%s %%>%%\n\tcontrol_for(%s, %s)", out, control_opts[[i]]$var, sprintf("%g:%g", control_opts[[i]]$selection[1], control_opts[[i]]$selection[2]))
+        out <- sprintf("%s %%>%%\n\tcontrol_for(%s, %s)", out, codify_var(control_opts[[i]]$var), sprintf("%g:%g", control_opts[[i]]$selection[1], control_opts[[i]]$selection[2]))
       } else {
-        out <- sprintf("%s %%>%%\n\tcontrol_for(%s)", out, control_opts[[i]]$var)
+        out <- sprintf("%s %%>%%\n\tcontrol_for(%s)", out, codify_var(control_opts[[i]]$var))
       }
     }
   }
