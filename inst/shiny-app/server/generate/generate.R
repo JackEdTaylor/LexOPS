@@ -219,7 +219,7 @@ generated_stim_formatted <- reactive({
           possible_vars[possible_vars_sources == source]
         }
       })
-      out <- left_join(out, select(lexops_react(), c(string, filter_vars)), by = "string")
+      out <- left_join(out, select(lexops_react(), c(string, unlist(filter_vars))), by = "string")
     }
     # if no controls are specified (so generate() function is never triggered), but the data is still split, add the variables used as splits too
     if (gen_controlfor_boxes_N() == 0 & gen_splitby_boxes_N() > 0) {
@@ -238,7 +238,7 @@ generated_stim_formatted <- reactive({
         }
       })
       if (length(unlist(split_vars)) > 0) {
-        out <- left_join(out, select(lexops_react(), c(string, split_vars)), by = "string")
+        out <- left_join(out, select(lexops_react(), c(string, unlist(split_vars))), by = "string")
       }
     }
   }
