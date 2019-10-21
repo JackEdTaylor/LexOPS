@@ -134,7 +134,11 @@ output$visualiseplotly <- renderPlotly({
     }
 
     axes_measures <- sapply(c("x", "y", "z", "colour"), function(ax) input[[sprintf("vis_%s_opt", ax)]])
-    axes_sources <- sapply(c("x", "y", "z", "colour"), function(ax) input[[sprintf("vis_%s_source_opt", ax)]])
+
+    axes_sources <- sapply(c("x", "y", "z", "colour"), function(ax) {
+      source_str <- input[[sprintf("vis_%s_source_opt", ax)]]
+      if (!is.null(source_str)) source_str else ""
+    })
 
     axes <- sapply(c("x", "y", "z", "colour"), function(ax) {
 
