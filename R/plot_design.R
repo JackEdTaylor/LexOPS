@@ -53,11 +53,11 @@ plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 
     dplyr::right_join(meta_df, by = "string")
 
   # factor vector of variables to plot
-  plot_vars <- if (include == "design") {
+  plot_vars <- if (all(include == "design")) {
     c(splits, controls)
-  } else if (include == "splits") {
+  } else if (all(include == "splits")) {
     splits
-  } else if (include == "controls") {
+  } else if (all(include == "controls")) {
     controls
   } else {
     include
