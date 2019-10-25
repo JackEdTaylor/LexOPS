@@ -17,3 +17,23 @@ prepend <- function (x, values, before = 1) {
     c(x[1:(before - 1)], values, x[before:n])
   }
 }
+
+#' Prepend a List
+#'
+#' A prepend function that plays nicely with lists.
+#'
+#' @param x the vector to be modified.
+#' @param ... the objects to be included in the modified vector.
+#'
+#' @return A merged vector.
+#'
+#' @examples
+#' # prepend_list(list(c("test", "two"), c("test", "three")), c("test", "one"))
+
+prepend_list <- function (x, ...) {
+  if (is.list(x)) {
+    c(list(...), x)
+  } else {
+    c(..., x)
+  }
+}
