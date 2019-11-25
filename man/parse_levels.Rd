@@ -38,4 +38,9 @@ parse_levels(substitute(PoS.SUBTLEX_UK), substitute(c("noun", "name") ~ c("adjec
 
 parse_levels(substitute(PoS.SUBTLEX_UK))
 
+# Can give vector of variables in non-standard eval
+
+parse_levels(substitute(c(Zipf.SUBTLEX_UK, Length)), substitute(0:2.5))
+parse_levels(substitute(c(Zipf.SUBTLEX_UK, Length)))
+
 }
