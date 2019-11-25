@@ -4,8 +4,7 @@
 \alias{euc_dists}
 \title{Calculate a word's Euclidean distance from other words}
 \usage{
-euc_dists(df = LexOPS::lexops, target, vars = "all",
-  string_col = "string")
+euc_dists(df = LexOPS::lexops, target, vars = "all", string_col = "string")
 }
 \arguments{
 \item{df}{A data frame.}

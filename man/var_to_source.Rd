@@ -4,8 +4,7 @@
 \alias{var_to_source}
 \title{Convert a variable name to APA citation}
 \usage{
-var_to_source(var, first_cite = TRUE, default = "",
-  standard_eval = FALSE)
+var_to_source(var, first_cite = TRUE, default = "", standard_eval = FALSE)
 }
 \arguments{
 \item{var}{The variable name (non-standard evaluation)}

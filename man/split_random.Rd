@@ -4,8 +4,7 @@
 \alias{split_random}
 \title{Add a random split to the data.}
 \usage{
-split_random(df, nlevels = 2, seed = NA,
-  cond_col = "LexOPS_splitCond")
+split_random(df, nlevels = 2, seed = NA, cond_col = "LexOPS_splitCond")
 }
 \arguments{
 \item{df}{A data frame containing the IV and strings.}

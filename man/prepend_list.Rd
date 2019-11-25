@@ -9,13 +9,13 @@ prepend_list(x, ...)
 \arguments{
 \item{x}{the vector to be modified.}
 
-\item{...}{to be included in the modified vector.}
+\item{...}{the objects to be included in the modified vector.}
 }
 \value{
 A merged vector.
 }
 \description{
-Copied from old versions of rlang as function now deprecated.
+A prepend function that plays nicely with lists.
 }
 \examples{
 # prepend_list(list(c("test", "two"), c("test", "three")), c("test", "one"))

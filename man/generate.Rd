@@ -4,8 +4,15 @@
 \alias{generate}
 \title{Generate stimuli}
 \usage{
-generate(df, n = 20, match_null = "balanced", seed = NA,
-  string_col = "string", cond_col = NA, is_shiny = FALSE)
+generate(
+  df,
+  n = 20,
+  match_null = "balanced",
+  seed = NA,
+  string_col = "string",
+  cond_col = NA,
+  is_shiny = FALSE
+)
 }
 \arguments{
 \item{df}{A data frame that is the result from \code{control_for()} or \code{split_by()}.}

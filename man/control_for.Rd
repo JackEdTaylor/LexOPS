@@ -4,8 +4,14 @@
 \alias{control_for}
 \title{Control for confounding variables.}
 \usage{
-control_for(df, var, tol = NA, string_col = "string", cond_col = NA,
-  standard_eval = FALSE)
+control_for(
+  df,
+  var,
+  tol = NA,
+  string_col = "string",
+  cond_col = NA,
+  standard_eval = FALSE
+)
 }
 \arguments{
 \item{df}{A data frame that is the result from \code{split_by()}.}

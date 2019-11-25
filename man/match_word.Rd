@@ -4,8 +4,13 @@
 \alias{match_word}
 \title{Get suitable matches for a single word on one or several dimensions.}
 \usage{
-match_word(df = LexOPS::lexops, target, vars, string_col = "string",
-  filter = TRUE)
+match_word(
+  df = LexOPS::lexops,
+  target,
+  vars,
+  string_col = "string",
+  filter = TRUE
+)
 }
 \arguments{
 \item{df}{A data frame to reorder, containing the target string (default = LexOPS::lexops).}

@@ -4,8 +4,16 @@
 \alias{control_for_map}
 \title{Control for confounding variables via a function.}
 \usage{
-control_for_map(df, fun, var, tol = NA, name = NA,
-  string_col = "string", cond_col = NA, standard_eval = FALSE)
+control_for_map(
+  df,
+  fun,
+  var,
+  tol = NA,
+  name = NA,
+  string_col = "string",
+  cond_col = NA,
+  standard_eval = FALSE
+)
 }
 \arguments{
 \item{df}{A data frame that is the result from \code{split_by()}.}

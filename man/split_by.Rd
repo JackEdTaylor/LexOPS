@@ -4,8 +4,14 @@
 \alias{split_by}
 \title{Add a split to the data.}
 \usage{
-split_by(df, var, levels, cond_col = "LexOPS_splitCond", filter = TRUE,
-  standard_eval = FALSE)
+split_by(
+  df,
+  var,
+  levels,
+  cond_col = "LexOPS_splitCond",
+  filter = TRUE,
+  standard_eval = FALSE
+)
 }
 \arguments{
 \item{df}{A data frame containing the IV and strings.}

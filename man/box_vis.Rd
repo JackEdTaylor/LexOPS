@@ -4,9 +4,16 @@
 \alias{box_vis}
 \title{Generate a box's visualisation}
 \usage{
-box_vis(var, box_type = "primary", tol = NA, match_string = NA,
-  shade_label = NA, shade_relative = TRUE, cat_vis = NA,
-  df = LexOPS::lexops)
+box_vis(
+  var,
+  box_type = "primary",
+  tol = NA,
+  match_string = NA,
+  shade_label = NA,
+  shade_relative = TRUE,
+  cat_vis = NA,
+  df = LexOPS::lexops
+)
 }
 \arguments{
 \item{var}{Character vector specifying which variable is selected}

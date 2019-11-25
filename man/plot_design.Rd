@@ -4,8 +4,13 @@
 \alias{plot_design}
 \title{Plot the generated stimuli's design}
 \usage{
-plot_design(df, include = "design", dodge_width = 0.2,
-  point_size = 0.75, line_width = 1)
+plot_design(
+  df,
+  include = "design",
+  dodge_width = 0.2,
+  point_size = 0.75,
+  line_width = 1
+)
 }
 \arguments{
 \item{df}{Output from \code{generate()} or \code{long_format()}}

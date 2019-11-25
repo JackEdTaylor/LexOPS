@@ -4,9 +4,14 @@
 \alias{var_to_measure}
 \title{Convert a variable name to its measure}
 \usage{
-var_to_measure(var, first_cite = TRUE, default = "",
-  title_caps = FALSE, include_pronunciations = TRUE,
-  standard_eval = FALSE)
+var_to_measure(
+  var,
+  first_cite = TRUE,
+  default = "",
+  title_caps = FALSE,
+  include_pronunciations = TRUE,
+  standard_eval = FALSE
+)
 }
 \arguments{
 \item{var}{The variable name (non-standard evaluation)}
