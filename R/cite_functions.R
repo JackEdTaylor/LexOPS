@@ -1,3 +1,86 @@
+#' Generate a citation
+#'
+#' Takes the output from `generate()` or `long_format()`, and generates a tibble that lists known references that should be cited.
+#'
+#' @param df Output from `generate()` or `long_format()`
+#' @param include A string indicating which variables to include in the citation. This can be those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Alternatively, this can be a character vector of the variables that should be cited, that were in the original dataframe. Default is `"design"`.
+#'
+#' @return A tibble that lists measures and sources of data that should be cited (if known).
+#'
+#' @examples
+#'
+#' stim <- lexops %>%
+#'   dplyr::filter(PK.Brysbaert >= .75) %>%
+#'   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) %>%
+#'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
+#'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
+#'   control_for(Length) %>%
+#'   generate(n = 50, match_null = "balanced")
+#' cite_design(stim)
+#'
+#' @export
+
+cite_design <- function(df, include = "design") {
+  # get attributes
+  LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
+  # check is generated stimuli
+  if (is.null(LexOPS_attrs$generated)) stop("Must run `generate()` on `df` before using `plot_design()`")
+  # ensure is in long format
+  if (is.null(LexOPS_attrs$is.long_format)) df <- LexOPS::long_format(df)
+
+  # Tell the user to also cite LexOPS
+  cat(sprintf("Please also cite LexOPS: Taylor, Beith and Sereno (2019), doi:10.31234/osf.io/7sudw\n"))
+
+  # get vector of splits (IVs)
+  splits <- sapply(LexOPS_attrs$splits, dplyr::first)
+
+  # remove random splits
+  if (!is.null(LexOPS_attrs$random_splits)) {
+    splits <- splits[-LexOPS_attrs$random_splits]
+  }
+
+  # get vector of control variables
+  controls <- c( sapply(LexOPS_attrs$controls, dplyr::first), sapply(LexOPS_attrs$control_functions, dplyr::first) )
+
+  # factor vector of variables to plot
+  cite_vars <- if (all(include == "design")) {
+    c(splits, controls)
+  } else if (all(include == "splits")) {
+    splits
+  } else if (all(include == "controls")) {
+    controls
+  } else {
+    include
+  }
+
+  # flatten to vector
+  cite_vars <- unlist(cite_vars)
+
+  # create tibble containing citation info
+  dplyr::tibble(
+    var = cite_vars,
+    measure = sapply(cite_vars, LexOPS::var_to_measure, first_cite = TRUE, title_caps = TRUE, default = "Custom Measure", standard_eval = TRUE),
+    source = sapply(cite_vars, LexOPS::var_to_source, first_cite = TRUE, default = "Custom Source", standard_eval = TRUE),
+    url = sapply(cite_vars, LexOPS::var_to_url, default = "Unknown", standard_eval = TRUE)
+  ) %>%
+    dplyr::mutate(
+      source = ifelse(var=="Length", NA, source),
+      url = ifelse(var=="Length", NA, url)
+    )
+
+}
+
+# stim <- lexops %>%
+#   dplyr::mutate(rand_var = rnorm(nrow(.), 100, 10)) %>%
+#   dplyr::filter(PK.Brysbaert >= .75) %>%
+#   split_by(rand_var, 60:85 ~ 115:140) %>%
+#   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
+#   control_for(Length) %>%
+#   generate(n = 50, match_null = "balanced")
+#
+# cite_design(stim)
+
+
 #' Convert a variable name to its measure
 #'
 #' Converts the name of a variable from `LexOPS::lexops` (e.g. "fpmw.SUBTLEX_US") into the name of its measure (e.g. "frequency per million words").
@@ -133,7 +216,7 @@ var_to_measure_name <- function(var, include_pronunciations=TRUE) {
 #'
 #' @param var The variable name (non-standard evaluation)
 #' @param first_cite Logical; if `TRUE`, gives full citation, if `FALSE`, gives abbreviated (i.e. "et al.") citation
-#' @param default The character string that should be returned if the variable does not have a known cietable source
+#' @param default The character string that should be returned if the variable does not have a known citeable source
 #' @param standard_eval Logical; bypasses non-standard evaluation. If `TRUE`, `var` should be a column name in quotation marks. If `FALSE`, the quotation marks are not necessary. Default = `FALSE`.
 #'
 #' @return A citation of a variable's source in APA format. Returns `default` if not recognised as a citeabile source.
@@ -164,7 +247,7 @@ var_to_source <- function(var, first_cite = TRUE, default = "", standard_eval = 
         "Glasgow_Norms" = "the Glasgow Norms (Scott, Keitel, Becirspahic, Yao, & Sereno, 2018)",
         "Clark_and_Paivio" = "Clark and Paivio (2004)",
         "AoA.Kuperman" = "Kuperman, Stadthagen-Gonzalez and Brysbaert (2012)",
-        "AoA.BrysbaertBiemiller" = "Brysbaert and Biemiller's (2017)",
+        "AoA.BrysbaertBiemiller" = "Brysbaert and Biemiller (2017)",
         "CNC.Brysbaert" = "Brysbaert, Warriner and Kuperman (2014)",
         "Warriner" = "Warriner, Kuperman and Brysbaert (2013)",
         "EngelthalerHills" = "Engelthaler and Hills (2018)",
@@ -209,4 +292,54 @@ corpus_recode_name_source <- function(var) {
   if (length(matches[matches])==0) return(NA)
   if (length(matches[matches])>1) warning(sprintf("Multiple (%i) sources found. Will return all matches.", length(matches[matches])))
   var_names[matches]
+}
+
+#' Convert a variable name to a url reference.
+#'
+#' Converts the name of a variable from `LexOPS::lexops` (e.g. "Zipf.SUBTLEX_US") into a url (usually doi).
+#'
+#' @param var The variable name (non-standard evaluation)
+#' @param default The character string that should be returned if the variable does not have a known citeable source
+#' @param standard_eval Logical; bypasses non-standard evaluation. If `TRUE`, `var` should be a column name in quotation marks. If `FALSE`, the quotation marks are not necessary. Default = `FALSE`.
+#'
+#' @return A citation of a variable's source in APA format. Returns `default` if not recognised as a citeabile source.
+#'
+#' @examples
+#'
+#' var_to_url(Zipf.SUBTLEX_UK)
+#'
+#' var_to_url("AROU.Glasgow_Norms", standard_eval = TRUE)
+#'
+#' var_to_url(AoA.Kuperman)
+#'
+#' @export
+
+var_to_url <- function(var, default = "", standard_eval = FALSE) {
+  if (!standard_eval) var <- substitute(var)
+  var_name <- corpus_recode_name_source(var)
+  if (!is.null(var_name) & !is.na(var_name)) {
+    dplyr::recode(
+      var_name,
+      "BNC.Written" = 'http://www.natcorp.ox.ac.uk/',
+      "BNC.Spoken" = 'http://www.natcorp.ox.ac.uk/',
+      "SUBTLEX_UK" = "https://doi.org/10.1080/17470218.2013.850521",
+      "SUBTLEX_US" = "https://doi.org/10.3758/BRM.41.4.977",
+      "CMU" = "http://www.speech.cs.cmu.edu/cgi-bin/cmudict",
+      "eSpeak" = "http://espeak.sourceforge.net/",
+      "Glasgow_Norms" = "https://doi.org/10.3758/s13428-018-1099-3",
+      "Clark_and_Paivio" = "https://doi.org/10.3758/BF03195584",
+      "AoA.Kuperman" = "https://doi.org/10.3758/s13428-012-0210-4",
+      "AoA.BrysbaertBiemiller" = "https://doi.org/10.3758/s13428-016-0811-4",
+      "CNC.Brysbaert" = "https://doi.org/10.3758/s13428-013-0403-5",
+      "Warriner" = "https://doi.org/10.3758/s13428-012-0314-x",
+      "EngelthalerHills" = "https://doi.org/10.3758/s13428-017-0930-6",
+      "PREV.Brysbaert" = "https://doi.org/10.3758/s13428-018-1077-9",
+      "PK.Brysbaert" = "https://doi.org/10.3758/s13428-018-1077-9",
+      "ELP" = "https://doi.org/10.3758/BF03193014",
+      "BLP" = "https://doi.org/10.3758/s13428-011-0118-4",
+      .default = default
+    )
+  } else {
+    default
+  }
 }

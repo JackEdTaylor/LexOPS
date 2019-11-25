@@ -22,6 +22,7 @@
   utils::globalVariables("stim_generated")
   utils::globalVariables("tmp")
   utils::globalVariables("euclidean_distance")
+  utils::globalVariables("var")
 
   invisible()
 }
