@@ -27,10 +27,16 @@
 #'
 #' parse_levels(substitute(PoS.SUBTLEX_UK))
 #'
+#' # Can give vector of variables in non-standard eval
+#'
+#' parse_levels(substitute(c(Zipf.SUBTLEX_UK, Length)), substitute(0:2.5))
+#' parse_levels(substitute(c(Zipf.SUBTLEX_UK, Length)))
+#'
 #' @export
 
 parse_levels <- function(var, levels = NA) {
-  var <- deparse(var)
+  var <- deparse(var) %>%
+    unvectorise()
 
   levels <- deparse(levels) %>%
     strsplit("~", fixed = TRUE) %>%
@@ -47,8 +53,21 @@ parse_levels <- function(var, levels = NA) {
   out <- if (all(is.na(levels))) {
     list(var)
   } else {
-    prepend(levels, var)
+    prepend_list(levels, var)
   }
 
   out
 }
+
+unvectorise <- function(vec_str) {
+  if (grepl("^c\\(.+\\)$", vec_str)) {
+    vec_str %>%
+      gsub("^c\\(", "", .) %>%
+      gsub("\\)$", "", .) %>%
+      strsplit(", *") %>%
+      unlist()
+  } else {
+    vec_str
+  }
+}
+
