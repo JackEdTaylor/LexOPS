@@ -23,6 +23,7 @@
   utils::globalVariables("tmp")
   utils::globalVariables("euclidean_distance")
   utils::globalVariables("var")
+  utils::globalVariables("matchFilter")
 
   invisible()
 }

@@ -36,12 +36,14 @@
 
 parse_levels <- function(var, levels = NA) {
   var <- deparse(var) %>%
+    paste0(collapse = "") %>%
     parse.unvectorise()
 
   levels <- deparse(levels) %>%
+    paste0(collapse = "") %>%
     strsplit("~", fixed = TRUE) %>%
     dplyr::first() %>%
-    { gsub(" ", "", .) }
+    gsub(" ", "", .)
 
   if (all(grepl(":", levels))) {
     levels <- strsplit(levels, ":", fixed = TRUE) %>%
@@ -59,18 +61,6 @@ parse_levels <- function(var, levels = NA) {
   out
 }
 
-parse.unvectorise <- function(vec_str) {
-  if (grepl("^c\\(.+\\)$", vec_str)) {
-    vec_str %>%
-      gsub("^c\\(", "", .) %>%
-      gsub("\\)$", "", .) %>%
-      strsplit(", *") %>%
-      unlist()
-  } else {
-    vec_str
-  }
-}
-
 #' A non-standard evaluation parser for elipses
 #'
 #' This is a version of `parse_levels()` that supports elipses. This is useful for specifying multiple parameters in one function. This function was specifically designed for a non-standard evaluation update to `match_word()`.
@@ -82,13 +72,19 @@ parse.unvectorise <- function(vec_str) {
 #'
 #' parse_elipsis(substitute(c(Length ~ 0:0, Zipf.SUBTLEX_UK ~ -0.1:0.1, PoS.SUBTLEX_UK)))
 #'
+#' parse_elipsis(substitute(c(Length ~ 0:0,
+#'                            Zipf.SUBTLEX_UK ~ -0.1:0.1,
+#'                            PoS.SUBTLEX_UK,
+#'                            BG.SUBTLEX_UK ~ -0.005:0.005)))
+#'
 #' @export
 
 parse_elipsis <- function(...) {
-  c(...) %>%
-    deparse() %>%
-    parse.unlist(unvec = TRUE) %>%
+  deparse(...) %>%
+    paste0(collapse = "") %>%
+    lapply(parse.unvectorise) %>%
     lapply(strsplit, "~", fixed = TRUE) %>%
+    dplyr::first() %>%
     lapply(function(x) {
       # remove spaces
       x <- x %>%
@@ -112,24 +108,14 @@ parse_elipsis <- function(...) {
     })
 }
 
-parse.unlist <- function(list_str, unvec = TRUE) {
-  if (grepl("^list\\(.+\\)$", list_str)) {
-    if (unvec & grepl("^list\\(c\\(.+\\)\\)$", list_str)) {
-      # if unvec, will also remove c() syntax if detected
-      list_str %>%
-        gsub("^list\\(c\\(", "", .) %>%
-        gsub("\\)\\)$", "", .) %>%
-        strsplit(", *") %>%
-        unlist()
-    } else {
-      list_str %>%
-        gsub("^list\\(", "", .) %>%
-        gsub("\\)$", "", .) %>%
-        strsplit(", *") %>%
-        unlist()
-    }
+parse.unvectorise <- function(vec_str) {
+  if (grepl("^c\\(.+\\)$", vec_str)) {
+    vec_str %>%
+      gsub("^c\\(", "", .) %>%
+      gsub("\\)$", "", .) %>%
+      strsplit(", *") %>%
+      unlist()
   } else {
-    list_str
+    vec_str
   }
 }
-

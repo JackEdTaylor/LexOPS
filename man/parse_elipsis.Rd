@@ -19,4 +19,9 @@ This is a version of \code{parse_levels()} that supports elipses. This is useful
 
 parse_elipsis(substitute(c(Length ~ 0:0, Zipf.SUBTLEX_UK ~ -0.1:0.1, PoS.SUBTLEX_UK)))
 
+parse_elipsis(substitute(c(Length ~ 0:0,
+                           Zipf.SUBTLEX_UK ~ -0.1:0.1,
+                           PoS.SUBTLEX_UK,
+                           BG.SUBTLEX_UK ~ -0.005:0.005)))
+
 }
