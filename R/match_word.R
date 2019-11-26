@@ -28,7 +28,7 @@
 #' lexops %>%
 #'   match_word("thicket", Length, Zipf.SUBTLEX_UK ~ -0.2:0.2)
 #'
-#' # The syntax makes matching by multiple variables easy
+#' # The syntax makes matching by multiple variables easiy and readable
 #' lexops %>%
 #'   match_word(
 #'     "elephant",
@@ -163,22 +163,20 @@ match_word <- function(df = LexOPS::lexops, target, ..., string_col = "string", 
 
   # filter out words that don't fit the filters
   if (length(numFilt) > 0) {
-    numOut <- numFilt %>%
-      purrr::map(~df %>%
-                   dplyr::filter(dplyr::between(
-                     !!(dplyr::sym(.x[1])),
-                     as.numeric(.x[2]),
-                     as.numeric(.x[3])
-                   ))) %>%
-      purrr::reduce(dplyr::inner_join, by = colnames(df))
+
+    numFilt_string <- numFilt %>%
+      lapply(function(filt) sprintf("dplyr::between(%s, %f, %f)", filt[1], as.numeric(filt[2]), as.numeric(filt[3]))) %>%
+      paste0(collapse = " & ")
+
+    numOut <- dplyr::filter(df, !!rlang::parse_expr(numFilt_string))
   }
   if (length(charFilt) > 0) {
-    charOut <- charFilt %>%
-      purrr::map(~df %>%
-                   dplyr::filter(
-                     !!(dplyr::sym(.x[1])) == as.character(.x[2])
-                   )) %>%
-      purrr::reduce(dplyr::inner_join, by = colnames(df))
+
+    charFilt_string <- charFilt %>%
+      lapply(function(filt) sprintf("%s == \"%s\"", as.character(filt[1]), as.character(filt[2]))) %>%
+      paste0(collapse = " & ")
+
+    charOut <- dplyr::filter(df, !!rlang::parse_expr(charFilt_string))
   }
 
   # return the result
