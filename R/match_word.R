@@ -183,7 +183,8 @@ match_word <- function(df = LexOPS::lexops, target, ..., string_col = "string", 
 
   # if the filter argument is FALSE, return the original df, but with new column matchFilter
   if (!filter) {
-    out <- dplyr::mutate(df, matchFilter = !!(dplyr::sym(string_col)) %in% out[[string_col]])
+    out <- dplyr::mutate(df, matchFilter = !!(dplyr::sym(string_col)) %in% out[[string_col]]) %>%
+      dplyr::select(!!dplyr::sym(string_col), matchFilter, dplyr::everything())
   }
 
   # remove the target word
