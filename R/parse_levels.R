@@ -93,7 +93,7 @@ parse_elipsis <- function(...) {
       # get var and (optionally) levels for this section
       var <- x[1]
       if (length(x == 2) & !is.na(x[2])) {
-        if (all(grepl(":", x[2]))) {
+        if (grepl(":", x[2])) {
           levels <- strsplit(x[2], ":", fixed = TRUE) %>%
             lapply(as.numeric) %>%
             unlist()
