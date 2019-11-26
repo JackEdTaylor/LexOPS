@@ -4,37 +4,45 @@
 #'
 #' @param df A data frame to reorder, containing the target string (default = LexOPS::lexops).
 #' @param target The target string
-#' @param vars Can be a list of vars from df to match by, in the form list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName"). Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.
+#' @param ... Should specify the variables and tolerances in the form `Length ~ 0:0, Zipf.SUBTLEX_UK ~ -0.1:0.1, PoS.SUBTLEX_UK`. Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.
 #' @param string_col The column containing the strings (default = "string")
 #' @param filter Logical. If TRUE, matches outside the tolerances specified in vars are removed. If FALSE, a new column, matchFilter is calculated indicating whether or not the string is within all variables' tolerances. (Default = TRUE.)
+#' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R object of list. If `TRUE`, `...` should be a single list specifying the variables to match by and their tolerances, in the form `list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName")`. Default = `FALSE`.
+#'
 #' @return Returns data frame based on `df`. If `filter` == TRUE, will only contain matches. If `filter` == FALSE, will be the original `df` object, with a new column, "matchFilter".
 #' @examples
 #'
 #' # Match by number of syllables exactly
 #' lexops %>%
-#'   match_word("thicket", "Syllables.CMU")
+#'   match_word("thicket", Syllables.CMU)
 #'
 #' # Match by number of syllables exactly, but keep all entries in the original dataframe
 #' lexops %>%
-#'   match_word("thicket", "Syllables.CMU", filter = FALSE)
+#'   match_word("thicket", Syllables.CMU, filter = FALSE)
 #'
 #' # Match by number of syllables exactly, and rhyme
 #' lexops %>%
-#'   match_word("thicket", list("Syllables.CMU", "Rhyme.CMU"))
+#'   match_word("thicket", Syllables.CMU, Rhyme.CMU)
 #'
 #' # Match by length exactly, and closely by frequency (within 0.2 Zipf either way)
 #' lexops %>%
-#'   match_word("thicket", list("Length", c("Zipf.SUBTLEX_UK", -0.2, 0.2)))
+#'   match_word("thicket", Length, Zipf.SUBTLEX_UK ~ -0.2:0.2)
 #'
-#' # Match by to within an orthographic levenshtein distance of 5 from "thicket":
+#' # The syntax makes matching by multiple variables easy
+#'
+#' # Match using standard evaluation
+#' lexops %>%
+#'   match_word("thicket", list("Length", c("Zipf.SUBTLEX_UK", -0.2, 0.2)), standard_eval = TRUE)
+#'
+#' # Find matches within an orthographic levenshtein distance of 5 from "thicket":
 #' library(dplyr)
 #' library(vwr)
 #' targ_word <- "thicket"
 #' lexops %>%
 #'   mutate(old = levenshtein.distance(targ_word, string)) %>%
-#'   match_word(targ_word, list(c("old", 0, 5)))
+#'   match_word(targ_word, old ~ 0:5)
 #'
-#' # Match by to within an phonological levenshtein distance of 2 from "thicket":
+#' # Find matches within a phonological levenshtein distance of 2 from "thicket":
 #' # (note that this method requires 1-letter phonological transcriptions)
 #' library(dplyr)
 #' library(vwr)
@@ -44,13 +52,19 @@
 #'   pull(eSpeak.br_1letter)
 #' lexops %>%
 #'   mutate(pld = levenshtein.distance(targ_word_pronun, eSpeak.br_1letter)) %>%
-#'   match_word(targ_word, list(c("pld", 0, 2)))
+#'   match_word(targ_word, pld ~ 0:2)
 #'
 #' @seealso \code{\link{lexops}} for the default data frame and associated variables.
 #'
 #' @export
 
-match_word <- function(df = LexOPS::lexops, target, vars, string_col = "string", filter = TRUE) {
+match_word <- function(df = LexOPS::lexops, target, ..., string_col = "string", filter = TRUE, standard_eval = FALSE) {
+  if (standard_eval) {
+    vars <- (...)
+  } else {
+    vars <- substitute(c(...)) %>%
+      parse_elipsis()
+  }
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
   # check this dataframe doesn't include a column called euclidean_distance; if it does, remove it and throw a warning
@@ -206,5 +220,3 @@ match_word <- function(df = LexOPS::lexops, target, vars, string_col = "string",
 # LexOPS::lexops %>% match_word("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -0.2, 0.2)))
 #
 # LexOPS::lexops %>% match_word("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -0.2, 0.2), "Rhyme.eSpeak.br"))
-
-

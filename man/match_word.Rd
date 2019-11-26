@@ -7,9 +7,10 @@
 match_word(
   df = LexOPS::lexops,
   target,
-  vars,
+  ...,
   string_col = "string",
-  filter = TRUE
+  filter = TRUE,
+  standard_eval = FALSE
 )
 }
 \arguments{
@@ -17,11 +18,13 @@ match_word(
 
 \item{target}{The target string}
 
-\item{vars}{Can be a list of vars from df to match by, in the form list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName"). Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.}
+\item{...}{Should specify the variables and tolerances in the form \verb{Length ~ 0:0, Zipf.SUBTLEX_UK ~ -0.1:0.1, PoS.SUBTLEX_UK}. Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.}
 
 \item{string_col}{The column containing the strings (default = "string")}
 
 \item{filter}{Logical. If TRUE, matches outside the tolerances specified in vars are removed. If FALSE, a new column, matchFilter is calculated indicating whether or not the string is within all variables' tolerances. (Default = TRUE.)}
+
+\item{standard_eval}{Logical; bypasses non-standard evaluation, and allows more standard R object of list. If \code{TRUE}, \code{...} should be a single list specifying the variables to match by and their tolerances, in the form \code{list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName")}. Default = \code{FALSE}.}
 }
 \value{
 Returns data frame based on \code{df}. If \code{filter} == TRUE, will only contain matches. If \code{filter} == FALSE, will be the original \code{df} object, with a new column, "matchFilter".
@@ -33,29 +36,35 @@ Suggests strings that are suitable matches for a target string, based on selecte
 
 # Match by number of syllables exactly
 lexops \%>\%
-  match_word("thicket", "Syllables.CMU")
+  match_word("thicket", Syllables.CMU)
 
 # Match by number of syllables exactly, but keep all entries in the original dataframe
 lexops \%>\%
-  match_word("thicket", "Syllables.CMU", filter = FALSE)
+  match_word("thicket", Syllables.CMU, filter = FALSE)
 
 # Match by number of syllables exactly, and rhyme
 lexops \%>\%
-  match_word("thicket", list("Syllables.CMU", "Rhyme.CMU"))
+  match_word("thicket", Syllables.CMU, Rhyme.CMU)
 
 # Match by length exactly, and closely by frequency (within 0.2 Zipf either way)
 lexops \%>\%
-  match_word("thicket", list("Length", c("Zipf.SUBTLEX_UK", -0.2, 0.2)))
+  match_word("thicket", Length, Zipf.SUBTLEX_UK ~ -0.2:0.2)
 
-# Match by to within an orthographic levenshtein distance of 5 from "thicket":
+# The syntax makes matching by multiple variables easy
+
+# Match using standard evaluation
+lexops \%>\%
+  match_word("thicket", list("Length", c("Zipf.SUBTLEX_UK", -0.2, 0.2)), standard_eval = TRUE)
+
+# Find matches within an orthographic levenshtein distance of 5 from "thicket":
 library(dplyr)
 library(vwr)
 targ_word <- "thicket"
 lexops \%>\%
   mutate(old = levenshtein.distance(targ_word, string)) \%>\%
-  match_word(targ_word, list(c("old", 0, 5)))
+  match_word(targ_word, old ~ 0:5)
 
-# Match by to within an phonological levenshtein distance of 2 from "thicket":
+# Find matches within a phonological levenshtein distance of 2 from "thicket":
 # (note that this method requires 1-letter phonological transcriptions)
 library(dplyr)
 library(vwr)
@@ -65,7 +74,7 @@ targ_word_pronun <- lexops \%>\%
   pull(eSpeak.br_1letter)
 lexops \%>\%
   mutate(pld = levenshtein.distance(targ_word_pronun, eSpeak.br_1letter)) \%>\%
-  match_word(targ_word, list(c("pld", 0, 2)))
+  match_word(targ_word, pld ~ 0:2)
 
 }
 \seealso{
