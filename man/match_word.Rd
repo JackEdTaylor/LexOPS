@@ -51,6 +51,15 @@ lexops \%>\%
   match_word("thicket", Length, Zipf.SUBTLEX_UK ~ -0.2:0.2)
 
 # The syntax makes matching by multiple variables easy
+lexops \%>\%
+  match_word(
+    "elephant",
+    BG.SUBTLEX_UK ~ -0.005:0.005,
+    Length ~ 0:0,
+    Zipf.SUBTLEX_UK ~ -0.1:0.1,
+    PoS.SUBTLEX_UK,
+    RT.ELP ~ -10:10
+  )
 
 # Match using standard evaluation
 lexops \%>\%
