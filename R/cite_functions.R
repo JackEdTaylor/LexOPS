@@ -260,8 +260,8 @@ var_to_source <- function(var, first_cite = TRUE, default = "", standard_eval = 
         "CNC.Brysbaert" = "Brysbaert, Warriner and Kuperman (2014)",
         "Warriner" = "Warriner, Kuperman and Brysbaert (2013)",
         "EngelthalerHills" = "Engelthaler and Hills (2018)",
-        "PREV.Brysbaert" = "Brysbaert, Mandera, and Keuleers (2018)",
-        "PK.Brysbaert" = "Brysbaert, Mandera, and Keuleers (2018)",
+        "PREV.Brysbaert" = "Brysbaert, Mandera, McCormick, and Keuleers (2019)",
+        "PK.Brysbaert" = "Brysbaert, Mandera, McCormick, and Keuleers (2019)",
         "ELP" = "the English Lexicon Project (ELP; Balota et al., 2007)",
         "BLP" = "the British Lexicon Project (BLP; Keuleers, Lacey, Rastle, & Brysbaert, 2012)",
         .default = default
