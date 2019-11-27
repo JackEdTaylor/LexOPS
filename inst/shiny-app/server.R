@@ -44,7 +44,7 @@ shinyServer(function(input, output) {
     # codify selected options
     source("server/generate/codify.R", local = TRUE)
 
-    # table of recommended citations
+    # table of recommended citations for generate tab
     source("server/generate/cite.R", local = TRUE)
 
     # generate the stimuli
@@ -56,6 +56,9 @@ shinyServer(function(input, output) {
 
     # Get the match results
     source("server/match_word/match_word.R", local = TRUE)
+
+    # table of recommended citations for the match word tab
+    source("server/match_word/cite.R", local = TRUE)
 
     # fetch tab
     source("server/fetch.R", local = TRUE)

@@ -231,7 +231,9 @@ tagList(
                                                                   tags$h3(icon("wrench"), "Options"),
                                                                   tags$p("Change default options to better suit your design."),
                                                                   tags$h3(icon("sort-amount-down"), "Results"),
-                                                                  tags$p("View suggested matches, ordered ascendingly in terms of Euclidean distance. The suggested matches can be downloaded here in .csv format.")
+                                                                  tags$p("View suggested matches, ordered ascendingly in terms of Euclidean distance. The suggested matches can be downloaded here in .csv format."),
+                                                                  tags$h3(icon("quote-left"), "Cite"),
+                                                                  tags$p("When you have a list of matches, this tab will generate a table with a recommended list of sources you should cite (if they are known).")
                                                          ),
                                                          tabPanel(
                                                              "Specify Design", icon = icon("sliders-h"),
@@ -271,6 +273,13 @@ tagList(
                                                                  column(4, downloadButton("matched_stim_download", style = "width:100%; text-align:center;"))
                                                              ),
                                                              DT::dataTableOutput("matched_stim_dt")
+                                                         ),
+                                                         tabPanel("Cite", icon = icon("quote-left"),
+                                                                  tags$h1("Cite"),
+                                                                  shiny::HTML("Here is a list of the variables you used, with the sources it is recommended that you should cite. Please remember to also always <a href=\"https://jackedtaylor.github.io/LexOPSdocs/faq.html#how-should-i-cite-lexops\" target=\"_blank\">Cite LexOPS</a>."),
+                                                                  tags$br(),
+                                                                  tags$br(),
+                                                                  DT::dataTableOutput("match_citations")
                                                          )
                                                      )
                                               )
