@@ -49,7 +49,7 @@ plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 
   meta_df <- suppressWarnings(dplyr::mutate_if(meta_df, function(x) all(!is.na(as.numeric(x))), as.numeric))
 
   # join this to df
-  plot_df <- dplyr::select(df, c(item_nr, condition, match_null, string)) %>%
+  plot_df <- dplyr::select(df, c(item_nr, condition, string)) %>%
     dplyr::right_join(meta_df, by = "string")
 
   # factor vector of variables to plot
