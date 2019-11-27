@@ -63,7 +63,7 @@ tagList(
                                   # Home
                                   tabItem(tabName = "home",
                                           tags$h1("Welcome to LexOPS!"),
-                                          tags$div(HTML(paste0("This shiny app is a front-end to the ", tags$a(href = "https://github.com/JackEdTaylor/LexOPS", "LexOPS R package"), ". LexOPS allows you to generate suitably controlled word stimuli for any possible factorial design."))),
+                                          tags$div(HTML(paste0("This shiny app is a front-end to the ", tags$a(href = "https://github.com/JackEdTaylor/LexOPS", "LexOPS R package"), ". LexOPS allows you to generate suitably controlled word stimuli for any possible factorial design.", "Find out more in the <a href=\"https://jackedtaylor.github.io/LexOPSdocs/lexops-shiny-app.html\">Online Walkthrough</a>."))),
                                           tags$br(),
                                           tags$p("The tabs in the sidebar on the left-hand side provide different options for generating stimuli and exploring data:"),
                                           tags$h3(icon("cogs"), "Generate"),
@@ -102,7 +102,9 @@ tagList(
                                                        tags$h3(icon("search"), "Review"),
                                                        tags$p("Visualise a summary of the generated stimuli, and the algorithm's performance. More flexible options for visualisation are available in the Visualise section in the sidebar."),
                                                        tags$h3(icon("laptop-code"), "Codify"),
-                                                       tags$p("Once you have generated your stimuli, this tab will generate R code that will reproduce the selected options. Exact stimuli lists can be reproduced by setting the seed in the Preferences tab in the sidebar.")
+                                                       tags$p("Once you have generated your stimuli, this tab will generate R code that will reproduce the selected options. Exact stimuli lists can be reproduced by setting the seed in the Preferences tab in the sidebar."),
+                                                       tags$h3(icon("quote-left"), "Cite"),
+                                                       tags$p("Once you have generated your stimuli, this tab will generate a table with a recommended list of sources you should cite (if they are known) if you use the stimulus list generated.")
                                               ),
                                               tabPanel("Specify Design", icon=icon("sliders-h"),
                                                        fluidRow(
@@ -197,6 +199,13 @@ tagList(
                                                        tags$h1("Codify"),
                                                        tags$p("This R code will generate stimuli for the design you have specified. If you've set the random seed, this code will also generate the same stimuli list as that generated in the app each time it is run. You can set the seed in the Preferences tab on the sidebar."),
                                                        verbatimTextOutput("gen_codify_text")
+                                              ),
+                                              tabPanel("Cite", icon = icon("quote-left"),
+                                                       tags$h1("Cite"),
+                                                       shiny::HTML("Here is a list of the variables you used, with the sources it is recommended that you should cite. Please remember to also always <a href=\"https://jackedtaylor.github.io/LexOPSdocs/faq.html#how-should-i-cite-lexops\" target=\"_blank\">Cite LexOPS</a>."),
+                                                       tags$br(),
+                                                       tags$br(),
+                                                       DT::dataTableOutput("gen_citations")
                                               )
 
                                           )

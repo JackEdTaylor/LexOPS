@@ -44,6 +44,9 @@ shinyServer(function(input, output) {
     # codify selected options
     source("server/generate/codify.R", local = TRUE)
 
+    # table of recommended citations
+    source("server/generate/cite.R", local = TRUE)
+
     # generate the stimuli
     source("server/generate/generate.R", local = TRUE)
 
