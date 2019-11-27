@@ -18,7 +18,7 @@ match_word(
 
 \item{target}{The target string}
 
-\item{...}{Should specify the variables and tolerances in the form \verb{Length ~ 0:0, Zipf.SUBTLEX_UK ~ -0.1:0.1, PoS.SUBTLEX_UK}. Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.}
+\item{...}{Should specify the variables and tolerances in the form \verb{Length = 0:0, Zipf.SUBTLEX_UK = -0.1:0.1, PoS.SUBTLEX_UK}. Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.}
 
 \item{string_col}{The column containing the strings (default = "string")}
 
@@ -48,17 +48,17 @@ lexops \%>\%
 
 # Match by length exactly, and closely by frequency (within 0.2 Zipf either way)
 lexops \%>\%
-  match_word("thicket", Length, Zipf.SUBTLEX_UK ~ -0.2:0.2)
+  match_word("thicket", Length, Zipf.SUBTLEX_UK = -0.2:0.2)
 
 # The syntax makes matching by multiple variables easiy and readable
 lexops \%>\%
   match_word(
     "elephant",
-    BG.SUBTLEX_UK ~ -0.005:0.005,
-    Length ~ 0:0,
-    Zipf.SUBTLEX_UK ~ -0.1:0.1,
+    BG.SUBTLEX_UK = -0.005:0.005,
+    Length = 0:0,
+    Zipf.SUBTLEX_UK = -0.1:0.1,
     PoS.SUBTLEX_UK,
-    RT.ELP ~ -10:10
+    RT.ELP = -10:10
   )
 
 # Match using standard evaluation
@@ -71,7 +71,7 @@ library(vwr)
 targ_word <- "thicket"
 lexops \%>\%
   mutate(old = levenshtein.distance(targ_word, string)) \%>\%
-  match_word(targ_word, old ~ 0:5)
+  match_word(targ_word, old = 0:5)
 
 # Find matches within a phonological levenshtein distance of 2 from "thicket":
 # (note that this method requires 1-letter phonological transcriptions)
@@ -83,7 +83,7 @@ targ_word_pronun <- lexops \%>\%
   pull(eSpeak.br_1letter)
 lexops \%>\%
   mutate(pld = levenshtein.distance(targ_word_pronun, eSpeak.br_1letter)) \%>\%
-  match_word(targ_word, pld ~ 0:2)
+  match_word(targ_word, pld = 0:2)
 
 }
 \seealso{

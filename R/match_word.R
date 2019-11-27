@@ -4,7 +4,7 @@
 #'
 #' @param df A data frame to reorder, containing the target string (default = LexOPS::lexops).
 #' @param target The target string
-#' @param ... Should specify the variables and tolerances in the form `Length ~ 0:0, Zipf.SUBTLEX_UK ~ -0.1:0.1, PoS.SUBTLEX_UK`. Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.
+#' @param ... Should specify the variables and tolerances in the form `Length = 0:0, Zipf.SUBTLEX_UK = -0.1:0.1, PoS.SUBTLEX_UK`. Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.
 #' @param string_col The column containing the strings (default = "string")
 #' @param filter Logical. If TRUE, matches outside the tolerances specified in vars are removed. If FALSE, a new column, matchFilter is calculated indicating whether or not the string is within all variables' tolerances. (Default = TRUE.)
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R object of list. If `TRUE`, `...` should be a single list specifying the variables to match by and their tolerances, in the form `list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName")`. Default = `FALSE`.
@@ -26,17 +26,17 @@
 #'
 #' # Match by length exactly, and closely by frequency (within 0.2 Zipf either way)
 #' lexops %>%
-#'   match_word("thicket", Length, Zipf.SUBTLEX_UK ~ -0.2:0.2)
+#'   match_word("thicket", Length, Zipf.SUBTLEX_UK = -0.2:0.2)
 #'
 #' # The syntax makes matching by multiple variables easiy and readable
 #' lexops %>%
 #'   match_word(
 #'     "elephant",
-#'     BG.SUBTLEX_UK ~ -0.005:0.005,
-#'     Length ~ 0:0,
-#'     Zipf.SUBTLEX_UK ~ -0.1:0.1,
+#'     BG.SUBTLEX_UK = -0.005:0.005,
+#'     Length = 0:0,
+#'     Zipf.SUBTLEX_UK = -0.1:0.1,
 #'     PoS.SUBTLEX_UK,
-#'     RT.ELP ~ -10:10
+#'     RT.ELP = -10:10
 #'   )
 #'
 #' # Match using standard evaluation
@@ -49,7 +49,7 @@
 #' targ_word <- "thicket"
 #' lexops %>%
 #'   mutate(old = levenshtein.distance(targ_word, string)) %>%
-#'   match_word(targ_word, old ~ 0:5)
+#'   match_word(targ_word, old = 0:5)
 #'
 #' # Find matches within a phonological levenshtein distance of 2 from "thicket":
 #' # (note that this method requires 1-letter phonological transcriptions)
@@ -61,7 +61,7 @@
 #'   pull(eSpeak.br_1letter)
 #' lexops %>%
 #'   mutate(pld = levenshtein.distance(targ_word_pronun, eSpeak.br_1letter)) %>%
-#'   match_word(targ_word, pld ~ 0:2)
+#'   match_word(targ_word, pld = 0:2)
 #'
 #' @seealso \code{\link{lexops}} for the default data frame and associated variables.
 #'
