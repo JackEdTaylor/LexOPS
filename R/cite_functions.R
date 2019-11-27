@@ -56,6 +56,27 @@ cite_design <- function(df, include = "design") {
   # flatten to vector
   cite_vars <- unlist(cite_vars)
 
+  citation_table(cite_vars)
+
+}
+
+#' Generate a citation
+#'
+#' Get the measure name, source, and url for any vector of column names from `LexOPS::lexops`.
+#'
+#' @param cite_vars A character vector of column names
+#'
+#' @return A tibble that lists measures and sources of data that should be cited (if known).
+#'
+#' @examples
+#'
+#' citation_table(c("PK.Brysbaert", "HUM.Engelthaler"))
+#'
+#' @export
+
+citation_table <- function(cite_vars) {
+  # remove string from cite_vars if present
+  cite_vars <- cite_vars[cite_vars != "string"]
   # create tibble containing citation info
   dplyr::tibble(
     var = cite_vars,
@@ -67,19 +88,7 @@ cite_design <- function(df, include = "design") {
       source = ifelse(var=="Length", NA, source),
       url = ifelse(var=="Length", NA, url)
     )
-
 }
-
-# stim <- lexops %>%
-#   dplyr::mutate(rand_var = rnorm(nrow(.), 100, 10)) %>%
-#   dplyr::filter(PK.Brysbaert >= .75) %>%
-#   split_by(rand_var, 60:85 ~ 115:140) %>%
-#   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
-#   control_for(Length) %>%
-#   generate(n = 50, match_null = "balanced")
-#
-# cite_design(stim)
-
 
 #' Convert a variable name to its measure
 #'
@@ -118,7 +127,7 @@ var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FA
         "fpmw." = "Frequency per Million words",
         "PoS." = "Part of Speech",
         "Length" = "Length (Number of Characters)",
-        "BG." = "Bigram Probability",
+        "BG." = "Character Bigram Probability",
         "ON.OLD20" = "Orthographic Levenshtein Distance 20 (OLD20)",
         "ON.Colthearts_N" = "Orthographic Coltheart's N",
         "ON.Log_OLD20" = "Log Orthographic Levenshtein Distance 20 (Log OLD20)",
@@ -156,7 +165,7 @@ var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FA
         "fpmw." = "Frequency per Million words",
         "PoS." = "Part of Speech",
         "Length" = "Length",
-        "BG." = "Bigram Probability",
+        "BG." = "Character Bigram Probability",
         "ON.OLD20" = "OLD20",
         "ON.Colthearts_N" = "Orthographic Coltheart's N",
         "ON.Log_OLD20" = "Log OLD20",
