@@ -63,7 +63,7 @@ tagList(
                                   # Home
                                   tabItem(tabName = "home",
                                           tags$h1("Welcome to LexOPS!"),
-                                          tags$div(HTML(paste0("This shiny app is a front-end to the ", tags$a(href = "https://github.com/JackEdTaylor/LexOPS", "LexOPS R package"), ". LexOPS allows you to generate suitably controlled word stimuli for any possible factorial design.", "Find out more in the <a href=\"https://jackedtaylor.github.io/LexOPSdocs/lexops-shiny-app.html\">Online Walkthrough</a>."))),
+                                          tags$div(HTML(paste0("This shiny app is a front-end to the ", tags$a(href = "https://github.com/JackEdTaylor/LexOPS", "LexOPS R package"), ". LexOPS allows you to generate suitably controlled word stimuli for any possible factorial design. ", "Find out more in the <a href=\"https://jackedtaylor.github.io/LexOPSdocs/lexops-shiny-app.html\">Online Walkthrough</a>."))),
                                           tags$br(),
                                           tags$p("The tabs in the sidebar on the left-hand side provide different options for generating stimuli and exploring data:"),
                                           tags$h3(icon("cogs"), "Generate"),
