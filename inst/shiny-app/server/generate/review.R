@@ -11,7 +11,7 @@ output$gen_review_iteration_plot <- renderPlot({
   } else {
     NULL
   }
-}, bg = "transparent")
+})
 
 output$gen_review_success_rate <- renderText({
   LexOPS_attrs <- attr(generated_stim(), "LexOPS_attrs")
@@ -43,7 +43,7 @@ output$gen_plot_filters <- renderPlot({
       axis.title = ggplot2::element_text(size = 14),
       axis.text = ggplot2::element_text(size = 12)
     )
-}, bg = "transparent")
+})
 
 output$gen_plot_filters_ui <- renderUI({
   LexOPS_attrs <- attr(generated_stim(), "LexOPS_attrs")
@@ -67,7 +67,7 @@ output$gen_plot_splits <- renderPlot({
       axis.title = ggplot2::element_text(size = 14),
       axis.text = ggplot2::element_text(size = 12)
     )
-}, bg = "transparent")
+})
 
 output$gen_plot_splits_ui <- renderUI({
   LexOPS_attrs <- attr(generated_stim(), "LexOPS_attrs")
@@ -92,7 +92,7 @@ output$gen_plot_controls <- renderPlot({
       axis.title = ggplot2::element_text(size = 14),
       axis.text = ggplot2::element_text(size = 12)
     )
-}, bg = "transparent")
+})
 
 output$gen_plot_controls_ui <- renderUI({
   LexOPS_attrs <- attr(generated_stim(), "LexOPS_attrs")
@@ -131,7 +131,7 @@ output$gen_review_null_distribution_plot <- renderPlot({
       x = "Match Null Condition",
       y = "Count"
     )
-}, bg = "transparent")
+})
 
 output$gen_review_null_distribution_ui <- renderUI({
   LexOPS_attrs <- attr(generated_stim(), "LexOPS_attrs")
