@@ -74,36 +74,11 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
     cat <- function(str) shinyjs::html("gen_console", sprintf("%s", str))
   }
 
-  # check the df is a dataframe
-  if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
-  # check string_col is a string
-  if (!is.character(string_col)) stop(sprintf("Expected string_col to be of class string, not %s", class(string_col)))
-
-  # check n is a number or expected string
-  if (!is.numeric(n) & n != "all") stop(sprintf('n must be numeric or a string of value "all"'))
-
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
 
-  # check that the conditions are present in the attributes
-  if (is.null(LexOPS_attrs$splitCol) & is.na(cond_col)) {
-    # if the column containing the condition info is missing and not defined manually, throw error
-    stop("Could not identify split conditions column! Make sure you run split_by() before generate().")
-  } else if (!is.na(cond_col)) {
-    # if the column containing condition info is defined manually, check exists
-    cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
-    if (length(colnames(df)[grepl(cond_col_regex, colnames(df))]) == 0) stop(sprintf("No columns found for the manually defined cond_col '%s'.", cond_col))
-  }
-  # if control_for() has been run (can tell from attributes), check the specified columns exist
-  if (!is.null(LexOPS_attrs$controls)) {
-    controls_exist <- sapply(LexOPS_attrs$controls, function(cont) {cont[[1]] %in% colnames(df)})
-    if (!(all(controls_exist))) stop(sprintf("%i unknown control columns. Check columns specified in control_for() are in df.", length(controls_exist[!controls_exist])))
-  }
-  # if control_for_fun() has been run, check the column to be fed to the function exists in df
-  if (!is.null(LexOPS_attrs$control_functions)) {
-    controls_exist <- sapply(LexOPS_attrs$control_functions, function(cont) {cont[[3]] %in% colnames(df)})
-    if (!(all(controls_exist))) stop(sprintf("%i unknown control columns. Check columns specified in control_for() are in df.", length(controls_exist[!controls_exist])))
-  }
+  # check for problems with arguments
+  generate.check(df, n, match_null, seed, string_col, cond_col, is_shiny, LexOPS_attrs)
 
   # get cond_col from the attributes if not manually defined
   if (is.na(cond_col)) {
@@ -135,9 +110,8 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
     min_nr_of_match_rows <- df %>%
       dplyr::group_by(!!dplyr::sym(cond_col)) %>%
       dplyr::count() %>%
-      dplyr::arrange(n) %>%
       dplyr::pull(n) %>%
-      dplyr::first()
+      min()
     # if n is "all", set to the largest possible number of match rows
     if (n == "all") {
       n <- min_nr_of_match_rows
@@ -319,6 +293,37 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
   attr(df, "LexOPS_attrs") <- LexOPS_attrs
 
   df
+}
+
+# function to check supplied arguments makes sense
+generate.check <- function(df, n, match_null, seed, string_col, cond_col, is_shiny, LexOPS_attrs) {
+  # check the df is a dataframe
+  if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
+  # check string_col is a string
+  if (!is.character(string_col)) stop(sprintf("Expected string_col to be of class string, not %s", class(string_col)))
+
+  # check n is a number or expected string
+  if (!is.numeric(n) & n != "all") stop(sprintf('n must be numeric or a string of value "all"'))
+
+  # check that the conditions are present in the attributes
+  if (is.null(LexOPS_attrs$splitCol) & is.na(cond_col)) {
+    # if the column containing the condition info is missing and not defined manually, throw error
+    stop("Could not identify split conditions column! Make sure you run split_by() before generate().")
+  } else if (!is.na(cond_col)) {
+    # if the column containing condition info is defined manually, check exists
+    cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
+    if (length(colnames(df)[grepl(cond_col_regex, colnames(df))]) == 0) stop(sprintf("No columns found for the manually defined cond_col '%s'.", cond_col))
+  }
+  # if control_for() has been run (can tell from attributes), check the specified columns exist
+  if (!is.null(LexOPS_attrs$controls)) {
+    controls_exist <- sapply(LexOPS_attrs$controls, function(cont) {cont[[1]] %in% colnames(df)})
+    if (!(all(controls_exist))) stop(sprintf("%i unknown control columns. Check columns specified in control_for() are in df.", length(controls_exist[!controls_exist])))
+  }
+  # if control_for_fun() has been run, check the column to be fed to the function exists in df
+  if (!is.null(LexOPS_attrs$control_functions)) {
+    controls_exist <- sapply(LexOPS_attrs$control_functions, function(cont) {cont[[3]] %in% colnames(df)})
+    if (!(all(controls_exist))) stop(sprintf("%i unknown control columns. Check columns specified in control_for() are in df.", length(controls_exist[!controls_exist])))
+  }
 }
 
 # function to filter exactly for categories, and with tolerances for numeric
