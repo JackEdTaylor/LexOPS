@@ -38,6 +38,15 @@
 #'   control_for(Length) %>%
 #'   generate(n = 30, match_null = "A2_B2")
 #'
+#' # As above but with inclusive tolerance
+#' # (all words are within the specified tolerances relative to each other)
+#' lexops %>%
+#'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
+#'   split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
+#'   control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
+#'   control_for(Length) %>%
+#'   generate(n = 30, match_null = "inclusive")
+#'
 #' # Bypass non-standard evaluation
 #' lexops %>%
 #'  split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) %>%
@@ -65,6 +74,16 @@
 #'  control_for(Rhyme.eSpeak.br) %>%
 #'  control_for_map(levenshtein.distance, eSpeak.br_1letter, 0:2) %>%
 #'  generate(20)
+#'
+#' # A similar design to that above, but with 3 levels of valence, and inclusive matching
+#' # Note that this will result in exactly the same result as above.
+#' # A function that calculates something like Semantic Similarity will produce very different results.
+#' library(vwr)
+#' lexops %>%
+#'  split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
+#'  control_for(Rhyme.eSpeak.br) %>%
+#'  control_for_map(levenshtein.distance, eSpeak.br_1letter, 0:2) %>%
+#'  generate(20, match_null = "inclusive")
 #'
 #' @export
 
@@ -98,7 +117,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
   all_conds <- sort(unique(df[[cond_col]]))
 
   # check match_null is an expected value
-  if (!match_null %in% c(all_conds, "balanced", "random", "first")) stop('Unknown match_null; expected "random", "balanced", "first", or a specific condition (e.g. "A2_B1_C1")')
+  if (!match_null %in% c(all_conds, "inclusive", "balanced", "random", "first")) stop('Unknown match_null; expected "inclusive", "random", "balanced", "first", or a specific condition (e.g. "A2_B1_C1")')
 
   # set the seed if specified
   if (!is.na(seed)) set.seed(seed)
@@ -140,6 +159,12 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
         sample(length(all_conds)) %>%
         rep_len(null_cond_n) %>%
         sample(null_cond_n)
+    } else if (match_null == "inclusive") {
+      # same as balanced for starting match null
+      all_conds %>%
+        sample(length(all_conds)) %>%
+        rep_len(null_cond_n) %>%
+        sample(null_cond_n)
     } else if (match_null %in% all_conds) {
       rep(match_null, null_cond_n)
     }
@@ -159,13 +184,13 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
       n_tried_this_n_generated <- n_tried_this_n_generated + 1
 
       this_match_null <- null_conds[n_generated+1]
-      null_word_bank <- df[[string_col]][!df[[string_col]] %in% out & df[[cond_col]] == this_match_null & !df[[string_col]] %in% words_tried_this_generated]
+      null_word_bank <- df[[string_col]][!df[[string_col]] %in% out & df[[cond_col]] %in% this_match_null & !df[[string_col]] %in% words_tried_this_generated]
 
       if (length(null_word_bank) == 0) {
         if (n_all) {
           cat(sprintf("\nGenerated a total of %i stimuli per condition (%i total iterations)\n", n_generated, n_tried))
         } else {
-          warning_text <- sprintf("\nFailed to generate any new matches for matched row %i null condition %s (all %i candidate null words were tried)", n_generated + 1, this_match_null, n_tried_this_n_generated)
+          warning_text <- sprintf("\nFailed to generate any new matches for matched row %i (all %i candidate null words were tried)", n_generated + 1, n_tried_this_n_generated)
           if (is_shiny) {
             cat(warning_text)
           } else {
@@ -240,6 +265,16 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
       matches[this_match_null] <- this_word
       # ensure ordered correctly (e.g. A1, A2, A3)
       matches <- matches[order(factor(names(matches)))]
+
+      # check the matches are inclusive if match_null = "inclusive"
+      if (match_null == "inclusive") {
+        matches <- generate.are_matches_inclusive(
+          df = df[!df[[string_col]] %in% out | df[[string_col]]==this_word, ],
+          matches,
+          vars=LexOPS_attrs$controls, vars_pre_calc = LexOPS_attrs$control_functions,
+          matchCond=this_match_null, string_col, cond_col
+        )
+      }
 
       # if n=="all", print progress every 250 iterations
       if (n_tried%%250==0 & n_all) {
@@ -357,6 +392,32 @@ generate.find_matches <- function(df, target, vars, matchCond, string_col, cond_
     purrr::map(~ generate.filter_tol(., df_matches = df_matches)) %>%
     purrr::reduce(dplyr::inner_join, by = colnames(df_matches))
   df_matches_filt
+}
+
+# function to check whether the matches are inclusive (neceessary if match_null = "inclusive")
+# This treats each possible condition for the current item as the match null for one iteration, and tests that all other words are suitable matches
+# if TRUE, will return the matches unchanged, else will return same vector with all values replaced by NAs
+generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, matchCond, string_col, cond_col) {
+  # if no controls, return the df unchanged
+  if (length(vars)==0 | any(is.na(matches))) return(df)
+  # check words are matched inclusively
+  are_inclusive <- lapply(matches, function(this_word) {
+    # get this word's condition
+    matchCond_this_word <- names(matches)[matches==this_word]
+    # get list of suitable matches based on controls
+    df_matches_this_word <- generate.find_matches(df, this_word, vars, matchCond_this_word, string_col, cond_col)
+    # get a similar list, but mapping any specified functions
+    df_matches_this_word_funs <- generate.find_fun_matches(df, this_word, vars_pre_calc, matchCond_this_word, string_col, cond_col)
+    # check the other items are in there, and return this value
+    all(matches[matches != this_word] %in% df_matches_this_word[[string_col]]) & all(matches[matches != this_word] %in% df_matches_this_word_funs[[string_col]])
+  })
+  # leave unchanged if inclusive, otherwise return NAs
+  if (all(unlist(are_inclusive))) {
+    matches
+  } else {
+    rep(NA, length(matches)) %>%
+      magrittr::set_names(names(matches))
+  }
 }
 
 # function to find matches for a particular word using functions defined by `control_for_fun()`
