@@ -62,6 +62,15 @@ lexops \%>\%
   control_for(Length) \%>\%
   generate(n = 30, match_null = "A2_B2")
 
+# As above but with inclusive tolerance
+# (all words are within the specified tolerances relative to each other)
+lexops \%>\%
+  split_by(CNC.Brysbaert, 1:2 ~ 4:5) \%>\%
+  split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) \%>\%
+  control_for(Zipf.SUBTLEX_UK, -0.25:0.25) \%>\%
+  control_for(Length) \%>\%
+  generate(n = 30, match_null = "inclusive")
+
 # Bypass non-standard evaluation
 lexops \%>\%
  split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) \%>\%
