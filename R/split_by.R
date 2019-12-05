@@ -4,12 +4,9 @@
 #'
 #' @param df A data frame containing the IV and strings.
 #' @param var The column to treat as an independent variable (non-standard evaluation).
-#' @param levels The boundaries to use as levels of this variable (non-standard evaluation). These should be specified in the form `c(1, 3) ~ c(4, 6) ~ c(7 ~ 9)` for numeric variables, and `noun ~ verb ~ adjective` for character variables, where levels are separated by the `~` operator. Levels must be non-overlapping.
+#' @param levels The boundaries to use as levels of this variable (non-standard evaluation). These should be specified in the form `1:3 ~ 4:6 ~ 7:9` or `c(1, 3) ~ c(4, 6) ~ c(7, 9)` for numeric variables, and (e.g.) `"noun" ~ "verb" ~ c"adjective"` for character variables, where levels are separated by the `~` operator. Levels must be non-overlapping.
 #' @param filter Logical. If TRUE, words which fit no conditions are removed.
-#' @param cond_col Prefix with which to name the column where the condition will be stored (default = "LexOPS_splitCond"). Each time
-#' split_by() is run on a dataframe, a new cond_col is added to the data frame, e.g., the first time will add splitCond_A, the second
-#' time will add split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of cond_col
-#' must be the same each time the function is called. The default is usually sufficient.
+#' @param cond_col Prefix with which to name the column where the condition will be stored (default = "LexOPS_splitCond"). Each time split_by() is run on a dataframe, a new cond_col is added to the data frame, e.g., the first time will add splitCond_A, the second time will add split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of cond_col must be the same each time the function is called. The default is usually sufficient.
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `var` and `levels`. If `TRUE`, `var` should be a character vector referring to a column in `df` (e.g. `"Zipf.SUBTLEX_UK"`), and `levels` should be a list containing multiple vectors of length 2, each specifying the boundaries of one level's bin (e.g. `list(c(1, 3), c(4, 6), c(7, 20))`). Default = `FALSE`.
 #'
 #' @return Returns `df`, with a new column (name defined by `cond_col` argument) identifying which level of the IV each string belongs to.
