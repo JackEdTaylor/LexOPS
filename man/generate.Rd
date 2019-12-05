@@ -99,4 +99,14 @@ lexops \%>\%
  control_for_map(levenshtein.distance, eSpeak.br_1letter, 0:2) \%>\%
  generate(20)
 
+# A similar design to that above, but with 3 levels of valence, and inclusive matching
+# Note that this will result in exactly the same result as above.
+# A function that calculates something like Semantic Similarity will produce very different results.
+library(vwr)
+lexops \%>\%
+ split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) \%>\%
+ control_for(Rhyme.eSpeak.br) \%>\%
+ control_for_map(levenshtein.distance, eSpeak.br_1letter, 0:2) \%>\%
+ generate(20, match_null = "inclusive")
+
 }
