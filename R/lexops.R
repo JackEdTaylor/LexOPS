@@ -1,8 +1,8 @@
 #' LexOPS' inbuilt variables
 #'
-#' A data frame containing 64 variables. When used in a \code{\link{generate}} pipeline, variables used from this dataframe can be easily cited using the \code{\link{cite_design}} function. The variables included in LexOPS are \emph{not} intended to be exhaustive, but rather provide some useful and frequently used variables and illustrative examples. The LexOPS functions will accept any dataframe of similar structure to `LexOPS::lexops` (one word/stimulus per row, with different features stored in other columns). Moreover, different datasets can be easily joined (such as with the \code{\link[dplyr:join]{dplyr join functions}}).
+#' A data frame containing 68 variables. When used in a \code{\link{generate}} pipeline, variables used from this dataframe can be easily cited using the \code{\link{cite_design}} function. The variables included in LexOPS are \emph{not} intended to be exhaustive, but rather provide some useful and frequently used variables, and illustrative examples. The LexOPS functions will accept any dataframe of similar structure to `LexOPS::lexops` (one word/stimulus per row, with different features stored in other columns). Moreover, different datasets can be easily joined (such as with the \code{\link[dplyr:join]{dplyr join functions}}).
 #'
-#' @format A data frame with 267002 rows and 64 variables:
+#' @format A data frame with 262532 rows and 68 variables:
 #' \describe{
 #'  \item{string}{Strings (words/lemmas).}
 #'  \item{CMU.1letter}{One-letter ARPABET representations of the main (North American) pronunciation according to the CMU Pronouncing Dictionary (\url{http://www.speech.cs.cmu.edu/cgi-bin/cmudict}).}
@@ -13,19 +13,23 @@
 #'  \item{Zipf.SUBTLEX_US}{Zipf frequencies (`log10(frequency_per_million)+3`) calculated from US subtitles (\url{https://doi.org/10.3758/BRM.41.4.977}).}
 #'  \item{Zipf.BNC.Spoken}{Zipf frequencies (`log10(frequency_per_million)+3`) calculated from the \emph{spoken} texts of the British National Corpus (\url{http://www.natcorp.ox.ac.uk/}).}
 #'  \item{Zipf.BNC.Written}{Zipf frequencies (`log10(frequency_per_million)+3`) calculated from the \emph{written} texts of the British National Corpus (\url{http://www.natcorp.ox.ac.uk/}).}
+#'  \item{Zipf.BNC.All}{Zipf frequencies (`log10(frequency_per_million)+3`) calculated from both the \emph{written and spoken} texts of the British National Corpus (\url{http://www.natcorp.ox.ac.uk/}).}
 #'  \item{fpmw.SUBTLEX_UK}{Frequencies per million words calculated from UK subtitles (\url{https://doi.org/10.1080/17470218.2013.850521}).}
 #'  \item{fpmw.SUBTLEX_US}{Frequencies per million words calculated from US subtitles (\url{https://doi.org/10.3758/BRM.41.4.977}).}
 #'  \item{fpmw.BNC.Spoken}{Frequencies per million words calculated from the \emph{spoken} texts of the British National Corpus (\url{http://www.natcorp.ox.ac.uk/}).}
 #'  \item{fpmw.BNC.Written}{Frequencies per million words calculated from the \emph{written} texts of the British National Corpus (\url{http://www.natcorp.ox.ac.uk/}).}
+#'  \item{fpmw.BNC.All}{Frequencies per million words calculated from both the \emph{written and spoken} texts of the British National Corpus (\url{http://www.natcorp.ox.ac.uk/}).}
 #'  \item{PoS.SUBTLEX_UK}{Dominant parts of speech according to SUBTLEX-UK (\url{https://doi.org/10.1080/17470218.2013.850521}).}
 #'  \item{PoS.BNC.Spoken}{Dominant parts of speech according to an analysis of the \emph{spoken} texts of the British National Corpus (\url{http://www.natcorp.ox.ac.uk/}).}
 #'  \item{PoS.BNC.Written}{Dominant parts of speech according to an analysis of the \emph{written} texts of the British National Corpus (\url{http://www.natcorp.ox.ac.uk/}).}
+#'  \item{PoS.BNC.All}{Dominant parts of speech according to an analysis of both the \emph{written and spoken} texts of the British National Corpus (\url{http://www.natcorp.ox.ac.uk/}).}
 #'  \item{PoS.ELP}{Dominant parts of speech according to the English Lexicon Project \url{http://doi.org/10.3758/BF03193014}.}
 #'  \item{Length}{Number of characters in the string.}
 #'  \item{BG.SUBTLEX_UK}{Mean character bigram probabilities for each string, calculated using frequency data from UK subtitles (\url{https://doi.org/10.1080/17470218.2013.850521}).}
 #'  \item{BG.SUBTLEX_US}{Mean character bigram probabilities for each string, calculated using frequency data from US subtitles (\url{https://doi.org/10.3758/BRM.41.4.977}).}
 #'  \item{BG.BNC.Spoken}{Mean character bigram probabilities for each string, calculated using frequency data calculated for the \emph{spoken} texts of the British National Corpus (\url{http://www.natcorp.ox.ac.uk/}).}
 #'  \item{BG.BNC.Written}{Mean character bigram probabilities for each string, calculated using frequency data calculated for the \emph{written} texts of the British National Corpus (\url{http://www.natcorp.ox.ac.uk/}).}
+#'  \item{BG.BNC.All}{Mean character bigram probabilities for each string, calculated using frequency data calculated for both the \emph{written and spoken} texts of the British National Corpus (\url{http://www.natcorp.ox.ac.uk/}).}
 #'  \item{ON.OLD20}{Orthographic Neighbourhood size, indexed by orthographic levenshtein distance 20, calculated using all words in the LexOPS database.}
 #'  \item{ON.Colthearts_N}{Orthographic Neighbourhood size, indexed by Coltheart's N, calculated using all words in the LexOPS database.}
 #'  \item{ON.Log_OLD20}{The log of `ON.OLD20`.}
