@@ -16,6 +16,12 @@
 #'
 #' parse_levels(substitute(Zipf.SUBTLEX_UK), substitute(c(1, 2) ~ c(3, 4) ~ c(5, 6)))
 #'
+#' # Can give any level as just `NULL` or `NA` to store the level as `NA`
+#' # (e.g. for `split_by_map()` function in future)
+#'
+#' parse_levels(substitute(example_variable), substitute(NULL ~ 1.2:4 ~ 5.2:6))
+#' parse_levels(substitute(example_variable), substitute(NA ~ 1.2:4 ~ 5.2:6))
+#'
 #' # Non-numeric categories can be specified like so
 #'
 #' parse_levels(substitute(PoS.SUBTLEX_UK), substitute("noun" ~ "verb"))
@@ -45,9 +51,9 @@ parse_levels <- function(var, levels = NA) {
     dplyr::first() %>%
     gsub(" ", "", .)
 
-  if (all(grepl(":", levels))) {
+  if ( all(grepl(":", levels)) | (any(grepl(":", levels)) & any(levels %in% c("NA", "NULL")) )) {
     levels <- strsplit(levels, ":", fixed = TRUE) %>%
-      lapply(as.numeric)
+      lapply( function(x) if ( length(x)==1 & any(x %in% c("NA", "NULL")) ) NA else as.numeric(x) )
   } else {
     levels <- lapply(levels, function(l) eval(parse(text = l)) )
   }

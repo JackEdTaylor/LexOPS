@@ -27,6 +27,12 @@ parse_levels(substitute(Zipf.SUBTLEX_UK), substitute(1:2 ~ 3:4 ~ 5:6))
 
 parse_levels(substitute(Zipf.SUBTLEX_UK), substitute(c(1, 2) ~ c(3, 4) ~ c(5, 6)))
 
+# Can give any level as just `NULL` or `NA` to store the level as `NA`
+# (e.g. for `split_by_map()` function in future)
+
+parse_levels(substitute(example_variable), substitute(NULL ~ 1.2:4 ~ 5.2:6))
+parse_levels(substitute(example_variable), substitute(NA ~ 1.2:4 ~ 5.2:6))
+
 # Non-numeric categories can be specified like so
 
 parse_levels(substitute(PoS.SUBTLEX_UK), substitute("noun" ~ "verb"))
