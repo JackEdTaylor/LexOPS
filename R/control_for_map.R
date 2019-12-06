@@ -1,17 +1,17 @@
 #' Control for confounding variables via a function.
 #'
-#' Some variables (e.g. similarity measures) are hard to control for with `LexOPS::control_for()`. The `control_for_fun()` function declares a function that the `generate()` function should apply to each match_null. The function given as `fun` should be able to take the data in the column given in `var` as the first argument, and should be able to take the match_null's value in that column as the second argument.
+#' Some variables (e.g. similarity measures) are hard to control for with \code{\link{control_for}} as they need to be recalculated for each word relative to each other, rather than there being a single value for each possible stimulus. The `control_for_map` function declares a function that the \code{\link{generate}} function should apply to each match_null within an iteration of stimulus generation. The function given as `fun` should be able to take the data in the column given in `var` as the first argument, and should be able to take the match_null's value in that column as the second argument.
 #'
-#' @param df A data frame that is the result from `split_by()`.
+#' @param df A data frame that is the result from \code{\link{split_by}}.
 #' @param fun The function to use to calculate the control varibale. Should be an object of class "function".
 #' @param var The column to provide the value which will be the first argument of the function.
 #' @param tol The tolerance of the control. For numeric variables, this should be in the form lower:upper (e.g. `-0.1:0.1` will control within +/- 0.1). For categorical variables, this can be kept as `NA`.
 #' @param name What the output column should be named. If `NA` (default), will automatically assign as `sprintf("control_fun_%i", nr)`, where `nr` is the number of the control function.
 #' @param string_col The column containing the strings (default = "string").
-#' @param cond_col Prefix with which the columns detailing the splits were labelled by `split_by()`. This is rarely needed (default = NA), as by default the function gets this information from `df`'s attributes.
+#' @param cond_col Prefix with which the columns detailing the splits were labelled by \code{\link{split_by}}. This is rarely needed (default = NA), as by default the function gets this information from `df`'s attributes.
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `var` and `tol`. If `TRUE`, `var` should be a character vector referring to a column in `df` (e.g. `"Zipf.SUBTLEX_UK"`), and `tol` should be a vector of length 2, specifying the tolerance (e.g. `c(-0.1, 0.5)`). Default = `FALSE`.
 #'
-#' @return Returns `df`, with details on the variables to be controlled for added to the attributes. Run the `generate()` function to then generate the actual stimuli.
+#' @return Returns `df`, with details on the variables to be controlled for added to the attributes. Run the \code{\link{generate}} function to then generate the actual stimuli.
 #' @examples
 #'
 #' # Create two levels of arousal, controlling for orthographic similarity

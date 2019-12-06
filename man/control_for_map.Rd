@@ -16,7 +16,7 @@ control_for_map(
 )
 }
 \arguments{
-\item{df}{A data frame that is the result from \code{split_by()}.}
+\item{df}{A data frame that is the result from \code{\link{split_by}}.}
 
 \item{fun}{The function to use to calculate the control varibale. Should be an object of class "function".}
 
@@ -28,15 +28,15 @@ control_for_map(
 
 \item{string_col}{The column containing the strings (default = "string").}
 
-\item{cond_col}{Prefix with which the columns detailing the splits were labelled by \code{split_by()}. This is rarely needed (default = NA), as by default the function gets this information from \code{df}'s attributes.}
+\item{cond_col}{Prefix with which the columns detailing the splits were labelled by \code{\link{split_by}}. This is rarely needed (default = NA), as by default the function gets this information from \code{df}'s attributes.}
 
 \item{standard_eval}{Logical; bypasses non-standard evaluation, and allows more standard R objects in \code{var} and \code{tol}. If \code{TRUE}, \code{var} should be a character vector referring to a column in \code{df} (e.g. \code{"Zipf.SUBTLEX_UK"}), and \code{tol} should be a vector of length 2, specifying the tolerance (e.g. \code{c(-0.1, 0.5)}). Default = \code{FALSE}.}
 }
 \value{
-Returns \code{df}, with details on the variables to be controlled for added to the attributes. Run the \code{generate()} function to then generate the actual stimuli.
+Returns \code{df}, with details on the variables to be controlled for added to the attributes. Run the \code{\link{generate}} function to then generate the actual stimuli.
 }
 \description{
-Some variables (e.g. similarity measures) are hard to control for with \code{LexOPS::control_for()}. The \code{control_for_fun()} function declares a function that the \code{generate()} function should apply to each match_null. The function given as \code{fun} should be able to take the data in the column given in \code{var} as the first argument, and should be able to take the match_null's value in that column as the second argument.
+Some variables (e.g. similarity measures) are hard to control for with \code{\link{control_for}} as they need to be recalculated for each word relative to each other, rather than there being a single value for each possible stimulus. The \code{control_for_map} function declares a function that the \code{\link{generate}} function should apply to each match_null within an iteration of stimulus generation. The function given as \code{fun} should be able to take the data in the column given in \code{var} as the first argument, and should be able to take the match_null's value in that column as the second argument.
 }
 \examples{
 
