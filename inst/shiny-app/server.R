@@ -63,11 +63,11 @@ shinyServer(function(input, output) {
     # fetch tab
     source("server/fetch.R", local = TRUE)
 
-    # visualise tab
-    source("server/visualise.R", local = TRUE)
-
     # custom variables tab
     source("server/custom_variables.R", local = TRUE)
+
+    # visualise tab
+    source("server/visualise.R", local = TRUE)
 
     # preferences tab
     source("server/preferences.R", local = TRUE)
