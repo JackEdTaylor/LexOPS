@@ -124,9 +124,9 @@ output$vis_colour_source_ui <- renderUI({
 
 output$visualiseplotly <- renderPlotly({
 
-  input$vis_generateplot
-
   NULL
+
+  input$vis_generateplot
 
   isolate({
     if (input$vis_x_opt=='(None)' & input$vis_y_opt=='(None)') {
@@ -178,20 +178,22 @@ output$visualiseplotly <- renderPlotly({
     # Specify colour axis values
     if (input$vis_colour_opt!='(None)') {
       if (is.null(axes[["colour"]])) {
+        pd$colour <- NULL
+      } else {
         if (input$vis_colour_opt=="Generated Stimuli") {
-          pd$colour <- ifelse(lexops_react()$string %in% LexOPS::long_format(generated_stim())$string, "Generated Stimuli", "Other Strings")
+          pd$colour <- ifelse(pd$string %in% LexOPS::long_format(generated_stim())$string, "Generated Stimuli", "Other Strings")
         } else if (input$vis_colour_opt=="Generated Stimuli Condition") {
-          pd$colour <- dplyr::left_join(lexops_react(), LexOPS::long_format(generated_stim()), by = "string") %>%
+          pd$colour <- dplyr::left_join(pd, LexOPS::long_format(generated_stim()), by = "string") %>%
             dplyr::pull(condition)
         } else if (input$vis_colour_opt=="Target Match Word") {
-          pd$colour <- ifelse(lexops_react()$string == input$match_string, "Target Match Word", "Other Strings")
+          pd$colour <- ifelse(pd$string == input$match_string, "Target Match Word", "Other Strings")
         } else if (input$vis_colour_opt=="Suggested Matches") {
-          pd$colour <- ifelse(lexops_react()$string %in% matched_stim()$string, "Suggested Matches", "Other Strings")
+          pd$colour <- ifelse(pd$string %in% matched_stim()$string, "Suggested Matches", "Other Strings")
         } else if (input$vis_colour_opt=="Words Uploaded to Fetch Tab") {
-          pd$colour <- ifelse(lexops_react()$string %in% fetch_df_res()$string, "Uploaded Words", "Other Words")
+          pd$colour <- ifelse(pd$string %in% fetch_df_res()$string, "Uploaded Words", "Other Words")
+        } else {
+          pd$colour <- lexops_react()[[axes[["colour"]]]]
         }
-      } else {
-        pd$colour <- lexops_react()[[axes[["colour"]]]]
       }
     }
 
