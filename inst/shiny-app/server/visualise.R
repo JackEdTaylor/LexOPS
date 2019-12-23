@@ -124,9 +124,9 @@ output$vis_colour_source_ui <- renderUI({
 
 output$visualiseplotly <- renderPlotly({
 
-  NULL
-
   input$vis_generateplot
+
+  NULL
 
   isolate({
     if (input$vis_x_opt=='(None)' & input$vis_y_opt=='(None)') {
@@ -288,12 +288,17 @@ output$visualiseplotly <- renderPlotly({
     # colour the plot background as selected, and return the output
     pl %>% layout(
       paper_bgcolor = input$vis_bgcolour,
-      plot_bgcolor = input$vis_bgcolour)
+      plot_bgcolor = input$vis_bgcolour
+    )
   })
 
 })
 
 # put visualisation inside of a suitably sized box
 output$visualisation_ui_box <- renderUI({
-  fluidRow(box(width=12, withSpinner(plotlyOutput('visualiseplotly')), height=screenheight()-150))
+    if (is.null(input$vis_generateplot)) {
+      NULL
+    } else {
+      fluidRow(box(width=12, withSpinner(plotlyOutput('visualiseplotly')), height=screenheight()-150))
+    }
 })
