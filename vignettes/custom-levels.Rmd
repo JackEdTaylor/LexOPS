@@ -1,0 +1,62 @@
+---
+title: "Creating Custom Levels"
+author: "Jack Taylor"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Creating Custom Levels}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+By default, LexOPS will split by a single variable for each use of `split_by()`, and will create items for each factorial cell. For instance, splitting by concreteness into 2 levels, and emotion into 3 levels, would result in 6 factorial cells. But what if we want to generate items for just 2 of these 6 factorial cells? We can do this by creating a factor/character vector column in our data which will represent suitability for each factorial cell. This vignette provides an example, where we want to compare concrete emotional words to abstract neutral words.
+
+# Packages
+
+```{r, message=FALSE}
+library(dplyr)
+library(LexOPS)
+```
+
+```{r, include=FALSE}
+set.seed(1)
+```
+
+# Coding the New Column
+
+We've decided we want our stimuli to have two conditions: *concrete emotional*, and *abstract neutral*. The first step is to create the column that will contain this information. An easy way to do this might be with `dplyr`'s `case_when()` function. We will call the new column, `our_cond`, because I'm unimaginative.
+
+```{r}
+dat <- lexops %>%
+  mutate(our_cond = case_when(
+    CNC.Brysbaert >= 4 & !between(VAL.Warriner, 3, 7) ~ "cnc_emo",
+    CNC.Brysbaert <= 2 & between(VAL.Warriner, 4, 6) ~ "abs_neu"
+  ))
+```
+
+# Generate Stimuli
+
+We can now generate matched stimuli, for only these two factorial cells.
+
+```{r}
+stim <- dat %>%
+  split_by(our_cond, "cnc_emo" ~ "abs_neu") %>%
+  control_for(Length) %>%
+  control_for(Zipf.SUBTLEX_UK, -0.1:0.1) %>%
+  control_for(AoA.Kuperman, -1.5:1.5) %>%
+  generate(20)
+```
+
+Here are the 20 words per factorial cell we generated.
+
+```{r}
+print(stim)
+```
+
+# Check Stimuli
+
+We can use the `plot_design()` function to check the distributions of the variables we used to create the `our_cond` column. This shows the expected differences between conditions A1 and A2, based on the method we used to create the new column.
+
+```{r, fig.width=7, fig.height=5}
+plot_design(stim, c("CNC.Brysbaert", "VAL.Warriner"))
+```
+

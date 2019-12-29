@@ -1,0 +1,121 @@
+---
+title: "Using Data from Custom Sources"
+author: "Jack Taylor"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using Data from Custom Sources}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+The built-in variables of LexOPS are useful but not exhaustive. Thankfully, LexOPS can work with any suitable list of features. For this example, we will join the [Lancaster Sensorimotor norms](https://osf.io/7emr6/) to [Engelthaler and Hills' humour ratings](https://github.com/tomasengelthaler/HumorNorms), and the in-built LexOPS dataset (`LexOPS::lexops`). We can then use this to generate stimuli with a visual rating by humour interaction, controlling for length and frequency.
+
+# Packages
+
+```{r, message=FALSE}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(LexOPS)
+```
+
+```{r, include=FALSE}
+theme_set(theme_minimal())
+set.seed(1)
+```
+
+# Importing Datsets
+
+## Importing Sensorimotor Norms
+
+The Lancaster Sensorimotor Norms are available from the [OSF page](https://osf.io/48wsc/).
+
+```{r}
+sensorimotor <- read_csv("https://osf.io/48wsc/download")
+```
+
+Let's have a quick peak at the data.
+
+```{r}
+head(sensorimotor, 5)
+```
+
+## Importing Humour Norms
+
+The Humour Norms are available from the [Github Page](https://github.com/tomasengelthaler/HumorNorms).
+
+```{r}
+humour <- read_csv("https://raw.githubusercontent.com/tomasengelthaler/HumorNorms/master/humor_dataset.csv")
+```
+
+Let's have a look at this data too.
+
+```{r}
+head(humour, 5)
+```
+
+# Joining Data Together
+
+Firstly, we'll rename the `word` column to be the LexOPS default (`string`). Since the Lancaster norms' words are in uppercase (whereas the Humour norms are in lowercase), we'll then convert the Lancaster norms words to lowercase.
+
+```{r}
+sensorimotor <- sensorimotor %>%
+  rename(string = Word) %>%
+  mutate(string = tolower(string))
+```
+
+Next, we similarly rename the humour dataset's `word` column to `string`. We also prefix all the features from the humour norms with "Humour.", so they will be easily identifiable in the final dataset. We can use `rename_at()` and `vars(-string)` to add this prefix to all columns except the `string` column.
+
+```{r}
+humour <- humour %>%
+  rename(string = word) %>%
+  rename_at(vars(-string), ~paste("Humour", .x, sep="."))
+```
+
+Joining the data together is then easy with the [dplyr join functions](https://dplyr.tidyverse.org/reference/join.html). Here we use `full_join()`. Finally, we join the data to the `lexops` in-built dataset, as this contains features we can use to control for length and frequency.
+
+```{r}
+sens_hum <- full_join(sensorimotor, humour, by="string") %>%
+  left_join(lexops, by="string")
+```
+
+# Generating Stimuli
+
+Before we choose boundaries for our splits, we want to check the distributions of our independent variables.
+
+```{r fig.show='hold', message=FALSE, warning=FALSE}
+sens_hum %>% ggplot(aes(Visual.mean)) + geom_density()
+sens_hum %>% ggplot(aes(Humour.mean)) + geom_density()
+sens_hum %>% ggplot(aes(Visual.mean, Humour.mean)) + geom_point(alpha=0.5)
+```
+
+Finally, we can generate stimuli with our new words.
+
+```{r}
+stim <- sens_hum %>%
+  split_by(Visual.mean, 0:2 ~ 3.5:5) %>%
+  split_by(Humour.mean, 1:2 ~ 3:5) %>%
+  control_for(Length, 0:0) %>%
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
+  generate(25)
+```
+
+We can view a quick summary of our stimuli with the `plot_design()` function.
+
+```{r, fig.width=7, fig.height=5}
+plot_design(stim)
+```
+
+Here is the list of stimuli generated for the design of visual sensorimotor ratings (A: A1 low, A2 high) by humour ratings (B: B1 low, B2 high), controlling for word length and frequency.
+
+```{r}
+print(stim)
+```
+
+# Citing Sources
+
+The `cite_design()` function is useful for suggesting papers that you should cite having generated your stimuli. Note that for variables LexOPS does not know, while the variable will be suggested as something that needs citing, you will have to find the citation yourself.
+
+```{r}
+cite_design(stim)
+```

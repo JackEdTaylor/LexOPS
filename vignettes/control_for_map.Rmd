@@ -1,0 +1,89 @@
+---
+title: "Higher Level Controls (control_for_map)"
+author: "Jack Taylor"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Higher Level Controls (control_for_map)}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+The `control_for()` function works well when your variable is 1-dimensional, with a single value for each word, as it is for variables like Length, Frequency or Concreteness. Things become slightly trickier, however, when controlling for distance or similarity values, which can be calculated for each umique combination of words (i.e. $n^2$ values). One easy solution is to use `control_for_map()` to pass a function which should be used to calculate the value between any two words. Simple examples for controlling for orthographic and phonological similarity are available in the [package bookdown site](https://jackedtaylor.github.io/LexOPSdocs/advanced-stimulus-generation.html#map-functions-as-controls). This vignette demonstrates how to build your own function for `control_for_map()`, which in this example controls for semantic similarity.
+
+# Packages
+
+```{r, message=FALSE}
+library(readr)
+library(dplyr)
+library(LexOPS)
+```
+
+```{r, include=FALSE}
+set.seed(1)
+```
+
+# Importing Datsets
+
+The word pair norms come from [Erin Buchanan and colleagues](https://doomlab.shinyapps.io/double_words/). This dataset indexes semantic similarity between cues and targets. Alternative sources of semantic association/relatedness values include the [Small World of Words](https://smallworldofwords.org/en/project).
+
+```{r}
+pairs <- readr::read_csv("https://media.githubusercontent.com/media/doomlab/shiny-server/master/wn_double/double_words.csv")
+```
+
+# Creating the Semantic Similarity Function
+
+The function we create should index the similarity between $n$ matches (in a vector) and a target word (as a single string). The result should be a vector of values of length $n$, in the same order as the matches. Using the `pairs` tibble, we can use some `dplyr` manipulation to return the required values as a vector. This function returns the `root` values, indexing the cosine of two words' semantic overlap for root words (see [here](https://doomlab.shinyapps.io/double_words/) for more details).
+
+```{r}
+sem_matches <- function(matches, target) {
+  # for speed, return N ones if possible
+  if (all(matches==target)) return(rep(1, length(matches)))
+  # find each match-target association value
+  tibble(CUE = matches, TARGET = target) %>%
+    full_join(pairs, by=c("CUE", "TARGET")) %>%
+    filter(TARGET == target & CUE %in% matches) %>%
+    pull(root)
+}
+```
+
+Let's test the function on some example match-target combinations.
+
+```{r}
+# should return 1
+sem_matches("yellow", "yellow")
+
+# should return 3 values: 1 if identical, 0<x<1 if value present, NA if missing
+sem_matches(c("yellow", "sun", "leaf"), "yellow")
+
+# would return N=nrow(lexops) values (mostly NA) of similarity to "yellow"
+# sem_matches(lexops$string, "yellow")
+```
+
+# Generating Stimuli
+
+We can now generate stimuli controlling for semantic similarity. If we want to generate words which are highly semantically related, we can control for semantic relatedness of $>=0.5$ cosine similarity to an iteration's match null. Since a match null is placed at 0, and will have a similarity of 1 to itself, we set the `control_for_map()` tolerance to `-0.5:0`.
+
+```{r}
+# speed up by removing unusable word pairs from pairs
+pairs <- filter(pairs, root>=0.5)
+
+stim <- lexops %>%
+  # speed up by removing strings unknown to pairs df
+  dplyr::filter(string %in% pairs$CUE) %>%
+  # create a random 2-level split
+  split_random(2) %>%
+  # control for semantic similarity
+  control_for_map(sem_matches, string, -0.5:0, name = "root_cosine") %>%
+  # control for other values
+  control_for(Length, 0:0) %>%
+  control_for(PoS.SUBTLEX_UK) %>%
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
+  # generate 20 items per factorial cell (40 total)
+  generate(20)
+```
+
+Here are our 20 items per factorial cell, matched by Semantic Similarity, Length, Part of Speech, and Frequency.
+
+```{r}
+print(stim)
+```
