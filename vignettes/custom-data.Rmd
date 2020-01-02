@@ -83,7 +83,7 @@ sens_hum <- full_join(sensorimotor, humour, by="string") %>%
 
 Before we choose boundaries for our splits, we want to check the distributions of our independent variables.
 
-```{r fig.show='hold', message=FALSE, warning=FALSE}
+```{r, fig.show='hold', message=FALSE, warning=FALSE}
 sens_hum %>% ggplot(aes(Visual.mean)) + geom_density()
 sens_hum %>% ggplot(aes(Humour.mean)) + geom_density()
 sens_hum %>% ggplot(aes(Visual.mean, Humour.mean)) + geom_point(alpha=0.5)
