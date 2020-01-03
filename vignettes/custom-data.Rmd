@@ -89,12 +89,12 @@ sens_hum %>% ggplot(aes(Humour.mean)) + geom_density()
 sens_hum %>% ggplot(aes(Visual.mean, Humour.mean)) + geom_point(alpha=0.5)
 ```
 
-Finally, we can generate stimuli with our new words.
+Finally, we can generate stimuli with our new words. We will create two levels of Visual ratings: `0:2` (low) and `3.5:5` (high), and two levels of Humour ratings: `2:2.5` (neutral, as consistently low humour ratings are often tabboo) and `3:5` (high). We'll control for word length exactly, and word frequency within a tolerance of `-0.2:0.2`.
 
 ```{r}
 stim <- sens_hum %>%
   split_by(Visual.mean, 0:2 ~ 3.5:5) %>%
-  split_by(Humour.mean, 1:2 ~ 3:5) %>%
+  split_by(Humour.mean, 2:2.5 ~ 3:5) %>%
   control_for(Length, 0:0) %>%
   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
   generate(25)
