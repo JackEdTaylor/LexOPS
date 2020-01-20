@@ -7,6 +7,7 @@
 #' @param dodge_width The width to give to `ggplot2::position_dodge` (default is 0.2)
 #' @param point_size Size of points (default = 0.75)
 #' @param line_width Thickness of lines (default = 1)
+#' @param force Logical, should the function be forced to try and work if attributes are missing (default is `TRUE`)? If `TRUE`, will expect the dataframe to have a structure similar to that produced by `long_format()`, where `condition` is character or factor, and `item_nr` is numeric or factor. Other variables will be plot-able if given to the `include` argument.
 #'
 #' @return A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
 #'
@@ -23,11 +24,23 @@
 #'
 #' @export
 
-plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 0.75, line_width = 1) {
+plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 0.75, line_width = 1, force = TRUE) {
   # get attributes
-  LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
+  if (is.null(attr(df, "LexOPS_attrs"))) {
+    if (force) {
+      warning("Attributes missing. Will try to add attributes")
+      LexOPS_attrs <- list()
+      LexOPS_attrs$generated <- TRUE
+      LexOPS_attrs$is.long_format <- TRUE
+      if (is.null(LexOPS_attrs$meta_df)) LexOPS_attrs$meta_df <- dplyr::select(df, -condition, -item_nr)
+    } else {
+      LexOPS_attrs <- NULL
+    }
+  } else {
+    LexOPS_attrs <- attr(df, "LexOPS_attrs")
+  }
   # check is generated stimuli
-  if (is.null(LexOPS_attrs$generated)) stop("Must run `generate()` on `df` before using `plot_design()`")
+  if (is.null(LexOPS_attrs$generated)) stop("Must run `generate()` on `df` before using `plot_design()` (try `force = TRUE`?).")
   # ensure is in long format
   if (is.null(LexOPS_attrs$is.long_format)) df <- LexOPS::long_format(df)
 

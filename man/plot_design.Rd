@@ -9,7 +9,8 @@ plot_design(
   include = "design",
   dodge_width = 0.2,
   point_size = 0.75,
-  line_width = 1
+  line_width = 1,
+  force = TRUE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ plot_design(
 \item{point_size}{Size of points (default = 0.75)}
 
 \item{line_width}{Thickness of lines (default = 1)}
+
+\item{force}{Logical, should the function be forced to try and work if attributes are missing (default is \code{TRUE})? If \code{TRUE}, will expect the dataframe to have a structure similar to that produced by \code{long_format()}, where \code{condition} is character or factor, and \code{item_nr} is numeric or factor. Other variables will be plot-able if given to the \code{include} argument.}
 }
 \value{
 A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
