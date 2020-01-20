@@ -19,6 +19,8 @@ library(vwr)
 library(stringdist)
 library(LexOPS)
 
+options(shiny.maxRequestSize=50*1024^2)
+
 lexops_loadingdone <- function() {
     hide(id = "loading_page", anim = TRUE, animType = "slide")
     show("main_content")
