@@ -25,6 +25,7 @@ output$gen_match_null_ui <- renderUI({
               c(
                 conditions,
                 "Balanced (use each condition as a control null an equal number of times, in a random order)" = "balanced",
+                "Inclusive (all words within tolerance of each other)" = "inclusive",
                 "Random (select control nulls entirely randomly)" = "random"
               ), selected = "balanced", width = "100%")
 })
