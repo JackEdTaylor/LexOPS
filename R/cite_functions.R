@@ -247,6 +247,7 @@ var_to_source <- function(var, first_cite = TRUE, default = "", standard_eval = 
     if (first_cite) {
       dplyr::recode(
         var_name,
+        "BNC.All" = 'all sources of the British National Corpus (BNC; "The British National Corpus, version 3 (BNC XML Edition)," 2007)',
         "BNC.Written" = 'written sources of the British National Corpus (BNC; "The British National Corpus, version 3 (BNC XML Edition)," 2007)',
         "BNC.Spoken" = 'spoken sources of the British National Corpus (BNC; "The British National Corpus, version 3 (BNC XML Edition)," 2007)',
         "SUBTLEX_UK" = "SUBTLEX-UK (van Heuven, Mandera, Keuleers, & Brysbaert, 2014)",
@@ -269,6 +270,7 @@ var_to_source <- function(var, first_cite = TRUE, default = "", standard_eval = 
     } else {
       dplyr::recode(
         var_name,
+        "BNC.All" = "all BNC texts",
         "BNC.Written" = "written sources of the BNC",
         "BNC.Spoken" = "spoken sources of the BNC",
         "SUBTLEX_UK" = "SUBTLEX-UK (van Heuven et al., 2014)",
