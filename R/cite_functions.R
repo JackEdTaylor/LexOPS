@@ -298,7 +298,7 @@ var_to_source <- function(var, first_cite = TRUE, default = "", standard_eval = 
 
 corpus_recode_name_source <- function(var) {
   # where var should be a character vector
-  var_names <- c("CMU", "eSpeak", "SUBTLEX_UK", "SUBTLEX_US", "BNC.Written", "BNC.Spoken", "Glasgow_Norms", "Clark_and_Paivio", "AoA.Kuperman", "AoA.BrysbaertBiemiller", "CNC.Brysbaert", "Warriner", "EngelthalerHills", "PREV.Brysbaert", "PK.Brysbaert", "ELP", "BLP", "Length")
+  var_names <- c("CMU", "eSpeak", "SUBTLEX_UK", "SUBTLEX_US", "BNC.All", "BNC.Written", "BNC.Spoken", "Glasgow_Norms", "Clark_and_Paivio", "AoA.Kuperman", "AoA.BrysbaertBiemiller", "CNC.Brysbaert", "Warriner", "EngelthalerHills", "PREV.Brysbaert", "PK.Brysbaert", "ELP", "BLP", "Length")
   matches <- sapply(var_names, grepl, var, USE.NAMES = FALSE)
   if (length(matches[matches])==0) return(NA)
   if (length(matches[matches])>1) warning(sprintf("Multiple (%i) sources found. Will return all matches.", length(matches[matches])))
@@ -331,8 +331,9 @@ var_to_url <- function(var, default = "", standard_eval = FALSE) {
   if (!is.null(var_name) & !is.na(var_name)) {
     dplyr::recode(
       var_name,
-      "BNC.Written" = 'http://www.natcorp.ox.ac.uk/',
-      "BNC.Spoken" = 'http://www.natcorp.ox.ac.uk/',
+      "BNC.All" = "http://www.natcorp.ox.ac.uk/",
+      "BNC.Written" = "http://www.natcorp.ox.ac.uk/",
+      "BNC.Spoken" = "http://www.natcorp.ox.ac.uk/",
       "SUBTLEX_UK" = "https://doi.org/10.1080/17470218.2013.850521",
       "SUBTLEX_US" = "https://doi.org/10.3758/BRM.41.4.977",
       "CMU" = "http://www.speech.cs.cmu.edu/cgi-bin/cmudict",
