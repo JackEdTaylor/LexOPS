@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 library(LexOPS)
 ```
 
-# LexOPS
+# LexOPS <img src="man/figures/hex.png" align="right" style="padding-left:10px;background-color:white;height:150px" />
 
 <!-- badges: start -->
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
