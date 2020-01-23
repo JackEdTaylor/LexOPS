@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# LexOPS <img src="man/figures/hex.png" align="right" style="padding-left:10px;background-color:white;height:150px" />
+# LexOPS <img src="man/figures/hex.png" align="right" style="padding-left:10px;background-color:white" />
 
 <!-- badges: start -->
 
