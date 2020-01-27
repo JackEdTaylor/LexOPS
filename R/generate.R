@@ -300,7 +300,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
     cat(sprintf("\n"))
 
     # create meta_df
-    meta_df <- df[df[[string_col]] %in% out, ]
+    meta_df <- df
 
     # add control_for_map() values if any
     if (length(LexOPS_attrs$control_functions) > 0) {

@@ -24,6 +24,7 @@
   utils::globalVariables("euclidean_distance")
   utils::globalVariables("var")
   utils::globalVariables("matchFilter")
+  utils::globalVariables("is_stim")
 
   invisible()
 }
