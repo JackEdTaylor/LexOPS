@@ -26,7 +26,7 @@ tagList(
     ),
     div(
         id = "loading_page",
-        img(src = "lexopslogo_white.png", class = "center-fit"),
+        img(src = "hex-250.png", class = "center-fit"),
         tags$br(), tags$br(),
         icon("spinner", class = "fa-spin")
     ),
