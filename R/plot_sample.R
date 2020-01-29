@@ -100,7 +100,7 @@ plot_sample <- function(df, include = "design", force = TRUE) {
       legend.title = ggplot2::element_blank(),
       legend.position = "top"
     ) +
-    ggplot2::labs(x = "Condition", y = "Value") +
+    ggplot2::labs(x = "Value", y = "Density") +
     ggplot2::scale_fill_manual(values = c("lightgrey", "blue")) +
     ggplot2::scale_alpha_manual(values = c(1, 0.25))
 }
