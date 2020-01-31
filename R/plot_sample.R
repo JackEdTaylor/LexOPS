@@ -92,8 +92,8 @@ plot_sample <- function(df, include = "design", force = TRUE) {
   plot_df %>%
     dplyr::rename_at(plot_vars, ~ plot_vars_headings) %>%
     tidyr::gather("variable", "value", plot_vars_headings) %>%
-    ggplot2::ggplot(ggplot2::aes(value, fill = is_stim, alpha = is_stim)) +
-    ggplot2::geom_density() +
+    ggplot2::ggplot(ggplot2::aes(value, fill = is_stim)) +
+    ggplot2::geom_density(alpha = 0.4) +
     ggplot2::facet_wrap(~variable, scales = "free") +
     ggplot2::theme_minimal() +
     ggplot2::theme(
@@ -101,6 +101,5 @@ plot_sample <- function(df, include = "design", force = TRUE) {
       legend.position = "top"
     ) +
     ggplot2::labs(x = "Value", y = "Density") +
-    ggplot2::scale_fill_manual(values = c("lightgrey", "blue")) +
-    ggplot2::scale_alpha_manual(values = c(1, 0.25))
+    ggplot2::scale_fill_manual(values = c("grey25", "dodgerblue"))
 }
