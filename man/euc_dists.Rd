@@ -4,7 +4,14 @@
 \alias{euc_dists}
 \title{Calculate a word's Euclidean distance from other words}
 \usage{
-euc_dists(df = LexOPS::lexops, target, vars = "all", string_col = "string")
+euc_dists(
+  df = LexOPS::lexops,
+  target,
+  vars = "all",
+  scale = TRUE,
+  center = TRUE,
+  string_col = "string"
+)
 }
 \arguments{
 \item{df}{A data frame.}
@@ -12,6 +19,10 @@ euc_dists(df = LexOPS::lexops, target, vars = "all", string_col = "string")
 \item{target}{The target string (word) that euclidean distances are required for.}
 
 \item{vars}{The variables to be used as dimensions which Euclidean distance should be calculated over. Can be a vector of strings giving the variable names (e.g. \code{c("Zipf.SUBTLEX_UK", "Length")}, or, \code{"all"}, to use all numeric variables in the data frame). The default is \code{"all"}.}
+
+\item{scale}{How should variables be scaled before calculating Euclidean distance? For options, see the \code{scale} argument of \code{\link[base]{scale}}. Default is \code{TRUE}. Scaling can be useful when variables are in differently scaled.}
+
+\item{center}{How should variables be centred before calculating Euclidean distance? For options, see the \code{center} argument of \code{\link[base]{scale}}. Default is \code{TRUE}.}
 
 \item{string_col}{The column containing the strings (default = \code{"string"}).}
 }
@@ -27,6 +38,15 @@ Caclulates the Euclidean distance of a word from all other words in a df, on sel
 # (Note: This will be calculated using the dimensions of frequency, arousal, and size)
 lexops \%>\%
   euc_dists("thicket", c("Zipf.SUBTLEX_UK", "AROU.Warriner", "SIZE.Glasgow_Norms"))
+
+# no scaling or centering
+lexops \%>\%
+  euc_dists(
+    "thicket",
+    c("Zipf.SUBTLEX_UK", "AROU.Warriner", "SIZE.Glasgow_Norms"),
+    scale = FALSE,
+    center = FALSE
+  )
 
 # Add Euclidean distance as new column
 # (Also sort ascendingly by distance; barbara will have a distance of 0 so will be first)
