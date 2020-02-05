@@ -20,7 +20,7 @@
 #' plot_sample(stim)
 #'
 #' @export
-
+#
 plot_sample <- function(df, include = "design", force = TRUE) {
   # get attributes
   if (is.null(attr(df, "LexOPS_attrs"))) {
@@ -93,7 +93,7 @@ plot_sample <- function(df, include = "design", force = TRUE) {
     dplyr::rename_at(plot_vars, ~ plot_vars_headings) %>%
     tidyr::gather("variable", "value", plot_vars_headings) %>%
     ggplot2::ggplot(ggplot2::aes(value, fill = is_stim)) +
-    ggplot2::geom_density(alpha = 0.4) +
+    ggplot2::geom_density(alpha = 0.75, colour = NA) +
     ggplot2::facet_wrap(~variable, scales = "free") +
     ggplot2::theme_minimal() +
     ggplot2::theme(
@@ -101,5 +101,5 @@ plot_sample <- function(df, include = "design", force = TRUE) {
       legend.position = "top"
     ) +
     ggplot2::labs(x = "Value", y = "Density") +
-    ggplot2::scale_fill_manual(values = c("grey25", "dodgerblue"))
+    ggplot2::scale_fill_manual(values = c("grey45", "skyblue"))
 }
