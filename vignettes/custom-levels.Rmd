@@ -8,38 +8,75 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-By default, LexOPS will split by a single variable for each use of `split_by()`, and will create items for each factorial cell. For instance, splitting by concreteness into 2 levels, and emotion into 3 levels, would result in 6 factorial cells. But what if we want to generate items for just 2 of these 6 factorial cells? We can do this by creating a factor/character vector column in our data which will represent suitability for each factorial cell. This vignette provides an example, where we want to compare concrete emotional words to abstract neutral words.
+By default, LexOPS will split by a single variable for each use of `split_by()`, and will create items for each factorial cell. For instance, splitting by concreteness into 2 levels, and emotion into 3 levels, would result in 6 factorial cells. But what if we want to generate items for just 2 of these 6 factorial cells? We can do this by creating a factor/character vector column in our data which will represent suitability for each factorial cell. This vignette provides an example, where we want to compare high arousal, negative emotional words to low arousal neutral words.
 
 # Packages
 
 ```{r, message=FALSE}
 library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(forcats)
 library(LexOPS)
 ```
 
 ```{r, include=FALSE}
 set.seed(1)
+theme_set(theme_minimal())
 ```
 
 # Coding the New Column
 
-We've decided we want our stimuli to have two conditions: *concrete emotional*, and *abstract neutral*. The first step is to create the column that will contain this information. An easy way to do this might be with `dplyr`'s `case_when()` function. We will call the new column, `our_cond`, because I'm unimaginative.
+We've decided we want our stimuli to have two conditions: *high arousal, negative*, and *low arousal, neutral*, according to [Warriner et al. (2013)](http://doi.org/10.3758/s13428-012-0314-x).
+
+Both arousal and valence are on 9-point Likert scales, so let's imagine we decide on the following cut-offs:
+
+- High arousal is anything more than or equal to 6
+- Low arousal is anything less than or equal to 3
+- Negative valence is anything less than or equal to 3
+- Neutral valence is anything between 4 and 6
+
+Firstly we create the column that will contain the information about our conditions. An easy way to do this might be with `dplyr`'s `case_when()` function. We will call the new column, `emo_cond`, because I'm unimaginative.
 
 ```{r}
 dat <- lexops %>%
-  mutate(our_cond = case_when(
-    CNC.Brysbaert >= 4 & !between(VAL.Warriner, 3, 7) ~ "cnc_emo",
-    CNC.Brysbaert <= 2 & between(VAL.Warriner, 4, 6) ~ "abs_neu"
+  mutate(emo_cond = case_when(
+    AROU.Warriner >= 6 & VAL.Warriner <= 3 ~ "arou_neg",
+    AROU.Warriner <= 3 & between(VAL.Warriner, 4, 6) ~ "neutral",
+    TRUE ~ "none"
   ))
+```
+
+Now let's check our conditions' locations on the distributions of arousal and valence ratings.
+
+```{r}
+dat %>%
+  select(string, AROU.Warriner, VAL.Warriner, emo_cond) %>%
+  pivot_longer(cols = c(AROU.Warriner, VAL.Warriner), names_to = "Variable", values_to = "Value") %>%
+  mutate(emo_cond = fct_infreq(as.factor(emo_cond))) %>%
+  ggplot(aes(Value, fill = emo_cond)) +
+  geom_histogram(binwidth = 0.5) +
+  facet_wrap(~Variable) +
+  scale_fill_manual(values = c("#999999", "#E69F00", "#56B4E9"))
+```
+
+We can also visualise the locations of our conditions in this 2D space.
+
+```{r}
+dat %>%
+  mutate(emo_cond = fct_infreq(as.factor(emo_cond))) %>%
+  ggplot(aes(AROU.Warriner, VAL.Warriner, colour = emo_cond)) +
+  geom_point() +
+  scale_colour_manual(values = c("#999999", "#E69F00", "#56B4E9"))
 ```
 
 # Generate Stimuli
 
-We can now generate matched stimuli, for only these two factorial cells.
+Let's imagine we decide those cut-offs are sensible. We can now generate matched stimuli, for only these two factorial cells.
 
 ```{r}
 stim <- dat %>%
-  split_by(our_cond, "cnc_emo" ~ "abs_neu") %>%
+  split_by(emo_cond, "arou_neg" ~ "neutral") %>%
   control_for(Length) %>%
   control_for(Zipf.SUBTLEX_UK, -0.1:0.1) %>%
   control_for(AoA.Kuperman, -1.5:1.5) %>%
@@ -54,9 +91,9 @@ print(stim)
 
 # Check Stimuli
 
-We can use the `plot_design()` function to check the distributions of the variables we used to create the `our_cond` column. This shows the expected differences between conditions A1 and A2, based on the method we used to create the new column.
+We can use the `plot_design()` function to check the distributions of the variables we used to create the `emo_cond` column. This shows the expected differences between conditions A1 and A2, based on the method we used to create the new column.
 
 ```{r, fig.width=7, fig.height=5}
-plot_design(stim, c("CNC.Brysbaert", "VAL.Warriner"))
+plot_design(stim, c("AROU.Warriner", "VAL.Warriner"))
 ```
 
