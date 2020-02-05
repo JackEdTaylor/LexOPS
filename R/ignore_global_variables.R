@@ -25,6 +25,7 @@
   utils::globalVariables("var")
   utils::globalVariables("matchFilter")
   utils::globalVariables("is_stim")
+  utils::globalVariables("control_for_euc_val")
 
   invisible()
 }
