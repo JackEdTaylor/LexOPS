@@ -16,7 +16,7 @@ control_for(
 \arguments{
 \item{df}{A data frame that is the result from \code{split_by()}.}
 
-\item{var}{The column to treat as an independent variable (non-standard evaluation).}
+\item{var}{The column to treat as a control (non-standard evaluation).}
 
 \item{tol}{The tolerance of the control. For numeric variables, this should be in the form lower:upper (e.g. \code{-0.1:0.1} will control within +/- 0.1). For categorical variables, this can be kept as \code{NA}.}
 

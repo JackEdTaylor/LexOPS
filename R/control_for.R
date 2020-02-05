@@ -3,7 +3,7 @@
 #' Specifies variables that should be controlled for in the generated stimuli, after splitting. Can be run multiple times to control for multiple variables.
 #'
 #' @param df A data frame that is the result from `split_by()`.
-#' @param var The column to treat as an independent variable (non-standard evaluation).
+#' @param var The column to treat as a control (non-standard evaluation).
 #' @param tol The tolerance of the control. For numeric variables, this should be in the form lower:upper (e.g. `-0.1:0.1` will control within +/- 0.1). For categorical variables, this can be kept as `NA`.
 #' @param string_col The column containing the strings (default = "string").
 #' @param cond_col Prefix with which the columns detailing the splits were labelled by `split_by()`. This is rarely needed (default = NA), as by default the function gets this information from `df`'s attributes.
