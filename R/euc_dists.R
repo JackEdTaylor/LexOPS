@@ -5,6 +5,8 @@
 #' @param df A data frame.
 #' @param target The target string (word) that euclidean distances are required for.
 #' @param vars The variables to be used as dimensions which Euclidean distance should be calculated over. Can be a vector of strings giving the variable names (e.g. `c("Zipf.SUBTLEX_UK", "Length")`, or, `"all"`, to use all numeric variables in the data frame). The default is `"all"`.
+#' @param scale How should variables be scaled before calculating Euclidean distance? For options, see the `scale` argument of \code{\link[base]{scale}}. Default is `TRUE`. Scaling can be useful when variables are in differently scaled.
+#' @param center How should variables be centred before calculating Euclidean distance? For options, see the `center` argument of \code{\link[base]{scale}}. Default is `TRUE`.
 #' @param string_col The column containing the strings (default = `"string"`).
 #' @return Returns a vector of Euclidean distances, in the order of rows in `df`.
 #' @examples
@@ -14,6 +16,15 @@
 #' lexops %>%
 #'   euc_dists("thicket", c("Zipf.SUBTLEX_UK", "AROU.Warriner", "SIZE.Glasgow_Norms"))
 #'
+#' # no scaling or centering
+#' lexops %>%
+#'   euc_dists(
+#'     "thicket",
+#'     c("Zipf.SUBTLEX_UK", "AROU.Warriner", "SIZE.Glasgow_Norms"),
+#'     scale = FALSE,
+#'     center = FALSE
+#'   )
+#'
 #' # Add Euclidean distance as new column
 #' # (Also sort ascendingly by distance; barbara will have a distance of 0 so will be first)
 #' lexops %>%
@@ -22,7 +33,7 @@
 #'
 #' @export
 
-euc_dists <- function(df = LexOPS::lexops, target, vars = "all", string_col = "string") {
+euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, center = TRUE, string_col = "string") {
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
   # if there are no vars specified (e.g. empty vector) return NAs
@@ -55,8 +66,8 @@ euc_dists <- function(df = LexOPS::lexops, target, vars = "all", string_col = "s
 
   # calculate Euclidean distance of word from all others on specified dimensions
 
-  # firstly, scale all specified dimensions
-  df[, vars] <- lapply(df[, vars], scale)
+  # firstly, scale all specified dimensions as required
+  df[, vars] <- lapply(df[, vars], base::scale, center, scale)
 
   # get the vector for the target word
   target_dims <- df[df[[string_col]] == target, vars]
@@ -75,8 +86,3 @@ euc_dists <- function(df = LexOPS::lexops, target, vars = "all", string_col = "s
   sqrt(rowSums(dist_sq))
 
 }
-
-
-# # should work
-# lexops %>%
-#   euc_dists("thicket", c("Zipf.SUBTLEX_UK", "AROU.Warriner", "SIZE.Glasgow_Norms"))
