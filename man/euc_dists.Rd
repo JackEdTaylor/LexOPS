@@ -10,7 +10,9 @@ euc_dists(
   vars = "all",
   scale = TRUE,
   center = TRUE,
-  string_col = "string"
+  weights = NA,
+  string_col = "string",
+  standard_eval = FALSE
 )
 }
 \arguments{
@@ -18,13 +20,15 @@ euc_dists(
 
 \item{target}{The target string (word) that euclidean distances are required for.}
 
-\item{vars}{The variables to be used as dimensions which Euclidean distance should be calculated over. Can be a vector of strings giving the variable names (e.g. \code{c("Zipf.SUBTLEX_UK", "Length")}, or, \code{"all"}, to use all numeric variables in the data frame). The default is \code{"all"}.}
+\item{vars}{The variables to be used as dimensions which Euclidean distance should be calculated over. Can be a vector of variable names (e.g. \code{c(Zipf.SUBTLEX_UK, Length)}), or, \code{"all"}, to use all numeric variables in the data frame. The default is \code{"all"}.}
 
-\item{scale}{How should variables be scaled before calculating Euclidean distance? For options, see the \code{scale} argument of \code{\link[base]{scale}}. Default is \code{TRUE}. Scaling can be useful when variables are in differently scaled.}
+\item{scale, center}{How should variables be scaled and/or centred before calculating Euclidean distance? For options, see the \code{scale} and \code{center} arguments of \code{\link[base]{scale}}. Default for both is \code{TRUE}. Scaling can be useful when variables are in differently scaled.}
 
-\item{center}{How should variables be centred before calculating Euclidean distance? For options, see the \code{center} argument of \code{\link[base]{scale}}. Default is \code{TRUE}.}
+\item{weights}{An (optional) list of weights, in the same order as \code{vars}. After any scaling is applied, the values will be multiplied by these weights. Default is \code{NA}, meaning no weights are applied.}
 
 \item{string_col}{The column containing the strings (default = \code{"string"}).}
+
+\item{standard_eval}{Logical; bypasses non-standard evaluation, and allows more standard R objects in \code{vars}. If \code{TRUE}, \code{vars} should be a character vector referring to columns in \code{df} (e.g. \code{c("Length", "Zipf.SUBTLEX_UK")}). Default = \code{FALSE}.}
 }
 \value{
 Returns a vector of Euclidean distances, in the order of rows in \code{df}.
@@ -37,13 +41,13 @@ Caclulates the Euclidean distance of a word from all other words in a df, on sel
 # Get the distance of every entry in the `lexops` dataset from the word "thicket".
 # (Note: This will be calculated using the dimensions of frequency, arousal, and size)
 lexops \%>\%
-  euc_dists("thicket", c("Zipf.SUBTLEX_UK", "AROU.Warriner", "SIZE.Glasgow_Norms"))
+  euc_dists("thicket", c(Zipf.SUBTLEX_UK, AROU.Warriner, SIZE.Glasgow_Norms))
 
 # no scaling or centering
 lexops \%>\%
   euc_dists(
     "thicket",
-    c("Zipf.SUBTLEX_UK", "AROU.Warriner", "SIZE.Glasgow_Norms"),
+    c(Zipf.SUBTLEX_UK, AROU.Warriner, SIZE.Glasgow_Norms),
     scale = FALSE,
     center = FALSE
   )
@@ -51,7 +55,14 @@ lexops \%>\%
 # Add Euclidean distance as new column
 # (Also sort ascendingly by distance; barbara will have a distance of 0 so will be first)
 lexops \%>\%
-  dplyr::mutate(ed = euc_dists(., "barbara", c("Length", "Zipf.SUBTLEX_UK", "BG.SUBTLEX_UK"))) \%>\%
+  dplyr::mutate(ed = euc_dists(., "barbara", c(Length, Zipf.SUBTLEX_UK, BG.SUBTLEX_UK))) \%>\%
   dplyr::arrange(ed)
 
+# bypass non-standard evaluation
+lexops \%>\%
+  euc_dists(
+    "thicket",
+    c("Zipf.SUBTLEX_UK", "AROU.Warriner", "SIZE.Glasgow_Norms"),
+    standard_eval = TRUE
+  )
 }
