@@ -8,6 +8,7 @@
 #' @param point_size Size of points (default = 0.75)
 #' @param line_width Thickness of lines (default = 1)
 #' @param force Logical, should the function be forced to try and work if attributes are missing (default is `TRUE`)? If `TRUE`, will expect the dataframe to have a structure similar to that produced by `long_format()`, where `condition` is character or factor, and `item_nr` is numeric or factor. Other variables will be plot-able if given to the `include` argument.
+#' @param id_col A character vector specifying the column identifying unique observations (e.g. in `LexOPS::lexops`, the `id_col` is `"string"`). Ignored unless `force=TRUE`, in which case it is required.
 #'
 #' @return A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
 #'
@@ -24,11 +25,11 @@
 #'
 #' @export
 
-plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 0.75, line_width = 1, force = TRUE) {
+plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 0.75, line_width = 1, force = TRUE, id_col = "string") {
   # get attributes
   if (is.null(attr(df, "LexOPS_attrs"))) {
     if (force) {
-      warning("Attributes missing. Will try to add attributes")
+      warning("Attributes missing. Will try to add attributes. Check `id_col` is specified correctly (default is \"string\")")
       LexOPS_attrs <- list()
       LexOPS_attrs$generated <- TRUE
       LexOPS_attrs$is.long_format <- TRUE
@@ -38,6 +39,12 @@ plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 
     }
   } else {
     LexOPS_attrs <- attr(df, "LexOPS_attrs")
+    # get options from attributes
+    if (!is.null(LexOPS_attrs$options)) {
+      id_col <- LexOPS_attrs$options$id_col
+    } else {
+      id_col <- "string"
+    }
   }
   # check is generated stimuli
   if (is.null(LexOPS_attrs$generated)) stop("Must run `generate()` on `df` before using `plot_design()` (try `force = TRUE`?).")
@@ -57,14 +64,14 @@ plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 
 
   # get df which contains all the original variables for the generated stimuli
   meta_df <- LexOPS_attrs$meta_df %>%
-    dplyr::filter(string %in% df$string)
+    dplyr::filter(!!dplyr::sym(id_col) %in% df[[id_col]])
 
   # convert to numeric if appropriate
   meta_df <- suppressWarnings(dplyr::mutate_if(meta_df, function(x) all(!is.na(as.numeric(x))), as.numeric))
 
   # join this to df
-  plot_df <- dplyr::select(df, c(item_nr, condition, string)) %>%
-    dplyr::right_join(meta_df, by = "string")
+  plot_df <- dplyr::select(df, c(item_nr, condition, !!dplyr::sym(id_col))) %>%
+    dplyr::right_join(meta_df, by = id_col)
 
   # factor vector of variables to plot
   plot_vars <- if (all(include == "design")) {
