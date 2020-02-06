@@ -5,7 +5,6 @@
 #' @param df A data frame that is the result from `split_by()`.
 #' @param var The column to treat as a control (non-standard evaluation).
 #' @param tol The tolerance of the control. For numeric variables, this should be in the form lower:upper (e.g. `-0.1:0.1` will control within +/- 0.1). For categorical variables, this can be kept as `NA`.
-#' @param string_col The column containing the strings (default = "string").
 #' @param cond_col Prefix with which the columns detailing the splits were labelled by `split_by()`. This is rarely needed (default = NA), as by default the function gets this information from `df`'s attributes.
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `var` and `tol`. If `TRUE`, `var` should be a character vector referring to a column in `df` (e.g. `"Zipf.SUBTLEX_UK"`), and `tol` should be a vector of length 2, specifying the tolerance (e.g. `c(-0.1, 0.5)`). Default = `FALSE`.
 #'
@@ -31,7 +30,7 @@
 #'
 #' @export
 
-control_for <- function(df, var, tol = NA, string_col = "string", cond_col = NA, standard_eval = FALSE) {
+control_for <- function(df, var, tol = NA, cond_col = NA, standard_eval = FALSE) {
   # parse the column name and tolerance into a list object
   var <- if (standard_eval) {
     if (all(is.na(tol))) {
@@ -47,8 +46,6 @@ control_for <- function(df, var, tol = NA, string_col = "string", cond_col = NA,
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
   # check the variable specified in var is in the dataframe
   if (!var[[1]] %in% colnames(df)) stop(sprintf("'%s' not in df?", var[[1]]))
-  # check string_col is a string
-  if (!is.character(string_col)) stop(sprintf("Expected string_col to be of class string, not %s", class(string_col)))
   # check numeric and non-numeric variables are correctly specified
   if (length(var) > 1) {
     if (length(var)!=2) stop(sprintf("Expected list length of 1 (variable) or 2 (variable, tolerance), not %i.", length(var)))

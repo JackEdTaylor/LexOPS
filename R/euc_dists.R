@@ -7,7 +7,7 @@
 #' @param vars The variables to be used as dimensions which Euclidean distance should be calculated over. Can be a vector of variable names (e.g. `c(Zipf.SUBTLEX_UK, Length)`), or, `"all"`, to use all numeric variables in the data frame. The default is `"all"`.
 #' @param scale,center How should variables be scaled and/or centred before calculating Euclidean distance? For options, see the `scale` and `center` arguments of \code{\link[base]{scale}}. Default for both is `TRUE`. Scaling can be useful when variables are in differently scaled.
 #' @param weights An (optional) list of weights, in the same order as `vars`. After any scaling is applied, the values will be multiplied by these weights. Default is `NA`, meaning no weights are applied.
-#' @param string_col The column containing the strings (default = `"string"`).
+#' @param id_col The column containing the strings (default = `"string"`).
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `vars`. If `TRUE`, `vars` should be a character vector referring to columns in `df` (e.g. `c("Length", "Zipf.SUBTLEX_UK")`). Default = `FALSE`.
 #'
 #' @return Returns a vector of Euclidean distances, in the order of rows in `df`.
@@ -42,7 +42,7 @@
 #'   )
 #' @export
 
-euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, center = TRUE, weights = NA, string_col = "string", standard_eval = FALSE) {
+euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, center = TRUE, weights = NA, id_col = "string", standard_eval = FALSE) {
   if (!standard_eval) {
     vars <- parse_levels(substitute(vars)) %>%
       unlist()
@@ -81,8 +81,8 @@ euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, c
   if (any(!is.na(weights))) {
     if (!is.numeric(weights) | length(weights)!=length(vars)) stop("`weights` should be a numeric vector of length equal to that of vars")
   }
-  # check string_col is a string
-  if (!is.character(string_col)) stop(sprintf("Expected string_col to be of class string, not %s", class(string_col)))
+  # check id_col is a string
+  if (!is.character(id_col)) stop(sprintf("Expected id_col to be of class string, not %s", class(id_col)))
 
   # calculate Euclidean distance of word from all others on specified dimensions
 
@@ -90,7 +90,7 @@ euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, c
   df[, vars] <- lapply(df[, vars], base::scale, center, scale)
 
   # get the vector for the target word
-  target_dims <- df[df[[string_col]] == target, vars]
+  target_dims <- df[df[[id_col]] == target, vars]
 
   # get all the other vectors (including the target)
   dims <- df[, vars]

@@ -5,7 +5,6 @@
 #' @param df A data frame that is the result from `control_for()` or `split_by()`.
 #' @param include A string indicating whether the long-format result should include all variables in the original data frame (`"all"`), only those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Set to `NA` for only the data in the wide-format data frame. The default is `"design"`.
 #' @param include_candids Logical; whether to include data about unused candidates in the result. If `TRUE`, will store whether each word was actually used in column, `is_stim`. Default is `FALSE`.
-#' @param string_col The column containing the strings (default = `"string"`).
 #'
 #' @return Returns the generated stimuli, but converted into long format, containing requested variables from the original `df`, and the variables of `item_nr`, `condition`, `euclidean_distance` (from the match_null).
 #' @examples
@@ -18,16 +17,24 @@
 #'
 #' @export
 
-long_format <- function(df, include = "design", include_candids = FALSE, string_col = "string") {
+long_format <- function(df, include = "design", include_candids = FALSE) {
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
   # check that include is an expected input
   if (!include %in% c("all", "design", "splits", "controls", NA)) stop('`include` must be one of "all", "design", "splits", "controls", or NA')
-  # check string_col is a string
-  if (!is.character(string_col)) stop(sprintf("Expected string_col to be of class string, not %s", class(string_col)))
 
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
+
+  # get options from attributes
+  if (!is.null(LexOPS_attrs$options)) {
+    id_col <- LexOPS_attrs$options$id_col
+  } else {
+    id_col <- "string"
+  }
+
+  # check id_col is a string
+  if (!is.character(id_col)) stop(sprintf("Expected id_col to be of class string, not %s", class(id_col)))
 
   # check that the generate function has been run
   if (is.null(LexOPS_attrs$generated)) {
@@ -44,7 +51,7 @@ long_format <- function(df, include = "design", include_candids = FALSE, string_
     NULL
   } else {
     if (include == "all") {
-      colnames(LexOPS_attrs$meta_df)[!colnames(LexOPS_attrs$meta_df) %in% c(string_col, "LexOPS_cond")]
+      colnames(LexOPS_attrs$meta_df)[!colnames(LexOPS_attrs$meta_df) %in% c(id_col, "LexOPS_cond")]
     } else {
       splits <- sapply(LexOPS_attrs$splits, dplyr::first)
       controls <- c( sapply(LexOPS_attrs$controls, dplyr::first), sapply(LexOPS_attrs$control_functions, dplyr::first) )
@@ -59,20 +66,20 @@ long_format <- function(df, include = "design", include_candids = FALSE, string_
   }
 
   # the specified columns from meta_df
-  meta_df <- LexOPS_attrs$meta_df[, colnames(LexOPS_attrs$meta_df) %in% c(long_cols, string_col)]
+  meta_df <- LexOPS_attrs$meta_df[, colnames(LexOPS_attrs$meta_df) %in% c(long_cols, id_col)]
 
   if (include_candids) {
     # gather outside pipeline for later reference
-    out_stim <- tidyr::gather(df, "condition", !!string_col, -match_null, -item_nr)
+    out_stim <- tidyr::gather(df, "condition", !!id_col, -match_null, -item_nr)
     # put in long format, and include the specified variables
-    out <- dplyr::full_join(out_stim, meta_df, by = string_col) %>%
+    out <- dplyr::full_join(out_stim, meta_df, by = id_col) %>%
       dplyr::mutate(is_stim = dplyr::if_else(string %in% out_stim$string, TRUE, FALSE)) %>%
       dplyr::select(item_nr, condition, match_null, dplyr::everything()) %>%
       dplyr::arrange(item_nr)
   } else {
     # put in long format, and include the specified variables
-    out <- tidyr::gather(df, "condition", !!string_col, -match_null, -item_nr) %>%
-      dplyr::left_join(meta_df, by = string_col) %>%
+    out <- tidyr::gather(df, "condition", !!id_col, -match_null, -item_nr) %>%
+      dplyr::left_join(meta_df, by = id_col) %>%
       dplyr::select(item_nr, condition, match_null, dplyr::everything()) %>%
       dplyr::arrange(item_nr)
   }

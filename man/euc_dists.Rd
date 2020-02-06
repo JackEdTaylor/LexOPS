@@ -11,7 +11,7 @@ euc_dists(
   scale = TRUE,
   center = TRUE,
   weights = NA,
-  string_col = "string",
+  id_col = "string",
   standard_eval = FALSE
 )
 }
@@ -26,7 +26,7 @@ euc_dists(
 
 \item{weights}{An (optional) list of weights, in the same order as \code{vars}. After any scaling is applied, the values will be multiplied by these weights. Default is \code{NA}, meaning no weights are applied.}
 
-\item{string_col}{The column containing the strings (default = \code{"string"}).}
+\item{id_col}{The column containing the strings (default = \code{"string"}).}
 
 \item{standard_eval}{Logical; bypasses non-standard evaluation, and allows more standard R objects in \code{vars}. If \code{TRUE}, \code{vars} should be a character vector referring to columns in \code{df} (e.g. \code{c("Length", "Zipf.SUBTLEX_UK")}). Default = \code{FALSE}.}
 }

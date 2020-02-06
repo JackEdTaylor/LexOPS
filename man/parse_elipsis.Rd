@@ -13,7 +13,7 @@ parse_elipsis(...)
 Returns a list object in the form \code{list(c("num_variable1", -1, 3), c("num_variable2", -0.5, 0.5), "char_variable1")}.
 }
 \description{
-This is a version of \code{parse_levels()} that supports elipses. This is useful for specifying multiple parameters in one function. This function was specifically designed for a non-standard evaluation update to \code{match_word()}.
+This is a version of \code{parse_levels()} that supports elipses. This is useful for specifying multiple parameters in one function. This function was specifically designed for a non-standard evaluation update to \code{match_item()}.
 }
 \examples{
 

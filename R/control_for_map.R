@@ -7,7 +7,6 @@
 #' @param var The column to provide the value which will be the first argument of the function.
 #' @param tol The tolerance of the control. For numeric variables, this should be in the form lower:upper (e.g. `-0.1:0.1` will control within +/- 0.1). For categorical variables, this can be kept as `NA`.
 #' @param name What the output column should be named. If `NA` (default), will automatically assign as `sprintf("control_fun_%i", nr)`, where `nr` is the number of the control function.
-#' @param string_col The column containing the strings (default = "string").
 #' @param cond_col Prefix with which the columns detailing the splits were labelled by \code{\link{split_by}}. This is rarely needed (default = NA), as by default the function gets this information from `df`'s attributes.
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `var` and `tol`. If `TRUE`, `var` should be a character vector referring to a column in `df` (e.g. `"Zipf.SUBTLEX_UK"`), and `tol` should be a vector of length 2, specifying the tolerance (e.g. `c(-0.1, 0.5)`). Default = `FALSE`.
 #'
@@ -34,7 +33,7 @@
 #'
 #' @export
 
-control_for_map <- function(df, fun, var, tol = NA, name = NA, string_col = "string", cond_col = NA, standard_eval = FALSE) {
+control_for_map <- function(df, fun, var, tol = NA, name = NA, cond_col = NA, standard_eval = FALSE) {
   # parse the column name and tolerance into a list object
   var <- if (standard_eval) {
     if (all(is.na(tol))) {
@@ -53,8 +52,6 @@ control_for_map <- function(df, fun, var, tol = NA, name = NA, string_col = "str
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
   # check the variable specified in var is in the dataframe
   if (!var[[2]] %in% colnames(df)) stop(sprintf("'%s' not in df?", var[[2]]))
-  # check string_col is a string
-  if (!is.character(string_col)) stop(sprintf("Expected string_col to be of class string, not %s", class(string_col)))
   # check fun is of class "function"
   if (!is.function(fun)) stop("Argument `fun` should be an object of class, 'function'.")
   # check numeric and non-numeric variables are correctly specified

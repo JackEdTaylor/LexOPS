@@ -6,7 +6,6 @@
 #' @param n The number of strings per condition (default = 20). Set to `"all"` to generate as many as possible.
 #' @param match_null The condition words should be matched to. Should be a string indicating condition (e.g. `"A1_B2_C1"`), or a string indicating one of the following options: "first" for the lowest condition (e.g. `"A1"` or `"A1_B1_C1_D1"`, etc.), "random" for randomly selected null condition each iteration, "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition.
 #' @param seed An integer specifying the random seed, allowing reproduction of exact stimuli lists. If `NA`, will not set the seed. Default is `NA`.
-#' @param string_col The column containing the strings (default = `"string"`).
 #' @param cond_col Prefix with which the columns detailing the splits were labelled by `split_by()`. This is rarely needed (default = `NA`), as by default the function gets this information from `df`'s attributes.
 #' @param is_shiny Allows printing in a shiny context with `shinyjs::html()`. Outputs from the cat() function are stored in the div with id "gen_console". Default is FALSE.
 #'
@@ -87,7 +86,7 @@
 #'
 #' @export
 
-generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = "string", cond_col = NA, is_shiny = FALSE) {
+generate <- function(df, n=20, match_null = "balanced", seed = NA, cond_col = NA, is_shiny = FALSE) {
   if (is_shiny) {
     # if in a shiny context, replace the base cat() function with one which captures the console output
     cat <- function(str) shinyjs::html("gen_console", sprintf("%s", str))
@@ -96,8 +95,15 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
 
+  # get options from attributes
+  if (!is.null(LexOPS_attrs$options)) {
+    id_col <- LexOPS_attrs$options$id_col
+  } else {
+    id_col <- "string"
+  }
+
   # check for problems with arguments
-  generate.check(df, n, match_null, seed, string_col, cond_col, is_shiny, LexOPS_attrs)
+  generate.check(df, n, match_null, seed, id_col, cond_col, is_shiny, LexOPS_attrs)
 
   # get cond_col from the attributes if not manually defined
   if (is.na(cond_col)) {
@@ -184,7 +190,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
       n_tried_this_n_generated <- n_tried_this_n_generated + 1
 
       this_match_null <- null_conds[n_generated+1]
-      null_word_bank <- df[[string_col]][!df[[string_col]] %in% out & df[[cond_col]] %in% this_match_null & !df[[string_col]] %in% words_tried_this_generated]
+      null_word_bank <- df[[id_col]][!df[[id_col]] %in% out & df[[cond_col]] %in% this_match_null & !df[[id_col]] %in% words_tried_this_generated]
 
       if (length(null_word_bank) == 0) {
         if (n_all) {
@@ -204,55 +210,55 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
       words_tried_this_generated <- c(words_tried_this_generated, this_word)
 
       matches <- sapply(all_conds[all_conds != this_match_null], function(cnd) {
-        m <- df[(!df[[string_col]] %in% out & df[[cond_col]] == cnd) | df[[string_col]]==this_word, ] %>%
+        m <- df[(!df[[id_col]] %in% out & df[[cond_col]] == cnd) | df[[id_col]]==this_word, ] %>%
           generate.find_matches(
             target = this_word,
             vars = LexOPS_attrs$controls,
             matchCond = this_match_null,
-            string_col = string_col,
+            id_col = id_col,
             cond_col = cond_col
           ) %>%
           generate.find_fun_matches(
             target = this_word,
             vars_pre_calc = LexOPS_attrs$control_functions,
             matchCond = this_match_null,
-            string_col = string_col,
+            id_col = id_col,
             cond_col = cond_col
           )
         # remove the target word
-        m <- m[m[[string_col]]!=this_word, ]
+        m <- m[m[[id_col]]!=this_word, ]
 
         if (nrow(m)==0) {
           item_out <- NA
           } else {
             # pick a match randomly
             item_out <- m %>%
-              dplyr::pull(string_col) %>%
+              dplyr::pull(id_col) %>%
               sample(1)
             # store any control_for_map values
             if (length(LexOPS_attrs$control_functions) > 0) {
               out_cont_map_val <- sapply(LexOPS_attrs$control_functions, function(cont) {
                 # get the representations of the words in the given column
-                this_word_rep <- df[[ cont[[3]] ]][df[[string_col]]==this_word]
-                out_rep <- df[[ cont[[3]] ]][df[[string_col]]==item_out]
+                this_word_rep <- df[[ cont[[3]] ]][df[[id_col]]==this_word]
+                out_rep <- df[[ cont[[3]] ]][df[[id_col]]==item_out]
                 # get the value from the function
                 unname(cont[[2]](out_rep, this_word_rep))
               })
               names(out_cont_map_val) <- sapply(LexOPS_attrs$control_functions, function(cont) cont[[1]] )
               out_val <- item_out
-              names(out_val) <- string_col
+              names(out_val) <- id_col
               control_for_map_values <<- dplyr::bind_rows(control_for_map_values, c(out_val, out_cont_map_val))
 
-              if (!this_word %in% control_for_map_values[[string_col]]) {
+              if (!this_word %in% control_for_map_values[[id_col]]) {
                 this_word_map_val <- sapply(LexOPS_attrs$control_functions, function(cont) {
                   # get the representation in the given column
-                  this_word_rep <- df[[ cont[[3]] ]][df[[string_col]]==this_word]
+                  this_word_rep <- df[[ cont[[3]] ]][df[[id_col]]==this_word]
                   # get the value from the function
                   unname(cont[[2]](this_word, this_word))
                 })
                 names(this_word_map_val) <- sapply(LexOPS_attrs$control_functions, function(cont) cont[[1]] )
                 this_word_val <- this_word
-                names(this_word_val) <- string_col
+                names(this_word_val) <- id_col
                 control_for_map_values <<- dplyr::bind_rows(control_for_map_values, c(this_word_val, this_word_map_val))
               }
 
@@ -269,10 +275,10 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
       # check the matches are inclusive if match_null = "inclusive"
       if (match_null == "inclusive") {
         matches <- generate.are_matches_inclusive(
-          df = df[!df[[string_col]] %in% out | df[[string_col]]==this_word, ],
+          df = df[!df[[id_col]] %in% out | df[[id_col]]==this_word, ],
           matches,
           vars=LexOPS_attrs$controls, vars_pre_calc = LexOPS_attrs$control_functions,
-          matchCond=this_match_null, string_col, cond_col
+          matchCond=this_match_null, id_col, cond_col
         )
       }
 
@@ -304,7 +310,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
 
     # add control_for_map() values if any
     if (length(LexOPS_attrs$control_functions) > 0) {
-      meta_df <- dplyr::left_join(meta_df, control_for_map_values, by=string_col)
+      meta_df <- dplyr::left_join(meta_df, control_for_map_values, by=id_col)
     }
 
     df <- as.data.frame(out, stringsAsFactors = FALSE) %>%
@@ -331,11 +337,11 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, string_col = 
 }
 
 # function to check supplied arguments makes sense
-generate.check <- function(df, n, match_null, seed, string_col, cond_col, is_shiny, LexOPS_attrs) {
+generate.check <- function(df, n, match_null, seed, id_col, cond_col, is_shiny, LexOPS_attrs) {
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
-  # check string_col is a string
-  if (!is.character(string_col)) stop(sprintf("Expected string_col to be of class string, not %s", class(string_col)))
+  # check id_col is a string
+  if (!is.character(id_col)) stop(sprintf("Expected id_col to be of class string, not %s", class(id_col)))
 
   # check n is a number or expected string
   if (!is.numeric(n) & n != "all") stop(sprintf('n must be numeric or a string of value "all"'))
@@ -373,17 +379,17 @@ generate.filter_tol <- function(tol, df_matches) {
 }
 
 # function to find matches for a particular word (better than current match_word() function?)
-generate.find_matches <- function(df, target, vars, matchCond, string_col, cond_col) {
+generate.find_matches <- function(df, target, vars, matchCond, id_col, cond_col) {
   # if no controls, return the df unchanged
   if (length(vars)==0) return(df)
   # get a copy of df excluding the null condition, but keep the target word
-  df_matches <- df[df[[cond_col]] != matchCond | df[[string_col]] == target, ]
+  df_matches <- df[df[[cond_col]] != matchCond | df[[id_col]] == target, ]
   # add a 2nd (for categorical) or 3rd (for numeric) item to each control's list, indicating the value for the string being matched to
   vars <- lapply(vars, function(cont) {
     cont_val <- if (is.factor(df[[cont[[1]]]])) {
-      as.character(df[[cont[[1]]]][df[[string_col]]==target])
+      as.character(df[[cont[[1]]]][df[[id_col]]==target])
     } else {
-      df[[cont[[1]]]][df[[string_col]]==target]
+      df[[cont[[1]]]][df[[id_col]]==target]
     }
     if (is.list(cont)) append(cont, cont_val) else list(cont, cont_val)
   })
@@ -397,7 +403,7 @@ generate.find_matches <- function(df, target, vars, matchCond, string_col, cond_
 # function to check whether the matches are inclusive (neceessary if match_null = "inclusive")
 # This treats each possible condition for the current item as the match null for one iteration, and tests that all other words are suitable matches
 # if TRUE, will return the matches unchanged, else will return same vector with all values replaced by NAs
-generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, matchCond, string_col, cond_col) {
+generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, matchCond, id_col, cond_col) {
   # if no controls, return the df unchanged
   if (length(vars)==0 | any(is.na(matches))) return(df)
   # check words are matched inclusively
@@ -405,11 +411,11 @@ generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, mat
     # get this word's condition
     matchCond_this_word <- names(matches)[matches==this_word]
     # get list of suitable matches based on controls
-    df_matches_this_word <- generate.find_matches(df, this_word, vars, matchCond_this_word, string_col, cond_col)
+    df_matches_this_word <- generate.find_matches(df, this_word, vars, matchCond_this_word, id_col, cond_col)
     # get a similar list, but mapping any specified functions
-    df_matches_this_word_funs <- generate.find_fun_matches(df, this_word, vars_pre_calc, matchCond_this_word, string_col, cond_col)
+    df_matches_this_word_funs <- generate.find_fun_matches(df, this_word, vars_pre_calc, matchCond_this_word, id_col, cond_col)
     # check the other items are in there, and return this value
-    all(matches[matches != this_word] %in% df_matches_this_word[[string_col]]) & all(matches[matches != this_word] %in% df_matches_this_word_funs[[string_col]])
+    all(matches[matches != this_word] %in% df_matches_this_word[[id_col]]) & all(matches[matches != this_word] %in% df_matches_this_word_funs[[id_col]])
   })
   # leave unchanged if inclusive, otherwise return NAs
   if (all(unlist(are_inclusive))) {
@@ -421,7 +427,7 @@ generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, mat
 }
 
 # function to find matches for a particular word using functions defined by `control_for_fun()`
-generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, string_col, cond_col) {
+generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, id_col, cond_col) {
   # if no control functions, return the df unchanged
   if (length(vars_pre_calc)==0) return(df)
 
@@ -433,18 +439,18 @@ generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, stri
     fun <- x[[2]]
     var <- x[[3]]
     tol <- x[[4]]
-    target_input <- df[[var]][df[[string_col]]==target]
+    target_input <- df[[var]][df[[id_col]]==target]
     fun(target_input, target_input)
   })
 
   # get a copy of df excluding the null condition and the target word
-  df_matches <- df[df[[cond_col]] != matchCond | df[[string_col]] == target, ]
+  df_matches <- df[df[[cond_col]] != matchCond | df[[id_col]] == target, ]
 
   # calculate the new columns based on the supplied functions and arguments
   # (each item of var should have a structure of `list(name, fun, var, tol)`)
   func_col_names <- sapply(vars_pre_calc, function(x) x[[1]])  # get the names (set after `purrr::map()`)
   df_matches <- vars_pre_calc %>%
-    purrr::map( ~ .x[[2]](df_matches[[ .x[[3]] ]], df[[ .x[[3]] ]][df[[string_col]]==target] ) ) %>%
+    purrr::map( ~ .x[[2]](df_matches[[ .x[[3]] ]], df[[ .x[[3]] ]][df[[id_col]]==target] ) ) %>%
     purrr::set_names(func_col_names) %>%
     dplyr::bind_cols(df_matches, .)
 

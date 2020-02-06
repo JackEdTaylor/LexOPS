@@ -8,7 +8,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-Euclidean distance can be a useful way of matching by or controlling for multiple variables with greater flexibility than dealing with the variables individually. This vignette explains how weighted and unweighted Euclidean distance is calculated in LexOPS, gives example usage with `euc_dists()` and `match_word()`, and introduces the `control_for_euc()` function. The latter allows you to generate stimuli controlling for Euclidean distance to a match null within a Generate pipeline.
+Euclidean distance can be a useful way of matching by or controlling for multiple variables with greater flexibility than dealing with the variables individually. This vignette explains how weighted and unweighted Euclidean distance is calculated in LexOPS, gives example usage with `euc_dists()` and `match_item()`, and introduces the `control_for_euc()` function. The latter allows you to generate stimuli controlling for Euclidean distance to a match null within a Generate pipeline.
 
 # Packages
 
@@ -237,7 +237,7 @@ You could find possible matches with variable-specific tolerances like so:
 
 ```{r, eval=FALSE}
 lexops %>%
-  match_word(
+  match_item(
     "moose",
     Length = -1:1,
     Zipf.BNC.Written = -0.2:0.2,
@@ -250,7 +250,7 @@ lexops %>%
 
 ```{r, echo=FALSE}
 lexops %>%
-  match_word(
+  match_item(
     "moose",
     Length = -1:1,
     Zipf.BNC.Written = -0.2:0.2,
@@ -294,7 +294,7 @@ lexops %>%
   mutate(
     Euc_Dist = euc_dists(., "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
   ) %>%
-  match_word(
+  match_item(
     "moose",
     Euc_Dist = 0:Inf,
     Zipf.BNC.Written = -0.2:0.2
@@ -309,7 +309,7 @@ lexops %>%
   mutate(
     Euc_Dist = euc_dists(., "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
   ) %>%
-  match_word(
+  match_item(
     "moose",
     Euc_Dist = 0:Inf,
     Zipf.BNC.Written = -0.2:0.2
@@ -364,7 +364,7 @@ stim <- lexops %>%
 
 This generate stimuli with the following distributions in controls:
 
-```{r}
+```{r, fig.width=6, fig.height=4}
 plot_design(stim, "controls")
 ```
 
@@ -384,13 +384,13 @@ stim2 <- lexops %>%
 
 This will generate stimuli with the following distributions in controls. As you can see, we've generated stimuli that are closely matched in length and frequency, and more loosely matched in Age of Acquisition. The stimuli occasionally vary slightly in length in cases when age of acquisition and frequency are very similar:
 
-```{r}
+```{r, fig.width=6, fig.height=4}
 plot_design(stim2, c("Length", "Zipf.BNC.Written", "AoA.Kuperman"))
 ```
 
 Something that is relatively difficult is deciding on a tolerance for Euclidean distance. As well as just playing around with different values, it is often useful to see a sample distribution possible Euclidean distance values by generating a large number of stimuli, with no upper bound in the tolerance. Viewing the distribution can act as a first pass in terms of deciding where to set a cut-off.
 
-```{r, message=FALSE}
+```{r, message=FALSE, fig.width=6, fig.height=4}
 lexops %>%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
   control_for_euc(

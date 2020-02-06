@@ -69,7 +69,7 @@ parse_levels <- function(var, levels = NA) {
 
 #' A non-standard evaluation parser for elipses
 #'
-#' This is a version of `parse_levels()` that supports elipses. This is useful for specifying multiple parameters in one function. This function was specifically designed for a non-standard evaluation update to `match_word()`.
+#' This is a version of `parse_levels()` that supports elipses. This is useful for specifying multiple parameters in one function. This function was specifically designed for a non-standard evaluation update to `match_item()`.
 #'
 #' @param ... Variables and tolerances, in the form `num_variable1 = -1:3, num_variable2 = -0.5:0.5, char_variable1`. Variables and tolerances should be separated by a `=`, and lower and upper boundaries of tolerances should be separated by `:`. Variables without tolerances are also supported (useful for character variables or matching by numeric variables exactly, i.e. shorthand for `0:0`).
 #'

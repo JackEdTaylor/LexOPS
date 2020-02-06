@@ -13,7 +13,6 @@ control_for_euc(
   center = TRUE,
   weights = NA,
   euc_df = NA,
-  string_col = "string",
   cond_col = NA,
   standard_eval = FALSE
 )
@@ -32,8 +31,6 @@ control_for_euc(
 \item{weights}{An (optional) list of weights, in the same order as \code{vars}. After any scaling is applied, the values will be multiplied by these weights. Default is \code{NA}, meaning no weights are applied.}
 
 \item{euc_df}{The dataframe to calculate the Euclidean distance from. By default, the function will use \code{df}. Giving a different dataframe to \code{euc_df} can be useful in some cases, such as when \code{df} has been filtered for generating stimuli, but you want to calculate Euclidean Distance from a full distribution.}
-
-\item{string_col}{The column containing the strings (default = "string").}
 
 \item{cond_col}{Prefix with which the columns detailing the splits were labelled by \code{\link{split_by}}. This is rarely needed (default = NA), as by default the function gets this information from \code{df}'s attributes.}
 

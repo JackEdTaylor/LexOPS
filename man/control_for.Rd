@@ -4,14 +4,7 @@
 \alias{control_for}
 \title{Control for confounding variables.}
 \usage{
-control_for(
-  df,
-  var,
-  tol = NA,
-  string_col = "string",
-  cond_col = NA,
-  standard_eval = FALSE
-)
+control_for(df, var, tol = NA, cond_col = NA, standard_eval = FALSE)
 }
 \arguments{
 \item{df}{A data frame that is the result from \code{split_by()}.}
@@ -19,8 +12,6 @@ control_for(
 \item{var}{The column to treat as a control (non-standard evaluation).}
 
 \item{tol}{The tolerance of the control. For numeric variables, this should be in the form lower:upper (e.g. \code{-0.1:0.1} will control within +/- 0.1). For categorical variables, this can be kept as \code{NA}.}
-
-\item{string_col}{The column containing the strings (default = "string").}
 
 \item{cond_col}{Prefix with which the columns detailing the splits were labelled by \code{split_by()}. This is rarely needed (default = NA), as by default the function gets this information from \code{df}'s attributes.}
 
