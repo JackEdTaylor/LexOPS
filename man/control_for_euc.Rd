@@ -9,9 +9,10 @@ control_for_euc(
   vars,
   tol,
   name = NA,
-  euc_df = NA,
   scale = TRUE,
   center = TRUE,
+  weights = NA,
+  euc_df = NA,
   string_col = "string",
   cond_col = NA,
   standard_eval = FALSE
@@ -26,11 +27,11 @@ control_for_euc(
 
 \item{name}{What the output column should be named. If \code{NA} (default), will automatically assign as \code{sprintf("control_fun_\%i", nr)}, where \code{nr} is the number of the control function.}
 
+\item{scale, center}{How should variables be scaled and/or centred \emph{before} calculating Euclidean distance? For options, see the \code{scale} and \code{center} arguments of \code{\link[base]{scale}}. Default for both is \code{TRUE}. Scaling can be useful when variables are in differently scaled.}
+
+\item{weights}{An (optional) list of weights, in the same order as \code{vars}. After any scaling is applied, the values will be multiplied by these weights. Default is \code{NA}, meaning no weights are applied.}
+
 \item{euc_df}{The dataframe to calculate the Euclidean distance from. By default, the function will use \code{df}. Giving a different dataframe to \code{euc_df} can be useful in some cases, such as when \code{df} has been filtered for generating stimuli, but you want to calculate Euclidean Distance from a full distribution.}
-
-\item{scale}{How should variables be scaled before calculating Euclidean distance? For options, see the \code{scale} argument of \code{\link[base]{scale}}. Default is \code{TRUE}. Scaling can be useful when variables are in differently scaled.}
-
-\item{center}{How should variables be centred before calculating Euclidean distance? For options, see the \code{center} argument of \code{\link[base]{scale}}. Default is \code{TRUE}.}
 
 \item{string_col}{The column containing the strings (default = "string").}
 
@@ -48,13 +49,13 @@ This function is a wrapper for \code{\link{control_for_map}} that allows you to 
 
 stim <- lexops \%>\%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) \%>\%
-  control_for_euc(c(Zipf.SUBTLEX_UK, Length), 0:0.1) \%>\%
+  control_for_euc(c(Zipf.BNC.Written, Length), 0:0.005) \%>\%
   generate(10)
 
 # bypass non-standard evaluation
 stim <- lexops \%>\%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) \%>\%
-  control_for_euc(c("Zipf.SUBTLEX_UK", "Length"), c(0, 0.1), standard_eval = TRUE) \%>\%
+  control_for_euc(c("Zipf.BNC.Written", "Length"), c(0, 0.005), standard_eval = TRUE) \%>\%
   generate(10)
 
 # generate stimuli from a filtered dataframe, but calculate
@@ -69,7 +70,7 @@ stim <- lexops \%>\%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) \%>\%
   control_for_euc(
     c(Zipf.SUBTLEX_UK, Length),
-    0:0.1,
+    0:0.005,
     name = "Euclidean Distance",
     euc_df = lexops
   ) \%>\%
