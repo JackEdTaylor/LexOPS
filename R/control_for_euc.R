@@ -6,9 +6,9 @@
 #' @param vars The columns from which to calculate Euclidean distance.
 #' @param tol The desired control tolerance, in Euclidean distance (will be interpreted as scaled Euclidean distance if `scaled == TRUE`).
 #' @param name What the output column should be named. If `NA` (default), will automatically assign as `sprintf("control_fun_%i", nr)`, where `nr` is the number of the control function.
+#' @param scale,center How should variables be scaled and/or centred \emph{before} calculating Euclidean distance? For options, see the `scale` and `center` arguments of \code{\link[base]{scale}}. Default for both is `TRUE`. Scaling can be useful when variables are in differently scaled.
+#' @param weights An (optional) list of weights, in the same order as `vars`. After any scaling is applied, the values will be multiplied by these weights. Default is `NA`, meaning no weights are applied.
 #' @param euc_df The dataframe to calculate the Euclidean distance from. By default, the function will use `df`. Giving a different dataframe to `euc_df` can be useful in some cases, such as when `df` has been filtered for generating stimuli, but you want to calculate Euclidean Distance from a full distribution.
-#' @param scale How should variables be scaled before calculating Euclidean distance? For options, see the `scale` argument of \code{\link[base]{scale}}. Default is `TRUE`. Scaling can be useful when variables are in differently scaled.
-#' @param center How should variables be centred before calculating Euclidean distance? For options, see the `center` argument of \code{\link[base]{scale}}. Default is `TRUE`.
 #' @param string_col The column containing the strings (default = "string").
 #' @param cond_col Prefix with which the columns detailing the splits were labelled by \code{\link{split_by}}. This is rarely needed (default = NA), as by default the function gets this information from `df`'s attributes.
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `vars` and `tol`. If `TRUE`, `vars` should be a character vector referring to columns in `df` (e.g. `c("Zipf.SUBTLEX_UK", "Length")`), and `tol` should be a vector of length 2, specifying the tolerance (e.g. `c(0, 0.5)`). Default = `FALSE`.
@@ -19,13 +19,13 @@
 # control for length and frequency
 #' stim <- lexops %>%
 #'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
-#'   control_for_euc(c(Zipf.SUBTLEX_UK, Length), 0:0.1) %>%
+#'   control_for_euc(c(Zipf.BNC.Written, Length), 0:0.005) %>%
 #'   generate(10)
 #'
 #' # bypass non-standard evaluation
 #' stim <- lexops %>%
 #'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
-#'   control_for_euc(c("Zipf.SUBTLEX_UK", "Length"), c(0, 0.1), standard_eval = TRUE) %>%
+#'   control_for_euc(c("Zipf.BNC.Written", "Length"), c(0, 0.005), standard_eval = TRUE) %>%
 #'   generate(10)
 #'
 #' # generate stimuli from a filtered dataframe, but calculate
@@ -40,7 +40,7 @@
 #'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
 #'   control_for_euc(
 #'     c(Zipf.SUBTLEX_UK, Length),
-#'     0:0.1,
+#'     0:0.005,
 #'     name = "Euclidean Distance",
 #'     euc_df = lexops
 #'   ) %>%
@@ -48,7 +48,7 @@
 #'
 #' @export
 
-control_for_euc <- function(df, vars, tol, name = NA, euc_df = NA, scale = TRUE, center = TRUE, string_col = "string", cond_col = NA, standard_eval = FALSE) {
+control_for_euc <- function(df, vars, tol, name = NA, scale = TRUE, center = TRUE, weights = NA, euc_df = NA, string_col = "string", cond_col = NA, standard_eval = FALSE) {
 
   control <- if (standard_eval) {
     if (is.list(levels)) {
@@ -62,7 +62,7 @@ control_for_euc <- function(df, vars, tol, name = NA, euc_df = NA, scale = TRUE,
 
   if (all(is.na(euc_df))) euc_df <- df
 
-  control_for_euc.calc_euc <- function(matches, target, ed_vars = control[[1]], scale_ = scale, center_ = center, euc_df_ = euc_df, string_col_ = string_col) {
+  control_for_euc.calc_euc <- function(matches, target, ed_vars = control[[1]], scale_ = scale, center_ = center, weights_ = weights, euc_df_ = euc_df, string_col_ = string_col) {
     if (!target %in% dplyr::pull(euc_df_, !!dplyr::sym(string_col_))) return(NA)
     # get all euclidean distances
     df_ed <- dplyr::mutate(
@@ -73,11 +73,13 @@ control_for_euc <- function(df, vars, tol, name = NA, euc_df = NA, scale = TRUE,
         vars = ed_vars,
         scale = scale_,
         center = center_,
-        string_col = string_col_
+        weights = weights_,
+        string_col = string_col_,
+        standard_eval = TRUE
       )
     )
     # return result
-    data.frame(matches, stringsAsFactors = FALSE) %>%
+    out_df <- data.frame(matches, stringsAsFactors = FALSE) %>%
       magrittr::set_colnames(string_col_) %>%
       dplyr::left_join(df_ed, by = string_col_) %>%
       dplyr::pull(control_for_euc_val) %>%
