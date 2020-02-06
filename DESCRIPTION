@@ -1,6 +1,6 @@
 Package: LexOPS
 Title: A Package and Shiny App for Generating Psycholinguistic Stimuli
-Version: 0.1.4
+Version: 0.2.0
 Authors@R: 
     c(
         person(given = "Jack",
