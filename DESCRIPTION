@@ -46,4 +46,5 @@ Imports:
     scales
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 2.1.0)
