@@ -8,7 +8,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-The `control_for()` function works well when your variable is 1-dimensional, with a single value for each word, as it is for variables like Length, Frequency or Concreteness. Things become slightly trickier, however, when controlling for distance or similarity values, which can be calculated for each umique combination of words (i.e. $n^2$ values). One easy solution is to use `control_for_map()` to pass a function which should be used to calculate the value between any two words. Simple examples for controlling for orthographic and phonological similarity are available in the [package bookdown site](https://jackedtaylor.github.io/LexOPSdocs/advanced-stimulus-generation.html#map-functions-as-controls). This vignette demonstrates how to build your own function for `control_for_map()`, which in this example controls for semantic similarity.
+The `control_for()` function works well when your variable is 1-dimensional, with a single value for each word, as it is for variables like Length, Frequency or Concreteness. Things become slightly trickier, however, when controlling for distance or similarity values, which can be calculated for each unique combination of words (i.e. $n^2$ values). One easy solution is to use `control_for_map()` to pass a function which should be used to calculate the value between any two words. Simple examples for controlling for orthographic and phonological similarity are available in the [package bookdown site](https://jackedtaylor.github.io/LexOPSdocs/advanced-stimulus-generation.html#map-functions-as-controls). This vignette demonstrates how to build your own function for `control_for_map()`, which in this example controls for semantic similarity.
 
 # Packages
 
