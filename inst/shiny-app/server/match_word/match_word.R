@@ -113,7 +113,7 @@ matched_stim <- reactive({
     })
     # do the matching
     df <- df %>%
-      LexOPS::match_word(target = input$match_string, ... = match_vars, filter = input$match_tolerance_filter, standard_eval = TRUE)
+      LexOPS::match_item(target = input$match_string, ... = match_vars, filter = input$match_tolerance_filter, standard_eval = TRUE)
   }
 
   df

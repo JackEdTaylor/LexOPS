@@ -49,7 +49,7 @@ tagList(
                                                menuItem("Home", tabName = "home", icon=icon("home")),
                                                tags$br(),
                                                menuItem("Generate", tabName = "generate", icon=icon("cogs")),
-                                               menuItem("Match Word", tabName = "match_word", icon=icon("balance-scale")),
+                                               menuItem("Match Item", tabName = "match_word", icon=icon("balance-scale")),
                                                menuItem("Fetch", tabName="fetch", icon=icon("file-import")),
                                                menuItem("Visualise", tabName="visualise", icon=icon("chart-bar")),
                                                tags$br(),
@@ -68,8 +68,8 @@ tagList(
                                           tags$p("The tabs in the sidebar on the left-hand side provide different options for generating stimuli and exploring data:"),
                                           tags$h3(icon("cogs"), "Generate"),
                                           tags$p("The Generate tab provides LexOPS' main functionality, generating stimuli for any possible user-specified factorial design. Here, you specify independent variables (\"splits\"), controls (variables that should be controlled for), and filters (defining a subset of the LexOPS dataset which should be used to generate the stimuli). You can then View the generated stimuli in wide or long format, and download the stimuli list as a .csv file. You can also review the generated stimuli and algorithm's performance with informative graphics. This section can also generate R code to reproduce generated stimuli."),
-                                          tags$h3(icon("balance-scale"), "Match Word"),
-                                          tags$p("The Match Word tab can suggest matches for specific words, matched in terms of selected variables. This is useful if you need to pick a suitable match manually from a list of candidates (e.g. suitable match for a word in a sentence). Again, the results can be downloaded as a .csv file."),
+                                          tags$h3(icon("balance-scale"), "Match Item"),
+                                          tags$p("The Match Item tab can suggest matches for specific words, matched in terms of selected variables. This is useful if you need to pick a suitable match manually from a list of candidates (e.g. suitable match for a word in a sentence). Again, the results can be downloaded as a .csv file."),
                                           tags$h3(icon("file-import"), "Fetch"),
                                           tags$p("The Fetch tab provides an easy way to get the values of variables in the LexOPS dataset associated with an existing stimuli list. The list of stimuli can be either uploaded (as a .csv, .tsv, .xls, or .xlsx file) or copied and pasted into the app. You can then view or download a dataframe with the values associated with your stimuli."),
                                           tags$h3(icon("chart-bar"), "Visualise"),
@@ -210,18 +210,18 @@ tagList(
 
                                           )
                                   ),
-                                  # Match Word
+                                  # Match Item
                                   tabItem(tabName = "match_word",
                                           fluidRow(
-                                              column(12, tags$div(id = "match_string_input", textInput("match_string", "Target String: ", "thicket", width = "250px"), tags$br())),
+                                              column(12, tags$div(id = "match_string_input", textInput("match_string", "Target Item: ", "thicket", width = "250px"), tags$br())),
                                               column(12,
                                                      tabsetPanel(
                                                          type = "tabs",
                                                          tabPanel("Info", icon = icon("info"),
-                                                                  tags$h1("Match Individual Words"),
-                                                                  tags$p("This section creates a list of potential matches for an individual word. You might want to do this if you need to hand-pick matches (e.g. to be feasible controls in a sentential context). The target word is enetered in the textbox at the top."),
+                                                                  tags$h1("Match Individual Items"),
+                                                                  tags$p("This section creates a list of potential matches for an individual item. You might want to do this if you need to hand-pick matches (e.g. to be feasible controls in a sentential context). The target word is enetered in the textbox at the top."),
                                                                   tags$h3(icon("sliders-h"), "Specify Design"),
-                                                                  tags$p("Firstly, specify your design in the 'Specify Design' tab. Here you specify the variables that should be matched by, and their tolerances. It is also possible to specify filters. Whereas matching variables can be used to get a subset of the data within a tolerance relative to the target word, the effect of filters will not change if the target word changes. As in the generate pipeline, the UI is used as follows:"),
+                                                                  tags$p("Firstly, specify your design in the 'Specify Design' tab. Here you specify the variables that should be matched by, and their tolerances. It is also possible to specify filters. Whereas matching variables can be used to get a subset of the data within a tolerance relative to the target word, the effect of filters will not change if the target item changes. As in the generate pipeline, the UI is used as follows:"),
                                                                   tags$ol(
                                                                       tags$li("Click the '+' button to add a box where you can specify the options for this split/control/filter."),
                                                                       tags$li("Select the measure and source which you want to use from the drop-down menus."),
