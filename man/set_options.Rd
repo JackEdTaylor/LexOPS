@@ -17,3 +17,15 @@ Returns \code{df}, with the options stored in the attributes.
 \description{
 When the first function called in a generate pipeline, allows the user to set options that will be passed to all subsequent functions in the pipeline.
 }
+\examples{
+
+# give a df with "word" as the identifying column
+lexops \%>\%
+  dplyr::rename(word = string) \%>\%
+  # tell LexOPS "word" is the identifying column
+  set_options(id_col = "word") \%>\%
+  split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) \%>\%
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) \%>\%
+  generate(n = 20)
+
+}
