@@ -20,6 +20,7 @@
 #'
 #' # Generate 2 levels of bigram probability, controlling for frequency and length
 #' # (Note that the matching null is balanced across all stimuli)
+#' # (Also note that the data is filtered by proportion known to be >75%)
 #' lexops %>%
 #'   dplyr::filter(PK.Brysbaert >= .75) %>%
 #'   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) %>%
@@ -29,7 +30,6 @@
 #'
 #' # Generate stimuli for a concreteness x valence (2 x 3) design
 #' # (Note that abstract, neutral is set as the matching null)
-#' # (Also note that the data is filtered by proportion known to be >75%)
 #' lexops %>%
 #'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
 #'   split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
@@ -481,46 +481,3 @@ generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, id_c
 
   df_matches_filt
 }
-
-# # should throw errors
-#
-# lexops %>%
-#   control_for(list(Zipf.SUBTLEX_UK, c(-0.2, 0.2))
-#
-# lexops %>%
-#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
-#   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2), cond_col = "splitID")
-#
-# # should not be enough data (all words of 7-20 syllables are nouns), so should only generate as many conditions as possible
-# lexops %>%
-#    split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
-#    split_by(PoS.SUBTLEX_UK, "noun" ~ "verb")) %>%
-#    control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2)) %>%
-#    generate()
-
-# should work
-# lexops %>%
-#   dplyr::filter(PK.Brysbaert >= .75) %>%
-#   split_by(list("Length", c(1, 3), c(4, 6), c(7, 20))) %>%
-#   control_for(list("Zipf.SUBTLEX_UK", c(-0.2, 0.2))) %>%
-#   control_for("PoS.SUBTLEX_UK") %>%
-#   generate(n = 50)
-#
-# lexops %>%
-#   dplyr::filter(PK.Brysbaert >= .75) %>%
-#   split_by(BG.SUBTLEX_UK, c(0.001, 0.003) ~ c(0.009, 0.011)) %>%
-#   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2)) %>%
-#   control_for(Length) %>%
-#   generate(n = 1000, match_null = "balanced")
-#
-# lexops %>%
-#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
-#   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2)) %>%
-#   generate(n = 20)
-#
-# lexops %>%
-#   split_by(CNC.Brysbaert, c(1, 2) ~ c(4, 5)) %>%
-#   split_by(VAL.Warriner, c(1, 3) ~ c(4.5, 5.5) ~ c(7, 9)) %>%
-#   control_for(Zipf.SUBTLEX_UK, c(-0.25, 0.25)) %>%
-#   control_for(Length) %>%
-#   generate(30, "A2_B2")

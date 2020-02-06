@@ -42,6 +42,7 @@ lexops \%>\%
 
 # Generate 2 levels of bigram probability, controlling for frequency and length
 # (Note that the matching null is balanced across all stimuli)
+# (Also note that the data is filtered by proportion known to be >75\%)
 lexops \%>\%
   dplyr::filter(PK.Brysbaert >= .75) \%>\%
   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) \%>\%
@@ -51,7 +52,6 @@ lexops \%>\%
 
 # Generate stimuli for a concreteness x valence (2 x 3) design
 # (Note that abstract, neutral is set as the matching null)
-# (Also note that the data is filtered by proportion known to be >75\%)
 lexops \%>\%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) \%>\%
   split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) \%>\%
