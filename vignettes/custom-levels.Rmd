@@ -8,7 +8,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-By default, LexOPS will split by a single variable for each use of `split_by()`, and will create items for each factorial cell. For instance, splitting by concreteness into 2 levels, and emotion into 3 levels, would result in 6 factorial cells. But what if we want to generate items for just 2 of these 6 factorial cells? We can do this by creating a factor/character vector column in our data which will represent suitability for each factorial cell. This vignette provides an example, where we want to compare high arousal, negative emotional words to low arousal neutral words.
+By default, LexOPS will split by a single variable for each use of `split_by()`, and will create items for each factorial cell. For instance, splitting by arousal into 2 levels, and emotional valence into 3 levels, would result in 6 factorial cells. But what if we want to generate items for just 2 of these 6 factorial cells? We can do this by creating a factor/character vector column in our data which will represent suitability for each factorial cell. This vignette provides an example, where we want to compare high arousal, negative emotional words to low arousal neutral words.
 
 # Packages
 
