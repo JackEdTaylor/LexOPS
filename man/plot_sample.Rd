@@ -4,14 +4,16 @@
 \alias{plot_sample}
 \title{Plot how well the stimuli represent the underlying population of words given}
 \usage{
-plot_sample(df, include = "design", force = TRUE)
+plot_sample(df, include = "design", force = TRUE, id_col = "string")
 }
 \arguments{
 \item{df}{Output from \code{generate()} or \code{long_format()}}
 
-\item{include}{A string indicating which variables to include in the plot. This can be those specified by \code{split_by()} and \code{control_for()} (\code{"design"}), only those specified in \code{split_by()} (\code{"splits"}), or only those specified by \code{control_for()} (\code{"controls"}). Alternatively, this can be a character vector of the variables that should be plotted, that were in the original dataframe. Default is \code{"design"}.}
+\item{include}{A character vector indicating which variables to include in the plot. This can be those specified by \code{split_by()} and \code{control_for()} (\code{"design"}), only those specified in \code{split_by()} (\code{"splits"}), or only those specified by \code{control_for()} (\code{"controls"}). Alternatively, this can be a character vector of the variables that should be plotted, that were in the original dataframe. Default is \code{"design"}.}
 
 \item{force}{Logical, should the function be forced to try and work if attributes are missing (default is \code{TRUE})? If \code{TRUE}, will expect the dataframe to have a structure similar to that produced by \code{long_format()}, where \code{condition} is character or factor, and \code{item_nr} is numeric or factor. Other variables will be plot-able if given to the \code{include} argument.}
+
+\item{id_col}{A character vector specifying the column identifying unique observations (e.g. in \code{LexOPS::lexops}, the \code{id_col} is \code{"string"}). Ignored unless \code{force=TRUE}, in which case it is required.}
 }
 \value{
 A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
