@@ -91,8 +91,8 @@ plot_sample <- function(df, include = "design", force = TRUE, id_col = "string")
   }, USE.NAMES = FALSE)
 
   # get the original df, recording whether each possible candidate was selected
-  plot_df <- dplyr::select(meta_df, string, plot_vars) %>%
-    dplyr::mutate(is_stim = dplyr::if_else(string %in% df$string, "Generated Stimuli", "Unused Candidates")) %>%
+  plot_df <- dplyr::select(meta_df, !!dplyr::sym(id_col), plot_vars) %>%
+    dplyr::mutate(is_stim = dplyr::if_else(!!dplyr::sym(id_col) %in% df[[id_col]], "Generated Stimuli", "Unused Candidates")) %>%
     dplyr::mutate(is_stim = factor(is_stim, levels = c("Unused Candidates", "Generated Stimuli")))
 
   # plot the result
