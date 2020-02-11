@@ -4,7 +4,7 @@
 \alias{split_random}
 \title{Add a random split to the data.}
 \usage{
-split_random(df, nlevels = 2, seed = NA, cond_col = "LexOPS_splitCond")
+split_random(df, nlevels = 2, seed = NA)
 }
 \arguments{
 \item{df}{A data frame containing the IV and strings.}
@@ -12,8 +12,6 @@ split_random(df, nlevels = 2, seed = NA, cond_col = "LexOPS_splitCond")
 \item{nlevels}{An integer, specifying how many levels this random split should have (default = 2).}
 
 \item{seed}{An integer used to set the seed, to reproduce random splits. If \code{NA}, a random seed will not be set. Default is \code{NA}.}
-
-\item{cond_col}{Prefix with which to name the column where the condition will be stored (default = "LexOPS_splitCond"). Each time split_by() or split_random() is run on a dataframe, a new cond_col is added to the data frame, e.g., the first time will add splitCond_A, the second time will add split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of cond_col must be the same each time the function is called. The default is usually sufficient.}
 }
 \value{
 Returns \code{df}, with a new column (name defined by \code{cond_col} argument) identifying which level of the randomly generated IV each string belongs to.

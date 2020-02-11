@@ -9,7 +9,6 @@
 #' @param scale,center How should variables be scaled and/or centred \emph{before} calculating Euclidean distance? For options, see the `scale` and `center` arguments of \code{\link[base]{scale}}. Default for both is `TRUE`. Scaling can be useful when variables are in differently scaled.
 #' @param weights An (optional) list of weights, in the same order as `vars`. After any scaling is applied, the values will be multiplied by these weights. Default is `NA`, meaning no weights are applied.
 #' @param euc_df The dataframe to calculate the Euclidean distance from. By default, the function will use `df`. Giving a different dataframe to `euc_df` can be useful in some cases, such as when `df` has been filtered for generating stimuli, but you want to calculate Euclidean Distance from a full distribution.
-#' @param cond_col Prefix with which the columns detailing the splits were labelled by \code{\link{split_by}}. This is rarely needed (default = NA), as by default the function gets this information from `df`'s attributes.
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `vars` and `tol`. If `TRUE`, `vars` should be a character vector referring to columns in `df` (e.g. `c("Zipf.SUBTLEX_UK", "Length")`), and `tol` should be a vector of length 2, specifying the tolerance (e.g. `c(0, 0.5)`). Default = `FALSE`.
 #'
 #' @return Returns `df`, with details on the variables to be controlled for added to the attributes. Run the \code{\link{generate}} function to then generate the actual stimuli.
@@ -47,7 +46,7 @@
 #'
 #' @export
 
-control_for_euc <- function(df, vars, tol, name = NA, scale = TRUE, center = TRUE, weights = NA, euc_df = NA, cond_col = NA, standard_eval = FALSE) {
+control_for_euc <- function(df, vars, tol, name = NA, scale = TRUE, center = TRUE, weights = NA, euc_df = NA, standard_eval = FALSE) {
 
   control <- if (standard_eval) {
     if (is.list(levels)) {
@@ -65,8 +64,12 @@ control_for_euc <- function(df, vars, tol, name = NA, scale = TRUE, center = TRU
   # get options from attributes
   if (!is.null(LexOPS_attrs$options)) {
     id_col <- LexOPS_attrs$options$id_col
+    cond_col <- LexOPS_attrs$options$cond_col
+    cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
   } else {
     id_col <- "string"
+    cond_col <- "LexOPS_splitCond"
+    cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
   }
 
   if (all(is.na(euc_df))) euc_df <- df
@@ -101,7 +104,6 @@ control_for_euc <- function(df, vars, tol, name = NA, scale = TRUE, center = TRU
     var = id_col,
     tol = control[[2]],
     name = name,
-    cond_col = cond_col,
     standard_eval = TRUE
   )
 }

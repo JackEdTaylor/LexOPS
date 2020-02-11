@@ -6,7 +6,6 @@
 #' @param n The number of strings per condition (default = 20). Set to `"all"` to generate as many as possible.
 #' @param match_null The condition words should be matched to. Should be a string indicating condition (e.g. `"A1_B2_C1"`), or a string indicating one of the following options: "first" for the lowest condition (e.g. `"A1"` or `"A1_B1_C1_D1"`, etc.), "random" for randomly selected null condition each iteration, "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition.
 #' @param seed An integer specifying the random seed, allowing reproduction of exact stimuli lists. If `NA`, will not set the seed. Default is `NA`.
-#' @param cond_col Prefix with which the columns detailing the splits were labelled by `split_by()`. This is rarely needed (default = `NA`), as by default the function gets this information from `df`'s attributes.
 #' @param is_shiny Allows printing in a shiny context with `shinyjs::html()`. Outputs from the cat() function are stored in the div with id "gen_console". Default is FALSE.
 #'
 #' @return Returns the generated stimuli.
@@ -86,7 +85,7 @@
 #'
 #' @export
 
-generate <- function(df, n=20, match_null = "balanced", seed = NA, cond_col = NA, is_shiny = FALSE) {
+generate <- function(df, n=20, match_null = "balanced", seed = NA, is_shiny = FALSE) {
   if (is_shiny) {
     # if in a shiny context, replace the base cat() function with one which captures the console output
     cat <- function(str) shinyjs::html("gen_console", sprintf("%s", str))
@@ -98,18 +97,16 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, cond_col = NA
   # get options from attributes
   if (!is.null(LexOPS_attrs$options)) {
     id_col <- LexOPS_attrs$options$id_col
+    cond_col <- LexOPS_attrs$options$cond_col
+    cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
   } else {
     id_col <- "string"
+    cond_col <- "LexOPS_splitCond"
+    cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
   }
 
   # check for problems with arguments
   generate.check(df, n, match_null, seed, id_col, cond_col, is_shiny, LexOPS_attrs)
-
-  # get cond_col from the attributes if not manually defined
-  if (is.na(cond_col)) {
-    cond_col <- LexOPS_attrs$splitCol
-    cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
-  }
 
   # get the columns containing the split data
   LexOPS_splitCols <- colnames(df)[grepl(cond_col_regex, colnames(df))]
@@ -347,13 +344,9 @@ generate.check <- function(df, n, match_null, seed, id_col, cond_col, is_shiny, 
   if (!is.numeric(n) & n != "all") stop(sprintf('n must be numeric or a string of value "all"'))
 
   # check that the conditions are present in the attributes
-  if (is.null(LexOPS_attrs$splitCol) & is.na(cond_col)) {
+  if (is.null(cond_col)) {
     # if the column containing the condition info is missing and not defined manually, throw error
     stop("Could not identify split conditions column! Make sure you run split_by() before generate().")
-  } else if (!is.na(cond_col)) {
-    # if the column containing condition info is defined manually, check exists
-    cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
-    if (length(colnames(df)[grepl(cond_col_regex, colnames(df))]) == 0) stop(sprintf("No columns found for the manually defined cond_col '%s'.", cond_col))
   }
   # if control_for() has been run (can tell from attributes), check the specified columns exist
   if (!is.null(LexOPS_attrs$controls)) {

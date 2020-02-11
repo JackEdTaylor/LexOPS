@@ -4,14 +4,7 @@
 \alias{split_by}
 \title{Add a split to the data.}
 \usage{
-split_by(
-  df,
-  var,
-  levels,
-  cond_col = "LexOPS_splitCond",
-  filter = TRUE,
-  standard_eval = FALSE
-)
+split_by(df, var, levels, filter = TRUE, standard_eval = FALSE)
 }
 \arguments{
 \item{df}{A data frame containing the IV and strings.}
@@ -20,14 +13,12 @@ split_by(
 
 \item{levels}{The boundaries to use as levels of this variable (non-standard evaluation). These should be specified in the form \code{1:3 ~ 4:6 ~ 7:9} or \code{c(1, 3) ~ c(4, 6) ~ c(7, 9)} for numeric variables, and (e.g.) \verb{"noun" ~ "verb" ~ c"adjective"} for character variables, where levels are separated by the \code{~} operator. Levels must be non-overlapping.}
 
-\item{cond_col}{Prefix with which to name the column where the condition will be stored (default = "LexOPS_splitCond"). Each time split_by() is run on a dataframe, a new cond_col is added to the data frame, e.g., the first time will add splitCond_A, the second time will add split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of cond_col must be the same each time the function is called. The default is usually sufficient.}
-
 \item{filter}{Logical. If TRUE, words which fit no conditions are removed.}
 
 \item{standard_eval}{Logical; bypasses non-standard evaluation, and allows more standard R objects in \code{var} and \code{levels}. If \code{TRUE}, \code{var} should be a character vector referring to a column in \code{df} (e.g. \code{"Zipf.SUBTLEX_UK"}), and \code{levels} should be a list containing multiple vectors of length 2, each specifying the boundaries of one level's bin (e.g. \code{list(c(1, 3), c(4, 6), c(7, 20))}). Default = \code{FALSE}.}
 }
 \value{
-Returns \code{df}, with a new column (name defined by \code{cond_col} argument) identifying which level of the IV each string belongs to.
+Returns \code{df}, with a new column (name defined by \code{cond_col} argument of \code{set_options()}) identifying which level of the IV each string belongs to.
 }
 \description{
 Specifies splits for one IV for a factorial design. Can be called multiple times for multiple splits.

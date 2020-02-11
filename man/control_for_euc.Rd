@@ -13,7 +13,6 @@ control_for_euc(
   center = TRUE,
   weights = NA,
   euc_df = NA,
-  cond_col = NA,
   standard_eval = FALSE
 )
 }
@@ -31,8 +30,6 @@ control_for_euc(
 \item{weights}{An (optional) list of weights, in the same order as \code{vars}. After any scaling is applied, the values will be multiplied by these weights. Default is \code{NA}, meaning no weights are applied.}
 
 \item{euc_df}{The dataframe to calculate the Euclidean distance from. By default, the function will use \code{df}. Giving a different dataframe to \code{euc_df} can be useful in some cases, such as when \code{df} has been filtered for generating stimuli, but you want to calculate Euclidean Distance from a full distribution.}
-
-\item{cond_col}{Prefix with which the columns detailing the splits were labelled by \code{\link{split_by}}. This is rarely needed (default = NA), as by default the function gets this information from \code{df}'s attributes.}
 
 \item{standard_eval}{Logical; bypasses non-standard evaluation, and allows more standard R objects in \code{vars} and \code{tol}. If \code{TRUE}, \code{vars} should be a character vector referring to columns in \code{df} (e.g. \code{c("Zipf.SUBTLEX_UK", "Length")}), and \code{tol} should be a vector of length 2, specifying the tolerance (e.g. \code{c(0, 0.5)}). Default = \code{FALSE}.}
 }

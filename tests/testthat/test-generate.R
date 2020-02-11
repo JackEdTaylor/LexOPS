@@ -46,26 +46,10 @@ testthat::test_that("general errors", {
 
   testthat::expect_error(
     lexops %>%
-      generate(20),
-    "Could not identify split conditions column! Make sure you run split_by() before generate().",
-    fixed = TRUE
-  )
-
-  testthat::expect_error(
-    lexops %>%
       split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) %>%
       control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
       generate(n = "20"),
     "n must be numeric or a string of value \"all\"",
-    fixed = TRUE
-  )
-
-  testthat::expect_error(
-    lexops %>%
-      split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) %>%
-      control_for("Zipf.SUBTLEX_UK", c(-0.2, 0.2), standard_eval = TRUE) %>%
-      generate(n = 20, cond_col = "my_cond"),
-    "No columns found for the manually defined cond_col 'my_cond'.",
     fixed = TRUE
   )
 

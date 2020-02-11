@@ -6,10 +6,9 @@
 #' @param var The column to treat as an independent variable (non-standard evaluation).
 #' @param levels The boundaries to use as levels of this variable (non-standard evaluation). These should be specified in the form `1:3 ~ 4:6 ~ 7:9` or `c(1, 3) ~ c(4, 6) ~ c(7, 9)` for numeric variables, and (e.g.) `"noun" ~ "verb" ~ c"adjective"` for character variables, where levels are separated by the `~` operator. Levels must be non-overlapping.
 #' @param filter Logical. If TRUE, words which fit no conditions are removed.
-#' @param cond_col Prefix with which to name the column where the condition will be stored (default = "LexOPS_splitCond"). Each time split_by() is run on a dataframe, a new cond_col is added to the data frame, e.g., the first time will add splitCond_A, the second time will add split_cond_B, etc. If multiple split_by() functions are used on a data frame (e.g. with pipes), the value of cond_col must be the same each time the function is called. The default is usually sufficient.
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `var` and `levels`. If `TRUE`, `var` should be a character vector referring to a column in `df` (e.g. `"Zipf.SUBTLEX_UK"`), and `levels` should be a list containing multiple vectors of length 2, each specifying the boundaries of one level's bin (e.g. `list(c(1, 3), c(4, 6), c(7, 20))`). Default = `FALSE`.
 #'
-#' @return Returns `df`, with a new column (name defined by `cond_col` argument) identifying which level of the IV each string belongs to.
+#' @return Returns `df`, with a new column (name defined by `cond_col` argument of `set_options()`) identifying which level of the IV each string belongs to.
 #' @examples
 #'
 #' # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables
@@ -42,7 +41,7 @@
 #'
 #' @export
 
-split_by <- function(df, var, levels, cond_col = "LexOPS_splitCond", filter = TRUE, standard_eval = FALSE){
+split_by <- function(df, var, levels, filter = TRUE, standard_eval = FALSE){
 
   # convert var and levels to a list, `split`, which will be added to the attributes
   split <- if (standard_eval) {
@@ -58,20 +57,22 @@ split_by <- function(df, var, levels, cond_col = "LexOPS_splitCond", filter = TR
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
 
+  # get options from attributes
+  if (!is.null(LexOPS_attrs$options)) {
+    id_col <- LexOPS_attrs$options$id_col
+    cond_col <- LexOPS_attrs$options$cond_col
+    cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
+  } else {
+    id_col <- "string"
+    cond_col <- "LexOPS_splitCond"
+    cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
+  }
+
   # add split info
   if (is.null(LexOPS_attrs$splits)) {
     LexOPS_attrs$splits <- list(split)
   } else {
     LexOPS_attrs$splits[[length(LexOPS_attrs$splits)+1]] <- split
-  }
-
-  # check the attributes, and add the cond_col if not already defined. Throw error if cond_col is not the same as that in the previous split
-  if (is.null(LexOPS_attrs$splitCol)) {
-    LexOPS_attrs$splitCol <- cond_col
-  } else {
-    if (LexOPS_attrs$splitCol != cond_col) {
-      stop(sprintf("Inconsistent naming of cond_col ('%s' != '%s'). The cond_col argument must have the same value each time split_by() is run on the data.", cond_col, LexOPS_attrs$splitCol))
-    }
   }
 
   # check that all the defined levels have at least one possible value in the distribution or values

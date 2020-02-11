@@ -4,15 +4,7 @@
 \alias{control_for_map}
 \title{Control for confounding variables via a function.}
 \usage{
-control_for_map(
-  df,
-  fun,
-  var,
-  tol = NA,
-  name = NA,
-  cond_col = NA,
-  standard_eval = FALSE
-)
+control_for_map(df, fun, var, tol = NA, name = NA, standard_eval = FALSE)
 }
 \arguments{
 \item{df}{A data frame that is the result from \code{\link{split_by}}.}
@@ -24,8 +16,6 @@ control_for_map(
 \item{tol}{The tolerance of the control. For numeric variables, this should be in the form lower:upper (e.g. \code{-0.1:0.1} will control within +/- 0.1). For categorical variables, this can be kept as \code{NA}.}
 
 \item{name}{What the output column should be named. If \code{NA} (default), will automatically assign as \code{sprintf("control_fun_\%i", nr)}, where \code{nr} is the number of the control function.}
-
-\item{cond_col}{Prefix with which the columns detailing the splits were labelled by \code{\link{split_by}}. This is rarely needed (default = NA), as by default the function gets this information from \code{df}'s attributes.}
 
 \item{standard_eval}{Logical; bypasses non-standard evaluation, and allows more standard R objects in \code{var} and \code{tol}. If \code{TRUE}, \code{var} should be a character vector referring to a column in \code{df} (e.g. \code{"Zipf.SUBTLEX_UK"}), and \code{tol} should be a vector of length 2, specifying the tolerance (e.g. \code{c(-0.1, 0.5)}). Default = \code{FALSE}.}
 }

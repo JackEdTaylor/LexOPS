@@ -5,7 +5,6 @@
 #' @param df A data frame that is the result from `split_by()`.
 #' @param var The column to treat as a control (non-standard evaluation).
 #' @param tol The tolerance of the control. For numeric variables, this should be in the form lower:upper (e.g. `-0.1:0.1` will control within +/- 0.1). For categorical variables, this can be kept as `NA`.
-#' @param cond_col Prefix with which the columns detailing the splits were labelled by `split_by()`. This is rarely needed (default = NA), as by default the function gets this information from `df`'s attributes.
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `var` and `tol`. If `TRUE`, `var` should be a character vector referring to a column in `df` (e.g. `"Zipf.SUBTLEX_UK"`), and `tol` should be a vector of length 2, specifying the tolerance (e.g. `c(-0.1, 0.5)`). Default = `FALSE`.
 #'
 #' @return Returns `df`, with details on the variables to be controlled for added to the attributes. Run the `generate()` function to then generate the actual stimuli.
@@ -30,7 +29,7 @@
 #'
 #' @export
 
-control_for <- function(df, var, tol = NA, cond_col = NA, standard_eval = FALSE) {
+control_for <- function(df, var, tol = NA, standard_eval = FALSE) {
   # parse the column name and tolerance into a list object
   var <- if (standard_eval) {
     if (all(is.na(tol))) {
@@ -56,12 +55,21 @@ control_for <- function(df, var, tol = NA, cond_col = NA, standard_eval = FALSE)
   # get attributes
   LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
 
-  # check that the splits have been performed (will be stored in the attributes)
-  if (is.null(LexOPS_attrs$splitCol) & is.na(cond_col)) {
-    stop("Unknown split conditions column! Make sure you run split_by() before control_for().")
-  } else if (!is.na(cond_col)) {
+  # get options from attributes
+  if (!is.null(LexOPS_attrs$options)) {
+    id_col <- LexOPS_attrs$options$id_col
+    cond_col <- LexOPS_attrs$options$cond_col
     cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
-    if (length(colnames(df)[grepl(cond_col_regex, colnames(df))]) == 0) stop(sprintf("No columns found for the manually defined cond_col '%s'.", cond_col))
+  } else {
+    id_col <- "string"
+    cond_col <- "LexOPS_splitCond"
+    cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
+  }
+
+  # check that the conditions are present in the attributes
+  if (is.null(cond_col)) {
+    # if the column containing the condition info is missing and not defined manually, throw error
+    stop("Could not identify split conditions column! Make sure you run split_by() before generate().")
   }
 
   # add the specified controls to df's attributes
