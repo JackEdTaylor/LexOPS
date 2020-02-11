@@ -3,7 +3,7 @@
 #' Takes the output from `generate()` or `long_format()`, and plots conditions' distributions on numeric variables used in the generate pipeline (i.e. indepdent variables, controls). Alternatively, distributions of any numeric variables in the original dataframe can be queried.
 #'
 #' @param df Output from `generate()` or `long_format()`
-#' @param include A string indicating which variables to include in the plot. This can be those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Alternatively, this can be a character vector of the variables that should be plotted, that were in the original dataframe. Default is `"design"`.
+#' @param include A character vector indicating which variables to include in the plot. This can be those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Alternatively, this can be a character vector of the variables that should be plotted, that were in the original dataframe. Default is `"design"`.
 #' @param dodge_width The width to give to `ggplot2::position_dodge` (default is 0.2)
 #' @param point_size Size of points (default = 0.75)
 #' @param line_width Thickness of lines (default = 1)

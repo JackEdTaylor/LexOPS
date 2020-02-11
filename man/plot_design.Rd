@@ -17,7 +17,7 @@ plot_design(
 \arguments{
 \item{df}{Output from \code{generate()} or \code{long_format()}}
 
-\item{include}{A string indicating which variables to include in the plot. This can be those specified by \code{split_by()} and \code{control_for()} (\code{"design"}), only those specified in \code{split_by()} (\code{"splits"}), or only those specified by \code{control_for()} (\code{"controls"}). Alternatively, this can be a character vector of the variables that should be plotted, that were in the original dataframe. Default is \code{"design"}.}
+\item{include}{A character vector indicating which variables to include in the plot. This can be those specified by \code{split_by()} and \code{control_for()} (\code{"design"}), only those specified in \code{split_by()} (\code{"splits"}), or only those specified by \code{control_for()} (\code{"controls"}). Alternatively, this can be a character vector of the variables that should be plotted, that were in the original dataframe. Default is \code{"design"}.}
 
 \item{dodge_width}{The width to give to \code{ggplot2::position_dodge} (default is 0.2)}
 
