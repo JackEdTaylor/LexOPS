@@ -74,7 +74,7 @@ lexops %>%
   labs(x = "Concreteness Distance", y = "Valence Distance")
 ```
 
-As mentioned, however, the above plot shows the result when our variables are not scaled. This is a problem, as the concreteness and valence variables are differently scaled. Concreteness, from [Brysbaert et al. (2014)](http://doi.org/10.3758/s13428-013-0403-5), is scaled from *1 to 5*. Emotional valence, from [Warriner et al. (2013)](http://doi.org/10.3758/s13428-012-0314-x), is scaled from *1 to 9*. If we want to give these variables equal weighting, it makes sense to use the `scale()` function on them both first. One solution in R is the `scale()` function:
+As mentioned, however, the above plot shows the result when our variables are not scaled. This is a problem, as the concreteness and valence variables are differently scaled. Concreteness, from [Brysbaert et al. (2014)](http://doi.org/10.3758/s13428-013-0403-5), is scaled from *1 to 5*. Emotional valence, from [Warriner et al. (2013)](http://doi.org/10.3758/s13428-012-0314-x), is scaled from *1 to 9*. If we want to give these variables equal weighting, it makes sense to scale them both first. One solution in R is the `scale()` function:
 
 ```{r}
 lexops_scaled <- mutate(
