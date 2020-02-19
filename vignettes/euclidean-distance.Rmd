@@ -25,7 +25,7 @@ theme_set(theme_minimal())
 
 # Introduction
 
-Euclidean distance is the straight-line distance between two points in $n$-dimensional space. Between points $a$ and $b$, the Euclidean distance $d(a,b)$ calculated as:
+Euclidean distance is the straight-line distance between two points in $n$-dimensional space. Between points $a$ and $b$, the Euclidean distance $d(a,b)$ is calculated as:
 
 $$d(a,b) = \sqrt{\sum_{i=1}^n(a_i - b_i)^2}$$
 
@@ -84,7 +84,7 @@ lexops_scaled <- mutate(
 )
 ```
 
-This makes our 2-dimensional space look like the plot below. The dashed lines now reflect the values that we would from the LexOPS function `euc_dists()`, which scales dimensions by default.
+This makes our 2-dimensional space look like the plot below. The dashed lines now reflect the values that we would get from the LexOPS function `euc_dists()`, which scales dimensions by default.
 
 ```{r, echo = FALSE, fig.width=6, fig.height=6}
 # get values for "puppy"
@@ -320,7 +320,7 @@ lexops %>%
   knitr::kable()
 ```
 
-Alternatively, we can set weights such that frequency accounts for more of Euclidean distance than other variables, with the `weights` argument:
+Additionally, we can set weights such that frequency accounts for more of Euclidean distance than other variables, with the `weights` argument:
 
 ```{r, eval=FALSE}
 lexops %>%
@@ -362,7 +362,7 @@ stim <- lexops %>%
   generate(20)
 ```
 
-This generate stimuli with the following distributions in controls:
+This will generate stimuli with the following distributions in controls:
 
 ```{r, fig.width=6, fig.height=4}
 plot_design(stim, "controls")
@@ -372,21 +372,46 @@ To generate a similar stimulus set controlling for Euclidean distance, we could 
 
 ```{r}
 stim2 <- lexops %>%
-    split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
-    control_for_euc(
-        c(Length, Zipf.BNC.Written, AoA.Kuperman),
-        0:1e-5,
-        name = "euclidean_distance",
-        weights = c(1, 0.5, 0.1)
-    ) %>%
-    generate(20)
+  split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
+  control_for_euc(
+      c(Length, Zipf.BNC.Written, AoA.Kuperman),
+      0:1e-5,
+      name = "euclidean_distance",
+      weights = c(1, 0.5, 0.1)
+  ) %>%
+  generate(20)
 ```
 
-This will generate stimuli with the following distributions in controls. As you can see, we've generated stimuli that are closely matched in length and frequency, and more loosely matched in Age of Acquisition. The stimuli occasionally vary slightly in length in cases when age of acquisition and frequency are very similar:
+This will generate stimuli with the following distributions in controls. As you can see, we've generated stimuli that are closely matched in length and frequency, and more loosely matched in Age of Acquisition:
 
 ```{r, fig.width=6, fig.height=4}
 plot_design(stim2, c("Length", "Zipf.BNC.Written", "AoA.Kuperman"))
 ```
+
+The stimuli occasionally vary slightly in length in cases when age of acquisition and frequency distances are small. If we want to use this same Euclidean space, but limit how much the variables are allowed to differ, we could combine `control_for_euc()` with `control_for()`. Here we make sure that words do not differ by more than ±1 character in Length.
+
+```{r}
+stim3 <- lexops %>%
+  split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
+  control_for_euc(
+      c(Length, Zipf.BNC.Written, AoA.Kuperman),
+      0:1e-5,
+      name = "euclidean_distance",
+      weights = c(1, 0.5, 0.1)
+  ) %>%
+  control_for(Length, -1:1) %>%
+  generate(20)
+```
+
+Which will give us the following distributions:
+
+```{r, fig.width=6, fig.height=4}
+plot_design(stim3, c("Length", "Zipf.BNC.Written", "AoA.Kuperman"))
+```
+
+We could use a similar method to give variable-specific tolerances for Zipf or Age of Acquisition if we wanted, or any variables we want, regardless of whether they're in our Euclidean space.
+
+# Deciding on a Tolerance
 
 Something that is relatively difficult is deciding on a tolerance for Euclidean distance. As well as just playing around with different values, it is often useful to see a sample distribution possible Euclidean distance values by generating a large number of stimuli, with no upper bound in the tolerance. Viewing the distribution can act as a first pass in terms of deciding where to set a cut-off.
 
