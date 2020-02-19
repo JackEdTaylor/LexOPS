@@ -136,6 +136,11 @@ knitr::kable(stim)
 
 The `cite_design()` function is useful for suggesting papers that you should cite having generated your stimuli. Note that for variables LexOPS does not know, while the variable will be suggested as something that needs citing, you will have to find the citation yourself.
 
-```{r}
+```{r, eval=FALSE}
 cite_design(stim)
+```
+
+```{r, echo=FALSE}
+cite_design(stim) %>%
+  knitr::kable()
 ```
