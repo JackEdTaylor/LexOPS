@@ -49,7 +49,7 @@ dat <- lexops %>%
 
 Now let's check our conditions' locations on the distributions of arousal and valence ratings.
 
-```{r, fig.width=6, fig.height=3}
+```{r, fig.width=6, fig.height=3, warning=FALSE}
 dat %>%
   select(string, AROU.Warriner, VAL.Warriner, emo_cond) %>%
   pivot_longer(cols = c(AROU.Warriner, VAL.Warriner), names_to = "Variable", values_to = "Value") %>%
@@ -62,7 +62,7 @@ dat %>%
 
 We can also visualise the locations of our conditions in this 2D space.
 
-```{r, fig.width=6, fig.height=3}
+```{r, fig.width=6, fig.height=3, warning=FALSE}
 dat %>%
   mutate(emo_cond = fct_infreq(as.factor(emo_cond))) %>%
   ggplot(aes(AROU.Warriner, VAL.Warriner, colour = emo_cond)) +
