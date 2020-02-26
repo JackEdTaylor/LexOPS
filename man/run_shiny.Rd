@@ -23,5 +23,7 @@ The LexOPS shiny app requires additional packages. If any dependencies are missi
 \item \code{shinycssloaders}
 \item \code{shinyjs}
 \item \code{viridis}
+\item \code{DT}
+\item \code{readr}
 }
 }

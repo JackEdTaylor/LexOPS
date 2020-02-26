@@ -25,10 +25,8 @@ Imports:
     dplyr,
     purrr,
     rlang,
-    DT,
     ggplot2,
     tidyr,
-    readr,
     tibble,
     stringr,
     forcats,
@@ -47,4 +45,6 @@ Suggests:
     shinyjs,
     viridis,
     vwr,
-    stringdist
+    stringdist,
+    DT,
+    readr
