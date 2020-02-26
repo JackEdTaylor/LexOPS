@@ -12,3 +12,16 @@ run_shiny(...)
 \description{
 Runs the LexOPS Shiny App, with optional additional arguments.
 }
+\details{
+The LexOPS shiny app requires additional packages. If any dependencies are missing, the user will be given an error and installation instructions. The additional packages required are:
+\itemize{
+\item \code{shiny}
+\item \code{shinydashboard}
+\item \code{plotly}
+\item \code{ggwordcloud}
+\item \code{colourpicker}
+\item \code{shinycssloaders}
+\item \code{shinyjs}
+\item \code{viridis}
+}
+}
