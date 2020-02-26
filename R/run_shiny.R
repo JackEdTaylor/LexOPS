@@ -13,6 +13,7 @@
 #' * `viridis`
 #' * `DT`
 #' * `readr`
+#' * `vwr`
 #'
 #' @param ... optional arguments to `shiny::runApp()`
 #'
@@ -25,7 +26,7 @@ run_shiny <- function(...) {
     stop("Could not find the directory for the LexOPS Shiny App. Try re-installing `LexOPS`.")
   }
   # check dependencies
-  shiny_deps <- c("shiny", "shinydashboard", "plotly", "ggwordcloud", "colourpicker", "shinycssloaders", "shinyjs", "viridis", "DT", "readr")
+  shiny_deps <- c("shiny", "shinydashboard", "plotly", "ggwordcloud", "colourpicker", "shinycssloaders", "shinyjs", "viridis", "DT", "readr", "vwr")
   shiny_deps_missing <- lapply(shiny_deps, function(pkg) {
     if (!requireNamespace(pkg, quietly = TRUE)) TRUE else FALSE
   })
