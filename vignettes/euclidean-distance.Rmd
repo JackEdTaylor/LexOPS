@@ -12,13 +12,13 @@ Euclidean distance can be a useful way of matching by or controlling for multipl
 
 # Packages
 
-```{r, message=FALSE}
+```{r packages, message=FALSE}
 library(dplyr)
 library(ggplot2)
 library(LexOPS)
 ```
 
-```{r, include=FALSE}
+```{r hidden-setup, include=FALSE}
 set.seed(1)
 theme_set(theme_minimal())
 ```
@@ -40,7 +40,7 @@ Let's imagine we want to find how close all other words are to "puppy", on two v
 
 The graph below represents the distance between some example words and "puppy", in this (unscaled) 2-dimensional space. The lengths of the dashed lines represent the Euclidean distance of some example words from "puppy", with the values presented in red:
 
-```{r, echo = FALSE, fig.width=4, fig.height=6}
+```{r euc-graph1, echo = FALSE, fig.width=4, fig.height=6}
 # get values for "puppy"
 puppy_values <- filter(lexops, string == "puppy")
 # example words of varying distances from "puppy"
@@ -76,7 +76,7 @@ lexops %>%
 
 As mentioned, however, the above plot shows the result when our variables are not scaled. This is a problem, as the concreteness and valence variables are differently scaled. Concreteness, from [Brysbaert et al. (2014)](http://doi.org/10.3758/s13428-013-0403-5), is scaled from *1 to 5*. Emotional valence, from [Warriner et al. (2013)](http://doi.org/10.3758/s13428-012-0314-x), is scaled from *1 to 9*. If we want to give these variables equal weighting, it makes sense to scale them both first. One solution in R is the `scale()` function:
 
-```{r}
+```{r scale}
 lexops_scaled <- mutate(
   lexops,
   CNC.Brysbaert = scale(CNC.Brysbaert),
@@ -86,7 +86,7 @@ lexops_scaled <- mutate(
 
 This makes our 2-dimensional space look like the plot below. The dashed lines now reflect the values that we would get from the LexOPS function `euc_dists()`, which scales dimensions by default.
 
-```{r, echo = FALSE, fig.width=6, fig.height=6}
+```{r euc-graph2, echo = FALSE, fig.width=6, fig.height=6}
 # get values for "puppy"
 puppy_values <- filter(lexops_scaled, string == "puppy")
 
@@ -125,7 +125,7 @@ $$d(a,b) = \sqrt{(a_1-b_1)^2 + (a_2-b_2)^2}$$
 
 Where $a$ is "puppy", and $b$ is "unhappiness", this can simply be represented like this:
 
-```{r, echo = FALSE, fig.width=6, fig.height=6}
+```{r euc-graph3, echo = FALSE, fig.width=6, fig.height=6}
 lexops_scaled %>%
   filter(string %in% example_words) %>%
   mutate(
@@ -184,12 +184,12 @@ We can also apply weights to our scaled variables, to reflect relative importanc
 
 $$d(a,b) = \sqrt{\sum_{i=1}^n(w_i \cdot (a_i - b_i))^2}$$
 
-As an example, if we decide to give valence twice the weight of concreteness, our 2D space would look like this:
+As an example, if we decide to give concreteness twice the weight of valence, our 2D space would look like this:
 
-```{r, echo = FALSE, fig.width=6, fig.height=6}
+```{r euc-graph4, echo = FALSE, fig.width=6, fig.height=6}
 # get values for "puppy"
 puppy_values <- lexops_scaled %>%
-  mutate(VAL.Warriner = 2*VAL.Warriner) %>%
+  mutate(CNC.Brysbaert = 2*CNC.Brysbaert) %>%
   filter(string == "puppy")
 
 # plot
@@ -219,14 +219,14 @@ lexops_scaled %>%
     colour = "red"
   ) +
   coord_fixed(xlim = c(-0.1, 9), ylim = c(-0.1, 9)) +
-  labs(x = "Concreteness Distance\n(Weight = 1)", y = "Valence Distance\n(Weight = 2)")
+  labs(x = "Concreteness Distance\n(Weight = 2)", y = "Valence Distance\n(Weight = 1)")
 ```
 
 # Matching Individual Words
 
 Imagine you want to find a close match in terms of length, frequency (Zipf), age of acquisition, and concreteness, for the word "moose". The values associated with "moose" on these variables look like this:
 
-```{r, echo=FALSE}
+```{r match1, echo=FALSE}
 lexops %>%
   filter(string == "moose") %>%
   select(string, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) %>%
@@ -235,7 +235,7 @@ lexops %>%
 
 You could find possible matches with variable-specific tolerances like so:
 
-```{r, eval=FALSE}
+```{r match2, eval=FALSE}
 lexops %>%
   match_item(
     "moose",
@@ -248,7 +248,7 @@ lexops %>%
   head(5)
 ```
 
-```{r, echo=FALSE}
+```{r match2-kable, echo=FALSE}
 lexops %>%
   match_item(
     "moose",
@@ -264,7 +264,7 @@ lexops %>%
 
 Simply sorting by Euclidean distance gives a very similar result, but with some slight differences. Whereas the variable-specific tolerances excluded "hippo" (because it is >0.2 Zipf away from "moose"), in Euclidean distance it is a relatively close word and is suggested as a match.
 
-```{r, eval=FALSE}
+```{r match3, eval=FALSE}
 lexops %>%
   mutate(
     Euc_Dist = euc_dists(., "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
@@ -275,7 +275,7 @@ lexops %>%
   head(5)
 ```
 
-```{r, echo=FALSE}
+```{r match3-kable, echo=FALSE}
 lexops %>%
   mutate(
     Euc_Dist = euc_dists(., "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
@@ -289,7 +289,7 @@ lexops %>%
 
 If we want to match by Euclidean distance in the same space, but still have strict cut-offs for frequency, we could just do the following:
 
-```{r, eval=FALSE}
+```{r match4, eval=FALSE}
 lexops %>%
   mutate(
     Euc_Dist = euc_dists(., "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
@@ -304,7 +304,7 @@ lexops %>%
   head(5)
 ```
 
-```{r, echo=FALSE}
+```{r match4-kable, echo=FALSE}
 lexops %>%
   mutate(
     Euc_Dist = euc_dists(., "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
@@ -322,7 +322,7 @@ lexops %>%
 
 Additionally, we can set weights such that frequency accounts for more of Euclidean distance than other variables, with the `weights` argument:
 
-```{r, eval=FALSE}
+```{r match5, eval=FALSE}
 lexops %>%
   mutate(
     Euc_Dist = euc_dists(
@@ -335,7 +335,7 @@ lexops %>%
   head(5)
 ```
 
-```{r, echo=FALSE}
+```{r match5-kable, echo=FALSE}
 lexops %>%
   mutate(
     Euc_Dist = euc_dists(
@@ -353,7 +353,7 @@ lexops %>%
 
 Similarly, we may want to design a study comparing concrete and abstract words, controlling for length, frequency, and age of acquisition. With variable specific tolerances, our code may look like this:
 
-```{r}
+```{r generate1}
 stim <- lexops %>%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
   control_for(Length, 0:0) %>%
@@ -364,13 +364,13 @@ stim <- lexops %>%
 
 This will generate stimuli with the following distributions in controls:
 
-```{r, fig.width=6, fig.height=4}
+```{r generate1-plot, fig.width=6, fig.height=4}
 plot_design(stim, "controls")
 ```
 
 To generate a similar stimulus set controlling for Euclidean distance, we could use the `control_for_euc()` function. Like `euc_dists()` this has options for scaling and weighting variables. The weights here reflect the relative importance of variables as controls. Generally, variables with lower weights are permitted to vary to a greater extent.
 
-```{r}
+```{r generate2}
 stim2 <- lexops %>%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
   control_for_euc(
@@ -384,13 +384,13 @@ stim2 <- lexops %>%
 
 This will generate stimuli with the following distributions in controls. As you can see, we've generated stimuli that are closely matched in length and frequency, and more loosely matched in Age of Acquisition:
 
-```{r, fig.width=6, fig.height=4}
+```{r generate2-plot, fig.width=6, fig.height=4}
 plot_design(stim2, c("Length", "Zipf.BNC.Written", "AoA.Kuperman"))
 ```
 
 The stimuli occasionally vary slightly in length in cases when age of acquisition and frequency distances are small. If we want to use this same Euclidean space, but limit how much the variables are allowed to differ, we could combine `control_for_euc()` with `control_for()`. Here we make sure that words do not differ by more than ±1 character in Length.
 
-```{r}
+```{r generate3}
 stim3 <- lexops %>%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
   control_for_euc(
@@ -405,7 +405,7 @@ stim3 <- lexops %>%
 
 Which will give us the following distributions:
 
-```{r, fig.width=6, fig.height=4}
+```{r generate3-plot, fig.width=6, fig.height=4}
 plot_design(stim3, c("Length", "Zipf.BNC.Written", "AoA.Kuperman"))
 ```
 
@@ -415,7 +415,7 @@ We could use a similar method to give variable-specific tolerances for Zipf or A
 
 Something that is relatively difficult is deciding on a tolerance for Euclidean distance. As well as just playing around with different values, it is often useful to see a sample distribution possible Euclidean distance values by generating a large number of stimuli, with no upper bound in the tolerance. Viewing the distribution can act as a first pass in terms of deciding where to set a cut-off.
 
-```{r, message=FALSE, fig.width=6, fig.height=4}
+```{r tolerance-space-plot, message=FALSE, fig.width=6, fig.height=4}
 lexops %>%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
   control_for_euc(

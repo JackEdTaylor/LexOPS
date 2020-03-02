@@ -12,14 +12,14 @@ The built-in variables of LexOPS are useful but not exhaustive. Thankfully, LexO
 
 # Packages
 
-```{r, message=FALSE}
+```{r packages, message=FALSE}
 library(readr)
 library(dplyr)
 library(ggplot2)
 library(LexOPS)
 ```
 
-```{r, include=FALSE}
+```{r hidden-setup, include=FALSE}
 theme_set(theme_minimal())
 set.seed(1)
 ```
@@ -30,18 +30,18 @@ set.seed(1)
 
 The Lancaster Sensorimotor Norms are available from the [OSF page](https://osf.io/48wsc/).
 
-```{r}
+```{r import-data-1}
 sensorimotor <- read_csv("https://osf.io/48wsc/download")
 ```
 
 Let's have a quick peak at the data.
 
-```{r, eval = FALSE}
+```{r check-data-1, eval = FALSE}
 sensorimotor %>%
   head(5)
 ```
 
-```{r, echo = FALSE}
+```{r check-data-1-kable, echo = FALSE}
 sensorimotor %>%
   head(5) %>%
   knitr::kable()
@@ -51,18 +51,18 @@ sensorimotor %>%
 
 The Humour Norms are available from the [Github Page](https://github.com/tomasengelthaler/HumorNorms).
 
-```{r}
+```{r import-data-2}
 humour <- read_csv("https://raw.githubusercontent.com/tomasengelthaler/HumorNorms/master/humor_dataset.csv")
 ```
 
 Let's have a look at this data too.
 
-```{r, eval = FALSE}
+```{r check-data-2, eval = FALSE}
 humour %>%
   head(5)
 ```
 
-```{r, echo = FALSE}
+```{r check-data-2-kable, echo = FALSE}
 humour %>%
   head(5) %>%
   knitr::kable()
@@ -72,7 +72,7 @@ humour %>%
 
 Firstly, we'll rename the `Word` column to have a lowercase "w", so it's consistent with the sensorimotor norms. Then, since all the Lancaster norms' words are in uppercase (whereas the Humour norms are in lowercase), we'll then convert the Lancaster norms words to lowercase.
 
-```{r}
+```{r join-data-1}
 sensorimotor <- sensorimotor %>%
   rename(word = Word) %>%
   mutate(word = tolower(word))
@@ -80,14 +80,14 @@ sensorimotor <- sensorimotor %>%
 
 Next, we will prefix all the features from the humour norms with "Humour.", so they will be easily identifiable in the final dataset. We can use `rename_at()` and `vars(-word)` to add this prefix to all columns except the `word` column.
 
-```{r}
+```{r join-data-2}
 humour <- humour %>%
   rename_at(vars(-word), ~paste("Humour", .x, sep="."))
 ```
 
 Joining the data together is then easy with the [dplyr join functions](https://dplyr.tidyverse.org/reference/join.html). Here we use `full_join()`, joining by the common column `"word"`. Finally, we join the data to the `lexops` in-built dataset, as this contains features we can use to control for length and frequency. Since the words are stored in `lexops` in the `string` column, we tell `left_join()` that these columns should be treated as the same thing, with `c("word"="string")`.
 
-```{r}
+```{r join-data-3}
 sens_hum <- full_join(sensorimotor, humour, by="word") %>%
   left_join(lexops, by=c("word"="string"))
 ```
@@ -96,7 +96,7 @@ sens_hum <- full_join(sensorimotor, humour, by="word") %>%
 
 Before we choose boundaries for our splits, we want to check the distributions of our independent variables.
 
-```{r, fig.show='hold', message=FALSE, warning=FALSE}
+```{r plot-joined-data, fig.show='hold', message=FALSE, warning=FALSE}
 sens_hum %>% ggplot(aes(Visual.mean)) + geom_density()
 sens_hum %>% ggplot(aes(Humour.mean)) + geom_density()
 sens_hum %>% ggplot(aes(Visual.mean, Humour.mean)) + geom_point(alpha=0.5)
@@ -106,7 +106,7 @@ Finally, we can generate stimuli with our new words. We will create two levels o
 
 Since we're using our own data, we need to use the `set_options()` function to tell LexOPS which column contains our unique identifier, i.e., our words (`id_col = "word"`).
 
-```{r}
+```{r generate}
 stim <- sens_hum %>%
   set_options(id_col = "word") %>%
   split_by(Visual.mean, 0:2 ~ 3.5:5) %>%
@@ -118,17 +118,17 @@ stim <- sens_hum %>%
 
 We can view a quick summary of our stimuli with the `plot_design()` function.
 
-```{r, fig.width=7, fig.height=5}
+```{r plot-design, fig.width=7, fig.height=5}
 plot_design(stim)
 ```
 
 Here is the list of stimuli generated for the design of visual sensorimotor ratings (A: A1 low, A2 high) by humour ratings (B: B1 low, B2 high), controlling for word length and frequency.
 
-```{r, eval = FALSE}
+```{r print, eval = FALSE}
 print(stim)
 ```
 
-```{r, echo = FALSE}
+```{r print-kable, echo = FALSE}
 knitr::kable(stim)
 ```
 
@@ -136,11 +136,11 @@ knitr::kable(stim)
 
 The `cite_design()` function is useful for suggesting papers that you should cite having generated your stimuli. Note that for variables LexOPS does not know, while the variable will be suggested as something that needs citing, you will have to find the citation yourself.
 
-```{r, eval=FALSE}
+```{r cite-design, eval=FALSE}
 cite_design(stim)
 ```
 
-```{r, echo=FALSE}
+```{r cite-design-kable, echo=FALSE}
 cite_design(stim) %>%
   knitr::kable()
 ```

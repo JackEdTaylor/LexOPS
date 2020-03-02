@@ -12,13 +12,13 @@ The `control_for()` function works well when your variable is 1-dimensional, wit
 
 # Packages
 
-```{r, message=FALSE}
+```{r packages, message=FALSE}
 library(readr)
 library(dplyr)
 library(LexOPS)
 ```
 
-```{r, include=FALSE}
+```{r hidden-setup, include=FALSE}
 set.seed(1)
 ```
 
@@ -26,7 +26,7 @@ set.seed(1)
 
 The word pair norms come from [Erin Buchanan and colleagues](https://doomlab.shinyapps.io/double_words/). This dataset indexes semantic similarity between cues and targets. Alternative sources of semantic association/relatedness values include the [Small World of Words](https://smallworldofwords.org/en/project).
 
-```{r}
+```{r import-data}
 pairs <- readr::read_csv("https://media.githubusercontent.com/media/doomlab/shiny-server/master/wn_double/double_words.csv")
 ```
 
@@ -34,7 +34,7 @@ pairs <- readr::read_csv("https://media.githubusercontent.com/media/doomlab/shin
 
 The function we create should index the similarity between $n$ matches (in a vector) and a target word (as a single string). The result should be a vector of values of length $n$, in the same order as the matches. Using the `pairs` tibble, we can use some `dplyr` manipulation to return the required values as a vector. This function returns the `root` values, indexing the cosine of two words' semantic overlap for root words (see [here](https://doomlab.shinyapps.io/double_words/) for more details).
 
-```{r}
+```{r create-function}
 sem_matches <- function(matches, target) {
   # for speed, return N ones if possible
   if (all(matches==target)) return(rep(1, length(matches)))
@@ -48,7 +48,7 @@ sem_matches <- function(matches, target) {
 
 Let's test the function on some example match-target combinations.
 
-```{r}
+```{r test-function}
 # should return 1
 sem_matches("yellow", "yellow")
 
@@ -63,7 +63,7 @@ sem_matches(c("yellow", "sun", "leaf"), "yellow")
 
 We can now generate stimuli controlling for semantic similarity. If we want to generate words which are highly semantically related, we can control for semantic relatedness of $>=0.5$ cosine similarity to an iteration's match null. Since a match null is placed at 0, and will have a similarity of 1 to itself, we set the `control_for_map()` tolerance to `-0.5:0`.
 
-```{r}
+```{r generate-control_for_map}
 # speed up by removing unusable word pairs from pairs
 pairs <- filter(pairs, root>=0.5)
 
@@ -84,6 +84,10 @@ stim <- lexops %>%
 
 Here are our 20 items per factorial cell, matched by Semantic Similarity, Length, Part of Speech, and Frequency.
 
-```{r}
+```{r print, eval=FALSE}
 print(stim)
+```
+
+```{r print-kable, echo=FALSE}
+knitr::kable(stim)
 ```
