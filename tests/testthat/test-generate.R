@@ -499,3 +499,27 @@ testthat::test_that("control_for_map", {
       nrow()
   }, 150)
 })
+
+# control_for_euc ----
+testthat::test_that("control_for_euc", {
+  # test with two conditions
+  testthat::expect_equal({
+    lexops %>%
+      dplyr::filter(
+        Zipf.SUBTLEX_UK <= 5,
+        dplyr::between(Length, 3, 12),
+        PK.Brysbaert >= 0.9
+      ) %>%
+      split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
+      control_for_euc(
+        c(Zipf.SUBTLEX_UK, Length),
+        0:0.005,
+        name = "Euclidean Distance",
+        euc_df = lexops
+      ) %>%
+      generate(10) %>%
+      long_format() %>%
+      dplyr::filter(`Euclidean Distance` <= 0.005) %>%
+      nrow()
+  }, 20)
+})
