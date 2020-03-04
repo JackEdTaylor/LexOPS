@@ -178,7 +178,7 @@ testthat::test_that("silent_option", {
         control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
         control_for(Length, 0:0) %>%
         control_for(PoS.BNC.Written) %>%
-        generate(n = 10, match_null = "random", silent = TRUE)
+        generate(n = 10, silent = TRUE)
     }) %>%
       nchar() %>%
       sum(),
@@ -193,7 +193,7 @@ testthat::test_that("silent_option", {
         control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
         control_for(Length, 0:0) %>%
         control_for(PoS.BNC.Written) %>%
-        generate(n = "all", silent = TRUE)
+        generate(n = "all", match_null = "random", silent = TRUE)
     }) %>%
       nchar() %>%
       sum(),
