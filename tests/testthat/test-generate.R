@@ -170,7 +170,7 @@ testthat::test_that("silent_option", {
     0
   )
   # check that the silent option works for n = x
-  testthat::expect_identical(
+  testthat::expect_equal(
     capture.output({
       x <- lexops %>%
         split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
@@ -185,7 +185,7 @@ testthat::test_that("silent_option", {
     0
   )
   # check that the silent option works for n = "all"
-  testthat::expect_identical(
+  testthat::expect_equal(
     capture.output({
       x <- lexops %>%
         split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
