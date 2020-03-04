@@ -7,7 +7,7 @@ testthat::test_that("general warnings", {
       split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
       split_by(PoS.SUBTLEX_UK, "noun" ~ "verb") %>%
       control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
-      generate(100000),
+      generate(100000, silent=TRUE),
     "n is too large; requested n of 100000, but the condition with the fewest members has \\d+ entries. Ensure n < \\d+. Will generate as many stimuli as possible.",
     all = FALSE
   )
@@ -18,7 +18,7 @@ testthat::test_that("general warnings", {
       split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) %>%
       control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
       control_for(Length) %>%
-      generate(n = 1000, match_null = "balanced"),
+      generate(n = 1000, match_null = "balanced", silent=TRUE),
     "No tolerance given for numeric variable 'Length', will control for exactly.",
     fixed = TRUE
   )
@@ -30,7 +30,7 @@ testthat::test_that("general warnings", {
       control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
       control_for(Length, 0:0) %>%
       control_for(PoS.BNC.Written) %>%
-      generate(n = "all", match_null = "balanced"),
+      generate(n = "all", match_null = "balanced", silent=TRUE),
     '`match_null="balanced"` may not work when `n="all"`. Check distributions of match_null in the output.',
     fixed = TRUE
   )
@@ -75,14 +75,14 @@ testthat::test_that("reproducibility", {
       control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
       control_for(Length, 0:0) %>%
       control_for(PoS.BNC.Written) %>%
-      generate(n = 10, seed = 42),
+      generate(n = 10, seed = 42, silent=TRUE),
     lexops %>%
       split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
       split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
       control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
       control_for(Length, 0:0) %>%
       control_for(PoS.BNC.Written) %>%
-      generate(n = 10, seed = 42)
+      generate(n = 10, seed = 42, silent=TRUE)
   )
   # standard vs. standard (seed test)
   testthat::expect_identical(
@@ -92,14 +92,14 @@ testthat::test_that("reproducibility", {
       control_for("Zipf.SUBTLEX_UK", c(-0.25, 0.25), standard_eval = TRUE) %>%
       control_for("Length", c(0, 0), standard_eval = TRUE) %>%
       control_for("PoS.BNC.Written", standard_eval = TRUE) %>%
-      generate(n = 10, seed = 42),
+      generate(n = 10, seed = 42, silent=TRUE),
     lexops %>%
       split_by("CNC.Brysbaert", list(c(1, 2), c(4, 5)), standard_eval = TRUE) %>%
       split_by("VAL.Warriner", list(c(1, 3), c(4.5, 5.5), c(7, 9)), standard_eval = TRUE) %>%
       control_for("Zipf.SUBTLEX_UK", c(-0.25, 0.25), standard_eval = TRUE) %>%
       control_for("Length", c(0, 0), standard_eval = TRUE) %>%
       control_for("PoS.BNC.Written", standard_eval = TRUE) %>%
-      generate(n = 10, seed = 42)
+      generate(n = 10, seed = 42, silent=TRUE)
   )
   # non-standard vs. standard (transferability test)
   testthat::expect_identical(
@@ -109,14 +109,14 @@ testthat::test_that("reproducibility", {
       control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
       control_for(Length, 0:0) %>%
       control_for(PoS.BNC.Written) %>%
-      generate(n = 10, seed = 42),
+      generate(n = 10, seed = 42, silent=TRUE),
     lexops %>%
       split_by("CNC.Brysbaert", list(c(1, 2), c(4, 5)), standard_eval = TRUE) %>%
       split_by("VAL.Warriner", list(c(1, 3), c(4.5, 5.5), c(7, 9)), standard_eval = TRUE) %>%
       control_for("Zipf.SUBTLEX_UK", c(-0.25, 0.25), standard_eval = TRUE) %>%
       control_for("Length", c(0, 0), standard_eval = TRUE) %>%
       control_for("PoS.BNC.Written", standard_eval = TRUE) %>%
-      generate(n = 10, seed = 42)
+      generate(n = 10, seed = 42, silent=TRUE)
   )
   # hybrid vs. hybrid (mixed transferability test)
   testthat::expect_identical(
@@ -126,14 +126,14 @@ testthat::test_that("reproducibility", {
       control_for("Zipf.SUBTLEX_UK", c(-0.25, 0.25), standard_eval = TRUE) %>%
       control_for(Length, 0:0) %>%
       control_for("PoS.BNC.Written", standard_eval = TRUE) %>%
-      generate(n = 10, seed = 42),
+      generate(n = 10, seed = 42, silent=TRUE),
     lexops %>%
       split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
       split_by("VAL.Warriner", list(c(1, 3), c(4.5, 5.5), c(7, 9)), standard_eval = TRUE) %>%
       control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
       control_for("Length", c(0, 0), standard_eval = TRUE) %>%
       control_for(PoS.BNC.Written) %>%
-      generate(n = 10, seed = 42)
+      generate(n = 10, seed = 42, silent=TRUE)
   )
 })
 
@@ -209,7 +209,7 @@ testthat::test_that("splits", {
       subset(PK.Brysbaert >= 0.9) %>%
       split_by(PoS.BNC.All, "substantive" ~ "verb") %>%
       control_for(Zipf.BNC.All, -0.25:0.25) %>%
-      generate(1000) %>%
+      generate(1000, silent=TRUE) %>%
       dplyr::left_join(
         lexops %>%
           dplyr::select(string, PoS.BNC.All) %>%
@@ -236,7 +236,7 @@ testthat::test_that("splits", {
       subset(PK.Brysbaert >= 0.9) %>%
       split_by(Length, 4:4 ~ 5:5) %>%
       control_for(Zipf.BNC.All, -0.25:0.25) %>%
-      generate(1000) %>%
+      generate(1000, silent=TRUE) %>%
       dplyr::left_join(
         lexops %>%
           dplyr::select(string, Length) %>%
@@ -263,7 +263,7 @@ testthat::test_that("splits", {
       subset(PK.Brysbaert >= 0.9) %>%
       split_by(Length, 3:4 ~ 5:12) %>%
       control_for(Zipf.BNC.All, -0.25:0.25) %>%
-      generate(1000) %>%
+      generate(1000, silent=TRUE) %>%
       dplyr::left_join(
         lexops %>%
           dplyr::select(string, Length) %>%
@@ -290,7 +290,7 @@ testthat::test_that("splits", {
       subset(PK.Brysbaert >= 0.9) %>%
       split_by(Zipf.BNC.All, 0.8:2.1 ~ 2.5:6) %>%
       control_for(Length, 0:0) %>%
-      generate(1000) %>%
+      generate(1000, silent=TRUE) %>%
       dplyr::left_join(
         lexops %>%
           dplyr::select(string, Zipf.BNC.All) %>%
@@ -318,7 +318,7 @@ testthat::test_that("splits", {
       split_by(Zipf.BNC.All, 0.8:2.1 ~ 2.5:6) %>%
       split_by(PoS.BNC.All, "substantive" ~ "verb" ~ "adjective") %>%
       control_for(Length, 0:0) %>%
-      generate(100) %>%
+      generate(100, silent=TRUE) %>%
       dplyr::left_join(
         lexops %>%
           dplyr::select(string, Zipf.BNC.All, PoS.BNC.All) %>%
@@ -382,7 +382,7 @@ testthat::test_that("controls", {
       subset(PK.Brysbaert >= 0.75) %>%
       split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) %>%
       control_for(PoS.BNC.Written) %>%
-      generate(n = 1000, match_null = "balanced") %>%
+      generate(n = 1000, match_null = "balanced", silent=TRUE) %>%
       tidyr::pivot_longer(c(A1, A2), names_to = "condition", values_to = "string") %>%
       dplyr::left_join(lexops, by = "string") %>%
       dplyr::group_by(item_nr) %>%
@@ -396,7 +396,7 @@ testthat::test_that("controls", {
       subset(PK.Brysbaert >= 0.75) %>%
       split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) %>%
       control_for(Length, 0:0) %>%
-      generate(n = 1000, match_null = "balanced") %>%
+      generate(n = 1000, match_null = "balanced", silent=TRUE) %>%
       tidyr::pivot_longer(c(A1, A2), names_to = "condition", values_to = "string") %>%
       dplyr::left_join(lexops, by = "string") %>%
       dplyr::group_by(item_nr) %>%
@@ -410,7 +410,7 @@ testthat::test_that("controls", {
       subset(PK.Brysbaert >= 0.75) %>%
       split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) %>%
       control_for(Length, -1:1) %>%
-      generate(n = 1000, match_null = "balanced") %>%
+      generate(n = 1000, match_null = "balanced", silent=TRUE) %>%
       tidyr::pivot_longer(c(A1, A2), names_to = "condition", values_to = "string") %>%
       dplyr::left_join(lexops, by = "string") %>%
       dplyr::group_by(item_nr) %>%
@@ -425,7 +425,7 @@ testthat::test_that("controls", {
       subset(PK.Brysbaert >= 0.75) %>%
       split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) %>%
       control_for(Zipf.BNC.All, -0.2:0.2) %>%
-      generate(n = 1000, match_null = "balanced") %>%
+      generate(n = 1000, match_null = "balanced", silent=TRUE) %>%
       tidyr::pivot_longer(c(A1, A2), names_to = "condition", values_to = "string") %>%
       dplyr::left_join(lexops, by = "string") %>%
       dplyr::group_by(item_nr) %>%
@@ -440,7 +440,7 @@ testthat::test_that("controls", {
       subset(PK.Brysbaert >= 0.75) %>%
       split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) %>%
       control_for(Zipf.BNC.All, -0.1:0.25) %>%
-      generate(n = 1000, match_null = "balanced") %>%
+      generate(n = 1000, match_null = "balanced", silent=TRUE) %>%
       dplyr::left_join(
         lexops %>%
           dplyr::select(string, Zipf.BNC.All) %>%
@@ -468,7 +468,7 @@ testthat::test_that("match_null options", {
       subset(PK.Brysbaert >= 0.75) %>%
       split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) %>%
       control_for(Zipf.BNC.All, -0.2:0.2) %>%
-      generate(n = 1000, match_null = "balanced") %>%
+      generate(n = 1000, match_null = "balanced", silent=TRUE) %>%
       dplyr::group_by(match_null) %>%
       dplyr::count() %>%
       dplyr::pull(n)
@@ -480,7 +480,7 @@ testthat::test_that("match_null options", {
       subset(PK.Brysbaert >= 0.75) %>%
       split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) %>%
       control_for(Zipf.BNC.All, -0.2:0.2) %>%
-      generate(n = 1003, match_null = "balanced") %>%
+      generate(n = 1003, match_null = "balanced", silent=TRUE) %>%
       dplyr::group_by(match_null) %>%
       dplyr::count() %>%
       dplyr::pull(n)
@@ -494,7 +494,7 @@ testthat::test_that("match_null options", {
       control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
       control_for(Length, 0:0) %>%
       control_for(PoS.BNC.Written) %>%
-      generate(n = 10, match_null = "first") %>%
+      generate(n = 10, match_null = "first", silent=TRUE) %>%
       dplyr::pull(match_null)
     all(match_nulls == "A1_B1")
   })
@@ -506,7 +506,7 @@ testthat::test_that("match_null options", {
       control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
       control_for(Length, 0:0) %>%
       control_for(PoS.BNC.Written) %>%
-      generate(n = 10, match_null = "A2_B3") %>%
+      generate(n = 10, match_null = "A2_B3", silent=TRUE) %>%
       dplyr::pull(match_null)
     all(match_nulls == "A2_B3")
   })
@@ -517,7 +517,7 @@ testthat::test_that("match_null options", {
       split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
       control_for(Zipf.SUBTLEX_UK, -0.5:0.5) %>%
       control_for(BG.SUBTLEX_UK, -0.05:0.9) %>%
-      generate(n = 10, match_null = "inclusive") %>%
+      generate(n = 10, match_null = "inclusive", silent=TRUE) %>%
       long_format() %>%
       dplyr::group_by(item_nr) %>%
       dplyr::filter(
@@ -538,7 +538,7 @@ testthat::test_that("control_for_map", {
     lexops %>%
       split_by(AROU.Warriner, 1:3 ~ 7:9) %>%
       control_for_map(levenshtein.distance, string, 0:2) %>%
-      generate(10) %>%
+      generate(10, silent=TRUE) %>%
       dplyr::rowwise() %>%
       dplyr::mutate(ld = levenshtein.distance(A1, A2)) %>%
       dplyr::filter(ld <= 2) %>%
@@ -550,7 +550,7 @@ testthat::test_that("control_for_map", {
     lexops %>%
       split_by(PoS.BNC.All, "substantive" ~ "verb" ~ "adjective") %>%
       control_for_map(levenshtein.distance, string, 0:3) %>%
-      generate(50) %>%
+      generate(50, silent=TRUE) %>%
       dplyr::mutate(match_null_string = dplyr::case_when(
         match_null == "A1" ~ A1,
         match_null == "A2" ~ A2,
@@ -581,7 +581,7 @@ testthat::test_that("control_for_euc", {
         name = "Euclidean Distance",
         euc_df = lexops
       ) %>%
-      generate(10) %>%
+      generate(10, silent=TRUE) %>%
       long_format() %>%
       dplyr::filter(`Euclidean Distance` <= 0.005) %>%
       nrow()
