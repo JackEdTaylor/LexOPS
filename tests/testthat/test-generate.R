@@ -137,6 +137,36 @@ testthat::test_that("reproducibility", {
   )
 })
 
+# silent ----
+testthat::test_that("silent_option", {
+  # check that the silent option works for n = x
+  testthat::expect_length(
+    capture.output({
+      x <- lexops %>%
+        split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
+        split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
+        control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
+        control_for(Length, 0:0) %>%
+        control_for(PoS.BNC.Written) %>%
+        generate(n = 10, silent = TRUE)
+    }),
+    0
+  )
+  # check that the silent option works for n = "all"
+  testthat::expect_length(
+    capture.output({
+      x <- lexops %>%
+        split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
+        split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
+        control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
+        control_for(Length, 0:0) %>%
+        control_for(PoS.BNC.Written) %>%
+        generate(n = "all", silent = TRUE)
+    }),
+    0
+  )
+})
+
 # splits ----
 testthat::test_that("splits", {
   # test that categorical splits are applied correctly
