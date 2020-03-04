@@ -316,8 +316,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALS
       meta_df <- dplyr::left_join(meta_df, control_for_map_values, by=id_col)
     }
 
-    df <- as.data.frame(out, stringsAsFactors = FALSE) %>%
-      stats::na.omit()
+    df <- as.data.frame(out, stringsAsFactors = FALSE)
     colnames(df) <- c(all_conds, "match_null")
     # add the item number as item_nr
     df <- dplyr::mutate(df, item_nr = dplyr::row_number()) %>%
