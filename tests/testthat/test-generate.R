@@ -137,10 +137,40 @@ testthat::test_that("reproducibility", {
   )
 })
 
-# silent ----
+# silent option ----
 testthat::test_that("silent_option", {
+  # check that printing to console works as normal for n = x when silent = FALSE
+  testthat::expect_gt(
+    capture.output({
+      x <- lexops %>%
+        split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
+        split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
+        control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
+        control_for(Length, 0:0) %>%
+        control_for(PoS.BNC.Written) %>%
+        generate(n = 10)
+    }) %>%
+      nchar() %>%
+      sum(),
+    0
+  )
+  # check that printing to console works as normal for n = "all" when silent = FALSE
+  testthat::expect_gt(
+    capture.output({
+      x <- lexops %>%
+        split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
+        split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
+        control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
+        control_for(Length, 0:0) %>%
+        control_for(PoS.BNC.Written) %>%
+        generate(n = "all")
+    }) %>%
+      nchar() %>%
+      sum(),
+    0
+  )
   # check that the silent option works for n = x
-  testthat::expect_length(
+  testthat::expect_identical(
     capture.output({
       x <- lexops %>%
         split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
@@ -149,11 +179,13 @@ testthat::test_that("silent_option", {
         control_for(Length, 0:0) %>%
         control_for(PoS.BNC.Written) %>%
         generate(n = 10, silent = TRUE)
-    }),
+    }) %>%
+      nchar() %>%
+      sum(),
     0
   )
   # check that the silent option works for n = "all"
-  testthat::expect_length(
+  testthat::expect_identical(
     capture.output({
       x <- lexops %>%
         split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
@@ -162,7 +194,9 @@ testthat::test_that("silent_option", {
         control_for(Length, 0:0) %>%
         control_for(PoS.BNC.Written) %>%
         generate(n = "all", silent = TRUE)
-    }),
+    }) %>%
+      nchar() %>%
+      sum(),
     0
   )
 })
