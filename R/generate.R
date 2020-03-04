@@ -318,8 +318,9 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALS
 
     df <- as.data.frame(out, stringsAsFactors = FALSE)
     colnames(df) <- c(all_conds, "match_null")
-    # add the item number as item_nr
-    df <- dplyr::mutate(df, item_nr = dplyr::row_number()) %>%
+    df <- df %>%
+      tidyr::drop_na(-match_null) %>%  # na.omit() but allowing NAs in match_null column
+      dplyr::mutate(item_nr = dplyr::row_number()) %>%  # add the item number as item_nr
       dplyr::select(item_nr, dplyr::everything())
     # add the original df to the attributes
     LexOPS_attrs$meta_df <- meta_df
