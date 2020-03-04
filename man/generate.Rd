@@ -4,7 +4,14 @@
 \alias{generate}
 \title{Generate stimuli}
 \usage{
-generate(df, n = 20, match_null = "balanced", seed = NA, is_shiny = FALSE)
+generate(
+  df,
+  n = 20,
+  match_null = "balanced",
+  seed = NA,
+  silent = FALSE,
+  is_shiny = FALSE
+)
 }
 \arguments{
 \item{df}{A data frame that is the result from \code{control_for()} or \code{split_by()}.}
@@ -14,6 +21,8 @@ generate(df, n = 20, match_null = "balanced", seed = NA, is_shiny = FALSE)
 \item{match_null}{The condition words should be matched to. Should be a string indicating condition (e.g. \code{"A1_B2_C1"}), or a string indicating one of the following options: "first" for the lowest condition (e.g. \code{"A1"} or \code{"A1_B1_C1_D1"}, etc.), "random" for randomly selected null condition each iteration, "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition.}
 
 \item{seed}{An integer specifying the random seed, allowing reproduction of exact stimuli lists. If \code{NA}, will not set the seed. Default is \code{NA}.}
+
+\item{silent}{Logical: should output to the console (via \code{cat()}) be suppressed? Default is FALSE.}
 
 \item{is_shiny}{Allows printing in a shiny context with \code{shinyjs::html()}. Outputs from the cat() function are stored in the div with id "gen_console". Default is FALSE.}
 }

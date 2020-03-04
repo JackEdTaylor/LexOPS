@@ -6,6 +6,7 @@
 #' @param n The number of strings per condition (default = 20). Set to `"all"` to generate as many as possible.
 #' @param match_null The condition words should be matched to. Should be a string indicating condition (e.g. `"A1_B2_C1"`), or a string indicating one of the following options: "first" for the lowest condition (e.g. `"A1"` or `"A1_B1_C1_D1"`, etc.), "random" for randomly selected null condition each iteration, "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition.
 #' @param seed An integer specifying the random seed, allowing reproduction of exact stimuli lists. If `NA`, will not set the seed. Default is `NA`.
+#' @param silent Logical: should output to the console (via `cat()`) be suppressed? Default is FALSE.
 #' @param is_shiny Allows printing in a shiny context with `shinyjs::html()`. Outputs from the cat() function are stored in the div with id "gen_console". Default is FALSE.
 #'
 #' @return Returns the generated stimuli.
@@ -85,7 +86,7 @@
 #'
 #' @export
 
-generate <- function(df, n=20, match_null = "balanced", seed = NA, is_shiny = FALSE) {
+generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALSE, is_shiny = FALSE) {
   if (is_shiny) {
     # if in a shiny context, replace the base cat() function with one which captures the console output
     cat <- function(str) shinyjs::html("gen_console", sprintf("%s", str))
@@ -191,7 +192,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, is_shiny = FA
 
       if (length(null_word_bank) == 0) {
         if (n_all) {
-          cat(sprintf("\nGenerated a total of %i stimuli per condition (%i total iterations)\n", n_generated, n_tried))
+          if (!silent) cat(sprintf("\nGenerated a total of %i stimuli per condition (%i total iterations)\n", n_generated, n_tried))
         } else {
           warning_text <- sprintf("\nFailed to generate any new matches for matched row %i (all %i candidate null words were tried)", n_generated + 1, n_tried_this_n_generated)
           if (is_shiny) {
@@ -280,22 +281,27 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, is_shiny = FA
       }
 
       # if n=="all", print progress every 250 iterations
-      if (n_tried%%250==0 & n_all) {
-        if (all(!is.na(matches))) {
-          cat(sprintf("Generated %i (%i iterations, %.2f success rate)\n", n_generated+1, n_tried, (n_generated+1)/n_tried))
-        } else {
-          cat(sprintf("Generated %i (%i iterations, %.2f success rate)\n", n_generated, n_tried, n_generated/n_tried))
+      if (!silent) {
+        if (n_tried%%250==0 & n_all) {
+          if (all(!is.na(matches))) {
+            cat(sprintf("Generated %i (%i iterations, %.2f success rate)\n", n_generated+1, n_tried, (n_generated+1)/n_tried))
+          } else {
+            cat(sprintf("Generated %i (%i iterations, %.2f success rate)\n", n_generated, n_tried, n_generated/n_tried))
+          }
         }
       }
 
       if (all(!is.na(matches))) {
-        out[n_generated + 1, ] <- c(matches, this_match_null)
+        this_match_null_out <- if (match_null=="inclusive") NA else this_match_null  # if match_null is inclusive, don't store initial match_nullvalue
+        out[n_generated + 1, ] <- c(matches, this_match_null_out)
         n_generated <- n_generated + 1
         successful_iterations <- c(successful_iterations, n_tried)
         n_tried_this_n_generated <- 0
         words_tried_this_generated <- c()
-        if (n_generated %in% printing_points & !n_all) {
-          cat(sprintf("Generated %i/%i (%i%%). %i total iterations, %.2f success rate.\n", n_generated, n, round(n_generated/n*100), n_tried, n_generated/n_tried))
+        if (!silent) {
+          if (n_generated %in% printing_points & !n_all) {
+            cat(sprintf("Generated %i/%i (%i%%). %i total iterations, %.2f success rate.\n", n_generated, n, round(n_generated/n*100), n_tried, n_generated/n_tried))
+          }
         }
       }
 
