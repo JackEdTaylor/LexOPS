@@ -1,0 +1,115 @@
+---
+title: "Applications to Participant Selection"
+author: "Jack Taylor"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Applications to Participant Selection}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+LexOPS has potential applications in designing between-subject studies that control for participant variables. In this example, a randomised control trial is imagined, where subjects need to be matched for some relevant variables such as age, sex, BMI, and IQ. Given the pool of possible participants, LexOPS can be used to match subjects in the intervention and control conditions.
+
+# Packages
+
+```{r packages, message=FALSE}
+library(dplyr)
+library(LexOPS)
+```
+
+```{r hidden-setup, include=FALSE}
+theme_set(theme_minimal())
+set.seed(1)
+```
+
+# Simulating Dataset
+
+Firstly, we will simulate the imaginary dataset of the participant pool, consisting of 10000 potential subjects, representing the kind of data we might expect to have.
+
+```{r simulate-data}
+n_sub <- 10000
+
+pool <- tibble(
+  subj_id = sprintf("s%04d", 1:n_sub),
+  age = runif(n_sub, 18, 50),
+  sex = sample(
+    c("m", "f", NA), n_sub,
+    replace = TRUE,
+    prob = c(0.48, 0.48, 0.04)
+  ),
+  bmi = rnorm(n_sub, 25, 5),
+  iq = rnorm(n_sub, 100, 15)
+)
+```
+
+# Choosing Subjects
+
+Now let's imagine we want to assign 50 subjects to an intervention group, and 50 matched subjects to a control group. We want to match by the relevant subject variables of
+
+* Age (±1 year)
+* Sex (match exactly)
+* BMI (±0.5)
+* IQ (±5)
+
+In LexOPS, we could simply write this as follows:
+
+```{r gen-subj}
+study_subj <- pool %>%
+  subset(!is.na(sex)) %>%
+  set_options(id_col = "subj_id") %>%
+  split_random(2) %>%
+  control_for(age, -1:1) %>%
+  control_for(sex) %>%
+  control_for(bmi, -0.5:0.5) %>%
+  control_for(iq, -5:5) %>%
+  generate(50)
+```
+
+This returns a dataframe, listing the subject IDs for the 50 subjects in each group. Here are the first 5 rows (10 subjects):
+
+```{r print-res-1, eval=FALSE}
+head(study_subj, 5)
+```
+
+```{r print-res-1-kable, echo=FALSE}
+study_subj %>%
+  head(5) %>%
+  knitr::kable()
+```
+
+We can see the subjects' data in long format with the `long_format()` function. Here is the data for those same 10 subjects in long format. The `item_nr` column indicates which subjects are matched to one another.
+
+```{r print-res-long-1, eval=FALSE}
+study_subj %>%
+  long_format() %>%
+  head(10)
+```
+
+```{r print-res-long-1-kable, echo=FALSE}
+study_subj %>%
+  long_format() %>%
+  head(10) %>%
+  knitr::kable()
+```
+
+# Checking the Results
+
+We can use the `plot_design()` function to see how well our numeric variables have been controlled for. Individual points represent subjects, with matched subjects connected by lines. Variables more tightly controlled show more similar distributions, and only gentle slopes between points.
+
+```{r plot-design, fig.width=6, fig.height=4}
+plot_design(study_subj)
+```
+
+We can check how many males and females we have in each group like so:
+
+```{r count-sex}
+study_subj %>%
+  long_format() %>%
+  count(condition, sex)
+```
+
+Finally, we can use `plot_sample()` to see how representative our sample is of our whole participant pool.
+
+```{r plot-sample, fig.width=6, fig.height=4}
+plot_sample(study_subj)
+```
