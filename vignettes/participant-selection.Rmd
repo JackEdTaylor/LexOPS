@@ -18,7 +18,6 @@ library(LexOPS)
 ```
 
 ```{r hidden-setup, include=FALSE}
-theme_set(theme_minimal())
 set.seed(1)
 ```
 
