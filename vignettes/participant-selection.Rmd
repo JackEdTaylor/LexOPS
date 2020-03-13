@@ -101,10 +101,17 @@ plot_design(study_subj)
 
 We can check how many males and females we have in each group like so:
 
-```{r count-sex}
+```{r count-sex, eval=FALSE}
 study_subj %>%
   long_format() %>%
   count(condition, sex)
+```
+
+```{r count-sex-kable, echo=FALSE}
+study_subj %>%
+  long_format() %>%
+  count(condition, sex) %>%
+  knitr::kable()
 ```
 
 Finally, we can use `plot_sample()` to see how representative our sample is of our whole participant pool.
