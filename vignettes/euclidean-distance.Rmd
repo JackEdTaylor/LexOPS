@@ -195,7 +195,7 @@ puppy_values <- lexops_scaled %>%
 # plot
 # note that `c()` is used to remove attributes from scaled variables in puppy_values
 lexops_scaled %>%
-  mutate(VAL.Warriner = 2*VAL.Warriner) %>%
+  mutate(CNC.Brysbaert = 2*CNC.Brysbaert) %>%
   filter(string %in% example_words) %>%
   mutate(
     cnc_dist = abs(CNC.Brysbaert - c(puppy_values$CNC.Brysbaert)),
