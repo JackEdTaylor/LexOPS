@@ -169,7 +169,7 @@ split_by.double <- function(df, column, breaks, new_column, prefix, filter){
   check_ordered(breaks)
 
   overlap_check <- check_overlapping(breaks)
-  if(!overlap_check) stop("overlapping breaks: overlapping breaks not permitted for split of type double")
+  if(!overlap_check) stop("overlapping breaks: overlapping breaks not permitted for split of type double - try assigning conditions manually as a factor instead")
 
   cont_breaks <- check_continuous(breaks)
 
