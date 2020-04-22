@@ -4,7 +4,8 @@
 \name{lexops}
 \alias{lexops}
 \title{LexOPS' inbuilt variables}
-\format{A data frame with 262532 rows and 68 variables:
+\format{
+A data frame with 262532 rows and 68 variables:
 \describe{
 \item{string}{Strings (words/lemmas).}
 \item{CMU.1letter}{One-letter ARPABET representations of the main (North American) pronunciation according to the CMU Pronouncing Dictionary (\url{http://www.speech.cs.cmu.edu/cgi-bin/cmudict}).}
@@ -74,7 +75,8 @@
 \item{Accuracy.BLP}{Lexical Decision Accuracy according to the British Lexicon Project (\url{http://doi.org/10.3758/s13428-011-0118-4}).}
 \item{RT.ELP}{Lexical Decision Response Time according to the English Lexicon Project \url{http://doi.org/10.3758/BF03193014}.}
 \item{Accuracy.ELP}{Lexical Decision Accuracy according to the English Lexicon Project \url{http://doi.org/10.3758/BF03193014}.}
-}}
+}
+}
 \usage{
 lexops
 }
