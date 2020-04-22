@@ -165,7 +165,7 @@ split_by.double <- function(df, column, breaks, new_column, prefix, filter){
   # Check that splits are ordered and don't overlap
   check_breaks(breaks)
 
-  cont_breaks = check_continuous(breaks)
+  cont_breaks <- check_continuous(breaks)
 
   if(!cont_breaks){
     # Label gaps between cuts as NA
