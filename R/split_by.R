@@ -144,6 +144,9 @@ split_by <- function(df, var, levels, filter = TRUE, standard_eval = FALSE){
 
 split_by.integer <- function(df, column, breaks, new_column, prefix, filter){
 
+  overlap_check <- check_overlapping(breaks)
+  if(!overlap_check) warning("overlapping breaks: some levels of this variable will overlap")
+
   df_filter <- purrr::map(breaks, ~seq(.x[1], .x[2], 1)) %>%
     purrr::map(~tibble::tibble(!!column := .x)) %>%
     dplyr::bind_rows(.id = new_column) %>%
@@ -163,7 +166,10 @@ split_by.integer <- function(df, column, breaks, new_column, prefix, filter){
 split_by.double <- function(df, column, breaks, new_column, prefix, filter){
 
   # Check that splits are ordered and don't overlap
-  check_breaks(breaks)
+  check_ordered(breaks)
+
+  overlap_check <- check_overlapping(breaks)
+  if(!overlap_check) stop("overlapping breaks: overlapping breaks not permitted for split of type double")
 
   cont_breaks <- check_continuous(breaks)
 
@@ -256,13 +262,15 @@ split_by.factor_group <- function(df, column, breaks, new_column, prefix, filter
 `:=` <- rlang::`:=`
 
 # Checks
-check_breaks <- function(x){
+check_ordered <- function(x){
   check_order <- purrr::map(x, ~.x[1] < .x[2]) %>%
     unlist() %>%
     all()
 
   if(!check_order) stop("lower bounds must be lower than upper bounds")
+}
 
+check_overlapping <- function(x) {
   overlap_check <- logical()
 
   for(i in 1:(length(x) - 1)){
@@ -271,7 +279,7 @@ check_breaks <- function(x){
 
   overlap_check <- all(overlap_check)
 
-  if(!overlap_check) warning("overlapping breaks: two levels of this variable will overlap")
+  overlap_check
 }
 
 check_continuous <- function(breaks){
