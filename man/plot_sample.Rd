@@ -19,7 +19,7 @@ plot_sample(df, include = "design", force = TRUE, id_col = "string")
 A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
 }
 \description{
-Takes the output from \code{generate()} or \code{long_format()}, and plots distributions on numeric variables used in the generate pipeline (i.e. indepdent variables, controls), collapsed across conditions, relative to the underlying distribution.Alternatively, distributions of any numeric variables in the original dataframe can be queried.
+Takes the output from \code{generate()} or \code{long_format()}, and plots distributions on numeric variables used in the generate pipeline (i.e. indepdent variables, controls), collapsed across conditions, relative to the underlying distribution. Alternatively, distributions of any specific numeric variables in the original dataframe can be queried.
 }
 \examples{
 

@@ -1,6 +1,6 @@
 #' Plot how well the stimuli represent the underlying population of words given
 #'
-#' Takes the output from `generate()` or `long_format()`, and plots distributions on numeric variables used in the generate pipeline (i.e. indepdent variables, controls), collapsed across conditions, relative to the underlying distribution.Alternatively, distributions of any numeric variables in the original dataframe can be queried.
+#' Takes the output from `generate()` or `long_format()`, and plots distributions on numeric variables used in the generate pipeline (i.e. indepdent variables, controls), collapsed across conditions, relative to the underlying distribution. Alternatively, distributions of any specific numeric variables in the original dataframe can be queried.
 #'
 #' @param df Output from `generate()` or `long_format()`
 #' @param include A character vector indicating which variables to include in the plot. This can be those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Alternatively, this can be a character vector of the variables that should be plotted, that were in the original dataframe. Default is `"design"`.
@@ -44,7 +44,7 @@ plot_sample <- function(df, include = "design", force = TRUE, id_col = "string")
     }
   }
   # check is generated stimuli
-  if (is.null(LexOPS_attrs$generated)) stop("Must run `generate()` on `df` before using `plot_sample_rep()` (try `force = TRUE`?).")
+  if (is.null(LexOPS_attrs$generated)) stop("Must run `generate()` on `df` before using `plot_sample_rep()` (or try `force = TRUE`?).")
   # ensure is in long format
   if (is.null(LexOPS_attrs$is.long_format)) df <- LexOPS::long_format(df)
 
@@ -91,9 +91,14 @@ plot_sample <- function(df, include = "design", force = TRUE, id_col = "string")
   }, USE.NAMES = FALSE)
 
   # get the original df, recording whether each possible candidate was selected
-  plot_df <- dplyr::select(meta_df, !!dplyr::sym(id_col), plot_vars) %>%
-    dplyr::mutate(is_stim = dplyr::if_else(!!dplyr::sym(id_col) %in% df[[id_col]], "Generated Stimuli", "Unused Candidates")) %>%
-    dplyr::mutate(is_stim = factor(is_stim, levels = c("Unused Candidates", "Generated Stimuli")))
+  plot_df_all <- dplyr::select(meta_df, !!dplyr::sym(id_col), plot_vars) %>%
+    dplyr::mutate(is_stim = "All Candidates")
+
+  plot_df_gen <- dplyr::filter(plot_df_all, !!dplyr::sym(id_col) %in% df[[id_col]]) %>%
+    dplyr::mutate(is_stim = "Generated Stimuli")
+
+  plot_df <- dplyr::bind_rows(plot_df_all, plot_df_gen) %>%
+    dplyr::mutate(is_stim = factor(is_stim, levels = c("All Candidates", "Generated Stimuli")))
 
   # plot the result
   plot_df %>%
