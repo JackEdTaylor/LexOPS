@@ -29,7 +29,7 @@ cite_design <- function(df, include = "design") {
   if (is.null(LexOPS_attrs$is.long_format)) df <- LexOPS::long_format(df)
 
   # Tell the user to also cite LexOPS
-  cat(sprintf("Please also cite LexOPS: Taylor, Beith and Sereno (2019), doi:10.31234/osf.io/7sudw\n"))
+  cat(sprintf("Please also cite LexOPS: Taylor, Beith and Sereno (2020), http://doi.org/10.3758/s13428-020-01389-1\n"))
 
   # get vector of splits (IVs)
   splits <- sapply(LexOPS_attrs$splits, dplyr::first)
