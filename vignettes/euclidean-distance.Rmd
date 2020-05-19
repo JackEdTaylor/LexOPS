@@ -29,7 +29,7 @@ Euclidean distance is the straight-line distance between two points in $n$-dimen
 
 $$d(a,b) = \sqrt{\sum_{i=1}^n(a_i - b_i)^2}$$
 
-This section acts as an introudction to how LexOPS functions calculate Euclidean distance, with options for scaling and weighting variables.
+This section acts as an introduction to how LexOPS functions calculate Euclidean distance, with options for scaling and weighting variables.
 
 ## An Example 2D Space
 
