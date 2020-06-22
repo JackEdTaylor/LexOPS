@@ -365,13 +365,13 @@ tagList(
 
                                                   column(4, align="center",
                                                          fluidRow(
-                                                             column(12, tags$a(href = 'https://jackedtaylor.github.io/LexOPSdocs/', icon('file-alt'), style='font-size:75px; color:black;')),
+                                                             column(12, tags$a(href = 'https://jackedtaylor.github.io/LexOPSdocs/', icon('book-open'), style='font-size:75px; color:black;')),
                                                              column(12, tags$a(href = 'https://jackedtaylor.github.io/LexOPSdocs/', 'LexOPS Walkthrough', style='font-size:25px; color:black;'))
                                                          )),
                                                   column(4, align="center",
                                                          fluidRow(
-                                                             column(12, tags$a(href = 'https://jackt.shinyapps.io/lexops/', icon('book-open'), style='font-size:75px; color:black;')),
-                                                             column(12, tags$a(href = 'https://jackt.shinyapps.io/lexops/', 'LexOPS on shinyapps.io', style='font-size:25px; color:black;'))
+                                                             column(12, tags$a(href = 'http://doi.org/10.3758/s13428-020-01389-1', icon('file-alt'), style='font-size:75px; color:black;')),
+                                                             column(12, tags$a(href = 'http://doi.org/10.3758/s13428-020-01389-1', 'Paper on LexOPS', style='font-size:25px; color:black;'))
                                                          )),
                                                   column(4, align="center",
                                                          fluidRow(
