@@ -22,7 +22,7 @@ library(LexOPS)
 [![DOI: 10.3758/s13428-020-01389-1](https://zenodo.org/badge/DOI/10.3758/s13428-020-01389-1.svg)](https://doi.org/10.3758/s13428-020-01389-1)
 <!-- badges: end -->
 
-LexOPS is an R package for generating word stimuli, for use in Psychology experiments. It can generate stimuli for a factorial design specified by the user, controlling for selected lexical variables. The package has an inbuilt database of features for English words (`LexOPS::lexops`), but the user can also use their own list of features, for English words and/or for words in other languages.
+LexOPS is an R package for generating matched stimuli for Psychology experiments. If you have a finite database of stimuli, you can specify a factorial design and generate lists of items matched on specified variables. The package has an inbuilt database of features for English words for psycholinguistics studies in English (`LexOPS::lexops`). You can also use any R dataframe though, or join new features to the inbuilt dataset.
 
 ## Installation
 
@@ -43,7 +43,7 @@ https://jackedtaylor.github.io/LexOPSdocs/
 
 ### Shiny App
 
-The package features an interactive shiny app, with several useful features such as visualising variables' distributions and relationships while generating stimuli. It's a friendly front-end to the functions detailed below. The LexOPS shiny app is available online at [https://jackt.shinyapps.io/lexops/](https://jackt.shinyapps.io/lexops/), but it is usually faster and more relilable to run it locally, with:
+The package has an interactive shiny app, with useful features like visualising distributions and relationships. It's a friendly front-end to the package's functions. A demo version of the LexOPS shiny app is available online at [https://jackt.shinyapps.io/lexops/](https://jackt.shinyapps.io/lexops/), but it is faster and more reliable to run it locally, with:
 
 ```{r, eval=FALSE}
 LexOPS::run_shiny()
@@ -57,10 +57,10 @@ LexOPS' functions allow you to easily generate stimuli in a reproducible way.
 
 #### The "Generate Pipeline"
 
-The following example pipeline generates 50 words (all nouns) per condition (200 words in total), for a study with a 2 x 2, concreteness (low, high) by bigram probability (low, high) experimental design. Words are controlled for by length exactly, and by word frequency within a tolerance of ±0.2 Zipf. Matches are generated relative to each condition an equal number of times (`match_null="balanced"`).
+The following example pipeline generates 50 words (all nouns) per condition (200 words in total), for a study with a 2 x 2, concreteness (low, high) by bigram probability (low, high) experimental design. Words are controlled for by length exactly, and by word frequency within a tolerance of ±0.2 Zipf.
 
 ```{r, include=FALSE}
-set.seed(999)
+set.seed(99)
 ```
 
 ```{r, eval = FALSE}
@@ -106,7 +106,7 @@ plot_design(stim)
 
 #### Convert to Long Format
 
-The `long_format()` function makes it easy to convert generated stimuli into long format.
+The `long_format()` function coerces the generated stimuli into long format.
 
 ```{r}
 # present the same 20 words as in the last table

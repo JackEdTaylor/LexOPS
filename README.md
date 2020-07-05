@@ -11,12 +11,13 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 [![DOI: 10.3758/s13428-020-01389-1](https://zenodo.org/badge/DOI/10.3758/s13428-020-01389-1.svg)](https://doi.org/10.3758/s13428-020-01389-1)
 <!-- badges: end -->
 
-LexOPS is an R package for generating word stimuli, for use in
-Psychology experiments. It can generate stimuli for a factorial design
-specified by the user, controlling for selected lexical variables. The
-package has an inbuilt database of features for English words
-(`LexOPS::lexops`), but the user can also use their own list of
-features, for English words and/or for words in other languages.
+LexOPS is an R package for generating matched stimuli for Psychology
+experiments. If you have a finite database of stimuli, you can specify a
+factorial design and generate lists of items matched on specified
+variables. The package has an inbuilt database of features for English
+words for psycholinguistics studies in English (`LexOPS::lexops`). You
+can also use any R dataframe though, or join new features to the inbuilt
+dataset.
 
 ## Installation
 
@@ -37,12 +38,11 @@ An in-depth walkthrough of the package is available here:
 
 ### Shiny App
 
-The package features an interactive shiny app, with several useful
-features such as visualising variables’ distributions and relationships
-while generating stimuli. It’s a friendly front-end to the functions
-detailed below. The LexOPS shiny app is available online at
-<https://jackt.shinyapps.io/lexops/>, but it is usually faster and more
-relilable to run it locally, with:
+The package has an interactive shiny app, with useful features like
+visualising distributions and relationships. It’s a friendly front-end
+to the package’s functions. A demo version of the LexOPS shiny app is
+available online at <https://jackt.shinyapps.io/lexops/>, but it is
+faster and more reliable to run it locally, with:
 
 ``` r
 LexOPS::run_shiny()
@@ -61,8 +61,7 @@ The following example pipeline generates 50 words (all nouns) per
 condition (200 words in total), for a study with a 2 x 2, concreteness
 (low, high) by bigram probability (low, high) experimental design. Words
 are controlled for by length exactly, and by word frequency within a
-tolerance of ±0.2 Zipf. Matches are generated relative to each condition
-an equal number of times (`match_null="balanced"`).
+tolerance of ±0.2 Zipf.
 
 ``` r
 library(LexOPS)
@@ -77,16 +76,16 @@ stim <- lexops %>%
   generate(n = 50, match_null = "balanced")
 ```
 
-    #> Generated 5/50 (10%). 7 total iterations, 0.71 success rate.
-    #> Generated 10/50 (20%). 13 total iterations, 0.77 success rate.
-    #> Generated 15/50 (30%). 18 total iterations, 0.83 success rate.
-    #> Generated 20/50 (40%). 24 total iterations, 0.83 success rate.
-    #> Generated 25/50 (50%). 34 total iterations, 0.74 success rate.
-    #> Generated 30/50 (60%). 44 total iterations, 0.68 success rate.
-    #> Generated 35/50 (70%). 55 total iterations, 0.64 success rate.
-    #> Generated 40/50 (80%). 65 total iterations, 0.62 success rate.
-    #> Generated 45/50 (90%). 72 total iterations, 0.62 success rate.
-    #> Generated 50/50 (100%). 85 total iterations, 0.59 success rate.
+    #> Generated 5/50 (10%). 6 total iterations, 0.83 success rate.
+    #> Generated 10/50 (20%). 12 total iterations, 0.83 success rate.
+    #> Generated 15/50 (30%). 19 total iterations, 0.79 success rate.
+    #> Generated 20/50 (40%). 27 total iterations, 0.74 success rate.
+    #> Generated 25/50 (50%). 39 total iterations, 0.64 success rate.
+    #> Generated 30/50 (60%). 46 total iterations, 0.65 success rate.
+    #> Generated 35/50 (70%). 52 total iterations, 0.67 success rate.
+    #> Generated 40/50 (80%). 84 total iterations, 0.48 success rate.
+    #> Generated 45/50 (90%). 100 total iterations, 0.45 success rate.
+    #> Generated 50/50 (100%). 117 total iterations, 0.43 success rate.
 
 A preview of what was generated:
 
@@ -97,13 +96,13 @@ stim %>%
   knitr::kable()
 ```
 
-| item\_nr | A1\_B1      | A1\_B2      | A2\_B1      | A2\_B2      | match\_null |
-| -------: | :---------- | :---------- | :---------- | :---------- | :---------- |
-|        1 | subjection  | nightlight  | literalism  | bandmaster  | A1\_B1      |
-|        2 | idiocy      | keypad      | renown      | minnow      | A2\_B1      |
-|        3 | quasi       | lapel       | angst       | shank       | A1\_B1      |
-|        4 | smugness    | ammonium    | whomever    | derriere    | A1\_B1      |
-|        5 | phraseology | racquetball | nonchalance | mountaintop | A2\_B2      |
+| item\_nr | A1\_B1       | A1\_B2       | A2\_B1       | A2\_B2       | match\_null |
+| -------: | :----------- | :----------- | :----------- | :----------- | :---------- |
+|        1 | smugness     | dumbbell     | monotony     | fastener     | A1\_B2      |
+|        2 | gracefulness | spectrograph | predominance | thundercloud | A1\_B1      |
+|        3 | purpose      | cricket      | version      | chamber      | A1\_B1      |
+|        4 | imprudence   | plexiglass   | creepiness   | cowcatcher   | A1\_B1      |
+|        5 | agoraphobia  | brushstroke  | insinuation  | parishioner  | A2\_B1      |
 
 #### Review Generated Stimuli
 
@@ -118,8 +117,8 @@ plot_design(stim)
 
 #### Convert to Long Format
 
-The `long_format()` function makes it easy to convert generated stimuli
-into long format.
+The `long_format()` function coerces the generated stimuli into long
+format.
 
 ``` r
 # present the same 20 words as in the last table
@@ -128,25 +127,25 @@ long_format(stim) %>%
   knitr::kable()
 ```
 
-| item\_nr | condition | match\_null | string      | Zipf.SUBTLEX\_UK | Length | BG.SUBTLEX\_UK | CNC.Brysbaert |
-| -------: | :-------- | :---------- | :---------- | ---------------: | -----: | -------------: | ------------: |
-|        1 | A1\_B1    | A1\_B1      | subjection  |         1.695736 |     10 |      0.0037287 |          1.70 |
-|        1 | A1\_B2    | A1\_B1      | nightlight  |         1.649978 |     10 |      0.0030758 |          4.93 |
-|        1 | A2\_B1    | A1\_B1      | literalism  |         1.774917 |     10 |      0.0090696 |          1.57 |
-|        1 | A2\_B2    | A1\_B1      | bandmaster  |         1.540834 |     10 |      0.0096045 |          4.25 |
-|        2 | A1\_B1    | A2\_B1      | idiocy      |         2.466588 |      6 |      0.0020867 |          1.75 |
-|        2 | A1\_B2    | A2\_B1      | keypad      |         2.367834 |      6 |      0.0026913 |          4.81 |
-|        2 | A2\_B1    | A2\_B1      | renown      |         2.420012 |      6 |      0.0086858 |          1.68 |
-|        2 | A2\_B2    | A2\_B1      | minnow      |         2.263937 |      6 |      0.0082544 |          4.84 |
-|        3 | A1\_B1    | A1\_B1      | quasi       |         2.848024 |      5 |      0.0034945 |          1.73 |
-|        3 | A1\_B2    | A1\_B1      | lapel       |         2.748814 |      5 |      0.0038931 |          4.56 |
-|        3 | A2\_B1    | A1\_B1      | angst       |         3.047918 |      5 |      0.0106373 |          1.96 |
-|        3 | A2\_B2    | A1\_B1      | shank       |         2.981293 |      5 |      0.0103729 |          4.18 |
-|        4 | A1\_B1    | A1\_B1      | smugness    |         2.339188 |      8 |      0.0033250 |          1.96 |
-|        4 | A1\_B2    | A1\_B1      | ammonium    |         2.339188 |      8 |      0.0035710 |          4.04 |
-|        4 | A2\_B1    | A1\_B1      | whomever    |         2.227215 |      8 |      0.0083446 |          1.85 |
-|        4 | A2\_B2    | A1\_B1      | derriere    |         2.275519 |      8 |      0.0104492 |          4.65 |
-|        5 | A1\_B1    | A2\_B2      | phraseology |         2.057464 |     11 |      0.0032117 |          1.69 |
-|        5 | A1\_B2    | A2\_B2      | racquetball |         1.841864 |     11 |      0.0036144 |          4.66 |
-|        5 | A2\_B1    | A2\_B2      | nonchalance |         1.841864 |     11 |      0.0082801 |          1.81 |
-|        5 | A2\_B2    | A2\_B2      | mountaintop |         1.899856 |     11 |      0.0093209 |          4.56 |
+| item\_nr | condition | match\_null | string       | Zipf.SUBTLEX\_UK | Length | BG.SUBTLEX\_UK | CNC.Brysbaert |
+| -------: | :-------- | :---------- | :----------- | ---------------: | -----: | -------------: | ------------: |
+|        1 | A1\_B1    | A1\_B2      | smugness     |         2.339188 |      8 |      0.0033250 |          1.96 |
+|        1 | A1\_B2    | A1\_B2      | dumbbell     |         2.394706 |      8 |      0.0034583 |          4.69 |
+|        1 | A2\_B1    | A1\_B2      | monotony     |         2.403306 |      8 |      0.0082586 |          1.79 |
+|        1 | A2\_B2    | A1\_B2      | fastener     |         2.329204 |      8 |      0.0096918 |          4.10 |
+|        2 | A1\_B1    | A1\_B1      | gracefulness |         1.774917 |     12 |      0.0035692 |          1.86 |
+|        2 | A1\_B2    | A1\_B1      | spectrograph |         1.649978 |     12 |      0.0026646 |          4.00 |
+|        2 | A2\_B1    | A1\_B1      | predominance |         1.974489 |     12 |      0.0087761 |          1.56 |
+|        2 | A2\_B2    | A1\_B1      | thundercloud |         1.695736 |     12 |      0.0098056 |          4.52 |
+|        3 | A1\_B1    | A1\_B1      | purpose      |         4.511181 |      7 |      0.0032840 |          1.52 |
+|        3 | A1\_B2    | A1\_B1      | cricket      |         4.452220 |      7 |      0.0039900 |          4.77 |
+|        3 | A2\_B1    | A1\_B1      | version      |         4.536782 |      7 |      0.0090194 |          1.70 |
+|        3 | A2\_B2    | A1\_B1      | chamber      |         4.391917 |      7 |      0.0085878 |          4.59 |
+|        4 | A1\_B1    | A1\_B1      | imprudence   |         1.297796 |     10 |      0.0034965 |          1.60 |
+|        4 | A1\_B2    | A1\_B1      | plexiglass   |         1.297796 |     10 |      0.0035633 |          4.42 |
+|        4 | A2\_B1    | A1\_B1      | creepiness   |         1.473887 |     10 |      0.0082210 |          1.61 |
+|        4 | A2\_B2    | A1\_B1      | cowcatcher   |         1.172857 |     10 |      0.0093999 |          4.33 |
+|        5 | A1\_B1    | A2\_B1      | agoraphobia  |         2.252038 |     11 |      0.0033591 |          1.92 |
+|        5 | A1\_B2    | A2\_B1      | brushstroke  |         2.038158 |     11 |      0.0038485 |          4.27 |
+|        5 | A2\_B1    | A2\_B1      | insinuation  |         2.127099 |     11 |      0.0093339 |          1.63 |
+|        5 | A2\_B2    | A2\_B1      | parishioner  |         2.275519 |     11 |      0.0089277 |          4.04 |
