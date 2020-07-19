@@ -258,9 +258,6 @@ split_by.factor_group <- function(df, column, breaks, new_column, prefix, filter
   return(df)
 }
 
-# Use rlang ':=' within LexOPS
-`:=` <- rlang::`:=`
-
 # Checks
 check_ordered <- function(x){
   check_order <- purrr::map(x, ~.x[1] < .x[2]) %>%
