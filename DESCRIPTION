@@ -1,6 +1,6 @@
 Package: LexOPS
-Title: A Package and Shiny App for Generating Psycholinguistic Stimuli
-Version: 0.2.1
+Title: A Package and Shiny App for Generating Matched Stimuli
+Version: 0.2.2
 Authors@R: 
     c(
         person(given = "Jack",
@@ -13,12 +13,12 @@ Authors@R:
                role = "aut",
                comment = c(ORCID = "0000-0002-2260-4441"))
     )
-Description: LexOPS is a package for generating word stimuli for use in Psychology experiments. It features useful functions and a Shiny app suitable for generating stimuli for a range of experimental designs.
+Description: LexOPS is a package for generating controlled stimuli for use in Psychology experiments. It features useful functions and a Shiny app suitable for generating stimuli for a range of experimental designs.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 Imports: 
     magrittr,
