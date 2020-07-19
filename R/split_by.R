@@ -273,8 +273,13 @@ check_ordered <- function(x){
 check_overlapping <- function(x) {
   overlap_check <- logical()
 
+  # order by lower bound of each pair (in case not ordered linearly)
+  x_low <- sapply(x, function(x_i) x_i[[1]])
+  x_sorted <- x[order(x_low)]
+
+  # check the ordered levels don't overlap
   for(i in 1:(length(x) - 1)){
-    overlap_check <- c(overlap_check, x[[i]][2] <= x[[i + 1]][1])
+    overlap_check <- c(overlap_check, x_sorted[[i]][2] <= x_sorted[[i + 1]][1])
   }
 
   overlap_check <- all(overlap_check)
