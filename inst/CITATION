@@ -2,7 +2,7 @@ citHeader("To cite LexOPS in publications use:")
 
 citEntry(
   entry        = "Article",
-  title        = "{LexOPS}: An R package and user interface for the controlled generation of word stimuli",
+  title        = "{LexOPS}: An {R} package and user interface for the controlled generation of word stimuli",
   author       = personList(as.person("Jack E. Taylor"),
                    as.person("Alistair Beith"),
                    as.person("Sara C. Sereno")),
