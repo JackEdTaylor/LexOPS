@@ -18,7 +18,7 @@ generate(
 
 \item{n}{The number of strings per condition (default = 20). Set to \code{"all"} to generate as many as possible.}
 
-\item{match_null}{The condition words should be matched to. Should be a string indicating condition (e.g. \code{"A1_B2_C1"}), or a string indicating one of the following options: "first" for the lowest condition (e.g. \code{"A1"} or \code{"A1_B1_C1_D1"}, etc.), "random" for randomly selected null condition each iteration, "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition.}
+\item{match_null}{The condition that words should be matched to. Should be a string indicating condition (e.g. \code{"A1_B2_C1"}), or a string indicating one of the following options: "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition (default), "inclusive" to match each condition within the tolerances to every other condition, "first" for the lowest condition (e.g. \code{"A1"} or \code{"A1_B1_C1_D1"}, etc.), "random" for randomly selected null condition each iteration.}
 
 \item{seed}{An integer specifying the random seed, allowing reproduction of exact stimuli lists. If \code{NA}, will not set the seed. Default is \code{NA}.}
 
