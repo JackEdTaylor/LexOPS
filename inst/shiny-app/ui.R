@@ -191,7 +191,9 @@ tagList(
                                                            tabPanel(
                                                                "Match Nulls",
                                                                tags$h3("Match Null Distribution"),
-                                                               uiOutput("gen_review_null_distribution_ui")
+                                                               uiOutput("gen_review_null_distribution_ui"),
+                                                               tags$br(),
+                                                               shiny::HTML(paste(as.character(icon("question-circle")), "<a href=\"https://jackedtaylor.github.io/LexOPSdocs/faq.html#what-is-a-match-null\" target=\"_blank\">What is a match null?</a>"))
                                                            )
                                                        )
                                               ),
