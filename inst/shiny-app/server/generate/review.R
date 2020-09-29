@@ -56,7 +56,11 @@ output$gen_plot_filters_ui <- renderUI({
       "No numeric filters used."
     }
   } else {
-    not_generated_message
+    if (gen_filterby_boxes_N() > 0) {
+      not_generated_message
+    } else {
+      "No numeric filters used."
+    }
   }
 })
 
