@@ -114,7 +114,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALS
 
   df <- df %>%
     # create new column, which will give the cell of the design that each string belongs to
-    tidyr::unite(!!dplyr::sym(cond_col), LexOPS_splitCols, sep = "_") %>%
+    tidyr::unite(!!dplyr::sym(cond_col), dplyr::all_of(LexOPS_splitCols), sep = "_") %>%
     # remove strings that are members of no condition (i.e. if filter=FALSE in previous functions)
     dplyr::filter(!is.na(!!dplyr::sym(cond_col)))
 
