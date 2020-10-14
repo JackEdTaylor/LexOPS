@@ -366,15 +366,23 @@ generate.check <- function(df, n, match_null, seed, id_col, cond_col, is_shiny, 
   }
 }
 
-# function to filter exactly for categories, and with tolerances for numeric
-generate.filter_tol <- function(tol, df_matches) {
-  if(is.numeric(df_matches[[tol[[1]]]]) & length(tol)>=3) {
-    dplyr::filter(df_matches, dplyr::between(!!dplyr::sym(tol[[1]]),
-                                             tol[[3]]+tol[[2]][1],
-                                             tol[[3]]+tol[[2]][2]))
-  } else {
-    dplyr::filter(df_matches, !!dplyr::sym(tol[[1]]) == tol[[2]])
-  }
+# function to filter exactly for categories, and with tolerances for numeric in a vectorised manner
+generate.filter_tol <- function(df_matches, vars) {
+  # generate the expression
+  filter_char <- sapply(vars, function(tol) {
+    if(is.numeric(df_matches[[tol[[1]]]]) & length(tol)>=3) {
+      sprintf("dplyr::between(`%s`, %s, %s)", tol[[1]], tol[[3]]+tol[[2]][1], tol[[3]]+tol[[2]][2])
+    } else {
+      if (is.numeric(df_matches[[tol[[1]]]])) {
+        sprintf("`%s`==%s", tol[[1]], tol[[2]])
+      } else {
+        sprintf("`%s`==\"%s\"", tol[[1]], tol[[2]])
+      }
+    }
+  }) %>%
+    paste(collapse = " & ")
+  # filter the dataframe on the generated expression
+  dplyr::filter(df_matches, eval(parse(text = filter_char)))
 }
 
 # function to find matches for a particular word (better than current match_word() function?)
@@ -393,9 +401,8 @@ generate.find_matches <- function(df, target, vars, matchCond, id_col, cond_col)
     if (is.list(cont)) append(cont, cont_val) else list(cont, cont_val)
   })
   # for each control, filter out non-suitable matches for this word
-  df_matches_filt <- vars %>%
-    purrr::map(~ generate.filter_tol(., df_matches = df_matches)) %>%
-    purrr::reduce(dplyr::inner_join, by = colnames(df_matches))
+  df_matches_filt <- generate.filter_tol(df_matches, vars)
+
   df_matches_filt
 }
 
@@ -474,9 +481,7 @@ generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, id_c
   })
 
   # for each control, filter out non-suitable matches for this word
-  df_matches_filt <- vars %>%
-    purrr::map(~ generate.filter_tol(., df_matches = df_matches)) %>%
-    purrr::reduce(dplyr::inner_join, by = colnames(df_matches))
+  df_matches_filt <- generate.filter_tol(df_matches, vars)
 
   df_matches_filt
 }
