@@ -33,26 +33,9 @@ An in-depth walkthrough of the package is available here:
 
 ## TL;DR
 
-### Shiny App
+LexOPS makes it easy to generate matched stimuli in a reproducible way.
 
-The package has an interactive shiny app, with useful features like
-visualising distributions and relationships. It’s a friendly front-end
-to the package’s functions. A demo version of the LexOPS shiny app is
-available online at <https://jackt.shinyapps.io/lexops/>, but it is
-faster and more reliable to run it locally, with:
-
-``` r
-LexOPS::run_shiny()
-```
-
-![](man/figures/shiny-preview.png)
-
-### Code
-
-LexOPS’ functions allow you to easily generate stimuli in a reproducible
-way.
-
-#### The “Generate Pipeline”
+### The “Generate Pipeline”
 
 The following example pipeline generates 50 words (all nouns) per
 condition (200 words in total), for a study with a 2 x 2, concreteness
@@ -101,7 +84,7 @@ stim %>%
 |        4 | imprudence   | plexiglass   | creepiness   | cowcatcher   | A1\_B1      |
 |        5 | agoraphobia  | brushstroke  | insinuation  | parishioner  | A2\_B1      |
 
-#### Review Generated Stimuli
+### Review Generated Stimuli
 
 The `plot_design()` function produces a plot summarising the generated
 stimuli.
@@ -112,7 +95,7 @@ plot_design(stim)
 
 <img src="man/figures/README-fig1-1.png" width="100%" />
 
-#### Convert to Long Format
+### Convert to Long Format
 
 The `long_format()` function coerces the generated stimuli into long
 format.
@@ -146,3 +129,18 @@ long_format(stim) %>%
 |        5 | A1\_B2    | A2\_B1      | brushstroke  |         2.038158 |     11 |      0.0038485 |          4.27 |
 |        5 | A2\_B1    | A2\_B1      | insinuation  |         2.127099 |     11 |      0.0093339 |          1.63 |
 |        5 | A2\_B2    | A2\_B1      | parishioner  |         2.275519 |     11 |      0.0089277 |          4.04 |
+
+### Shiny App
+
+The package has an interactive shiny app, which supports most code
+functionality, with useful additional features like visualising
+distributions and relationships. It’s a friendly front-end to the
+package’s functions. A demo version of the LexOPS shiny app is available
+online at <https://jackt.shinyapps.io/lexops/>, but it is faster and
+more reliable to run it locally, with:
+
+``` r
+LexOPS::run_shiny()
+```
+
+![](man/figures/shiny-preview.png)

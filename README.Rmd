@@ -41,21 +41,9 @@ https://jackedtaylor.github.io/LexOPSdocs/
 
 ## TL;DR
 
-### Shiny App
+LexOPS makes it easy to generate matched stimuli in a reproducible way.
 
-The package has an interactive shiny app, with useful features like visualising distributions and relationships. It's a friendly front-end to the package's functions. A demo version of the LexOPS shiny app is available online at [https://jackt.shinyapps.io/lexops/](https://jackt.shinyapps.io/lexops/), but it is faster and more reliable to run it locally, with:
-
-```{r, eval=FALSE}
-LexOPS::run_shiny()
-```
-
-![](man/figures/shiny-preview.png)
-
-### Code
-
-LexOPS' functions allow you to easily generate stimuli in a reproducible way.
-
-#### The "Generate Pipeline"
+### The "Generate Pipeline"
 
 The following example pipeline generates 50 words (all nouns) per condition (200 words in total), for a study with a 2 x 2, concreteness (low, high) by bigram probability (low, high) experimental design. Words are controlled for by length exactly, and by word frequency within a tolerance of ±0.2 Zipf.
 
@@ -96,7 +84,7 @@ stim %>%
   knitr::kable()
 ```
 
-#### Review Generated Stimuli
+### Review Generated Stimuli
 
 The `plot_design()` function produces a plot summarising the generated stimuli.
 
@@ -104,7 +92,7 @@ The `plot_design()` function produces a plot summarising the generated stimuli.
 plot_design(stim)
 ```
 
-#### Convert to Long Format
+### Convert to Long Format
 
 The `long_format()` function coerces the generated stimuli into long format.
 
@@ -114,3 +102,13 @@ long_format(stim) %>%
   head(20) %>%
   knitr::kable()
 ```
+
+### Shiny App
+
+The package has an interactive shiny app, which supports most code functionality, with useful additional features like visualising distributions and relationships. It's a friendly front-end to the package's functions. A demo version of the LexOPS shiny app is available online at [https://jackt.shinyapps.io/lexops/](https://jackt.shinyapps.io/lexops/), but it is faster and more reliable to run it locally, with:
+
+```{r, eval=FALSE}
+LexOPS::run_shiny()
+```
+
+![](man/figures/shiny-preview.png)
