@@ -25,11 +25,13 @@ if (!require("devtools")) install.packages("devtools")
 devtools::install_github("JackEdTaylor/LexOPS@*release")
 ```
 
-## Walkthrough
+## How to Use
 
-An in-depth walkthrough of the package is available here:
-
+:book: In-depth walkthrough of the package:
 <https://jackedtaylor.github.io/LexOPSdocs/>
+
+:mortar\_board: Paper about the package: [Taylor, Beith, and Sereno
+(2020)](https://doi.org/10.3758/s13428-020-01389-1)
 
 ## TL;DR
 
