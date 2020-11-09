@@ -20,9 +20,9 @@
 #' @export
 
 run_shiny <- function(...) {
-  appDir <- system.file("shiny-app", package = "LexOPS")
+  app_dir <- system.file("shiny-app", package = "LexOPS")
   # check app is installed
-  if (appDir == "") {
+  if (app_dir == "") {
     stop("Could not find the directory for the LexOPS Shiny App. Try re-installing `LexOPS`.")
   }
   # check dependencies
@@ -37,6 +37,5 @@ run_shiny <- function(...) {
     stop(sprintf("You are missing %s packages required by the LexOPS shiny app. Install them with:\n%s", length(deps_vec), deps_inst_str))
   }
   # run app
-  shiny::runApp(appDir, ...)
+  shiny::runApp(app_dir, ...)
 }
-
