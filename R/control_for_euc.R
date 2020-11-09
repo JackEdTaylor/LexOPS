@@ -80,7 +80,7 @@ control_for_euc <- function(df, vars, tol, name = NA, scale = TRUE, center = TRU
     df_ed <- dplyr::mutate(
       dplyr::select(euc_df_, !!dplyr::sym(id_col_)),
       control_for_euc_val = LexOPS::euc_dists(
-        df = dplyr::select(euc_df_, !!dplyr::sym(id_col_), ed_vars),
+        df = dplyr::select(euc_df_, !!dplyr::sym(id_col_), dplyr::all_of(ed_vars)),
         target = target,
         vars = ed_vars,
         scale = scale_,
