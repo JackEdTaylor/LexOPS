@@ -101,8 +101,8 @@ testthat::test_that("reproducibility", {
     {
       df <- data.frame(
         item_nr = 1:10,
-        A1 = c("52", "41", "3", "27", "37", "16", "75", "10", "91", "67"),
-        A2 = c("8", "26", "93", "50", "70", "63", "43", "66", "56", "11"),
+        A1 = c("77", "81", "91", "75", "17", "100", "60", "72", "13", "88"),
+        A2 = c("73", "94", "39", "95", "5", "51", "71", "68", "19", "89"),
         match_null = c("A1", "A1", "A2", "A2", "A2", "A2", "A2", "A1", "A1", "A1")
       )
       attributes(df) <- NULL
@@ -522,7 +522,7 @@ testthat::test_that("match_null options", {
       dplyr::group_by(match_null) %>%
       dplyr::count() %>%
       dplyr::pull(n)
-    all(match_null_counts == 500)
+    all(match_null_counts == 16)
   })
   # check balanced match nulls exist in almost equal frequencies for n not divisible by number of conds
   testthat::expect_true({
