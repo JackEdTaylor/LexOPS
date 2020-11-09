@@ -1,6 +1,6 @@
 #' Generate stimuli
 #'
-#' Generates the stimuli from the data frame after it has been passed through `split_by()`, and optionally, `control_for()`. Will generate `n` items per condition. If <`n` items can be generated, will generate as many as possible given the experiment's design. Can be reproducible with `set.seed()`.
+#' Generates the stimuli from the data frame after it has been passed through `split_by()`, and optionally, `control_for()`. Will generate `n` items per condition. If <`n` items can be generated, will generate as many as possible given the experiment's design. Can be reproducible with `seed` argument.
 #'
 #' @param df A data frame that is the result from `control_for()` or `split_by()`.
 #' @param n The number of strings per condition (default = 20). Set to `"all"` to generate as many as possible.
