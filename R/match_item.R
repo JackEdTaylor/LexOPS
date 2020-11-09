@@ -72,7 +72,7 @@ match_item <- function(df = LexOPS::lexops, target, ..., id_col = "string", filt
     vars <- (...)
   } else {
     vars <- substitute(c(...)) %>%
-      parse_elipsis()
+      parse_ellipsis()
   }
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))

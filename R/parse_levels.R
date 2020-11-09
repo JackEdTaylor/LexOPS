@@ -48,7 +48,7 @@ parse_levels <- function(var, levels = NA) {
   levels <- deparse(levels) %>%
     paste0(collapse = "") %>%
     strsplit("~", fixed = TRUE) %>%
-    dplyr::first() %>%
+    .[[1]] %>%
     gsub(" ", "", .)
 
   if ( all(grepl(":", levels)) | (any(grepl(":", levels)) & any(levels %in% c("NA", "NULL")) )) {
@@ -67,30 +67,30 @@ parse_levels <- function(var, levels = NA) {
   out
 }
 
-#' A non-standard evaluation parser for elipses
+#' A non-standard evaluation parser for ellipses
 #'
-#' This is a version of `parse_levels()` that supports elipses. This is useful for specifying multiple parameters in one function. This function was specifically designed for a non-standard evaluation update to `match_item()`.
+#' This is a version of `parse_levels()` that supports ellipses. This is useful for specifying multiple parameters in one function. This function was specifically designed for a non-standard evaluation update to `match_item()`.
 #'
 #' @param ... Variables and tolerances, in the form `num_variable1 = -1:3, num_variable2 = -0.5:0.5, char_variable1`. Variables and tolerances should be separated by a `=`, and lower and upper boundaries of tolerances should be separated by `:`. Variables without tolerances are also supported (useful for character variables or matching by numeric variables exactly, i.e. shorthand for `0:0`).
 #'
 #' @return Returns a list object in the form `list(c("num_variable1", -1, 3), c("num_variable2", -0.5, 0.5), "char_variable1")`.
 #' @examples
 #'
-#' parse_elipsis(substitute(c(Length = 0:0, Zipf.SUBTLEX_UK = -0.1:0.1, PoS.SUBTLEX_UK)))
+#' parse_ellipsis(substitute(c(Length = 0:0, Zipf.SUBTLEX_UK = -0.1:0.1, PoS.SUBTLEX_UK)))
 #'
-#' parse_elipsis(substitute(c(Length = 0:0,
+#' parse_ellipsis(substitute(c(Length = 0:0,
 #'                            Zipf.SUBTLEX_UK = -0.1:0.1,
 #'                            PoS.SUBTLEX_UK,
 #'                            BG.SUBTLEX_UK = -0.005:0.005)))
 #'
 #' @export
 
-parse_elipsis <- function(...) {
+parse_ellipsis <- function(...) {
   deparse(...) %>%
     paste0(collapse = "") %>%
     lapply(parse.unvectorise) %>%
     lapply(strsplit, "=", fixed = TRUE) %>%
-    dplyr::first() %>%
+    .[[1]] %>%
     lapply(function(x) {
       # remove spaces
       x <- x %>%
@@ -117,8 +117,7 @@ parse_elipsis <- function(...) {
 parse.unvectorise <- function(vec_str) {
   if (grepl("^c\\(.+\\)$", vec_str)) {
     vec_str %>%
-      gsub("^c\\(", "", .) %>%
-      gsub("\\)$", "", .) %>%
+      gsub("^c\\(|\\)$", "", .) %>%
       strsplit(", *") %>%
       unlist()
   } else {
