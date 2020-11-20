@@ -192,7 +192,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALS
 
       if (length(null_word_bank) == 0) {
         if (n_all) {
-          if (!silent) cat(sprintf("\nGenerated a total of %i stimuli per condition (%i total iterations)\n", n_generated, n_tried))
+          if (!silent) cat(sprintf("Generated %i (%i iterations, %.2f success rate)\r", n_generated, n_tried, n_generated/n_tried))
         } else {
           warning_text <- sprintf("\nFailed to generate any new matches for matched row %i (all %i candidate null words were tried)", n_generated + 1, n_tried_this_n_generated)
           if (is_shiny) {
