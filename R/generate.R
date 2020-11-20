@@ -179,7 +179,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALS
     n_generated <- 0
     words_tried_this_generated <- c()
     out <- matrix(ncol=length(all_conds)+1, nrow=n)
-    printing_points <- round(seq(0, n, n/10))
+    printing_points <- round(seq(0, n, n/5))
     successful_iterations <- c()
     control_for_map_values <- dplyr::tibble()
 
@@ -280,13 +280,13 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALS
         )
       }
 
-      # if n=="all", print progress every 250 iterations
+      # if n=="all", print progress every 100 iterations
       if (!silent) {
-        if (n_tried%%250==0 & n_all) {
+        if (n_tried%%100==0 & n_all) {
           if (all(!is.na(matches))) {
-            cat(sprintf("Generated %i (%i iterations, %.2f success rate)\n", n_generated+1, n_tried, (n_generated+1)/n_tried))
+            cat(sprintf("Generated %i (%i iterations, %.2f success rate)\r", n_generated+1, n_tried, (n_generated+1)/n_tried))
           } else {
-            cat(sprintf("Generated %i (%i iterations, %.2f success rate)\n", n_generated, n_tried, n_generated/n_tried))
+            cat(sprintf("Generated %i (%i iterations, %.2f success rate)\r", n_generated, n_tried, n_generated/n_tried))
           }
         }
       }
@@ -300,7 +300,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALS
         words_tried_this_generated <- c()
         if (!silent) {
           if (n_generated %in% printing_points & !n_all) {
-            cat(sprintf("Generated %i/%i (%i%%). %i total iterations, %.2f success rate.\n", n_generated, n, round(n_generated/n*100), n_tried, n_generated/n_tried))
+            cat(sprintf("Generated %i/%i (%i%%). %i total iterations, %.2f success rate.\r", n_generated, n, round(n_generated/n*100), n_tried, n_generated/n_tried))
           }
         }
       }
