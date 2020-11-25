@@ -179,7 +179,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALS
     n_generated <- 0
     words_tried_this_generated <- c()
     out <- matrix(ncol=length(all_conds)+1, nrow=n)
-    printing_points <- round(seq(0, n, n/5))
+    printing_points <- round(seq(0, n, n/20))
     successful_iterations <- c()
     control_for_map_values <- dplyr::tibble()
 
