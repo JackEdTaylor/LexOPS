@@ -163,10 +163,8 @@ generated_stim <- reactive({
     gen_seed <- if (input$preference_use_a_random_seed) input$preference_random_seed else NA
     out <- LexOPS::generate(df, n = n, match_null = match_null, seed = gen_seed, is_shiny = TRUE)
 
-    if (n != "all") {
-      if (nrow(out) == n) {
-        shinyjs::html("gen_console", sprintf("Done! Generated %i stimuli per condition", nrow(out)))
-      }
+    if ((n!="all" & nrow(out) == n) | n=="all") {
+      shinyjs::html("gen_console", " - Done!", add=TRUE)
     }
 
     out

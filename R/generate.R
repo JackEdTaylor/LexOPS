@@ -306,7 +306,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALS
       }
 
     }
-    if (!silent) cat(sprintf("\n"))
+    if (!silent & !is_shiny) cat(sprintf("\n"))
 
     # create meta_df
     meta_df <- df
