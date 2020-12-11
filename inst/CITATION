@@ -6,13 +6,15 @@ citEntry(
   author       = personList(as.person("Jack E. Taylor"),
                    as.person("Alistair Beith"),
                    as.person("Sara C. Sereno")),
-  journal      = "Behavior Research Methods",
   year         = "2020",
+  journal      = "Behavior Research Methods",
+  number       = "52",
+  pages        = "2372–2382",
   doi          = "http://doi.org/10.3758/s13428-020-01389-1",
 
   textVersion  =
-  paste("Jack E. Taylor, Alistair Beith, Sara C. Sereno (2020).",
+  paste("Taylor, J. E., Beith, A., & Sereno, S. C. (2020).",
         "LexOPS: An R package and user interface for the controlled generation of word stimuli.",
-        "Behavior Research Methods.",
+        "Behavior Research Methods, 52, 2372–2382.",
         "http://doi.org/10.3758/s13428-020-01389-1")
 )
