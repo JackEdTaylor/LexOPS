@@ -7,7 +7,7 @@
 
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
-[![Version: 0.2.3](https://img.shields.io/badge/version-0.2.3-blue.svg)](https://github.com/JackEdTaylor/LexOPS/releases)
+[![Version: 0.2.4](https://img.shields.io/badge/version-0.2.4-blue.svg)](https://github.com/JackEdTaylor/LexOPS/releases)
 [![DOI: 10.3758/s13428-020-01389-1](https://zenodo.org/badge/DOI/10.3758/s13428-020-01389-1.svg)](https://doi.org/10.3758/s13428-020-01389-1)
 <!-- badges: end -->
 
@@ -39,35 +39,23 @@ LexOPS makes it easy to generate matched stimuli in a reproducible way.
 
 ### The “Generate Pipeline”
 
-The following example pipeline generates 50 words (all nouns) per
-condition (200 words in total), for a study with a 2 x 2, concreteness
-(low, high) by bigram probability (low, high) experimental design. Words
-are controlled for by length exactly, and by word frequency within a
-tolerance of ±0.2 Zipf.
+The following example pipeline generates 50 words per condition (200 in
+total), for a study with a 2 x 2, syllables (1, 2) by concreteness (low,
+high) design. Words are matched by length exactly, and by word frequency
+within a tolerance of ±0.2 Zipf.
 
 ``` r
 library(LexOPS)
 
-# generate stimuli
 stim <- lexops %>%
-  subset(PoS.SUBTLEX_UK == "noun") %>%
-  split_by(BG.SUBTLEX_UK, 0.001:0.004 ~ 0.008:0.011) %>%
+  split_by(Syllables.CMU, 1:1 ~ 2:2) %>%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
   control_for(Length) %>%
   generate(n = 50, match_null = "balanced")
 ```
 
-    #> Generated 5/50 (10%). 6 total iterations, 0.83 success rate.
-    #> Generated 10/50 (20%). 12 total iterations, 0.83 success rate.
-    #> Generated 15/50 (30%). 19 total iterations, 0.79 success rate.
-    #> Generated 20/50 (40%). 27 total iterations, 0.74 success rate.
-    #> Generated 25/50 (50%). 39 total iterations, 0.64 success rate.
-    #> Generated 30/50 (60%). 46 total iterations, 0.65 success rate.
-    #> Generated 35/50 (70%). 52 total iterations, 0.67 success rate.
-    #> Generated 40/50 (80%). 84 total iterations, 0.48 success rate.
-    #> Generated 45/50 (90%). 100 total iterations, 0.45 success rate.
-    #> Generated 50/50 (100%). 117 total iterations, 0.43 success rate.
+    #> Generated 50/50 (100%). 157 total iterations, 0.32 success rate.
 
 A preview of what was generated:
 
@@ -78,13 +66,13 @@ stim %>%
   knitr::kable()
 ```
 
-| item\_nr | A1\_B1       | A1\_B2       | A2\_B1       | A2\_B2       | match\_null |
-| -------: | :----------- | :----------- | :----------- | :----------- | :---------- |
-|        1 | smugness     | dumbbell     | monotony     | fastener     | A1\_B2      |
-|        2 | gracefulness | spectrograph | predominance | thundercloud | A1\_B1      |
-|        3 | purpose      | cricket      | version      | chamber      | A1\_B1      |
-|        4 | imprudence   | plexiglass   | creepiness   | cowcatcher   | A1\_B1      |
-|        5 | agoraphobia  | brushstroke  | insinuation  | parishioner  | A2\_B1      |
+| item\_nr | A1\_B1 | A1\_B2 | A2\_B1 | A2\_B2 | match\_null |
+| -------: | :----- | :----- | :----- | :----- | :---------- |
+|        1 | fresh  | frame  | basis  | river  | A1\_B2      |
+|        2 | gist   | cuff   | akin   | tuba   | A2\_B1      |
+|        3 | fate   | slip   | rely   | lily   | A1\_B1      |
+|        4 | shrewd | wrench | equate | muzzle | A2\_B2      |
+|        5 | famed  | reins  | ethic  | totem  | A2\_B1      |
 
 ### Review Generated Stimuli
 
@@ -109,28 +97,28 @@ long_format(stim) %>%
   knitr::kable()
 ```
 
-| item\_nr | condition | match\_null | string       | Zipf.SUBTLEX\_UK | Length | BG.SUBTLEX\_UK | CNC.Brysbaert |
-| -------: | :-------- | :---------- | :----------- | ---------------: | -----: | -------------: | ------------: |
-|        1 | A1\_B1    | A1\_B2      | smugness     |         2.339188 |      8 |      0.0033250 |          1.96 |
-|        1 | A1\_B2    | A1\_B2      | dumbbell     |         2.394706 |      8 |      0.0034583 |          4.69 |
-|        1 | A2\_B1    | A1\_B2      | monotony     |         2.403306 |      8 |      0.0082586 |          1.79 |
-|        1 | A2\_B2    | A1\_B2      | fastener     |         2.329204 |      8 |      0.0096918 |          4.10 |
-|        2 | A1\_B1    | A1\_B1      | gracefulness |         1.774917 |     12 |      0.0035692 |          1.86 |
-|        2 | A1\_B2    | A1\_B1      | spectrograph |         1.649978 |     12 |      0.0026646 |          4.00 |
-|        2 | A2\_B1    | A1\_B1      | predominance |         1.974489 |     12 |      0.0087761 |          1.56 |
-|        2 | A2\_B2    | A1\_B1      | thundercloud |         1.695736 |     12 |      0.0098056 |          4.52 |
-|        3 | A1\_B1    | A1\_B1      | purpose      |         4.511181 |      7 |      0.0032840 |          1.52 |
-|        3 | A1\_B2    | A1\_B1      | cricket      |         4.452220 |      7 |      0.0039900 |          4.77 |
-|        3 | A2\_B1    | A1\_B1      | version      |         4.536782 |      7 |      0.0090194 |          1.70 |
-|        3 | A2\_B2    | A1\_B1      | chamber      |         4.391917 |      7 |      0.0085878 |          4.59 |
-|        4 | A1\_B1    | A1\_B1      | imprudence   |         1.297796 |     10 |      0.0034965 |          1.60 |
-|        4 | A1\_B2    | A1\_B1      | plexiglass   |         1.297796 |     10 |      0.0035633 |          4.42 |
-|        4 | A2\_B1    | A1\_B1      | creepiness   |         1.473887 |     10 |      0.0082210 |          1.61 |
-|        4 | A2\_B2    | A1\_B1      | cowcatcher   |         1.172857 |     10 |      0.0093999 |          4.33 |
-|        5 | A1\_B1    | A2\_B1      | agoraphobia  |         2.252038 |     11 |      0.0033591 |          1.92 |
-|        5 | A1\_B2    | A2\_B1      | brushstroke  |         2.038158 |     11 |      0.0038485 |          4.27 |
-|        5 | A2\_B1    | A2\_B1      | insinuation  |         2.127099 |     11 |      0.0093339 |          1.63 |
-|        5 | A2\_B2    | A2\_B1      | parishioner  |         2.275519 |     11 |      0.0089277 |          4.04 |
+| item\_nr | condition | match\_null | string | Zipf.SUBTLEX\_UK | Length | Syllables.CMU | CNC.Brysbaert |
+| -------: | :-------- | :---------- | :----- | ---------------: | -----: | ------------: | ------------: |
+|        1 | A1\_B1    | A1\_B2      | fresh  |         4.893319 |      5 |             1 |          1.97 |
+|        1 | A1\_B2    | A1\_B2      | frame  |         4.755413 |      5 |             1 |          4.30 |
+|        1 | A2\_B1    | A1\_B2      | basis  |         4.625308 |      5 |             2 |          1.83 |
+|        1 | A2\_B2    | A1\_B2      | river  |         4.926899 |      5 |             2 |          4.89 |
+|        2 | A1\_B1    | A2\_B1      | gist   |         2.974489 |      4 |             1 |          1.81 |
+|        2 | A1\_B2    | A2\_B1      | cuff   |         3.272077 |      4 |             1 |          4.61 |
+|        2 | A2\_B1    | A2\_B1      | akin   |         3.083126 |      4 |             2 |          1.71 |
+|        2 | A2\_B2    | A2\_B1      | tuba   |         2.951008 |      4 |             2 |          4.86 |
+|        3 | A1\_B1    | A1\_B1      | fate   |         4.224395 |      4 |             1 |          1.53 |
+|        3 | A1\_B2    | A1\_B1      | slip   |         4.332324 |      4 |             1 |          4.10 |
+|        3 | A2\_B1    | A1\_B1      | rely   |         4.318882 |      4 |             2 |          1.93 |
+|        3 | A2\_B2    | A1\_B1      | lily   |         4.253363 |      4 |             2 |          4.69 |
+|        4 | A1\_B1    | A2\_B2      | shrewd |         3.244739 |      6 |             1 |          1.92 |
+|        4 | A1\_B2    | A2\_B2      | wrench |         3.150581 |      6 |             1 |          4.93 |
+|        4 | A2\_B1    | A2\_B2      | equate |         2.976769 |      6 |             2 |          1.93 |
+|        4 | A2\_B2    | A2\_B2      | muzzle |         3.066804 |      6 |             2 |          4.59 |
+|        5 | A1\_B1    | A2\_B1      | famed  |         3.415895 |      5 |             1 |          1.81 |
+|        5 | A1\_B2    | A2\_B1      | reins  |         3.327180 |      5 |             1 |          4.56 |
+|        5 | A2\_B1    | A2\_B1      | ethic  |         3.303191 |      5 |             2 |          1.59 |
+|        5 | A2\_B2    | A2\_B1      | totem  |         3.239804 |      5 |             2 |          4.00 |
 
 ### Shiny App
 
