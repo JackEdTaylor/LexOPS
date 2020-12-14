@@ -52,7 +52,7 @@ stim <- lexops %>%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
   control_for(Length) %>%
-  generate(n = 50, match_null = "balanced")
+  generate(n = 50)
 ```
 
     #> Generated 50/50 (100%). 157 total iterations, 0.32 success rate.
