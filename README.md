@@ -60,7 +60,7 @@ stim <- lexops %>%
 A preview of what was generated:
 
 ``` r
-# create a table of the first 20 words (4 per row) as an example
+# create a table of the first 5 rows of the output
 stim %>%
   head(5) %>%
   knitr::kable()
@@ -91,7 +91,7 @@ The `long_format()` function coerces the generated stimuli into long
 format.
 
 ``` r
-# present the same 20 words as in the last table
+# present the same 20 words as in the earlier table
 long_format(stim) %>%
   head(20) %>%
   knitr::kable()
