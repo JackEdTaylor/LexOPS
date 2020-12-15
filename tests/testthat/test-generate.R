@@ -9,7 +9,8 @@ eg_df <- data.frame(
   c = rnorm(100),
   d = factor(sample(c("a", "b", "c"), 100, replace=TRUE)),
   e = sample(1:5, 100, replace=TRUE),
-  f = sample(c("zzzz", "zzza", "zzaa", "zaaa", "aaaa", "zzzzz"), 100, replace = TRUE)
+  f = sample(c("zzzz", "zzza", "zzaa", "zaaa", "aaaa", "zzzzz"), 100, replace = TRUE),
+  g = sample(c("yyyy", "yyya", "yyaa", "yaaa", "aaaa", "yyyyy"), 100, replace = TRUE)
 )
 
 # general warnings ----
@@ -642,6 +643,46 @@ testthat::test_that("control_for_map", {
     },
   46  # (n_items * n_cells) - n_items; as each of the 2 conditions will be within the tolerance to each other, and the match null will be an exact match with itself
   )
+  # test with multiple control functions
+  testthat::expect_equal({
+    library(vwr)
+    eg_df %>%
+      set_options(id_col = "id") %>%
+      split_by(a, -5:0 ~ 0:5) %>%
+      control_for_map(levenshtein.distance, f, 2:Inf) %>%
+      control_for_map(levenshtein.distance, g, 3:3) %>%
+      generate(29, silent=TRUE) %>%
+      dplyr::left_join(
+        eg_df %>%
+          dplyr::select(id, f) %>%
+          dplyr::rename(A1_f = f),
+        by = c("A1" = "id")
+      ) %>%
+      dplyr::left_join(
+        eg_df %>%
+          dplyr::select(id, f) %>%
+          dplyr::rename(A2_f = f),
+        by = c("A2" = "id")
+      ) %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(ld_f = levenshtein.distance(A1_f, A2_f)) %>%
+      dplyr::left_join(
+        eg_df %>%
+          dplyr::select(id, g) %>%
+          dplyr::rename(A1_g = g),
+        by = c("A1" = "id")
+      ) %>%
+      dplyr::left_join(
+        eg_df %>%
+          dplyr::select(id, g) %>%
+          dplyr::rename(A2_g = g),
+        by = c("A2" = "id")
+      ) %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(ld_g = levenshtein.distance(A1_g, A2_g)) %>%
+      dplyr::filter(ld_g == 3, ld_f >= 2) %>%
+      nrow()
+  }, 29)
 })
 
 # control_for_euc ----

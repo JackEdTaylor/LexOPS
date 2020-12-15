@@ -90,7 +90,7 @@ control_for_map <- function(df, fun, var, tol = NA, name = NA, standard_eval = F
   if (is.null(LexOPS_attrs$control_functions)) {
     LexOPS_attrs$control_functions <- list(var)
   } else {
-    LexOPS_attrs$control_functions[[length(LexOPS_attrs$controls)+1]] <- var
+    LexOPS_attrs$control_functions[[length(LexOPS_attrs$control_functions)+1]] <- var
   }
 
   # add the attributes to the output object
