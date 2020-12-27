@@ -180,6 +180,53 @@ testthat::test_that("reproducibility", {
   )
 })
 
+# no id col given ----
+testthat::test_that("no id_col given", {
+  # check that generate still works when there is no id col
+  testthat::expect_equal(
+    suppressWarnings(
+      eg_df %>%
+        split_by(a, -5:0 ~ 0:5) %>%
+        control_for(b, -2.5:2.5) %>%
+        generate(17) %>%
+        nrow()
+    ),
+    17
+  )
+  # test that including no id_col gives a warning
+  testthat::expect_warning(
+    eg_df %>%
+      split_by(a, -5:0 ~ 0:5) %>%
+      control_for(b, -2.5:2.5) %>%
+      generate(17),
+    "No id_col detected; will use row numbers."
+  )
+  # since eg_df's id column is just the row numbers anyway, these should be identical
+  testthat::expect_identical(
+    {
+      df <- suppressWarnings(
+        eg_df %>%
+          set_options(id_col = "id") %>%
+          split_by(a, -5:0 ~ 0:5) %>%
+          control_for(b, -2.5:2.5) %>%
+          generate(10, seed=42, silent=TRUE)
+      )
+      attributes(df) <- NULL
+      df
+    },
+    {
+      df <- suppressWarnings(
+        eg_df %>%
+          split_by(a, -5:0 ~ 0:5) %>%
+          control_for(b, -2.5:2.5) %>%
+          generate(10, seed=42, silent=TRUE)
+      )
+      attributes(df) <- NULL
+      df
+    }
+  )
+})
+
 # silent option ----
 testthat::test_that("silent_option", {
   # check that printing to console works as normal for n = x when silent = FALSE
