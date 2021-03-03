@@ -36,6 +36,9 @@ devtools::install_github("JackEdTaylor/LexOPS@*release")
 ## TL;DR
 
 LexOPS makes it easy to generate matched stimuli in a reproducible way.
+The functions work on any dataframe, but there is an inbuilt dataset,
+`LexOPS::lexops`, containing psycholinguistic variables for English
+words.
 
 ### The “Generate Pipeline”
 
