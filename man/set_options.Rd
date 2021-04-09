@@ -9,7 +9,7 @@ set_options(df, id_col = "string", cond_col = "LexOPS_splitCond")
 \arguments{
 \item{df}{The dataframe that will be used in the generate pipeline.}
 
-\item{id_col}{A character vector specifying the column identifying unique observations (e.g. in \code{LexOPS::lexops}, the \code{id_col} is \code{"string"}).}
+\item{id_col}{A character vector specifying the column identifying unique observations (e.g. in \code{LexOPS::lexops}, the \code{id_col} is \code{"string"}). If the \code{id_col} is not found in \code{df}, LexOPS will use row numbers.}
 
 \item{cond_col}{Prefix with which to name the columns where conditions will be stored (default = "LexOPS_splitCond"). Each time \code{split_by()} is run on a dataframe, a new cond_col is added to the data frame, e.g., the first time will add splitCond_A, the second time will add split_cond_B, etc. The default is usually sufficient.}
 }

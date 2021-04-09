@@ -1,6 +1,6 @@
 #' LexOPS' inbuilt variables
 #'
-#' A data frame containing 68 variables. When used in a \code{\link{generate}} pipeline, variables used from this dataframe can be easily cited using the \code{\link{cite_design}} function. The variables included in LexOPS are \emph{not} intended to be exhaustive, but rather provide some useful and frequently used variables, and illustrative examples. The LexOPS functions will accept any dataframe of similar structure to `LexOPS::lexops` (one word/stimulus per row, with different features stored in other columns). Moreover, different datasets can be easily joined (such as with the \code{\link[dplyr:join]{dplyr join functions}}).
+#' A data frame containing 68 variables. When used in a \code{\link{generate}} pipeline, variables used from this dataframe can be easily cited using the \code{\link{cite_design}} function. The variables included in LexOPS are \emph{not} intended to be exhaustive, but rather provide some useful and frequently used variables, and illustrative examples. The LexOPS functions will accept any dataframe of similar structure to `LexOPS::lexops` (one word/stimulus per row, with different features stored in other columns). Different datasets can be easily joined (such as with the \code{\link[dplyr:join]{dplyr join functions}}).
 #'
 #' @format A data frame with 262532 rows and 68 variables:
 #' \describe{

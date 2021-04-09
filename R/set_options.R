@@ -3,7 +3,7 @@
 #' When the first function called in a generate pipeline, allows the user to set options that will be passed to all subsequent functions in the pipeline.
 #'
 #' @param df The dataframe that will be used in the generate pipeline.
-#' @param id_col A character vector specifying the column identifying unique observations (e.g. in `LexOPS::lexops`, the `id_col` is `"string"`).
+#' @param id_col A character vector specifying the column identifying unique observations (e.g. in `LexOPS::lexops`, the `id_col` is `"string"`). If the `id_col` is not found in `df`, LexOPS will use row numbers.
 #' @param cond_col Prefix with which to name the columns where conditions will be stored (default = "LexOPS_splitCond"). Each time `split_by()` is run on a dataframe, a new cond_col is added to the data frame, e.g., the first time will add splitCond_A, the second time will add split_cond_B, etc. The default is usually sufficient.
 #'
 #' @return Returns `df`, with the options stored in the attributes.
