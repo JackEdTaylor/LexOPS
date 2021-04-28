@@ -100,7 +100,8 @@ euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, c
   # apply weights
   if (any(!is.na(weights))) {
     dims <- lapply(1:ncol(dims), function(i) dims[, i] * weights[i]) %>%
-      as.data.frame()
+      as.data.frame() %>%
+      setNames(names(dims))
   }
 
   # get the vector for the target word
@@ -110,8 +111,8 @@ euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, c
   dist_sq <- as.data.frame(
     lapply(colnames(dims), function(d) {
       (dims[d] - c(target_dims[[d]]))**2
-      })
-    )
+    })
+  )
 
   # get the row-wise euclidean distance
   sqrt(rowSums(dist_sq))
