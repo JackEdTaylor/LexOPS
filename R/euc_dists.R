@@ -101,7 +101,7 @@ euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, c
   if (any(!is.na(weights))) {
     dims <- lapply(1:ncol(dims), function(i) dims[, i] * weights[i]) %>%
       as.data.frame() %>%
-      setNames(names(dims))
+      stats::setNames(names(dims))
   }
 
   # get the vector for the target word
