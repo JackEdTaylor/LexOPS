@@ -7,6 +7,7 @@
 #' @param vars The variables to be used as dimensions which Euclidean distance should be calculated over. Can be a vector of variable names (e.g. `c(Zipf.SUBTLEX_UK, Length)`), or, `"all"`, to use all numeric variables in the data frame. The default is `"all"`.
 #' @param scale,center How should variables be scaled and/or centred before calculating Euclidean distance? For options, see the `scale` and `center` arguments of \code{\link[base]{scale}}. Default for both is `TRUE`. Scaling can be useful when variables are in differently scaled.
 #' @param weights An (optional) list of weights, in the same order as `vars`. After any scaling is applied, the values will be multiplied by these weights. Default is `NA`, meaning no weights are applied.
+#' @param standardise_weights Logical; should the weights be standardised to average to 1 (i.e., sum to the length of `vars`)? If TRUE, `weights=c(1, 3, 6)` will be treated as `weights=c(0.3, 0.6, 1.8)`. Setting `standardise_weights=TRUE` ensures that the space itself is unchanged when weights change. This means, for example, that the same tolerance can be used in `control_for_euc()`.
 #' @param id_col The column containing the strings (default = `"string"`).
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `vars`. If `TRUE`, `vars` should be a character vector referring to columns in `df` (e.g. `c("Length", "Zipf.SUBTLEX_UK")`). Default = `FALSE`.
 #'
@@ -42,7 +43,7 @@
 #'   )
 #' @export
 
-euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, center = TRUE, weights = NA, id_col = "string", standard_eval = FALSE) {
+euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, center = TRUE, weights = NA, standardise_weights = TRUE, id_col = "string", standard_eval = FALSE) {
   if (!standard_eval) {
     vars <- parse_levels(substitute(vars)) %>%
       unlist()
@@ -80,6 +81,10 @@ euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, c
   # if specified, check weights is a numeric vector of correct length
   if (any(!is.na(weights))) {
     if (!is.numeric(weights) | length(weights)!=length(vars)) stop("`weights` should be a numeric vector of length equal to that of vars")
+    # standardise weights if necessary
+    if (standardise_weights) {
+      weights <- weights / mean(weights)
+    }
   }
   # check id_col is a string
   if (!is.character(id_col)) stop(sprintf("Expected id_col to be of class string, not %s", class(id_col)))
@@ -89,9 +94,6 @@ euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, c
   # firstly, scale all specified dimensions as required
   df[, vars] <- lapply(df[, vars], base::scale, center, scale)
 
-  # get the vector for the target word
-  target_dims <- df[df[[id_col]] == target, vars]
-
   # get all the other vectors (including the target)
   dims <- df[, vars]
 
@@ -100,6 +102,9 @@ euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, c
     dims <- lapply(1:ncol(dims), function(i) dims[, i] * weights[i]) %>%
       as.data.frame()
   }
+
+  # get the vector for the target word
+  target_dims <- dims[df[[id_col]] == target, vars]
 
   # get the distance squared
   dist_sq <- as.data.frame(

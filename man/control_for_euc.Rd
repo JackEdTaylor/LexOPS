@@ -12,6 +12,7 @@ control_for_euc(
   scale = TRUE,
   center = TRUE,
   weights = NA,
+  standardise_weights = TRUE,
   euc_df = NA,
   standard_eval = FALSE
 )
@@ -27,7 +28,9 @@ control_for_euc(
 
 \item{scale, center}{How should variables be scaled and/or centred \emph{before} calculating Euclidean distance? For options, see the \code{scale} and \code{center} arguments of \code{\link[base]{scale}}. Default for both is \code{TRUE}. Scaling can be useful when variables are in differently scaled.}
 
-\item{weights}{An (optional) list of weights, in the same order as \code{vars}. After any scaling is applied, the values will be multiplied by these weights. Default is \code{NA}, meaning no weights are applied.}
+\item{weights}{An (optional) list of weights, in the same order as \code{vars}. After any scaling is applied, the values will be multiplied by these weights. Default is \code{NA}, meaning all variables are weighted equally.}
+
+\item{standardise_weights}{Logical; should the weights be standardised to average to 1 (i.e., sum to the length of \code{vars})? If TRUE, \code{weights=c(1, 3, 6)} will be treated as \code{weights=c(0.3, 0.6, 1.8)}. Setting \code{standardise_weights=TRUE} ensures that the space itself is unchanged when weights change. This means that the same tolerance can be used when the weights change.}
 
 \item{euc_df}{The dataframe to calculate the Euclidean distance from. By default, the function will use \code{df}. Giving a different dataframe to \code{euc_df} can be useful in some cases, such as when \code{df} has been filtered for generating stimuli, but you want to calculate Euclidean Distance from a full distribution.}
 

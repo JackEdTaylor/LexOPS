@@ -11,6 +11,7 @@ euc_dists(
   scale = TRUE,
   center = TRUE,
   weights = NA,
+  standardise_weights = TRUE,
   id_col = "string",
   standard_eval = FALSE
 )
@@ -25,6 +26,8 @@ euc_dists(
 \item{scale, center}{How should variables be scaled and/or centred before calculating Euclidean distance? For options, see the \code{scale} and \code{center} arguments of \code{\link[base]{scale}}. Default for both is \code{TRUE}. Scaling can be useful when variables are in differently scaled.}
 
 \item{weights}{An (optional) list of weights, in the same order as \code{vars}. After any scaling is applied, the values will be multiplied by these weights. Default is \code{NA}, meaning no weights are applied.}
+
+\item{standardise_weights}{Logical; should the weights be standardised to average to 1 (i.e., sum to the length of \code{vars})? If TRUE, \code{weights=c(1, 3, 6)} will be treated as \code{weights=c(0.3, 0.6, 1.8)}. Setting \code{standardise_weights=TRUE} ensures that the space itself is unchanged when weights change. This means, for example, that the same tolerance can be used in \code{control_for_euc()}.}
 
 \item{id_col}{The column containing the strings (default = \code{"string"}).}
 

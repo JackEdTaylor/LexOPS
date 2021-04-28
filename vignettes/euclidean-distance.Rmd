@@ -222,6 +222,52 @@ lexops_scaled %>%
   labs(x = "Concreteness Distance\n(Weight = 2)", y = "Valence Distance\n(Weight = 1)")
 ```
 
+Note, however, that now the distances overall have increased. We can account for this by standardising our weights so they sum to the number of dimensions. This is done by dividing by the mean of the weights. As a result, `c(1, 2)` becomes `c(0.6666667, 1.3333333)`.
+
+```{r euc-graph5, echo = FALSE, fig.width=6, fig.height=6}
+# get values for "puppy"
+puppy_values <- lexops_scaled %>%
+  mutate(
+    CNC.Brysbaert = (2/mean(c(1, 2)))*CNC.Brysbaert,
+    VAL.Warriner = (1/mean(c(1, 2)))*VAL.Warriner
+    ) %>%
+  filter(string == "puppy")
+
+# plot
+# note that `c()` is used to remove attributes from scaled variables in puppy_values
+lexops_scaled %>%
+  mutate(
+    CNC.Brysbaert = (2/mean(c(1, 2)))*CNC.Brysbaert,
+    VAL.Warriner = (1/mean(c(1, 2)))*VAL.Warriner
+    ) %>%
+  filter(string %in% example_words) %>%
+  mutate(
+    cnc_dist = abs(CNC.Brysbaert - c(puppy_values$CNC.Brysbaert)),
+    val_dist = abs(VAL.Warriner - c(puppy_values$VAL.Warriner))
+  ) %>%
+  mutate(val_dist_t = 0, cnc_dist_t = 0) %>%
+  bind_rows(
+    mutate(., val_dist_t = val_dist, cnc_dist_t = cnc_dist)
+  ) %>%
+  ggplot(aes(cnc_dist, val_dist, label = string)) +
+  geom_point() +
+  geom_text(nudge_y = -0.1) +
+  geom_line(
+    aes(cnc_dist_t, val_dist_t, group = string),
+    linetype = 2,
+    alpha = 0.5
+  ) +
+  geom_text(
+    aes(cnc_dist/2, val_dist/2, label = round(sqrt(cnc_dist^2 + val_dist^2), 2)),
+    data = ~filter(.x, string != "puppy"),
+    colour = "red"
+  ) +
+  coord_fixed(xlim = c(-0.1, 5), ylim = c(-0.1, 5)) +
+  labs(x = "Concreteness Distance\n(Weight = 1.333333)", y = "Valence Distance\n(Weight = 0.666667)")
+```
+
+By default, LexOPS automatically standardises weights in this way so that the distribution of distances overall remains similar. This is useful when filtering the distances by a tolerance. This also means that the weights `c(0.5, 1)`, `c(1, 2)`, and `c(50.2, 100.4)` will all be equivalent. This behaviour can be overridden with the argument `standardise_weights=FALSE`.
+
 # Matching Individual Words
 
 Imagine you want to find a close match in terms of length, frequency (Zipf), age of acquisition, and concreteness, for the word "moose". The values associated with "moose" on these variables look like this:
@@ -262,7 +308,7 @@ lexops %>%
   knitr::kable()
 ```
 
-Simply sorting by Euclidean distance gives a very similar result, but with some slight differences. Whereas the variable-specific tolerances excluded "hippo" (because it is >0.2 Zipf away from "moose"), in Euclidean distance it is a relatively close word and is suggested as a match.
+Simply sorting by Euclidean distance gives a very similar result, but with some slight differences. Whereas the variable-specific tolerances excluded "hippo" (because it is >0.2 Zipf away from "moose"), in Euclidean distance it is a relatively close word, because its distance in frequency is compensated by its proximity in the other variables. As a result, "hippo" is now suggested as a close match.
 
 ```{r match3, eval=FALSE}
 lexops %>%
@@ -345,6 +391,7 @@ lexops %>%
   ) %>%
   arrange(Euc_Dist) %>%
   select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) %>%
+  filter(string != "moose") %>%
   head(5) %>%
   knitr::kable()
 ```
@@ -357,7 +404,7 @@ Similarly, we may want to design a study comparing concrete and abstract words, 
 stim <- lexops %>%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
   control_for(Length, 0:0) %>%
-  control_for(Zipf.BNC.Written, -0.2:0.2) %>%
+  control_for(Zipf.BNC.Written, -0.1:0.1) %>%
   control_for(AoA.Kuperman, -2:2) %>%
   generate(20)
 ```
@@ -368,16 +415,16 @@ This will generate stimuli with the following distributions in controls:
 plot_design(stim, "controls")
 ```
 
-To generate a similar stimulus set controlling for Euclidean distance, we could use the `control_for_euc()` function. Like `euc_dists()` this has options for scaling and weighting variables. The weights here reflect the relative importance of variables as controls. Generally, variables with lower weights are permitted to vary to a greater extent.
+To generate a similar stimulus set controlling for Euclidean distance, we could use the `control_for_euc()` function. Like `euc_dists()` this has options for scaling and weighting variables. The weights here reflect the relative importance of variables as controls. Generally, variables with lower weights are permitted to vary to a greater extent. [As mentioned](#Weights), the weights supplied will, by default, be standardised to average to 1 (i.e., to sum to the number of dimensions).
 
 ```{r generate2}
 stim2 <- lexops %>%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
   control_for_euc(
       c(Length, Zipf.BNC.Written, AoA.Kuperman),
-      0:1e-5,
+      0:0.1,
       name = "euclidean_distance",
-      weights = c(1, 0.5, 0.1)
+      weights = c(0.5, 1, 0.1)
   ) %>%
   generate(20)
 ```
@@ -388,46 +435,27 @@ This will generate stimuli with the following distributions in controls. As you 
 plot_design(stim2, c("Length", "Zipf.BNC.Written", "AoA.Kuperman"))
 ```
 
-The stimuli occasionally vary slightly in length in cases when age of acquisition and frequency distances are small. If we want to use this same Euclidean space, but limit how much the variables are allowed to differ, we could combine `control_for_euc()` with `control_for()`. Here we make sure that words do not differ by more than ±1 character in Length.
+We may then decide that we also want to control for another variable, bigram probability. However, we want to control for this variable with a specific tolerance in the original units. LexOPS lets you do this by combining `control_for_euc()` with `control_for()` as many times as required.
 
 ```{r generate3}
 stim3 <- lexops %>%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
   control_for_euc(
       c(Length, Zipf.BNC.Written, AoA.Kuperman),
-      0:1e-5,
+      0:0.1,
       name = "euclidean_distance",
-      weights = c(1, 0.5, 0.1)
+      weights = c(0.5, 1, 0.1)
   ) %>%
-  control_for(Length, -1:1) %>%
+  control_for(BG.BNC.Written, -0.0025:0.0025) %>%
   generate(20)
 ```
 
 Which will give us the following distributions:
 
 ```{r generate3-plot, fig.width=6, fig.height=4}
-plot_design(stim3, c("Length", "Zipf.BNC.Written", "AoA.Kuperman"))
+plot_design(stim3, c("Length", "Zipf.BNC.Written", "AoA.Kuperman", "BG.BNC.Written"))
 ```
 
-We could use a similar method to give variable-specific tolerances for Zipf or Age of Acquisition if we wanted, or any variables we want, regardless of whether they're in our Euclidean space.
+We could use a similar method to give variable-specific tolerances for variables in the Euclidean space. For example, we could control for Length with both Euclidean distance, and a call to `control_for()` to make sure that the number of characters match exactly.
 
-# Deciding on a Tolerance
-
-Something that is relatively difficult is deciding on a tolerance for Euclidean distance. As well as just playing around with different values, it is often useful to see a sample distribution possible Euclidean distance values by generating a large number of stimuli, with no upper bound in the tolerance. Viewing the distribution can act as a first pass in terms of deciding where to set a cut-off.
-
-```{r tolerance-space-plot, message=FALSE, fig.width=6, fig.height=4}
-lexops %>%
-  split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
-  control_for_euc(
-      c(Length, Zipf.BNC.Written, AoA.Kuperman),
-      0:Inf,
-      name = "euclidean_distance",
-      weights = c(1, 0.5, 0.1)
-  ) %>%
-  generate(500) %>%
-  long_format() %>%
-  ggplot(aes(as.numeric(euclidean_distance), fill = condition)) +
-  geom_density(alpha = 0.5)
-```
-
-One last thing to note is that generating stimuli controlled for Euclidean distance can make your stimulus generation more flexible, but also much slower (as you can see from the console output for *total iterations* and *success rate*). This is because LexOPS cannot use some of the heuristics it applies when matching items with variable-specific tolerances to exclude inappropriate matches, and because Euclidean distance has to be recalculated each iteration (in fact, `control_for_euc()` is just a wrapper for `control_for_map()`). As a result, variable-specific tolerances may be more useful if computational efficiency is important.
+One last thing to note is that generating stimuli controlled for Euclidean distance can make your stimulus generation more flexible, but also slower. This is because LexOPS cannot use some of the heuristics it applies when matching items with variable-specific tolerances to exclude inappropriate matches, and because Euclidean distance has to be recalculated each iteration (in fact, `control_for_euc()` is just a wrapper for `control_for_map()`). As a result, variable-specific tolerances may be more useful if computational efficiency is important.
