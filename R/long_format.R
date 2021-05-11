@@ -68,6 +68,9 @@ long_format <- function(df, include = "design", include_candids = FALSE) {
   # the specified columns from meta_df
   meta_df <- LexOPS_attrs$meta_df[, colnames(LexOPS_attrs$meta_df) %in% c(long_cols, id_col)]
 
+  # ensure the id_col is the same type as in the meta_df
+  if (!is.character(meta_df[[id_col]])) meta_df[[id_col]] <- as.character(meta_df[[id_col]])
+
   if (include_candids) {
     # gather outside pipeline for later reference
     out_stim <- tidyr::gather(df, "condition", !!id_col, -match_null, -item_nr)
