@@ -79,12 +79,12 @@ split_by <- function(df, var, levels, filter = TRUE, standard_eval = FALSE){
   if (is.numeric(df[[split[[1]]]])) {
     true_levels <- lapply(split[-1], function(x) {
       split_var <- split[[1]]
-      nrow(dplyr::filter(df, dplyr::between(!!dplyr::sym(split_var), x[1], x[2]))) > 0
+      nrow(df[df[[split_var]] >= x[1] & df[[split_var]] <= x[2], ]) > 0
     })
   } else {
     true_levels <- lapply(split[-1], function(x) {
       split_var <- split[[1]]
-      nrow(dplyr::filter(df, any(x %in% !!dplyr::sym(split_var)))) > 0
+      nrow(df[any(x %in% df[[split_var]]), ]) > 0
     })
   }
   if (!all(unlist(true_levels))) {
