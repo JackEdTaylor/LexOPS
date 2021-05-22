@@ -29,7 +29,7 @@ plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 
   # get attributes
   if (is.null(attr(df, "LexOPS_attrs"))) {
     if (force) {
-      warning("Attributes missing. Will try to add attributes. Check `id_col` is specified correctly (default is \"string\")")
+      warning("Attributes missing - will try to add attributes. Make sure you set id_col if not \"string\".")
       LexOPS_attrs <- list()
       LexOPS_attrs$generated <- TRUE
       LexOPS_attrs$is.long_format <- TRUE
@@ -43,7 +43,11 @@ plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 
     if (!is.null(LexOPS_attrs$options)) {
       id_col <- LexOPS_attrs$options$id_col
     } else {
-      id_col <- "string"
+      if ("string" %in% colnames(LexOPS_attrs$meta_df)) {
+        id_col <- "string"
+      } else {
+        stop("Specify id_col with set_options() to use plot_design()")
+      }
     }
   }
   # check is generated stimuli
