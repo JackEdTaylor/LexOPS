@@ -107,7 +107,7 @@ plot_sample <- function(df, include = "design", force = TRUE, id_col = "string")
     ggplot2::ggplot(ggplot2::aes(value, fill = is_stim)) +
     ggplot2::geom_density(alpha = 0.75, colour = NA) +
     ggplot2::facet_wrap(~variable, scales = "free") +
-    ggplot2::theme_minimal() +
+    ggplot2::theme_bw() +
     ggplot2::theme(
       legend.title = ggplot2::element_blank(),
       legend.position = "top"

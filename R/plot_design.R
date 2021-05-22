@@ -25,7 +25,7 @@
 #'
 #' @export
 
-plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 0.75, line_width = 1, force = TRUE, id_col = "string") {
+plot_design <- function(df, include = "design", dodge_width = 0.1, point_size = 0.5, line_width = 1, force = TRUE, id_col = "string") {
   # get attributes
   if (is.null(attr(df, "LexOPS_attrs"))) {
     if (force) {
@@ -40,7 +40,7 @@ plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 
   } else {
     LexOPS_attrs <- attr(df, "LexOPS_attrs")
     # get options from attributes
-    if (!is.null(LexOPS_attrs$options)) {
+    if (!is.null(LexOPS_attrs$options$id_col)) {
       id_col <- LexOPS_attrs$options$id_col
     } else {
       if ("string" %in% colnames(LexOPS_attrs$meta_df)) {
@@ -71,7 +71,12 @@ plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 
     dplyr::filter(!!dplyr::sym(id_col) %in% df[[id_col]])
 
   # convert to numeric if appropriate
-  meta_df <- suppressWarnings(dplyr::mutate_if(meta_df, function(x) all(!is.na(as.numeric(x))), as.numeric))
+  num_cols <- colnames(meta_df)[sapply(meta_df, function(x) suppressWarnings(all(!is.na(as.numeric(x))))) & colnames(meta_df) != id_col]
+  meta_df <- suppressWarnings(dplyr::mutate(meta_df, dplyr::across(dplyr::all_of(num_cols), as.numeric)))
+
+  # check the id col is as character in both df and meta_df
+  df[[id_col]] <- as.character(df[[id_col]])
+  meta_df[[id_col]] <- as.character(meta_df[[id_col]])
 
   # join this to df
   plot_df <- dplyr::select(df, c(item_nr, condition, !!dplyr::sym(id_col))) %>%
@@ -111,10 +116,9 @@ plot_design <- function(df, include = "design", dodge_width = 0.2, point_size = 
     tidyr::gather("variable", "value", plot_vars_headings) %>%
     ggplot2::ggplot(ggplot2::aes(x = condition, y = value)) +
     ggplot2::geom_violin(colour = NA, fill = "grey", alpha = 0.5) +
-    ggplot2::geom_point(ggplot2::aes(colour = as.factor(item_nr)), position = point_pos, alpha = 0.75, size = point_size) +
-    ggplot2::geom_line(ggplot2::aes(group = as.factor(item_nr), colour = as.factor(item_nr)), position = point_pos, alpha = 0.25, size = line_width) +
+    ggplot2::geom_point(ggplot2::aes(group = as.factor(item_nr)), position = point_pos, alpha = 0.75, size = point_size) +
+    ggplot2::geom_line(ggplot2::aes(group = as.factor(item_nr)), position = point_pos, alpha = 0.25, size = line_width) +
     ggplot2::facet_wrap(~variable, scales = "free") +
-    ggplot2::theme_minimal() +
-    ggplot2::theme(legend.position = "none") +
+    ggplot2::theme_bw() +
     ggplot2::labs(x = "Condition", y = "Value")
 }

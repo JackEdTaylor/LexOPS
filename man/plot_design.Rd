@@ -7,8 +7,8 @@
 plot_design(
   df,
   include = "design",
-  dodge_width = 0.2,
-  point_size = 0.75,
+  dodge_width = 0.1,
+  point_size = 0.5,
   line_width = 1,
   force = TRUE,
   id_col = "string"
