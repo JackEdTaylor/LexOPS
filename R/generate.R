@@ -414,8 +414,10 @@ generate.find_matches <- function(df, target, vars, matchCond, id_col, cond_col)
 # This treats each possible condition for the current item as the match null for one iteration, and tests that all other words are suitable matches
 # if TRUE, will return the matches unchanged, else will return same vector with all values replaced by NAs
 generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, matchCond, id_col, cond_col) {
-  # if no controls, return the df unchanged
-  if (length(vars)==0 | any(is.na(matches))) return(df)
+  # if there are NAs in matches, return NAs
+  if (any(is.na(matches))) return(rep(NA, length(matches)))
+  # if no controls, return matches unchanged
+  if (length(vars)==0) return(matches)
   # check words are matched inclusively
   are_inclusive <- lapply(matches, function(this_word) {
     # get this word's condition
