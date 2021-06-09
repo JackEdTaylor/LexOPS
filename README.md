@@ -7,10 +7,8 @@
 
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
-[![Version:
-0.2.7](https://img.shields.io/badge/version-0.2.7-blue.svg)](https://github.com/JackEdTaylor/LexOPS/releases)
-[![DOI:
-10.3758/s13428-020-01389-1](https://zenodo.org/badge/DOI/10.3758/s13428-020-01389-1.svg)](https://doi.org/10.3758/s13428-020-01389-1)
+[![Version: 0.3.0](https://img.shields.io/badge/version-0.2.8-blue.svg)](https://github.com/JackEdTaylor/LexOPS/releases)
+[![DOI: 10.3758/s13428-020-01389-1](https://zenodo.org/badge/DOI/10.3758/s13428-020-01389-1.svg)](https://doi.org/10.3758/s13428-020-01389-1)
 <!-- badges: end -->
 
 LexOPS is an R package for generating matched stimuli for factorial
@@ -29,7 +27,7 @@ devtools::install_github("JackEdTaylor/LexOPS@*release")
 ## How to Use
 
 :book: In-depth walkthrough of the package:
-<a href="https://jackedtaylor.github.io/LexOPSdocs/" class="uri">https://jackedtaylor.github.io/LexOPSdocs/</a>
+<https://jackedtaylor.github.io/LexOPSdocs/>
 
 :mortar\_board: Paper about the package: [Taylor, Beith, and Sereno
 (2020)](https://doi.org/10.3758/s13428-020-01389-1)
@@ -71,7 +69,7 @@ stim %>%
 ```
 
 | item\_nr | A1\_B1 | A1\_B2 | A2\_B1 | A2\_B2 | match\_null |
-|---------:|:-------|:-------|:-------|:-------|:------------|
+| -------: | :----- | :----- | :----- | :----- | :---------- |
 |        1 | fresh  | frame  | basis  | river  | A1\_B2      |
 |        2 | gist   | cuff   | akin   | tuba   | A2\_B1      |
 |        3 | fate   | slip   | rely   | lily   | A1\_B1      |
@@ -102,7 +100,7 @@ long_format(stim) %>%
 ```
 
 | item\_nr | condition | match\_null | string | Zipf.SUBTLEX\_UK | Length | Syllables.CMU | CNC.Brysbaert |
-|---------:|:----------|:------------|:-------|-----------------:|-------:|--------------:|--------------:|
+| -------: | :-------- | :---------- | :----- | ---------------: | -----: | ------------: | ------------: |
 |        1 | A1\_B1    | A1\_B2      | fresh  |         4.893319 |      5 |             1 |          1.97 |
 |        1 | A1\_B2    | A1\_B2      | frame  |         4.755413 |      5 |             1 |          4.30 |
 |        1 | A2\_B1    | A1\_B2      | basis  |         4.625308 |      5 |             2 |          1.83 |
