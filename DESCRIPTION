@@ -1,6 +1,6 @@
 Package: LexOPS
 Title: A Package and Shiny App for Generating Matched Stimuli
-Version: 0.2.7.9001
+Version: 0.3.0
 Date: 2021-05-11
 Authors@R: 
     c(
@@ -14,7 +14,7 @@ Authors@R:
                role = "aut",
                comment = c(ORCID = "0000-0002-2260-4441"))
     )
-Description: LexOPS is a package for generating controlled matched items for factorial designs. It has an inbuilt dataset of word features for word stimuli in Psychology experiments. Full documentation is available at <https://jackedtaylor.github.io/LexOPSdocs/>. It features useful functions and a Shiny app suitable for generating stimuli for a range of experimental designs.
+Description: LexOPS is a package for generating controlled matched items for factorial designs. It has an inbuilt dataset of word features for word stimuli in Psychology experiments. Full documentation is available at <https://jackedtaylor.github.io/LexOPSdocs/>. There is a shiny app built with GUIs for most package functionality.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
