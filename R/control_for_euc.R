@@ -2,7 +2,7 @@
 #'
 #' This function is a wrapper for \code{\link{control_for_map}} that allows you to easily control for Euclidean distance.
 #'
-#' @param df A data frame that is the result from \code{\link{split_by}}.
+#' @param x A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
 #' @param vars The columns from which to calculate Euclidean distance.
 #' @param tol The desired control tolerance, in Euclidean distance (will be interpreted as scaled Euclidean distance if `scaled == TRUE`).
 #' @param name What the output column should be named. If `NA` (default), will automatically assign as `sprintf("control_fun_%i", nr)`, where `nr` is the number of the control function.
@@ -47,7 +47,14 @@
 #'
 #' @export
 
-control_for_euc <- function(df, vars, tol, name = NA, scale = TRUE, center = TRUE, weights = NA, standardise_weights = TRUE, euc_df = NA, standard_eval = FALSE) {
+control_for_euc <- function(x, vars, tol, name = NA, scale = TRUE, center = TRUE, weights = NA, standardise_weights = TRUE, euc_df = NA, standard_eval = FALSE) {
+
+  # extract df if class is LexOPS_pipeline
+  if (is.LexOPS_pipeline(x)) {
+    df <- x$df
+  } else {
+    df <- x
+  }
 
   control <- if (standard_eval) {
     if (is.list(levels)) {
@@ -59,13 +66,21 @@ control_for_euc <- function(df, vars, tol, name = NA, scale = TRUE, center = TRU
     parse_levels(substitute(vars), substitute(tol))
   }
 
-  # get attributes
-  LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
+  # get pipeline info
+  lp_info <- if (is.LexOPS_pipeline(x)) {
+    if (is.null(x$info)) {
+      list()
+    } else {
+      x$info
+    }
+  } else {
+    list()
+  }
 
-  # get options from attributes
-  if (!is.null(LexOPS_attrs$options)) {
-    id_col <- LexOPS_attrs$options$id_col
-    cond_col <- LexOPS_attrs$options$cond_col
+  # get options from pipeline info
+  if (!is.null(lp_info$options)) {
+    id_col <- lp_info$options$id_col
+    cond_col <- lp_info$options$cond_col
     cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
   } else {
     id_col <- "string"
@@ -100,8 +115,14 @@ control_for_euc <- function(df, vars, tol, name = NA, scale = TRUE, center = TRU
       as.numeric()
   }
 
+  # make a LexOPS pipeline object
+  lp <- as.LexOPS_pipeline(df)
+
+  # add the info to the output object
+  lp$info <- lp_info
+
   control_for_map(
-    df,
+    lp,
     fun = control_for_euc.calc_euc,
     var = id_col,
     tol = control[[2]],

@@ -22,9 +22,9 @@
 
 cite_design <- function(df, include = "design") {
   # get attributes
-  LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
+  LexOPS_attrs <- if (is.null(attr(df, "LexOPS_info"))) list() else attr(df, "LexOPS_info")
   # check is generated stimuli
-  if (is.null(LexOPS_attrs$generated)) stop("Must run `generate()` on `df` before using `plot_design()`")
+  if (is.null(LexOPS_attrs$generated)) stop("Must run `generate()` on `df` before using `cite_design()`")
   # ensure is in long format
   if (is.null(LexOPS_attrs$is.long_format)) df <- LexOPS::long_format(df)
 

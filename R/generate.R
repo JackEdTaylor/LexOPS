@@ -2,7 +2,7 @@
 #'
 #' Generates the stimuli from the data frame after it has been passed through `split_by()`, and optionally, `control_for()`. Will generate `n` items per condition. If <`n` items can be generated, will generate as many as possible given the experiment's design. Can be reproducible with `seed` argument.
 #'
-#' @param df A data frame that is the result from `control_for()` or `split_by()`.
+#' @param x A LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
 #' @param n The number of strings per condition (default = 20). Set to `"all"` to generate as many as possible.
 #' @param match_null The condition that words should be matched to. Should be a string indicating condition (e.g. `"A1_B2_C1"`), or a string indicating one of the following options: "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition (default), "inclusive" to match each condition within the tolerances to every other condition, "first" for the lowest condition (e.g. `"A1"` or `"A1_B1_C1_D1"`, etc.), "random" for randomly selected null condition each iteration.
 #' @param seed An integer specifying the random seed, allowing reproduction of exact stimuli lists. If `NA`, will not set the seed. Default is `NA`.
@@ -86,19 +86,34 @@
 #'
 #' @export
 
-generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALSE, is_shiny = FALSE) {
+generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE, is_shiny = FALSE) {
   if (is_shiny) {
     # if in a shiny context, replace the base cat() function with one which captures the console output
     cat <- function(str) shinyjs::html("gen_console", sprintf("%s", str))
   }
 
-  # get attributes
-  LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
+  # get pipeline info
+  lp_info <- if (is.LexOPS_pipeline(x)) {
+    if (is.null(x$info)) {
+      list()
+    } else {
+      x$info
+    }
+  } else {
+    list()
+  }
 
-  # get options from attributes
-  if (!is.null(LexOPS_attrs$options)) {
-    id_col <- LexOPS_attrs$options$id_col
-    cond_col <- LexOPS_attrs$options$cond_col
+  # extract df if class is LexOPS_pipeline
+  if (is.LexOPS_pipeline(x)) {
+    df <- x$df
+  } else {
+    stop("x must be a LexOPS_pipeline")
+  }
+
+  # get options from pipeline info
+  if (!is.null(lp_info$options)) {
+    id_col <- lp_info$options$id_col
+    cond_col <- lp_info$options$cond_col
     cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
   } else {
     id_col <- "string"
@@ -111,7 +126,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALS
   }
 
   # check for problems with arguments
-  generate.check(df, n, match_null, seed, id_col, cond_col, is_shiny, LexOPS_attrs)
+  generate.check(df, n, match_null, seed, id_col, cond_col, is_shiny, lp_info)
 
   # get the columns containing the split data
   LexOPS_splitCols <- colnames(df)[grepl(cond_col_regex, colnames(df))]
@@ -131,7 +146,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALS
   if (!is.na(seed)) set.seed(seed)
 
   # if no controls, just return the df with the condition variable, otherwise generate matches
-  if (!is.null(LexOPS_attrs$controls) | !is.null(LexOPS_attrs$control_functions)) {
+  if (!is.null(lp_info$controls) | !is.null(lp_info$control_functions)) {
 
     # get the absolute smallest number of possible match rows (a count of the least frequent condition)
     min_nr_of_match_rows <- df %>%
@@ -215,14 +230,14 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALS
         m <- df[(!df[[id_col]] %in% out & df[[cond_col]] == cnd) | df[[id_col]]==this_word, ] %>%
           generate.find_matches(
             target = this_word,
-            vars = LexOPS_attrs$controls,
+            vars = lp_info$controls,
             matchCond = this_match_null,
             id_col = id_col,
             cond_col = cond_col
           ) %>%
           generate.find_fun_matches(
             target = this_word,
-            vars_pre_calc = LexOPS_attrs$control_functions,
+            vars_pre_calc = lp_info$control_functions,
             matchCond = this_match_null,
             id_col = id_col,
             cond_col = cond_col
@@ -238,27 +253,27 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALS
               dplyr::pull(id_col) %>%
               sample(1)
             # store any control_for_map values
-            if (length(LexOPS_attrs$control_functions) > 0) {
-              out_cont_map_val <- sapply(LexOPS_attrs$control_functions, function(cont) {
+            if (length(lp_info$control_functions) > 0) {
+              out_cont_map_val <- sapply(lp_info$control_functions, function(cont) {
                 # get the representations of the words in the given column
                 this_word_rep <- df[[ cont[[3]] ]][df[[id_col]]==this_word]
                 out_rep <- df[[ cont[[3]] ]][df[[id_col]]==item_out]
                 # get the value from the function
                 unname(cont[[2]](out_rep, this_word_rep))
               })
-              names(out_cont_map_val) <- sapply(LexOPS_attrs$control_functions, function(cont) cont[[1]] )
+              names(out_cont_map_val) <- sapply(lp_info$control_functions, function(cont) cont[[1]] )
               out_val <- item_out
               names(out_val) <- id_col
               control_for_map_values <<- dplyr::bind_rows(control_for_map_values, c(out_val, out_cont_map_val))
 
               if (!this_word %in% control_for_map_values[[id_col]]) {
-                this_word_map_val <- sapply(LexOPS_attrs$control_functions, function(cont) {
+                this_word_map_val <- sapply(lp_info$control_functions, function(cont) {
                   # get the representation in the given column
                   this_word_rep <- df[[ cont[[3]] ]][df[[id_col]]==this_word]
                   # get the value from the function
                   unname(cont[[2]](this_word, this_word))
                 })
-                names(this_word_map_val) <- sapply(LexOPS_attrs$control_functions, function(cont) cont[[1]] )
+                names(this_word_map_val) <- sapply(lp_info$control_functions, function(cont) cont[[1]] )
                 this_word_val <- this_word
                 names(this_word_val) <- id_col
                 control_for_map_values <<- dplyr::bind_rows(control_for_map_values, c(this_word_val, this_word_map_val))
@@ -279,7 +294,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALS
         matches <- generate.are_matches_inclusive(
           df = df[!df[[id_col]] %in% out | df[[id_col]]==this_word, ],
           matches,
-          vars=LexOPS_attrs$controls, vars_pre_calc = LexOPS_attrs$control_functions,
+          vars=lp_info$controls, vars_pre_calc = lp_info$control_functions,
           matchCond=this_match_null, id_col, cond_col
         )
       }
@@ -316,7 +331,7 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALS
     meta_df <- df
 
     # add control_for_map() values if any
-    if (length(LexOPS_attrs$control_functions) > 0) {
+    if (length(lp_info$control_functions) > 0) {
       meta_df <- dplyr::left_join(meta_df, control_for_map_values, by=id_col)
     }
 
@@ -327,26 +342,25 @@ generate <- function(df, n=20, match_null = "balanced", seed = NA, silent = FALS
       dplyr::mutate(item_nr = dplyr::row_number()) %>%  # add the item number as item_nr
       dplyr::select(item_nr, dplyr::everything())
     # add the original df to the attributes
-    LexOPS_attrs$meta_df <- meta_df
+    lp_info$meta_df <- meta_df
     # add the success rate to the attributes
-    LexOPS_attrs$success_rate <- n_generated/n_tried
+    lp_info$success_rate <- n_generated/n_tried
     # add a vector of the iteratons that were successful
-    LexOPS_attrs$successful_iterations <- successful_iterations
+    lp_info$successful_iterations <- successful_iterations
 
   }
 
   # add a marker to the attributes that df has gone through the generate function
-  LexOPS_attrs$generated <- TRUE
-  # add the attributes to the output object
-  attr(df, "LexOPS_attrs") <- LexOPS_attrs
+  lp_info$generated <- TRUE
+
+  # add the info as attributes to the output object
+  attr(df, "LexOPS_info") <- lp_info
 
   df
 }
 
 # function to check supplied arguments makes sense
-generate.check <- function(df, n, match_null, seed, id_col, cond_col, is_shiny, LexOPS_attrs) {
-  # check the df is a dataframe
-  if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
+generate.check <- function(df, n, match_null, seed, id_col, cond_col, is_shiny, lp_info) {
   # check id_col is a string
   if (!is.character(id_col)) stop(sprintf("Expected id_col to be of class string, not %s", class(id_col)))
 
@@ -359,13 +373,13 @@ generate.check <- function(df, n, match_null, seed, id_col, cond_col, is_shiny, 
     stop("Could not identify split conditions column! Make sure you run split_by() before generate().")
   }
   # if control_for() has been run (can tell from attributes), check the specified columns exist
-  if (!is.null(LexOPS_attrs$controls)) {
-    controls_exist <- sapply(LexOPS_attrs$controls, function(cont) {cont[[1]] %in% colnames(df)})
+  if (!is.null(lp_info$controls)) {
+    controls_exist <- sapply(lp_info$controls, function(cont) {cont[[1]] %in% colnames(df)})
     if (!(all(controls_exist))) stop(sprintf("%i unknown control columns. Check columns specified in control_for() are in df.", length(controls_exist[!controls_exist])))
   }
   # if control_for_fun() has been run, check the column to be fed to the function exists in df
-  if (!is.null(LexOPS_attrs$control_functions)) {
-    controls_exist <- sapply(LexOPS_attrs$control_functions, function(cont) {cont[[3]] %in% colnames(df)})
+  if (!is.null(lp_info$control_functions)) {
+    controls_exist <- sapply(lp_info$control_functions, function(cont) {cont[[3]] %in% colnames(df)})
     if (!(all(controls_exist))) stop(sprintf("%i unknown control columns. Check columns specified in control_for() are in df.", length(controls_exist[!controls_exist])))
   }
 }

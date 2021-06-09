@@ -27,7 +27,7 @@
 
 plot_design <- function(df, include = "design", dodge_width = 0.1, point_size = 0.5, line_width = 1, force = TRUE, id_col = "string") {
   # get attributes
-  if (is.null(attr(df, "LexOPS_attrs"))) {
+  if (is.null(attr(df, "LexOPS_info"))) {
     if (force) {
       warning("Attributes missing - will try to add attributes. Make sure you set id_col if not \"string\".")
       LexOPS_attrs <- list()
@@ -38,7 +38,7 @@ plot_design <- function(df, include = "design", dodge_width = 0.1, point_size = 
       LexOPS_attrs <- NULL
     }
   } else {
-    LexOPS_attrs <- attr(df, "LexOPS_attrs")
+    LexOPS_attrs <- attr(df, "LexOPS_info")
     # get options from attributes
     if (!is.null(LexOPS_attrs$options$id_col)) {
       id_col <- LexOPS_attrs$options$id_col

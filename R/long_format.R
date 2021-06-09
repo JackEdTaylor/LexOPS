@@ -24,7 +24,7 @@ long_format <- function(df, include = "design", include_candids = FALSE) {
   if (!include %in% c("all", "design", "splits", "controls", NA)) stop('`include` must be one of "all", "design", "splits", "controls", or NA')
 
   # get attributes
-  LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
+  LexOPS_attrs <- if (is.null(attr(df, "LexOPS_info"))) list() else attr(df, "LexOPS_info")
 
   # get options from attributes
   if (!is.null(LexOPS_attrs$options)) {
@@ -91,7 +91,7 @@ long_format <- function(df, include = "design", include_candids = FALSE) {
   LexOPS_attrs$is.long_format <- TRUE
 
   # add the attrributes to the data frame
-  attr(out, "LexOPS_attrs") <- LexOPS_attrs
+  attr(out, "LexOPS_info") <- LexOPS_attrs
 
   out
 

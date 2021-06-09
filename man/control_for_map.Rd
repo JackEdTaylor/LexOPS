@@ -4,10 +4,10 @@
 \alias{control_for_map}
 \title{Control for confounding variables via a function.}
 \usage{
-control_for_map(df, fun, var, tol = NA, name = NA, standard_eval = FALSE)
+control_for_map(x, fun, var, tol = NA, name = NA, standard_eval = FALSE)
 }
 \arguments{
-\item{df}{A data frame that is the result from \code{\link{split_by}}.}
+\item{x}{A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
 
 \item{fun}{The function to use to calculate the control varibale. Should be an object of class "function".}
 

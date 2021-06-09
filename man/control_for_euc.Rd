@@ -5,7 +5,7 @@
 \title{Control for Euclidean distance in several numeric variables}
 \usage{
 control_for_euc(
-  df,
+  x,
   vars,
   tol,
   name = NA,
@@ -18,7 +18,7 @@ control_for_euc(
 )
 }
 \arguments{
-\item{df}{A data frame that is the result from \code{\link{split_by}}.}
+\item{x}{A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
 
 \item{vars}{The columns from which to calculate Euclidean distance.}
 

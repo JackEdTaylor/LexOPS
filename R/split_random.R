@@ -2,7 +2,7 @@
 #'
 #' Adds a split to the data comparable to that made by `split_by()`, but split randomly through the data. All entries in `df` are assigned a level randomly.
 #'
-#' @param df A data frame containing the IV and strings.
+#' @param x A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
 #' @param nlevels An integer, specifying how many levels this random split should have (default = 2).
 #' @param seed An integer used to set the seed, to reproduce random splits. If `NA`, a random seed will not be set. Default is `NA`.
 #'
@@ -18,14 +18,30 @@
 #'
 #' @export
 
-split_random <- function(df, nlevels = 2, seed = NA){
-  # get attributes
-  LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
+split_random <- function(x, nlevels = 2, seed = NA){
+
+  # extract df if class is LexOPS_pipeline
+  if (is.LexOPS_pipeline(x)) {
+    df <- x$df
+  } else {
+    df <- x
+  }
+
+  # get pipeline info
+  lp_info <- if (is.LexOPS_pipeline(x)) {
+    if (is.null(x$info)) {
+      list()
+    } else {
+      x$info
+    }
+  } else {
+    list()
+  }
 
   # get options from attributes
-  if (!is.null(LexOPS_attrs$options)) {
-    id_col <- LexOPS_attrs$options$id_col
-    cond_col <- LexOPS_attrs$options$cond_col
+  if (!is.null(lp_info$options)) {
+    id_col <- lp_info$options$id_col
+    cond_col <- lp_info$options$cond_col
     cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
   } else {
     id_col <- "string"
@@ -62,21 +78,24 @@ split_random <- function(df, nlevels = 2, seed = NA){
   split <- list("Random Split", random_levels)
 
   # add split info
-  if (is.null(LexOPS_attrs$splits)) {
-    LexOPS_attrs$splits <- list(split)
+  if (is.null(lp_info$splits)) {
+    lp_info$splits <- list(split)
   } else {
-    LexOPS_attrs$splits[[length(LexOPS_attrs$splits)+1]] <- split
+    lp_info$splits[[length(lp_info$splits)+1]] <- split
   }
 
   # also add that this split is random
-  if (is.null(LexOPS_attrs$random_splits)) {
-    LexOPS_attrs$random_splits <- c(length(current_splits)+1)
+  if (is.null(lp_info$random_splits)) {
+    lp_info$random_splits <- c(length(current_splits)+1)
   } else {
-    LexOPS_attrs$random_splits <- c(LexOPS_attrs$random_splits, length(current_splits)+1)
+    lp_info$random_splits <- c(lp_info$random_splits, length(current_splits)+1)
   }
 
-  # add the attributes to the output object
-  attr(df, "LexOPS_attrs") <- LexOPS_attrs
+  # make a LexOPS pipeline object
+  lp <- as.LexOPS_pipeline(df)
 
-  df
+  # add the info to the output object
+  lp$info <- lp_info
+
+  lp
 }

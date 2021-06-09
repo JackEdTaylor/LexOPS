@@ -5,7 +5,7 @@
 \title{Generate stimuli}
 \usage{
 generate(
-  df,
+  x,
   n = 20,
   match_null = "balanced",
   seed = NA,
@@ -14,7 +14,7 @@ generate(
 )
 }
 \arguments{
-\item{df}{A data frame that is the result from \code{control_for()} or \code{split_by()}.}
+\item{x}{A LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
 
 \item{n}{The number of strings per condition (default = 20). Set to \code{"all"} to generate as many as possible.}
 

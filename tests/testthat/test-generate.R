@@ -54,12 +54,6 @@ testthat::test_that("general warnings", {
 # general errors ----
 testthat::test_that("general errors", {
   testthat::expect_error(
-    generate(20),
-    "Expected df to be of class data frame, not numeric",
-    fixed = TRUE
-  )
-
-  testthat::expect_error(
     eg_df %>%
       set_options(id_col = "id") %>%
       split_by(a, -5:0 ~ 0:5) %>%

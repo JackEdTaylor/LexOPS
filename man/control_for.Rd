@@ -4,10 +4,10 @@
 \alias{control_for}
 \title{Control for confounding variables.}
 \usage{
-control_for(df, var, tol = NA, standard_eval = FALSE)
+control_for(x, var, tol = NA, standard_eval = FALSE)
 }
 \arguments{
-\item{df}{A data frame that is the result from \code{split_by()}.}
+\item{x}{A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
 
 \item{var}{The column to treat as a control (non-standard evaluation).}
 

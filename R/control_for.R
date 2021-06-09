@@ -2,7 +2,7 @@
 #'
 #' Specifies variables that should be controlled for in the generated stimuli, after splitting. Can be run multiple times to control for multiple variables.
 #'
-#' @param df A data frame that is the result from `split_by()`.
+#' @param x A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
 #' @param var The column to treat as a control (non-standard evaluation).
 #' @param tol The tolerance of the control. For numeric variables, this should be in the form lower:upper (e.g. `-0.1:0.1` will control within +/- 0.1). For categorical variables, this can be kept as `NA`.
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `var` and `tol`. If `TRUE`, `var` should be a character vector referring to a column in `df` (e.g. `"Zipf.SUBTLEX_UK"`), and `tol` should be a vector of length 2, specifying the tolerance (e.g. `c(-0.1, 0.5)`). Default = `FALSE`.
@@ -29,7 +29,14 @@
 #'
 #' @export
 
-control_for <- function(df, var, tol = NA, standard_eval = FALSE) {
+control_for <- function(x, var, tol = NA, standard_eval = FALSE) {
+  # extract df if class is LexOPS_pipeline
+  if (is.LexOPS_pipeline(x)) {
+    df <- x$df
+  } else {
+    df <- x
+  }
+
   # parse the column name and tolerance into a list object
   var <- if (standard_eval) {
     if (all(is.na(tol))) {
@@ -52,13 +59,21 @@ control_for <- function(df, var, tol = NA, standard_eval = FALSE) {
   }
   if (length(var)==1 & is.numeric(df[[var[[1]]]])) warning(sprintf("No tolerance given for numeric variable '%s', will control for exactly.", var[[1]]))
 
-  # get attributes
-  LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
+  # get pipeline info
+  lp_info <- if (is.LexOPS_pipeline(x)) {
+    if (is.null(x$info)) {
+      list()
+    } else {
+      x$info
+    }
+  } else {
+    list()
+  }
 
-  # get options from attributes
-  if (!is.null(LexOPS_attrs$options)) {
-    id_col <- LexOPS_attrs$options$id_col
-    cond_col <- LexOPS_attrs$options$cond_col
+  # get options from pipeline info
+  if (!is.null(lp_info$options)) {
+    id_col <- lp_info$options$id_col
+    cond_col <- lp_info$options$cond_col
     cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
   } else {
     id_col <- "string"
@@ -73,16 +88,19 @@ control_for <- function(df, var, tol = NA, standard_eval = FALSE) {
   }
 
   # add the specified controls to df's attributes
-  if (is.null(LexOPS_attrs$controls)) {
-    LexOPS_attrs$controls <- list(var)
+  if (is.null(lp_info$controls)) {
+    lp_info$controls <- list(var)
   } else {
-    LexOPS_attrs$controls[[length(LexOPS_attrs$controls)+1]] <- var
+    lp_info$controls[[length(lp_info$controls)+1]] <- var
   }
 
-  # add the attributes to the output object
-  attr(df, "LexOPS_attrs") <- LexOPS_attrs
+  # make a LexOPS pipeline object
+  lp <- as.LexOPS_pipeline(df)
 
-  df
+  # add the info to the output object
+  lp$info <- lp_info
+
+  lp
 }
 
 # # should throw errors

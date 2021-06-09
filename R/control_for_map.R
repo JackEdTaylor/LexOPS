@@ -2,7 +2,7 @@
 #'
 #' Some variables (e.g. similarity measures) are hard to control for with \code{\link{control_for}} as they need to be recalculated for each word relative to each other, rather than there being a single value for each possible stimulus. The `control_for_map` function declares a function that the \code{\link{generate}} function should apply to each match_null within an iteration of stimulus generation. The function given as `fun` should be able to take the data in the column given in `var` as the first argument, and should be able to take the match_null's value in that column as the second argument.
 #'
-#' @param df A data frame that is the result from \code{\link{split_by}}.
+#' @param x A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
 #' @param fun The function to use to calculate the control varibale. Should be an object of class "function".
 #' @param var The column to provide the value which will be the first argument of the function.
 #' @param tol The tolerance of the control. For numeric variables, this should be in the form lower:upper (e.g. `-0.1:0.1` will control within +/- 0.1). For categorical variables, this can be kept as `NA`.
@@ -32,7 +32,7 @@
 #'
 #' @export
 
-control_for_map <- function(df, fun, var, tol = NA, name = NA, standard_eval = FALSE) {
+control_for_map <- function(x, fun, var, tol = NA, name = NA, standard_eval = FALSE) {
   # parse the column name and tolerance into a list object
   var <- if (standard_eval) {
     if (all(is.na(tol))) {
@@ -47,6 +47,13 @@ control_for_map <- function(df, fun, var, tol = NA, name = NA, standard_eval = F
   # prepend var list with the function
   var <- prepend(var, fun)
 
+  # extract df if class is LexOPS_pipeline
+  if (is.LexOPS_pipeline(x)) {
+    df <- x$df
+  } else {
+    df <- x
+  }
+
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
   # check the variable specified in var is in the dataframe
@@ -58,13 +65,21 @@ control_for_map <- function(df, fun, var, tol = NA, name = NA, standard_eval = F
     if (length(var)!=3) stop(sprintf("Expected list length of 2 (function, variable) or 3 (function, variable, tolerance), not %i.", length(var)))
   }
 
-  # get attributes
-  LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
+  # get pipeline info
+  lp_info <- if (is.LexOPS_pipeline(x)) {
+    if (is.null(x$info)) {
+      list()
+    } else {
+      x$info
+    }
+  } else {
+    list()
+  }
 
-  # get options from attributes
-  if (!is.null(LexOPS_attrs$options)) {
-    id_col <- LexOPS_attrs$options$id_col
-    cond_col <- LexOPS_attrs$options$cond_col
+  # get options from pipeline info
+  if (!is.null(lp_info$options)) {
+    id_col <- lp_info$options$id_col
+    cond_col <- lp_info$options$cond_col
     cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
   } else {
     id_col <- "string"
@@ -75,7 +90,7 @@ control_for_map <- function(df, fun, var, tol = NA, name = NA, standard_eval = F
   # prepend var with what the output should be called
   # var's final structure should be `list(name, fun, var, tol)`
   var <- if (is.na(name)) {
-    prepend(var, sprintf("control_map_%i", length(LexOPS_attrs$control_functions)+1 ))
+    prepend(var, sprintf("control_map_%i", length(lp_info$control_functions)+1 ))
   } else {
     prepend(var, name)
   }
@@ -87,14 +102,17 @@ control_for_map <- function(df, fun, var, tol = NA, name = NA, standard_eval = F
   }
 
   # add the specified controls to df's attributes
-  if (is.null(LexOPS_attrs$control_functions)) {
-    LexOPS_attrs$control_functions <- list(var)
+  if (is.null(lp_info$control_functions)) {
+    lp_info$control_functions <- list(var)
   } else {
-    LexOPS_attrs$control_functions[[length(LexOPS_attrs$control_functions)+1]] <- var
+    lp_info$control_functions[[length(lp_info$control_functions)+1]] <- var
   }
 
-  # add the attributes to the output object
-  attr(df, "LexOPS_attrs") <- LexOPS_attrs
+  # make a LexOPS pipeline object
+  lp <- as.LexOPS_pipeline(df)
 
-  df
+  # add the info to the output object
+  lp$info <- lp_info
+
+  lp
 }

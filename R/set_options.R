@@ -23,8 +23,8 @@
 
 set_options <- function(df, id_col = "string", cond_col = "LexOPS_splitCond"){
 
-  # check no LexOPS attributes present
-  if (!is.null(attr(df, "LexOPS_attrs"))) {
+  # check not already a LexOPS_pipeline object
+  if (is.LexOPS_pipeline(df)) {
     stop("`set_options()` must be the first function run in a generate pipeline")
   }
 
@@ -38,17 +38,17 @@ set_options <- function(df, id_col = "string", cond_col = "LexOPS_splitCond"){
     stop("`cond_col` must be a character vector")
   }
 
-  # add the attributes
-  LexOPS_attrs <- list()
+  # add the options to the info
+  lp_info <- list()
 
-  LexOPS_attrs$options <- list(
+  lp_info$options <- list(
     id_col = id_col,
     cond_col = cond_col
   )
 
-  attr(df, "LexOPS_attrs") <- LexOPS_attrs
+  lp <- as.LexOPS_pipeline(df)
+  lp$info <- lp_info
 
-  # return df
-  df
-
+  # return the pipeline object
+  lp
 }

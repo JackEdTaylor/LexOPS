@@ -24,7 +24,7 @@
 #
 plot_sample <- function(df, include = "design", force = TRUE, id_col = "string") {
   # get attributes
-  if (is.null(attr(df, "LexOPS_attrs"))) {
+  if (is.null(attr(df, "LexOPS_info"))) {
     if (force) {
       warning("Attributes missing. Will try to add attributes")
       LexOPS_attrs <- list()
@@ -35,7 +35,7 @@ plot_sample <- function(df, include = "design", force = TRUE, id_col = "string")
       LexOPS_attrs <- NULL
     }
   } else {
-    LexOPS_attrs <- attr(df, "LexOPS_attrs")
+    LexOPS_attrs <- attr(df, "LexOPS_info")
     # get options from attributes
     if (!is.null(LexOPS_attrs$options)) {
       id_col <- LexOPS_attrs$options$id_col
@@ -44,7 +44,7 @@ plot_sample <- function(df, include = "design", force = TRUE, id_col = "string")
     }
   }
   # check is generated stimuli
-  if (is.null(LexOPS_attrs$generated)) stop("Must run `generate()` on `df` before using `plot_sample_rep()` (or try `force = TRUE`?).")
+  if (is.null(LexOPS_attrs$generated)) stop("Must run `generate()` on `df` before using `plot_sample()` (or try `force = TRUE`?).")
   # ensure is in long format
   if (is.null(LexOPS_attrs$is.long_format)) df <- LexOPS::long_format(df)
 

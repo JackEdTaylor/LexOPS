@@ -1,7 +1,7 @@
 not_generated_message <- "The generate() function was not called. Specify at least one split and at least one control to use the generate algorithm."
 
 output$gen_review_iteration_plot <- renderPlot({
-  LexOPS_attrs <- attr(generated_stim(), "LexOPS_attrs")
+  LexOPS_attrs <- attr(generated_stim(), "LexOPS_info")
   if (!is.null(LexOPS_attrs$generated)) {
     LexOPS::plot_iterations(generated_stim()) +
       ggplot2::theme(
@@ -14,7 +14,7 @@ output$gen_review_iteration_plot <- renderPlot({
 })
 
 output$gen_review_success_rate <- renderText({
-  LexOPS_attrs <- attr(generated_stim(), "LexOPS_attrs")
+  LexOPS_attrs <- attr(generated_stim(), "LexOPS_info")
   if(is.null(LexOPS_attrs$generated)) {
     not_generated_message
   } else {
@@ -27,7 +27,7 @@ output$gen_review_success_rate <- renderText({
 })
 
 output$gen_review_iteration_plot_ui <- renderUI({
-  LexOPS_attrs <- attr(generated_stim(), "LexOPS_attrs")
+  LexOPS_attrs <- attr(generated_stim(), "LexOPS_info")
   if (!is.null(LexOPS_attrs$generated)) {
     plotOutput("gen_review_iteration_plot")
   } else {
@@ -46,7 +46,7 @@ output$gen_plot_filters <- renderPlot({
 })
 
 output$gen_plot_filters_ui <- renderUI({
-  LexOPS_attrs <- attr(generated_stim(), "LexOPS_attrs")
+  LexOPS_attrs <- attr(generated_stim(), "LexOPS_info")
   if (!is.null(LexOPS_attrs$generated) & gen_filterby_boxes_N() > 0) {
     filt_vars <- sapply(1:gen_filterby_boxes_N(), function(i) filter_opts_react()[[i]]$var)
     filt_vars <- filt_vars[sapply(lexops_react()[filt_vars], is.numeric)]
@@ -74,7 +74,7 @@ output$gen_plot_splits <- renderPlot({
 })
 
 output$gen_plot_splits_ui <- renderUI({
-  LexOPS_attrs <- attr(generated_stim(), "LexOPS_attrs")
+  LexOPS_attrs <- attr(generated_stim(), "LexOPS_info")
   if (!is.null(LexOPS_attrs$generated)) {
     split_vars <- sapply(1:gen_splitby_boxes_N(), function(i) split_opts_react()[[i]]$var)
     split_vars <- split_vars[split_vars != "Random"]
@@ -99,7 +99,7 @@ output$gen_plot_controls <- renderPlot({
 })
 
 output$gen_plot_controls_ui <- renderUI({
-  LexOPS_attrs <- attr(generated_stim(), "LexOPS_attrs")
+  LexOPS_attrs <- attr(generated_stim(), "LexOPS_info")
   if (!is.null(LexOPS_attrs$generated)) {
     control_vars <- sapply(1:gen_controlfor_boxes_N(), function(i) control_opts_react()[[i]]$var)
     control_vars <- control_vars[sapply(lexops_react()[control_vars], is.numeric)]
@@ -138,7 +138,7 @@ output$gen_review_null_distribution_plot <- renderPlot({
 })
 
 output$gen_review_null_distribution_ui <- renderUI({
-  LexOPS_attrs <- attr(generated_stim(), "LexOPS_attrs")
+  LexOPS_attrs <- attr(generated_stim(), "LexOPS_info")
   if (!is.null(LexOPS_attrs$generated)) {
     fluidRow(
       column(3, tableOutput("gen_review_null_distribution_table"), align = "center"),

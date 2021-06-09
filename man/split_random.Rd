@@ -4,10 +4,10 @@
 \alias{split_random}
 \title{Add a random split to the data.}
 \usage{
-split_random(df, nlevels = 2, seed = NA)
+split_random(x, nlevels = 2, seed = NA)
 }
 \arguments{
-\item{df}{A data frame containing the IV and strings.}
+\item{x}{A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
 
 \item{nlevels}{An integer, specifying how many levels this random split should have (default = 2).}
 

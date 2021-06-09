@@ -4,10 +4,10 @@
 \alias{split_by}
 \title{Add a split to the data.}
 \usage{
-split_by(df, var, levels, filter = TRUE, standard_eval = FALSE)
+split_by(x, var, levels, filter = TRUE, standard_eval = FALSE)
 }
 \arguments{
-\item{df}{A data frame containing the IV and strings.}
+\item{x}{A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
 
 \item{var}{The column to treat as an independent variable (non-standard evaluation).}
 

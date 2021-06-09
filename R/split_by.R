@@ -2,7 +2,7 @@
 #'
 #' Specifies splits for one IV for a factorial design. Can be called multiple times for multiple splits.
 #'
-#' @param df A data frame containing the IV and strings.
+#' @param x A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
 #' @param var The column to treat as an independent variable (non-standard evaluation).
 #' @param levels The boundaries to use as levels of this variable (non-standard evaluation). These should be specified in the form `1:3 ~ 4:6 ~ 7:9` or `c(1, 3) ~ c(4, 6) ~ c(7, 9)` for numeric variables, and (e.g.) `"noun" ~ "verb" ~ c"adjective"` for character variables, where levels are separated by the `~` operator. Levels must be non-overlapping.
 #' @param filter Logical. If TRUE, words which fit no conditions are removed.
@@ -41,7 +41,14 @@
 #'
 #' @export
 
-split_by <- function(df, var, levels, filter = TRUE, standard_eval = FALSE){
+split_by <- function(x, var, levels, filter = TRUE, standard_eval = FALSE){
+
+  # extract df if class is LexOPS_pipeline
+  if (is.LexOPS_pipeline(x)) {
+    df <- x$df
+  } else {
+    df <- x
+  }
 
   # convert var and levels to a list, `split`, which will be added to the attributes
   split <- if (standard_eval) {
@@ -54,13 +61,21 @@ split_by <- function(df, var, levels, filter = TRUE, standard_eval = FALSE){
     parse_levels(substitute(var), substitute(levels))
   }
 
-  # get attributes
-  LexOPS_attrs <- if (is.null(attr(df, "LexOPS_attrs"))) list() else attr(df, "LexOPS_attrs")
+  # get pipeline info
+  lp_info <- if (is.LexOPS_pipeline(x)) {
+    if (is.null(x$info)) {
+      list()
+    } else {
+      x$info
+    }
+  } else {
+    list()
+  }
 
-  # get options from attributes
-  if (!is.null(LexOPS_attrs$options)) {
-    id_col <- LexOPS_attrs$options$id_col
-    cond_col <- LexOPS_attrs$options$cond_col
+  # get options from pipeline info
+  if (!is.null(lp_info$options)) {
+    id_col <- lp_info$options$id_col
+    cond_col <- lp_info$options$cond_col
     cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
   } else {
     id_col <- "string"
@@ -69,10 +84,10 @@ split_by <- function(df, var, levels, filter = TRUE, standard_eval = FALSE){
   }
 
   # add split info
-  if (is.null(LexOPS_attrs$splits)) {
-    LexOPS_attrs$splits <- list(split)
+  if (is.null(lp_info$splits)) {
+    lp_info$splits <- list(split)
   } else {
-    LexOPS_attrs$splits[[length(LexOPS_attrs$splits)+1]] <- split
+    lp_info$splits[[length(lp_info$splits)+1]] <- split
   }
 
   # check that all the defined levels have at least one possible value in the distribution or values
@@ -136,10 +151,13 @@ split_by <- function(df, var, levels, filter = TRUE, standard_eval = FALSE){
     }
   }
 
-  # add the attributes to the output object
-  attr(df, "LexOPS_attrs") <- LexOPS_attrs
+  # make a LexOPS pipeline object
+  lp <- as.LexOPS_pipeline(df)
 
-  return(df)
+  # add the info to the output object
+  lp$info <- lp_info
+
+  lp
 }
 
 split_by.integer <- function(df, column, breaks, new_column, prefix, filter){
