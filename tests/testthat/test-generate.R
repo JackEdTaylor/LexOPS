@@ -76,6 +76,44 @@ testthat::test_that("general errors", {
     "Unknown match_null; expected \"inclusive\", \"random\", \"balanced\", \"first\", or a specific condition (e.g. \"A2_B1_C1\")",
     fixed = TRUE
   )
+
+  testthat::expect_error(
+    eg_df %>%
+      set_options(id_col = "id") %>%
+      split_by(a, -5:0 ~ 0:5) %>%
+      generate(10),
+    "No controls defined - see ?LexOPS::generate for example usage of generate()",
+    fixed = TRUE
+  )
+
+  testthat::expect_error(
+    eg_df %>%
+      set_options(id_col = "id") %>%
+      split_random(2) %>%
+      generate(10),
+    "No controls defined - see ?LexOPS::generate for example usage of generate()",
+    fixed = TRUE
+  )
+
+  testthat::expect_error(
+    eg_df %>%
+      set_options(id_col = "id") %>%
+      control_for(b, -2.5:2.5) %>%
+      control_for(c, -2.5:2.5) %>%
+      control_for(d) %>%
+      generate(10),
+    "No splits defined - see ?LexOPS::generate for example usage of generate()",
+    fixed = TRUE
+  )
+
+  testthat::expect_error(
+    eg_df %>%
+      set_options(id_col = "id") %>%
+      control_for_euc(c(b, c), -2.5:2.5) %>%
+      generate(10),
+    "No splits defined - see ?LexOPS::generate for example usage of generate()",
+    fixed = TRUE
+  )
 })
 
 # reproducibility ----
