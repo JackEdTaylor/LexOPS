@@ -188,4 +188,71 @@ testthat::test_that("splits", {
       nrow(),
     4
   )
+
+  # test that split_random() works
+  testthat::expect_equal(
+    eg_df %>%
+      set_options(id_col = "id") %>%
+      split_random(3) %>%
+      control_for(d) %>%
+      generate(4, silent = TRUE) %>%
+      nrow(),
+    4
+  )
+
+  # test that split_random() can be combined with split_by()
+  testthat::expect_equal(
+    eg_df %>%
+      set_options(id_col = "id") %>%
+      split_by(a, -3:0 ~ 0.25:3) %>%
+      split_random(3) %>%
+      control_for(d) %>%
+      generate(4, silent = TRUE) %>%
+      dplyr::left_join(
+        eg_df %>%
+          dplyr::select(id, a) %>%
+          dplyr::rename(A1_B1_a = a),
+        by = c("A1_B1" = "id")
+      ) %>%
+      dplyr::left_join(
+        eg_df %>%
+          dplyr::select(id, a) %>%
+          dplyr::rename(A1_B2_a = a),
+        by = c("A1_B2" = "id")
+      ) %>%
+      dplyr::left_join(
+        eg_df %>%
+          dplyr::select(id, a) %>%
+          dplyr::rename(A1_B3_a = a),
+        by = c("A1_B3" = "id")
+      ) %>%
+      dplyr::left_join(
+        eg_df %>%
+          dplyr::select(id, a) %>%
+          dplyr::rename(A2_B1_a = a),
+        by = c("A2_B1" = "id")
+      ) %>%
+      dplyr::left_join(
+        eg_df %>%
+          dplyr::select(id, a) %>%
+          dplyr::rename(A2_B2_a = a),
+        by = c("A2_B2" = "id")
+      ) %>%
+      dplyr::left_join(
+        eg_df %>%
+          dplyr::select(id, a) %>%
+          dplyr::rename(A2_B3_a = a),
+        by = c("A2_B3" = "id")
+      ) %>%
+      dplyr::filter(
+        dplyr::between(A1_B1_a, -3, 0),
+        dplyr::between(A1_B2_a, -3, 0),
+        dplyr::between(A1_B3_a, -3, 0),
+        dplyr::between(A2_B1_a, 0.25, 3),
+        dplyr::between(A2_B2_a, 0.25, 3),
+        dplyr::between(A2_B3_a, 0.25, 3)
+      ) %>%
+      nrow(),
+    4
+  )
 })
