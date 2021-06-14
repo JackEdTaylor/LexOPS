@@ -367,6 +367,12 @@ generate.check <- function(df, n, match_null, seed, id_col, cond_col, is_shiny, 
   # check n is a number or expected string
   if (!is.numeric(n) & n != "all") stop(sprintf('n must be numeric or a string of value "all"'))
 
+  # check the splits are defined
+  if (length(lp_info$splits)==0) stop("No splits defined - see ?LexOPS::generate for example usage of generate()")
+
+  # check the controls are defined
+  if (length(lp_info$controls)==0 & length(lp_info$control_functions)==0) stop("No controls defined - see ?LexOPS::generate for example usage of generate()")
+
   # check that the conditions are present in the attributes
   if (is.null(cond_col)) {
     # if the column containing the condition info is missing and not defined manually, throw error
