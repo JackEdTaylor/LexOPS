@@ -210,6 +210,83 @@ testthat::test_that("reproducibility", {
       control_for("d", standard_eval = TRUE) %>%
       generate(10, seed = 42, silent = TRUE)
   )
+  # check order doesn't matter when one split
+  testthat::expect_identical(
+    {
+      x <- eg_df %>%
+        set_options(id_col = "id") %>%
+        split_by(a, -5:0 ~ 0:5) %>%
+        control_for(b, -2.5:2.5) %>%
+        control_for(c, -2.5:2.5) %>%
+        control_for(d) %>%
+        generate(10, seed = 69, silent = TRUE) %>%
+        as.data.frame()
+      attr(x, "LexOPS_info") <- NULL
+      x
+    },
+    {
+      x <- eg_df %>%
+        set_options(id_col = "id") %>%
+        control_for(d) %>%
+        control_for(b, -2.5:2.5) %>%
+        control_for(c, -2.5:2.5) %>%
+        split_by(a, -5:0 ~ 0:5) %>%
+        generate(10, seed = 69, silent = TRUE) %>%
+        as.data.frame()
+      attr(x, "LexOPS_info") <- NULL
+      x
+    }
+  )
+  # check order doesn't matter when two splits, but same order of splits
+  testthat::expect_identical(
+    {
+      x <- eg_df %>%
+        set_options(id_col = "id") %>%
+        control_for(c, -2.5:2.5) %>%
+        split_by(e, 0:3 ~ 4:6) %>%
+        control_for(d) %>%
+        split_by(a, -5:0 ~ 0:5) %>%
+        generate(10, seed = 69, silent = TRUE) %>%
+        as.data.frame()
+      attr(x, "LexOPS_info") <- NULL
+      x
+    },
+    {
+      x <- eg_df %>%
+        set_options(id_col = "id") %>%
+        control_for(c, -2.5:2.5) %>%
+        split_by(e, 0:3 ~ 4:6) %>%
+        split_by(a, -5:0 ~ 0:5) %>%
+        control_for(d) %>%
+        generate(10, seed = 69, silent = TRUE) %>%
+        as.data.frame()
+      attr(x, "LexOPS_info") <- NULL
+      x
+    }
+  )
+  # check order does matter when two splits, with different order of splits
+  testthat::expect_false({
+    x <- eg_df %>%
+      set_options(id_col = "id") %>%
+      control_for(c, -2.5:2.5) %>%
+      split_by(e, 0:3 ~ 4:6) %>%
+      control_for(d) %>%
+      split_by(a, -5:0 ~ 0:5) %>%
+      generate(10, seed = 69, silent = TRUE) %>%
+      as.data.frame()
+    attr(x, "LexOPS_info") <- NULL
+    y <- eg_df %>%
+      set_options(id_col = "id") %>%
+      control_for(c, -2.5:2.5) %>%
+      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(e, 0:3 ~ 4:6) %>%
+      control_for(d) %>%
+      generate(10, seed = 69, silent = TRUE) %>%
+      as.data.frame()
+    attr(y, "LexOPS_info") <- NULL
+
+    identical(x, y)
+  })
 })
 
 # no id col given ----
