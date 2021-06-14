@@ -16,7 +16,7 @@ format.LexOPS_pipeline <- function(x, ...) {
 
   Ns <- lapply(lp_info, length)
 
-  factorial_Ns <- sapply(lp_info$splits, function(x) length(x)-1)
+  factorial_Ns <- if (length(lp_info$splits)==0) "?" else sapply(lp_info$splits, function(x) length(x)-1)
   factorial_summ <- sprintf("%s level factorial design", paste(factorial_Ns, collapse=" x "))
 
   splits_txt <- sapply(lp_info$splits, function(x) {
