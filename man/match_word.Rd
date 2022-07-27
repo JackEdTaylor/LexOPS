@@ -67,22 +67,22 @@ lexops \%>\%
 
 # Find matches within an orthographic levenshtein distance of 5 from "thicket":
 library(dplyr)
-library(vwr)
+library(stringdist)
 targ_word <- "thicket"
 lexops \%>\%
-  mutate(old = levenshtein.distance(targ_word, string)) \%>\%
+  mutate(old = stringdist(targ_word, string, method="lv")) \%>\%
   match_word(targ_word, old = 0:5)
 
 # Find matches within a phonological levenshtein distance of 2 from "thicket":
 # (note that this method requires 1-letter phonological transcriptions)
 library(dplyr)
-library(vwr)
+library(stringdist)
 targ_word <- "thicket"
 targ_word_pronun <- lexops \%>\%
   filter(string == "thicket") \%>\%
   pull(eSpeak.br_1letter)
 lexops \%>\%
-  mutate(pld = levenshtein.distance(targ_word_pronun, eSpeak.br_1letter)) \%>\%
+  mutate(pld = stringdist(targ_word_pronun, eSpeak.br_1letter, method="lv")) \%>\%
   match_word(targ_word, pld = 0:2)
 
 }

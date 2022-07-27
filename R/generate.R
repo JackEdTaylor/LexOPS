@@ -52,36 +52,36 @@
 #'  control_for("Zipf.SUBTLEX_UK", c(-0.2, 0.2), standard_eval = TRUE) %>%
 #'  generate(n = 20)
 #'
-#' # Create two levels of arousal, controlling for orthographic similarity
-#' library(vwr)
+#' # Create two levels of arousal, controlling for orthographic Levenshtein distance
+#' library(stringdist)
 #' lexops %>%
 #'  split_by(AROU.Warriner, 1:3 ~ 6:9) %>%
-#'  control_for_map(levenshtein.distance, string, 0:4) %>%
+#'  control_for_map(stringdist, string, 0:4, method="lv") %>%
 #'  generate(20)
 #'
 #' # Create two levels of arousal, controlling for phonological similarity
-#' library(vwr)
+#' library(stringdist)
 #' lexops %>%
 #'  split_by(AROU.Warriner, 1:3 ~ 6:9) %>%
-#'  control_for_map(levenshtein.distance, eSpeak.br_1letter, 0:2) %>%
+#'  control_for_map(stringdist, eSpeak.br_1letter, 0:2, method="lv") %>%
 #'  generate(20)
 #'
-#' # Create two levels of arousal, controlling for phonological similarity, and rhyme
-#' library(vwr)
+#' # Create two levels of arousal, controlling for phonological Levenshtein distance, and rhyme
+#' library(stringdist)
 #' lexops %>%
 #'  split_by(AROU.Warriner, 1:3 ~ 6:9) %>%
 #'  control_for(Rhyme.eSpeak.br) %>%
-#'  control_for_map(levenshtein.distance, eSpeak.br_1letter, 0:2) %>%
+#'  control_for_map(stringdist, eSpeak.br_1letter, 0:2, method="lv") %>%
 #'  generate(20)
 #'
 #' # A similar design to that above, but with 3 levels of valence, and inclusive matching
 #' # Note that this will result in exactly the same result as above.
 #' # A function that calculates something like Semantic Similarity will produce very different results.
-#' library(vwr)
+#' library(stringdist)
 #' lexops %>%
 #'  split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
 #'  control_for(Rhyme.eSpeak.br) %>%
-#'  control_for_map(levenshtein.distance, eSpeak.br_1letter, 0:2) %>%
+#'  control_for_map(stringdist, eSpeak.br_1letter, 0:2, method="lv") %>%
 #'  generate(20, match_null = "inclusive")
 #'
 #' @export

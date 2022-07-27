@@ -173,11 +173,11 @@ testthat::test_that("match_null options", {
 testthat::test_that("control_for_map", {
   # test with two conditions
   testthat::expect_equal({
-    library(vwr)
+    library(stringdist)
     eg_df %>%
       set_options(id_col = "id") %>%
       split_by(a, -5:0 ~ 0:5) %>%
-      control_for_map(levenshtein.distance, f, 0:2) %>%
+      control_for_map(stringdist, f, 0:2, method="lv") %>%
       generate(36, silent=TRUE) %>%
       dplyr::left_join(
         eg_df %>%
@@ -192,17 +192,17 @@ testthat::test_that("control_for_map", {
         by = c("A2" = "id")
       ) %>%
       dplyr::rowwise() %>%
-      dplyr::mutate(ld = levenshtein.distance(A1_f, A2_f)) %>%
+      dplyr::mutate(ld = stringdist(A1_f, A2_f, method="lv")) %>%
       dplyr::filter(ld <= 2) %>%
       nrow()
   }, 36)
   # test with three conditions and not including 0 in tolerance
   testthat::expect_equal({
-    library(vwr)
+    library(stringdist)
     eg_df %>%
       set_options(id_col = "id") %>%
       split_by(d, "a" ~ "b" ~ "c") %>%
-      control_for_map(levenshtein.distance, f, 1:4) %>%
+      control_for_map(stringdist, f, 1:4, method="lv") %>%
       generate(23, silent=TRUE) %>%
       dplyr::left_join(
         eg_df %>%
@@ -229,7 +229,7 @@ testthat::test_that("control_for_map", {
       )) %>%
       tidyr::pivot_longer(c(A1_f, A2_f, A3_f), names_to = "condition", values_to = "f") %>%
       dplyr::rowwise() %>%
-      dplyr::mutate(ld = levenshtein.distance(match_null_f, f)) %>%
+      dplyr::mutate(ld = stringdist(match_null_f, f, method="lv")) %>%
       dplyr::filter(ld >= 1 & ld <= 4) %>%
       nrow()
     },
@@ -237,12 +237,12 @@ testthat::test_that("control_for_map", {
   )
   # test with multiple control functions
   testthat::expect_equal({
-    library(vwr)
+    library(stringdist)
     eg_df %>%
       set_options(id_col = "id") %>%
       split_by(a, -5:0 ~ 0:5) %>%
-      control_for_map(levenshtein.distance, f, 2:Inf) %>%
-      control_for_map(levenshtein.distance, g, 3:3) %>%
+      control_for_map(stringdist, f, 2:Inf, method="osa") %>%
+      control_for_map(stringdist, g, 3:3, method="lv") %>%
       generate(29, silent=TRUE) %>%
       dplyr::left_join(
         eg_df %>%
@@ -257,7 +257,7 @@ testthat::test_that("control_for_map", {
         by = c("A2" = "id")
       ) %>%
       dplyr::rowwise() %>%
-      dplyr::mutate(ld_f = levenshtein.distance(A1_f, A2_f)) %>%
+      dplyr::mutate(ld_f = stringdist(A1_f, A2_f, method="osa")) %>%
       dplyr::left_join(
         eg_df %>%
           dplyr::select(id, g) %>%
@@ -271,10 +271,29 @@ testthat::test_that("control_for_map", {
         by = c("A2" = "id")
       ) %>%
       dplyr::rowwise() %>%
-      dplyr::mutate(ld_g = levenshtein.distance(A1_g, A2_g)) %>%
+      dplyr::mutate(ld_g = stringdist(A1_g, A2_g, method="lv")) %>%
       dplyr::filter(ld_g == 3, ld_f >= 2) %>%
       nrow()
   }, 29)
+  # test passing of arguments via ellipses
+  testthat::expect_equal({
+    library(stringdist)
+
+    plus_minus_strdist <- function(a, b, method="osa", minus=FALSE) {
+      x <- stringdist(a, b, method=method)
+      if (minus) x <- 0-x
+      x
+    }
+
+    eg_df %>%
+      set_options(id_col = "id") %>%
+      split_by(a, -5:0 ~ 0:5) %>%
+      control_for_map(plus_minus_strdist, f, -3:0, minus=TRUE) %>%
+      generate(27, silent=TRUE) %>%
+      long_format() %>%
+      dplyr::filter(as.numeric(control_map_1) <= 0 & as.numeric(control_map_1) >= -3) %>%
+      nrow()
+  }, 54)
 })
 
 # control_for_euc ----

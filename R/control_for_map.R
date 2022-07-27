@@ -8,31 +8,40 @@
 #' @param tol The tolerance of the control. For numeric variables, this should be in the form lower:upper (e.g. `-0.1:0.1` will control within +/- 0.1). For categorical variables, this can be kept as `NA`.
 #' @param name What the output column should be named. If `NA` (default), will automatically assign as `sprintf("control_fun_%i", nr)`, where `nr` is the number of the control function.
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `var` and `tol`. If `TRUE`, `var` should be a character vector referring to a column in `df` (e.g. `"Zipf.SUBTLEX_UK"`), and `tol` should be a vector of length 2, specifying the tolerance (e.g. `c(-0.1, 0.5)`). Default = `FALSE`.
+#' @param ... Arguments to be passed to `fun`
 #'
 #' @return Returns `df`, with details on the variables to be controlled for added to the attributes. Run the \code{\link{generate}} function to then generate the actual stimuli.
 #' @examples
 #'
 #' # Create two levels of arousal, controlling for orthographic similarity
-#' library(vwr)
+#' # (as optimal string alignment; default for `stringdist()`)
+#' library(stringdist)
 #' lexops %>%
 #'  split_by(AROU.Warriner, 1:3 ~ 7:9) %>%
-#'  control_for_map(levenshtein.distance, string, 0:4)
+#'  control_for_map(stringdist, string, 0:4)
 #'
-#' # Create two levels of arousal, controlling for phonological similarity
-#' library(vwr)
+#' # Create two levels of arousal, controlling for orthographic Levenshtein distance
+#' # (passed via `method` argument to `stringdist()`)
+#' library(stringdist)
 #' lexops %>%
 #'  split_by(AROU.Warriner, 1:3 ~ 7:9) %>%
-#'  control_for_map(levenshtein.distance, eSpeak.br_1letter, 0:2)
+#'  control_for_map(stringdist, string, 0:4, method="lv")
+#'
+#' # Create two levels of arousal, controlling for phonological Levenshtein distance
+#' library(stringdist)
+#' lexops %>%
+#'  split_by(AROU.Warriner, 1:3 ~ 7:9) %>%
+#'  control_for_map(stringdist, eSpeak.br_1letter, 0:2, method="lv")
 #'
 #' # Bypass non-standard evaluation
-#' library(vwr)
+#' library(stringdist)
 #' lexops %>%
 #'  split_by(AROU.Warriner, 1:3 ~ 7:9) %>%
-#'  control_for_map(levenshtein.distance, "eSpeak.br_1letter", c(0, 2), standard_eval=TRUE)
+#'  control_for_map(stringdist, "eSpeak.br_1letter", c(0, 2), standard_eval=TRUE, method="lv")
 #'
 #' @export
 
-control_for_map <- function(x, fun, var, tol = NA, name = NA, standard_eval = FALSE) {
+control_for_map <- function(x, fun, var, tol = NA, name = NA, standard_eval = FALSE, ...) {
   # parse the column name and tolerance into a list object
   var <- if (standard_eval) {
     if (all(is.na(tol))) {
@@ -45,7 +54,8 @@ control_for_map <- function(x, fun, var, tol = NA, name = NA, standard_eval = FA
   }
 
   # prepend var list with the function
-  var <- prepend(var, fun)
+  fun_ellipsed <- function(var_col, match_null) fun(var_col, match_null, ...)
+  var <- prepend(var, fun_ellipsed)
 
   # extract df if class is LexOPS_pipeline
   if (is.LexOPS_pipeline(x)) {

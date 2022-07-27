@@ -20,7 +20,7 @@ Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 Imports:
     magrittr,
@@ -31,7 +31,6 @@ Imports:
     tidyr,
     tibble,
     stringr,
-    forcats,
     stats,
     scales
 Suggests: 
@@ -46,9 +45,9 @@ Suggests:
     shinycssloaders,
     shinyjs,
     viridis,
-    vwr,
     stringdist,
     DT,
-    readr
+    readr,
+    forcats
 URL: https://JackEdTaylor.github.io/LexOPSdocs/
 BugReports: https://github.com/JackEdTaylor/LexOPS/issues

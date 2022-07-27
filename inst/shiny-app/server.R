@@ -15,8 +15,6 @@ library(purrr)
 library(tibble)
 library(stringr)
 library(forcats)
-library(vwr)
-library(stringdist)
 library(LexOPS)
 
 options(shiny.maxRequestSize=50*1024^2)
