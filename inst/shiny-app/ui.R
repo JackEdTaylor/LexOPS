@@ -45,16 +45,16 @@ tagList(
                           dashboardSidebar(width=170,
                                            sidebarMenu(
                                                style = "position: fixed; overflow: visible;",  # Stationary sidebar while scrolling
-                                               menuItem("Home", tabName = "home", icon=icon("home")),
+                                               menuItem("Home", tabName = "home", icon=icon("house")),
                                                tags$br(),
-                                               menuItem("Generate", tabName = "generate", icon=icon("cogs")),
-                                               menuItem("Match Item", tabName = "match_word", icon=icon("balance-scale")),
+                                               menuItem("Generate", tabName = "generate", icon=icon("gears")),
+                                               menuItem("Match Item", tabName = "match_word", icon=icon("scale-balanced")),
                                                menuItem("Fetch", tabName="fetch", icon=icon("file-import")),
-                                               menuItem("Visualise", tabName="visualise", icon=icon("chart-bar")),
+                                               menuItem("Visualise", tabName="visualise", icon=icon("chart-column")),
                                                tags$br(),
                                                menuItem("Custom Variables", tabName="custom_variables", icon=icon("plus")),
                                                menuItem("Preferences", tabName="preferences", icon=icon("wrench")),
-                                               menuItem("Info", tabName="info", icon=icon("info-circle"))
+                                               menuItem("Info", tabName="info", icon=icon("circle-info"))
                                            )),
 
                           dashboardBody(
@@ -65,13 +65,13 @@ tagList(
                                           tags$div(HTML(paste0("This shiny app is a front-end to the ", tags$a(href = "https://github.com/JackEdTaylor/LexOPS", "LexOPS R package"), ". LexOPS allows you to generate suitably controlled word stimuli for any possible factorial design. ", "Find out more in the <a href=\"https://jackedtaylor.github.io/LexOPSdocs/lexops-shiny-app.html\">Online Walkthrough</a>."))),
                                           tags$br(),
                                           tags$p("The tabs in the sidebar on the left-hand side provide different options for generating stimuli and exploring data:"),
-                                          tags$h3(icon("cogs"), "Generate"),
+                                          tags$h3(icon("gears"), "Generate"),
                                           tags$p("The Generate tab provides LexOPS' main functionality, generating stimuli for any possible user-specified factorial design. Here, you specify independent variables (\"splits\"), controls (variables that should be controlled for), and filters (defining a subset of the LexOPS dataset which should be used to generate the stimuli). You can then View the generated stimuli in wide or long format, and download the stimuli list as a .csv file. You can also review the generated stimuli and algorithm's performance with informative graphics. This section can also generate R code to reproduce generated stimuli."),
-                                          tags$h3(icon("balance-scale"), "Match Item"),
+                                          tags$h3(icon("scale-balanced"), "Match Item"),
                                           tags$p("The Match Item tab can suggest matches for specific words, matched in terms of selected variables. This is useful if you need to pick a suitable match manually from a list of candidates (e.g. suitable match for a word in a sentence). Again, the results can be downloaded as a .csv file."),
                                           tags$h3(icon("file-import"), "Fetch"),
                                           tags$p("The Fetch tab provides an easy way to get the values of variables in the LexOPS dataset associated with an existing stimuli list. The list of stimuli can be either uploaded (as a .csv, .tsv, .xls, or .xlsx file) or copied and pasted into the app. You can then view or download a dataframe with the values associated with your stimuli."),
-                                          tags$h3(icon("chart-bar"), "Visualise"),
+                                          tags$h3(icon("chart-column"), "Visualise"),
                                           tags$p("The Visualise tab allows you to plot relationships between numeric and categorical variables. You can specify variables to be plotted on x, y, and z axes, as well as a variable by which points should be coloured. The Visualise tab is integrated with other tabs, allowing you to plot, for instance, differences between conditions produced in the Generate tab."),
                                           tags$h3(icon("plus"), "Custom Variables"),
                                           tags$p("Here you can upload your own variables, for English words or words from another language. These variables can then be used in the other tabs. This allows you to integrate your own variables into stimulus generation, or generate stimulus lists for non-English stimuli."),
@@ -86,7 +86,7 @@ tagList(
                                               tabPanel("Info", icon=icon("info"),
                                                        tags$h1("The Generate Pipeline"),
                                                        tags$p("The generate pipeline allows you to generate stimuli for any possible factorial design. This section of the Shiny App is a front end to the LexOPS functions, split_by(), control_for(), and generate()."),
-                                                       tags$h3(icon("sliders-h"), "Specify Design"),
+                                                       tags$h3(icon("sliders"), "Specify Design"),
                                                        tags$p("Firstly, specify your design in the 'Specify Design' tab. This allows you to specify the factorial design for your experiment. Here 'splits' refer to independent variables in your factorial design, and 'controls' refer to variables which should be controlled for between conditions. You can also specify filters, to only generate stimuli from a subset of the full dataset. To add splits, controls, or filters:"),
                                                        tags$ol(
                                                            tags$li("Click the '+' button to add a box where you can specify the options for this split/control/filter."),
@@ -96,22 +96,22 @@ tagList(
                                                        ),
                                                        tags$h3(icon("wrench"), "Options"),
                                                        tags$p("Change default options for the generating algorithm to better suit your design."),
-                                                       tags$h3(icon("sort-amount-down"), "Results"),
+                                                       tags$h3(icon("arrow-down-wide-short"), "Results"),
                                                        tags$p("Click the 'Generate' button to generate stimuli, and view the stimuli generated by LexOPS according to your design. This can be viewed in either long or wide format. The generated stimuli can also be written to csv format and downloaded from here. Stimuli can be re-generated by clicking the 'generate' button again."),
-                                                       tags$h3(icon("search"), "Review"),
+                                                       tags$h3(icon("magnifying-glass"), "Review"),
                                                        tags$p("Visualise a summary of the generated stimuli, and the algorithm's performance. More flexible options for visualisation are available in the Visualise section in the sidebar."),
                                                        tags$h3(icon("laptop-code"), "Codify"),
                                                        tags$p("Once you have generated your stimuli, this tab will generate R code that will reproduce the selected options. Exact stimuli lists can be reproduced by setting the seed in the Preferences tab in the sidebar."),
                                                        tags$h3(icon("quote-left"), "Cite"),
                                                        tags$p("Once you have generated your stimuli, this tab will generate a table with a recommended list of sources you should cite (if they are known) if you use the stimulus list generated.")
                                               ),
-                                              tabPanel("Specify Design", icon=icon("sliders-h"),
+                                              tabPanel("Specify Design", icon=icon("sliders"),
                                                        fluidRow(
                                                            column(4, fluidRow(
                                                                valueBox(tags$p("Split by...", style="font-size: 75%;"), width = 12, color="light-blue", icon=icon("sitemap"),
                                                                         subtitle=fluidRow(column(12,
-                                                                                                 actionButton("gen_splitby_add", icon("plus-square")),
-                                                                                                 actionButton("gen_splitby_minus", icon("minus-square"))
+                                                                                                 actionButton("gen_splitby_add", icon("square-plus")),
+                                                                                                 actionButton("gen_splitby_minus", icon("square-minus"))
                                                                         ))),
                                                                lapply(1:25, function(i) {
                                                                    boxid <- sprintf("gen_splitby_%i", i)
@@ -119,10 +119,10 @@ tagList(
                                                                })
                                                            )),
                                                            column(4, fluidRow(
-                                                               valueBox(tags$p("Control for...", style="font-size: 75%;"), width = 12, color="yellow", icon=icon("balance-scale"),
+                                                               valueBox(tags$p("Control for...", style="font-size: 75%;"), width = 12, color="yellow", icon=icon("scale-balanced"),
                                                                         subtitle=fluidRow(column(12,
-                                                                                                 actionButton("gen_controlfor_add", icon("plus-square")),
-                                                                                                 actionButton("gen_controlfor_minus", icon("minus-square"))
+                                                                                                 actionButton("gen_controlfor_add", icon("square-plus")),
+                                                                                                 actionButton("gen_controlfor_minus", icon("square-minus"))
                                                                         ))),
                                                                lapply(1:25, function(i) {
                                                                    boxid <- sprintf("gen_controlfor_%i", i)
@@ -132,8 +132,8 @@ tagList(
                                                            column(4, fluidRow(
                                                                valueBox(tags$p("Filter by...", style="font-size: 75%;"), width = 12, color="purple", icon=icon("filter"),
                                                                         subtitle=fluidRow(column(12,
-                                                                                                 actionButton("gen_filterby_add", icon("plus-square")),
-                                                                                                 actionButton("gen_filterby_minus", icon("minus-square"))
+                                                                                                 actionButton("gen_filterby_add", icon("square-plus")),
+                                                                                                 actionButton("gen_filterby_minus", icon("square-minus"))
                                                                         ))),
                                                                lapply(1:25, function(i) {
                                                                    boxid <- sprintf("gen_filterby_%i", i)
@@ -153,16 +153,16 @@ tagList(
                                                        tags$h3("What variables should be included in the long-format results?"),
                                                        selectInput("gen_res_include", "Include...", c("All available variables" = "all", "All variables used in the design" = "design"), selected = "design", width = "100%")
                                               ),
-                                              tabPanel("Results", icon=icon("sort-amount-down"),
+                                              tabPanel("Results", icon=icon("arrow-down-wide-short"),
                                                        fluidRow(
                                                            column(12, div(id = "gen_console", style="overflow:auto; height:30px; background-color:#ffffff; font-family:Menlo,Monaco,Consolas,\"Courier New\",monospace;")),
-                                                           column(4, actionButton("gen_regenerate", "Regenerate", icon=icon("sync-alt"), style = "width:100%; text-align:center;")),
+                                                           column(4, actionButton("gen_regenerate", "Regenerate", icon=icon("rotate"), style = "width:100%; text-align:center;")),
                                                            column(4, div(selectInput("gen_data_format", NULL, c("Wide format"="wide", "Long format"="long"), selected="wide", width = "100%"), style = "text-align:center;")),
                                                            column(4, downloadButton("generated_stim_download", style = "width:100%; text-align:center;"))
                                                        ),
                                                        DT::dataTableOutput("generated_stim_dt")
                                               ),
-                                              tabPanel("Review", icon=icon("search"),
+                                              tabPanel("Review", icon=icon("magnifying-glass"),
                                                        tags$h1("Review Generated Stimuli"),
                                                        navlistPanel(
                                                            widths = c(2, 10),
@@ -192,7 +192,7 @@ tagList(
                                                                tags$h3("Match Null Distribution"),
                                                                uiOutput("gen_review_null_distribution_ui"),
                                                                tags$br(),
-                                                               shiny::HTML(paste(as.character(icon("question-circle")), "<a href=\"https://jackedtaylor.github.io/LexOPSdocs/faq.html#what-is-a-match-null\" target=\"_blank\">What is a match null?</a>"))
+                                                               shiny::HTML(paste(as.character(icon("circle-question")), "<a href=\"https://jackedtaylor.github.io/LexOPSdocs/faq.html#what-is-a-match-null\" target=\"_blank\">What is a match null?</a>"))
                                                            )
                                                        )
                                               ),
@@ -221,7 +221,7 @@ tagList(
                                                          tabPanel("Info", icon = icon("info"),
                                                                   tags$h1("Match Individual Items"),
                                                                   tags$p("This section creates a list of potential matches for an individual item. You might want to do this if you need to hand-pick matches (e.g. to be feasible controls in a sentential context). The target word is enetered in the textbox at the top."),
-                                                                  tags$h3(icon("sliders-h"), "Specify Design"),
+                                                                  tags$h3(icon("sliders"), "Specify Design"),
                                                                   tags$p("Firstly, specify your design in the 'Specify Design' tab. Here you specify the variables that should be matched by, and their tolerances. It is also possible to specify filters. Whereas matching variables can be used to get a subset of the data within a tolerance relative to the target word, the effect of filters will not change if the target item changes. As in the generate pipeline, the UI is used as follows:"),
                                                                   tags$ol(
                                                                       tags$li("Click the '+' button to add a box where you can specify the options for this split/control/filter."),
@@ -231,18 +231,18 @@ tagList(
                                                                   ),
                                                                   tags$h3(icon("wrench"), "Options"),
                                                                   tags$p("Change default options to better suit your design."),
-                                                                  tags$h3(icon("sort-amount-down"), "Results"),
+                                                                  tags$h3(icon("arrow-down-wide-short"), "Results"),
                                                                   tags$p("View suggested matches, ordered ascendingly in terms of Euclidean distance. The suggested matches can be downloaded here in .csv format."),
                                                                   tags$h3(icon("quote-left"), "Cite"),
                                                                   tags$p("When you have a list of matches, this tab will generate a table with a recommended list of sources you should cite (if they are known).")
                                                          ),
                                                          tabPanel(
-                                                             "Specify Design", icon = icon("sliders-h"),
+                                                             "Specify Design", icon = icon("sliders"),
                                                              column(6, fluidRow(
-                                                                 valueBox(tags$p("Match by...", style="font-size: 75%;"), width = 12, color="yellow", icon=icon("balance-scale"),
+                                                                 valueBox(tags$p("Match by...", style="font-size: 75%;"), width = 12, color="yellow", icon=icon("scale-balanced"),
                                                                           subtitle=fluidRow(column(12,
-                                                                                                   actionButton("match_matchby_add", icon("plus-square")),
-                                                                                                   actionButton("match_matchby_minus", icon("minus-square"))
+                                                                                                   actionButton("match_matchby_add", icon("square-plus")),
+                                                                                                   actionButton("match_matchby_minus", icon("square-minus"))
                                                                           ))),
                                                                  lapply(1:25, function(i) {
                                                                      boxid <- sprintf("match_matchby_%i", i)
@@ -252,8 +252,8 @@ tagList(
                                                              column(6, fluidRow(
                                                                  valueBox(tags$p("Filter by...", style="font-size: 75%;"), width = 12, color="purple", icon=icon("filter"),
                                                                           subtitle=fluidRow(column(12,
-                                                                                                   actionButton("match_filterby_add", icon("plus-square")),
-                                                                                                   actionButton("match_filterby_minus", icon("minus-square"))
+                                                                                                   actionButton("match_filterby_add", icon("square-plus")),
+                                                                                                   actionButton("match_filterby_minus", icon("square-minus"))
                                                                           ))),
                                                                  lapply(1:25, function(i) {
                                                                      boxid <- sprintf("match_filterby_%i", i)
@@ -268,7 +268,7 @@ tagList(
                                                              tags$p("If the tolerances are used as a filter, possible matches outside the tolerance will be discarded. If tolerances are not used as filters, possible matches outside the tolerance will still be included. The new column, \"matchFilter\", will then indicate whether each word is within the tolerance. Disabling filtering by match tolerances can be useful if you have multiple numeric variables, and you want to find the closest match by Euclidean distance alone.")
                                                          ),
                                                          tabPanel(
-                                                             "Results", icon = icon("sort-amount-down"),
+                                                             "Results", icon = icon("arrow-down-wide-short"),
                                                              fluidRow(
                                                                  column(8, tags$br()),
                                                                  column(4, downloadButton("matched_stim_download", style = "width:100%; text-align:center;"))
@@ -371,7 +371,7 @@ tagList(
                                                          )),
                                                   column(4, align="center",
                                                          fluidRow(
-                                                             column(12, tags$a(href = 'http://doi.org/10.3758/s13428-020-01389-1', icon('file-alt'), style='font-size:75px; color:black;')),
+                                                             column(12, tags$a(href = 'http://doi.org/10.3758/s13428-020-01389-1', icon('file-lines'), style='font-size:75px; color:black;')),
                                                              column(12, tags$a(href = 'http://doi.org/10.3758/s13428-020-01389-1', 'Paper on LexOPS', style='font-size:25px; color:black;'))
                                                          )),
                                                   column(4, align="center",

@@ -38,7 +38,7 @@ output$visualise_tab_content <- renderUI({
       br(),
       br(),
       fluidRow(
-        column(12, align="center", actionButton('vis_generateplot', 'Generate Plot', icon=icon("chart-bar"), style='font-size:125%'))
+        column(12, align="center", actionButton('vis_generateplot', 'Generate Plot', icon=icon("chart-scatter"), style='font-size:125%'))
       )
     )
   )
