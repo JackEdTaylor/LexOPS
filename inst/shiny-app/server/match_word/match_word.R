@@ -74,7 +74,11 @@ matched_stim <- reactive({
 
   # add match string to database temporarily if unknown
   if (!input$match_string %in% df$string) {
-    old20val <- as.numeric(vwr::old20(input$match_string, LexOPS::lexops$string))
+    old20val <- stringdist(input$match_string, LexOPS::lexops$string, method="lv") %>%
+      sort() %>%
+      `[`(1:20) %>%
+      mean()
+
     df <- res %>%
       add_row(string = input$matchstring,
               Length = nchar(input$matchstring),

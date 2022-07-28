@@ -15,7 +15,6 @@ library(purrr)
 library(tibble)
 library(stringr)
 library(forcats)
-library(vwr)
 library(stringdist)
 library(LexOPS)
 
