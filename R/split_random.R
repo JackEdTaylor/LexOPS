@@ -5,7 +5,7 @@
 #' @param x A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
 #' @param nlevels An integer, specifying how many levels this random split should have (default = 2).
 #' @param seed An integer used to set the seed, to reproduce random splits. If `NA`, a random seed will not be set. Default is `NA`.
-#' @param equal_size Logical; should LexOPS create equal (or as close to equal as possible) numbers of candidates for each level? When `FALSE`, will sample N levels with replacement, when `TRUE` will sample N rows. Default is `FALSE`.
+#' @param equal_size Logical; should LexOPS create equal (or as close to equal as possible) numbers of candidates for each level? When `FALSE`, will sample N levels with replacement, when `TRUE` will sample N rows. Setting to `TRUE` will generally create more candidate matches. Default is `FALSE`.
 #'
 #' @return Returns `df`, with a new column (name defined by `cond_col` argument) identifying which level of the randomly generated IV each string belongs to.
 #' @examples

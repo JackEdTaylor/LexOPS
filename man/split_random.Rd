@@ -13,7 +13,7 @@ split_random(x, nlevels = 2, seed = NA, equal_size = FALSE)
 
 \item{seed}{An integer used to set the seed, to reproduce random splits. If \code{NA}, a random seed will not be set. Default is \code{NA}.}
 
-\item{equal_size}{Logical; should LexOPS create equal (or as close to equal as possible) numbers of candidates for each level? When \code{FALSE}, will sample N levels with replacement, when \code{TRUE} will sample N rows. Default is \code{FALSE}.}
+\item{equal_size}{Logical; should LexOPS create equal (or as close to equal as possible) numbers of candidates for each level? When \code{FALSE}, will sample N levels with replacement, when \code{TRUE} will sample N rows. Setting to \code{TRUE} will generally create more candidate matches. Default is \code{FALSE}.}
 }
 \value{
 Returns \code{df}, with a new column (name defined by \code{cond_col} argument) identifying which level of the randomly generated IV each string belongs to.
