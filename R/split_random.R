@@ -74,8 +74,10 @@ split_random <- function(x, nlevels = 2, seed = NA, equal_size = FALSE){
 
   # sample to have equally sized groups if requested
   if (equal_size) {
-    random_var <- sample(rep(random_levels, length.out=nrow(df)))
+    # equally-sized groups, with over represented categories selected randomly
+    random_var <- sample(rep(sample(random_levels), length.out=nrow(df)))
   } else {
+    # sample randomly with replacement
     random_var <- sample(random_levels, size=nrow(df), replace = TRUE)
   }
 
