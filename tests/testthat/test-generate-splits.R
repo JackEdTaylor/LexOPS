@@ -200,6 +200,18 @@ testthat::test_that("splits", {
     4
   )
 
+  # test equal_size param of split_random()
+  testthat::expect_equal(
+    eg_df %>%
+      set_options(id_col = "id") %>%
+      split_random(10, equal_size=TRUE) %>%
+      with(df) %>%
+      dplyr::pull(LexOPS_splitCond_A) %>%
+      table() %>%
+      unique(),
+    10
+  )
+
   # test that split_random() can be combined with split_by()
   testthat::expect_equal(
     eg_df %>%

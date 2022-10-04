@@ -4,7 +4,7 @@
 \alias{split_random}
 \title{Add a random split to the data.}
 \usage{
-split_random(x, nlevels = 2, seed = NA)
+split_random(x, nlevels = 2, seed = NA, equal_size = FALSE)
 }
 \arguments{
 \item{x}{A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
@@ -12,6 +12,8 @@ split_random(x, nlevels = 2, seed = NA)
 \item{nlevels}{An integer, specifying how many levels this random split should have (default = 2).}
 
 \item{seed}{An integer used to set the seed, to reproduce random splits. If \code{NA}, a random seed will not be set. Default is \code{NA}.}
+
+\item{equal_size}{Logical; should LexOPS create equal (or as close to equal as possible) numbers of candidates for each level? When \code{FALSE}, will sample N levels with replacement, when \code{TRUE} will sample N rows. Default is \code{FALSE}.}
 }
 \value{
 Returns \code{df}, with a new column (name defined by \code{cond_col} argument) identifying which level of the randomly generated IV each string belongs to.
