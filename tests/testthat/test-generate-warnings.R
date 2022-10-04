@@ -23,8 +23,7 @@ testthat::test_that("general warnings", {
       control_for(c, -2.5:2.5) %>%
       control_for(d) %>%
       generate(55, silent=TRUE),
-    "n is too large; requested n of 55, but the condition with the fewest members has \\d+ entries. Ensure n <= \\d+. Will generate as many stimuli as possible.",
-    all = FALSE
+    "n is too large; requested n of 55, but the condition with the fewest members has \\d+ entries. Ensure n <= \\d+. Will generate as many stimuli as possible."
   )
 
   testthat::expect_warning(
@@ -36,8 +35,7 @@ testthat::test_that("general warnings", {
       control_for(c, -2.5:2.5) %>%
       control_for(d) %>%
       generate(55, silent=TRUE),
-    "n is too large; requested n of 55, but the condition with the fewest members has \\d+ entries. Ensure n <= \\d+. You may also increase the number of candidates by setting equal_size=TRUE in split_random\\(\\). Will generate as many stimuli as possible.",
-    all = FALSE
+    "n is too large; requested n of 55, but the condition with the fewest members has \\d+ entries. Ensure n <= \\d+. You may also increase the number of candidates by setting equal_size=TRUE in split_random\\(\\). Will generate as many stimuli as possible."
   )
 
   testthat::expect_warning(
