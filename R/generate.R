@@ -163,7 +163,13 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
     }
     # give warning if min_nr_of_match_rows < n, as this means n is definitely not achievable
     if (min_nr_of_match_rows < n) {
-      warning(sprintf("n is too large; requested n of %i, but the condition with the fewest members has %i entries. Ensure n < %i. Will generate as many stimuli as possible.", n, min_nr_of_match_rows, min_nr_of_match_rows))
+
+      n_too_large_message <- if (is.null(lp_info$random_splits) | length(lp_info$random_splits)==0) {
+        sprintf("n is too large; requested n of %i, but the condition with the fewest members has %i entries. Ensure n <= %i. Will generate as many stimuli as possible.", n, min_nr_of_match_rows, min_nr_of_match_rows)
+      } else {
+        sprintf("n is too large; requested n of %i, but the condition with the fewest members has %i entries. Ensure n <= %i. You may also increase the number of candidates by setting equal_size=TRUE in split_random(). Will generate as many stimuli as possible.", n, min_nr_of_match_rows, min_nr_of_match_rows)
+      }
+      warning(n_too_large_message)
     }
 
     # specify exactly how many null conditions are needed
