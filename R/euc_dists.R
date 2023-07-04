@@ -30,7 +30,7 @@
 #'
 #' # Add Euclidean distance as new column
 #' # (Also sort ascendingly by distance; barbara will have a distance of 0 so will be first)
-#' lexops |>
+#' lexops %>%
 #'   dplyr::mutate(ed = euc_dists(., "barbara", c(Length, Zipf.SUBTLEX_UK, BG.SUBTLEX_UK))) |>
 #'   dplyr::arrange(ed)
 #'
