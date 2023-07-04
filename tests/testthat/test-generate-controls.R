@@ -328,7 +328,7 @@ testthat::test_that("control_for_euc", {
       dplyr::mutate(
         dist_b = A1_b - A2_b,
         dist_e = A1_e - A2_e,
-        man_euc_dist = sqrt(dist_b**2 + dist_e**2)
+        man_euc_dist = as.numeric(sqrt(dist_b**2 + dist_e**2))
       )
 
     wide_res %>%
