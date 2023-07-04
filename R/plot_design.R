@@ -14,12 +14,12 @@
 #'
 #' @examples
 #'
-#' stim <- lexops %>%
-#'   dplyr::filter(PK.Brysbaert >= .75) %>%
-#'   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) %>%
-#'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
-#'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
-#'   control_for(Length) %>%
+#' stim <- lexops |>
+#'   dplyr::filter(PK.Brysbaert >= .75) |>
+#'   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>
+#'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
+#'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
+#'   control_for(Length) |>
 #'   generate(n = 50, match_null = "balanced")
 #' plot_design(stim)
 #'

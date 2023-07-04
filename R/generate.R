@@ -13,75 +13,75 @@
 #' @examples
 #'
 #' # Generate 20 words per condition, for design with 3 levels of syllables, controlled for frequency
-#' lexops %>%
-#'   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) %>%
-#'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
+#' lexops |>
+#'   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) |>
+#'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
 #'   generate(n = 20)
 #'
 #' # Generate 2 levels of bigram probability, controlling for frequency and length
 #' # (Note that the matching null is balanced across all stimuli)
 #' # (Also note that the data is filtered by proportion known to be >75%)
-#' lexops %>%
-#'   dplyr::filter(PK.Brysbaert >= .75) %>%
-#'   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) %>%
-#'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
-#'   control_for(Length) %>%
+#' lexops |>
+#'   dplyr::filter(PK.Brysbaert >= .75) |>
+#'   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>
+#'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
+#'   control_for(Length) |>
 #'   generate(n = 1000, match_null = "balanced")
 #'
 #' # Generate stimuli for a concreteness x valence (2 x 3) design
 #' # (Note that abstract, neutral is set as the matching null)
-#' lexops %>%
-#'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
-#'   split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
-#'   control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
-#'   control_for(Length) %>%
+#' lexops |>
+#'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
+#'   split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) |>
+#'   control_for(Zipf.SUBTLEX_UK, -0.25:0.25) |>
+#'   control_for(Length) |>
 #'   generate(n = 30, match_null = "A2_B2")
 #'
 #' # As above but with inclusive tolerance
 #' # (all words are within the specified tolerances relative to each other)
-#' lexops %>%
-#'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
-#'   split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
-#'   control_for(Zipf.SUBTLEX_UK, -0.25:0.25) %>%
-#'   control_for(Length) %>%
+#' lexops |>
+#'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
+#'   split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) |>
+#'   control_for(Zipf.SUBTLEX_UK, -0.25:0.25) |>
+#'   control_for(Length) |>
 #'   generate(n = 30, match_null = "inclusive")
 #'
 #' # Bypass non-standard evaluation
-#' lexops %>%
-#'  split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) %>%
-#'  control_for("Zipf.SUBTLEX_UK", c(-0.2, 0.2), standard_eval = TRUE) %>%
+#' lexops |>
+#'  split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) |>
+#'  control_for("Zipf.SUBTLEX_UK", c(-0.2, 0.2), standard_eval = TRUE) |>
 #'  generate(n = 20)
 #'
 #' # Create two levels of arousal, controlling for orthographic Levenshtein distance
 #' library(stringdist)
-#' lexops %>%
-#'  split_by(AROU.Warriner, 1:3 ~ 6:9) %>%
-#'  control_for_map(stringdist, string, 0:4, method="lv") %>%
+#' lexops |>
+#'  split_by(AROU.Warriner, 1:3 ~ 6:9) |>
+#'  control_for_map(stringdist, string, 0:4, method="lv") |>
 #'  generate(20)
 #'
 #' # Create two levels of arousal, controlling for phonological similarity
 #' library(stringdist)
-#' lexops %>%
-#'  split_by(AROU.Warriner, 1:3 ~ 6:9) %>%
-#'  control_for_map(stringdist, eSpeak.br_1letter, 0:2, method="lv") %>%
+#' lexops |>
+#'  split_by(AROU.Warriner, 1:3 ~ 6:9) |>
+#'  control_for_map(stringdist, eSpeak.br_1letter, 0:2, method="lv") |>
 #'  generate(20)
 #'
 #' # Create two levels of arousal, controlling for phonological Levenshtein distance, and rhyme
 #' library(stringdist)
-#' lexops %>%
-#'  split_by(AROU.Warriner, 1:3 ~ 6:9) %>%
-#'  control_for(Rhyme.eSpeak.br) %>%
-#'  control_for_map(stringdist, eSpeak.br_1letter, 0:2, method="lv") %>%
+#' lexops |>
+#'  split_by(AROU.Warriner, 1:3 ~ 6:9) |>
+#'  control_for(Rhyme.eSpeak.br) |>
+#'  control_for_map(stringdist, eSpeak.br_1letter, 0:2, method="lv") |>
 #'  generate(20)
 #'
 #' # A similar design to that above, but with 3 levels of valence, and inclusive matching
 #' # Note that this will result in exactly the same result as above.
 #' # A function that calculates something like Semantic Similarity will produce very different results.
 #' library(stringdist)
-#' lexops %>%
-#'  split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) %>%
-#'  control_for(Rhyme.eSpeak.br) %>%
-#'  control_for_map(stringdist, eSpeak.br_1letter, 0:2, method="lv") %>%
+#' lexops |>
+#'  split_by(VAL.Warriner, 1:3 ~ 4.5:5.5 ~ 7:9) |>
+#'  control_for(Rhyme.eSpeak.br) |>
+#'  control_for_map(stringdist, eSpeak.br_1letter, 0:2, method="lv") |>
 #'  generate(20, match_null = "inclusive")
 #'
 #' @export

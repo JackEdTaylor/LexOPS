@@ -13,23 +13,23 @@
 #' @examples
 #'
 #' # Match by number of syllables exactly
-#' lexops %>%
+#' lexops |>
 #'   match_word("thicket", Syllables.CMU)
 #'
 #' # Match by number of syllables exactly, but keep all entries in the original dataframe
-#' lexops %>%
+#' lexops |>
 #'   match_word("thicket", Syllables.CMU, filter = FALSE)
 #'
 #' # Match by number of syllables exactly, and rhyme
-#' lexops %>%
+#' lexops |>
 #'   match_word("thicket", Syllables.CMU, Rhyme.CMU)
 #'
 #' # Match by length exactly, and closely by frequency (within 0.2 Zipf either way)
-#' lexops %>%
+#' lexops |>
 #'   match_word("thicket", Length, Zipf.SUBTLEX_UK = -0.2:0.2)
 #'
 #' # The syntax makes matching by multiple variables easiy and readable
-#' lexops %>%
+#' lexops |>
 #'   match_word(
 #'     "elephant",
 #'     BG.SUBTLEX_UK = -0.005:0.005,
@@ -40,15 +40,15 @@
 #'   )
 #'
 #' # Match using standard evaluation
-#' lexops %>%
+#' lexops |>
 #'   match_word("thicket", list("Length", c("Zipf.SUBTLEX_UK", -0.2, 0.2)), standard_eval = TRUE)
 #'
 #' # Find matches within an orthographic levenshtein distance of 5 from "thicket":
 #' library(dplyr)
 #' library(stringdist)
 #' targ_word <- "thicket"
-#' lexops %>%
-#'   mutate(old = stringdist(targ_word, string, method="lv")) %>%
+#' lexops |>
+#'   mutate(old = stringdist(targ_word, string, method="lv")) |>
 #'   match_word(targ_word, old = 0:5)
 #'
 #' # Find matches within a phonological levenshtein distance of 2 from "thicket":
@@ -56,11 +56,11 @@
 #' library(dplyr)
 #' library(stringdist)
 #' targ_word <- "thicket"
-#' targ_word_pronun <- lexops %>%
-#'   filter(string == "thicket") %>%
+#' targ_word_pronun <- lexops |>
+#'   filter(string == "thicket") |>
 #'   pull(eSpeak.br_1letter)
-#' lexops %>%
-#'   mutate(pld = stringdist(targ_word_pronun, eSpeak.br_1letter, method="lv")) %>%
+#' lexops |>
+#'   mutate(pld = stringdist(targ_word_pronun, eSpeak.br_1letter, method="lv")) |>
 #'   match_word(targ_word, pld = 0:2)
 #'
 #' @seealso \code{\link{lexops}} for the default data frame and associated variables.

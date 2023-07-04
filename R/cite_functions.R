@@ -9,12 +9,12 @@
 #'
 #' @examples
 #'
-#' stim <- lexops %>%
-#'   dplyr::filter(PK.Brysbaert >= .75) %>%
-#'   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) %>%
-#'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
-#'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
-#'   control_for(Length) %>%
+#' stim <- lexops |>
+#'   dplyr::filter(PK.Brysbaert >= .75) |>
+#'   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>
+#'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
+#'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
+#'   control_for(Length) |>
 #'   generate(n = 50, match_null = "balanced")
 #' cite_design(stim)
 #'
@@ -83,7 +83,7 @@ citation_table <- function(cite_vars) {
     measure = sapply(cite_vars, LexOPS::var_to_measure, first_cite = TRUE, title_caps = TRUE, default = "Custom Measure", standard_eval = TRUE),
     source = sapply(cite_vars, LexOPS::var_to_source, first_cite = TRUE, default = "Custom Source", standard_eval = TRUE),
     url = sapply(cite_vars, LexOPS::var_to_url, default = "Unknown", standard_eval = TRUE)
-  ) %>%
+  ) |>
     dplyr::mutate(
       source = ifelse(var=="Length", NA, source),
       url = ifelse(var=="Length", NA, url)
@@ -201,7 +201,7 @@ var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FA
     # regex to match sections of strings which should be converted to lower
     lower_targs_regex <- "\\b(?!RT|OLD20|ARPABET|FPMW|Zipf|Coltheart|N$|IPA)\\S+"
     # get the replacement lower case strings
-    rep_string <- regmatches(out, gregexpr(lower_targs_regex, out, perl = TRUE)) %>%
+    rep_string <- regmatches(out, gregexpr(lower_targs_regex, out, perl = TRUE)) |>
       lapply(tolower)
     # replace words that should be lower case with lower case versions
     regmatches(out, gregexpr(lower_targs_regex, out, perl = TRUE)) <- rep_string

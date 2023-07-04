@@ -32,27 +32,27 @@ Some variables (e.g. similarity measures) are hard to control for with \code{\li
 # Create two levels of arousal, controlling for orthographic similarity
 # (as optimal string alignment; default for `stringdist()`)
 library(stringdist)
-lexops \%>\%
- split_by(AROU.Warriner, 1:3 ~ 7:9) \%>\%
+lexops |>
+ split_by(AROU.Warriner, 1:3 ~ 7:9) |>
  control_for_map(stringdist, string, 0:4)
 
 # Create two levels of arousal, controlling for orthographic Levenshtein distance
 # (passed via `method` argument to `stringdist()`)
 library(stringdist)
-lexops \%>\%
- split_by(AROU.Warriner, 1:3 ~ 7:9) \%>\%
+lexops |>
+ split_by(AROU.Warriner, 1:3 ~ 7:9) |>
  control_for_map(stringdist, string, 0:4, method="lv")
 
 # Create two levels of arousal, controlling for phonological Levenshtein distance
 library(stringdist)
-lexops \%>\%
- split_by(AROU.Warriner, 1:3 ~ 7:9) \%>\%
+lexops |>
+ split_by(AROU.Warriner, 1:3 ~ 7:9) |>
  control_for_map(stringdist, eSpeak.br_1letter, 0:2, method="lv")
 
 # Bypass non-standard evaluation
 library(stringdist)
-lexops \%>\%
- split_by(AROU.Warriner, 1:3 ~ 7:9) \%>\%
+lexops |>
+ split_by(AROU.Warriner, 1:3 ~ 7:9) |>
  control_for_map(stringdist, "eSpeak.br_1letter", c(0, 2), standard_eval=TRUE, method="lv")
 
 }

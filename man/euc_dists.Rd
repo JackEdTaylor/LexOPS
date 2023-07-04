@@ -43,11 +43,11 @@ Caclulates the Euclidean distance of a word from all other words in a df, on sel
 
 # Get the distance of every entry in the `lexops` dataset from the word "thicket".
 # (Note: This will be calculated using the dimensions of frequency, arousal, and size)
-lexops \%>\%
+lexops |>
   euc_dists("thicket", c(Zipf.SUBTLEX_UK, AROU.Warriner, SIZE.Glasgow_Norms))
 
 # no scaling or centering
-lexops \%>\%
+lexops |>
   euc_dists(
     "thicket",
     c(Zipf.SUBTLEX_UK, AROU.Warriner, SIZE.Glasgow_Norms),
@@ -57,12 +57,12 @@ lexops \%>\%
 
 # Add Euclidean distance as new column
 # (Also sort ascendingly by distance; barbara will have a distance of 0 so will be first)
-lexops \%>\%
-  dplyr::mutate(ed = euc_dists(., "barbara", c(Length, Zipf.SUBTLEX_UK, BG.SUBTLEX_UK))) \%>\%
+lexops |>
+  dplyr::mutate(ed = euc_dists(., "barbara", c(Length, Zipf.SUBTLEX_UK, BG.SUBTLEX_UK))) |>
   dplyr::arrange(ed)
 
 # bypass non-standard evaluation
-lexops \%>\%
+lexops |>
   euc_dists(
     "thicket",
     c("Zipf.SUBTLEX_UK", "AROU.Warriner", "SIZE.Glasgow_Norms"),

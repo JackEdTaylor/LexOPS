@@ -24,10 +24,10 @@ Adds a split to the data comparable to that made by \code{split_by()}, but split
 \examples{
 
 # 2 (syllables: few, many) by 2 (random: level 1, level 2) design
-lexops \%>\%
-  split_by(Syllables.CMU, 1:3 ~ 4:6) \%>\%
-  split_random(nlevels = 2) \%>\%
-  control_for(Length) \%>\%
+lexops |>
+  split_by(Syllables.CMU, 1:3 ~ 4:6) |>
+  split_random(nlevels = 2) |>
+  control_for(Length) |>
   generate(n = 100)
 
 }

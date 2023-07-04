@@ -26,29 +26,29 @@ Specifies splits for one IV for a factorial design. Can be called multiple times
 \examples{
 
 # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables
-lexops \%>\%
+lexops |>
   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20)
 
 # Same split as above, but supplying boundaries as vectors
-lexops \%>\%
+lexops |>
   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20))
 
 # Create 2 levels of position of speech, noun and verb
-lexops \%>\%
+lexops |>
   split_by(PoS.SUBTLEX_UK, "noun" ~ "verb")
 
 # split into two levels: (1) nouns or names, and (2) adjectives or adverbs
-lexops \%>\%
+lexops |>
  split_by(PoS.SUBTLEX_UK, c("noun", "name") ~ c("adjective", "adverb"))
 
 # Perform two splits
-lexops \%>\%
-  split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) \%>\%
+lexops |>
+  split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) |>
   split_by(PoS.SUBTLEX_UK, c("noun", "name") ~ c("adjective", "adverb"))
 
 # Bypass non-standard evaluation
-lexops \%>\%
-  split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) \%>\%
+lexops |>
+  split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) |>
   split_by("PoS.SUBTLEX_UK", list(c("noun", "name"), "verb"), standard_eval = TRUE)
 
 }

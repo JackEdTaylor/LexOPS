@@ -11,20 +11,20 @@
 #' @examples
 #'
 #' # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables, and control for word frequency
-#' lexops %>%
-#'   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) %>%
+#' lexops |>
+#'   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) |>
 #'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2)
 #'
 #' # Control for multiple variables
-#' lexops %>%
-#'   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) %>%
-#'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
+#' lexops |>
+#'   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) |>
+#'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
 #'   control_for(PoS.SUBTLEX_UK)
 #'
 #' # Bypass non-standard evaluation
-#' lexops %>%
-#'  split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) %>%
-#'  control_for("Zipf.SUBTLEX_UK", c(-0.2, 0.2), standard_eval = TRUE) %>%
+#' lexops |>
+#'  split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) |>
+#'  control_for("Zipf.SUBTLEX_UK", c(-0.2, 0.2), standard_eval = TRUE) |>
 #'  control_for("PoS.SUBTLEX_UK", standard_eval = TRUE)
 #'
 #' @export
@@ -105,33 +105,33 @@ control_for <- function(x, var, tol = NA, standard_eval = FALSE) {
 
 # # should throw errors
 #
-# lexops %>%
+# lexops |>
 #   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2))
 #
-# lexops %>%
-#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
+# lexops |>
+#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) |>
 #   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2), cond_col = "splitID")
 #
-# lexops %>%
-#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
+# lexops |>
+#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) |>
 #   control_for(PoS.SUBTLEX_UK, c(-0.1, 0.1))
 #
 # # should give warning
 #
-# lexops %>%
-#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
-#   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2)) %>%
+# lexops |>
+#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) |>
+#   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2)) |>
 #   control_for(Length)
 #
 # # should work
 #
-# lexops %>%
-#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
-#   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
+# lexops |>
+#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) |>
+#   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
 #   control_for(PoS.SUBTLEX_UK)
 #
 # # should be identical output to above
-# lexops %>%
-#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) %>%
-#   control_for("Zipf.SUBTLEX_UK", c(-0.2, 0.2), standard_eval = TRUE) %>%
+# lexops |>
+#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) |>
+#   control_for("Zipf.SUBTLEX_UK", c(-0.2, 0.2), standard_eval = TRUE) |>
 #   control_for("PoS.SUBTLEX_UK", standard_eval = TRUE)
