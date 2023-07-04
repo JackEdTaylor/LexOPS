@@ -138,17 +138,10 @@ split_by <- function(x, var, levels, filter = TRUE, standard_eval = FALSE){
       df <- split_by.factor(df, column, breaks, new_column, prefix, filter)
     }
   } else {
-    col_type <- typeof(df[[column]])
 
-    if (col_type == "integer") {
-      breaks <- split[-1]
-      df <- split_by.integer(df, column, breaks, new_column, prefix, filter)
-    }
+    breaks <- split[-1]
 
-    if (col_type == "double") {
-      breaks <- split[-1]
-      df <- split_by.double(df, column, breaks, new_column, prefix, filter)
-    }
+    df <- split_by.numeric(df, column, breaks, new_column, prefix, filter)
   }
 
   # make a LexOPS pipeline object
@@ -160,60 +153,26 @@ split_by <- function(x, var, levels, filter = TRUE, standard_eval = FALSE){
   lp
 }
 
-split_by.integer <- function(df, column, breaks, new_column, prefix, filter){
-
-  overlap_check <- check_overlapping(breaks)
-  if(!overlap_check) warning("overlapping breaks: some levels of this variable will overlap")
-
-  df_filter <- purrr::map(breaks, ~seq(.x[1], .x[2], 1)) %>%
-    purrr::map(~tibble::tibble(!!column := .x)) %>%
-    dplyr::bind_rows(.id = new_column) %>%
-    dplyr::mutate(!!new_column := paste0(prefix, eval(rlang::sym(new_column))))
-
-  if(filter){
-    df <- dplyr::inner_join(df, df_filter, by = column)
-  }else{
-    df <- dplyr::left_join(df, df_filter, by = column)
-  }
-
-  df[[new_column]] <- as.factor(df[[new_column]])
-
-  return(df)
-}
-
-split_by.double <- function(df, column, breaks, new_column, prefix, filter){
+split_by.numeric <- function(df, column, breaks, new_column, prefix, filter){
 
   # Check that splits are ordered and don't overlap
   check_ordered(breaks)
 
-  overlap_check <- check_overlapping(breaks)
-  if(!overlap_check) stop("overlapping breaks: overlapping breaks not permitted for split of type double - try assigning conditions manually as a factor instead")
+  cut_labs <- paste0(prefix, 1:(length(breaks)))
 
-  cont_breaks <- check_continuous(breaks)
+  cuts_mat <- sapply(breaks, function(b) df[[column]]>=b[[1]] & df[[column]]<=b[[2]])
 
-  if(!cont_breaks){
-    # Label gaps between cuts as NA
-    n_cuts <- length(breaks)
-    cut_labs <- c(paste0(prefix, 1))
-
-    for(i in 2:n_cuts){
-      cut_labs <- c(cut_labs, NA, paste0(prefix, i))
-    }
-
-    cuts <- unlist(breaks)
-
-  }else{
-    cuts <- unique(unlist(breaks))
-    cut_labs <- paste0(prefix, 1:(length(cuts) - 1))
+  # check if overlapping
+  if (any(rowSums(cuts_mat) > 1, na.rm=TRUE)) {
+    stop("overlapping breaks: overlapping breaks not permitted for split of type double - try assigning conditions manually as a factor instead")
   }
 
-  df[[new_column]] <- cut(df[[column]], cuts, cut_labs, right = FALSE)
-  df$tmp <- as.character(df[[new_column]])
+  cuts_lab_idx <- apply(cuts_mat, MARGIN=1, function(x) ifelse(any(x), which(x), NA))
+
+  df[[new_column]] <- cut_labs[cuts_lab_idx]
 
   if(filter){
-    df <- df %>%
-      tidyr::drop_na(tmp) %>%
-      dplyr::select(-tmp)
+    df <- df[!is.na(df[[new_column]]), ]
   }
 
   return(df)
@@ -278,9 +237,7 @@ split_by.factor_group <- function(df, column, breaks, new_column, prefix, filter
 
 # Checks
 check_ordered <- function(x){
-  check_order <- purrr::map(x, ~.x[1] < .x[2]) %>%
-    unlist() %>%
-    all()
+  check_order <- all( sapply(x, function(x_i) x_i[[1]] <= x_i[[2]]) )
 
   if(!check_order) stop("lower bounds must be lower than upper bounds")
 }
