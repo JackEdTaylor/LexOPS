@@ -147,7 +147,7 @@ fetch_df_res <- reactive({
     }
     targwordstringcolname <- fetch_targwordstringcolname()
     # extract selected features
-    lexops_f <- plyr::rename(lexops_react(), c("string"=targwordstringcolname)) %>%
+    lexops_f <- dplyr::rename(lexops_react(), !!targwordstringcolname:=string) %>%
       select(c(targwordstringcolname, sel_feats))
     # get the input from the file or copy-paste
     in_df <- fetch_df_raw()
