@@ -248,7 +248,7 @@ lexops_scaled |>
   mutate(val_dist_t = 0, cnc_dist_t = 0) %>%
   bind_rows(
     mutate(., val_dist_t = val_dist, cnc_dist_t = cnc_dist)
-  ) 
+  ) |>
   ggplot(aes(cnc_dist, val_dist, label = string)) +
   geom_point() +
   geom_text(nudge_y = -0.1) +
@@ -273,96 +273,96 @@ By default, LexOPS automatically standardises weights in this way so that the di
 Imagine you want to find a close match in terms of length, frequency (Zipf), age of acquisition, and concreteness, for the word "moose". The values associated with "moose" on these variables look like this:
 
 ```{r match1, echo=FALSE}
-lexops 
-  filter(string == "moose") 
-  select(string, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) 
+lexops |>
+  filter(string == "moose") |>
+  select(string, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) |>
   knitr::kable()
 ```
 
 You could find possible matches with variable-specific tolerances like so:
 
 ```{r match2, eval=FALSE}
-lexops 
+lexops |>
   match_item(
     "moose",
     Length = -1:1,
     Zipf.BNC.Written = -0.2:0.2,
     AoA.Kuperman = -2:2,
     CNC.Brysbaert = -0.25:0.25
-  ) 
-  select(string, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) 
+  ) |>
+  select(string, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) |>
   head(5)
 ```
 
 ```{r match2-kable, echo=FALSE}
-lexops 
+lexops |>
   match_item(
     "moose",
     Length = -1:1,
     Zipf.BNC.Written = -0.2:0.2,
     AoA.Kuperman = -2:2,
     CNC.Brysbaert = -0.25:0.25
-  ) 
-  select(string, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) 
-  head(5) 
+  ) |>
+  select(string, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) |>
+  head(5) |>
   knitr::kable()
 ```
 
 Simply sorting by Euclidean distance gives a very similar result, but with some slight differences. Whereas the variable-specific tolerances excluded "hippo" (because it is >0.2 Zipf away from "moose"), in Euclidean distance it is a relatively close word, because its distance in frequency is compensated by its proximity in the other variables. As a result, "hippo" is now suggested as a close match.
 
 ```{r match3, eval=FALSE}
-lexops 
+lexops |>
   mutate(
-    Euc_Dist = euc_dists(., "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
-  ) 
-  arrange(Euc_Dist) 
-  filter(string != "moose") 
-  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) 
+    Euc_Dist = euc_dists(lexops, "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
+  ) |>
+  arrange(Euc_Dist) |>
+  filter(string != "moose") |>
+  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) |>
   head(5)
 ```
 
 ```{r match3-kable, echo=FALSE}
-lexops 
+lexops |>
   mutate(
-    Euc_Dist = euc_dists(., "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
-  ) 
-  arrange(Euc_Dist) 
-  filter(string != "moose") 
-  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) 
-  head(5) 
+    Euc_Dist = euc_dists(lexops, "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
+  ) |>
+  arrange(Euc_Dist) |>
+  filter(string != "moose") |>
+  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) |>
+  head(5) |>
   knitr::kable()
 ```
 
 If we want to match by Euclidean distance in the same space, but still have strict cut-offs for frequency, we could just do the following:
 
 ```{r match4, eval=FALSE}
-lexops 
+lexops |>
   mutate(
-    Euc_Dist = euc_dists(., "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
-  ) 
+    Euc_Dist = euc_dists(lexops, "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
+  ) |>
   match_item(
     "moose",
     Euc_Dist = 0:Inf,
     Zipf.BNC.Written = -0.2:0.2
-  ) 
-  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) 
-  arrange(Euc_Dist) 
+  ) |>
+  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) |>
+  arrange(Euc_Dist) |>
   head(5)
 ```
 
 ```{r match4-kable, echo=FALSE}
-lexops 
+lexops |>
   mutate(
-    Euc_Dist = euc_dists(., "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
-  ) 
+    Euc_Dist = euc_dists(lexops, "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
+  ) |>
   match_item(
     "moose",
     Euc_Dist = 0:Inf,
     Zipf.BNC.Written = -0.2:0.2
-  ) 
-  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) 
-  arrange(Euc_Dist) 
-  head(5) 
+  ) |>
+  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) |>
+  arrange(Euc_Dist) |>
+  head(5) |>
   knitr::kable()
 ```
 
@@ -375,9 +375,9 @@ lexops |>
       lexops, "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert),
       weights = c(1, 2, 1, 1)
     )
-  ) 
-  arrange(Euc_Dist) 
-  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) 
+  ) |>
+  arrange(Euc_Dist) |>
+  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) |>
   head(5)
 ```
 
