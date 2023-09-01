@@ -39,7 +39,7 @@ Both arousal and valence are on 9-point Likert scales, so let's imagine we decid
 Firstly we create the column that will contain the information about our conditions. An easy way to do this might be with `dplyr`'s `case_when()` function. We will call the new column, `emo_cond`, because I'm unimaginative.
 
 ```{r create-col}
-dat <- lexops %>%
+dat <- lexops |>
   mutate(emo_cond = case_when(
     AROU.Warriner >= 6 & VAL.Warriner <= 3 ~ "arou_neg",
     AROU.Warriner <= 3 & between(VAL.Warriner, 4, 6) ~ "neutral",
@@ -50,10 +50,10 @@ dat <- lexops %>%
 Now let's check our conditions' locations on the distributions of arousal and valence ratings.
 
 ```{r plot-conditions-hist, fig.width=6, fig.height=3, warning=FALSE}
-dat %>%
-  select(string, AROU.Warriner, VAL.Warriner, emo_cond) %>%
-  pivot_longer(cols = c(AROU.Warriner, VAL.Warriner), names_to = "Variable", values_to = "Value") %>%
-  mutate(emo_cond = fct_infreq(as.factor(emo_cond))) %>%
+dat |>
+  select(string, AROU.Warriner, VAL.Warriner, emo_cond) |>
+  pivot_longer(cols = c(AROU.Warriner, VAL.Warriner), names_to = "Variable", values_to = "Value") |>
+  mutate(emo_cond = fct_infreq(as.factor(emo_cond))) |>
   ggplot(aes(Value, fill = emo_cond)) +
   geom_histogram(binwidth = 0.5) +
   facet_wrap(~Variable) +
@@ -63,8 +63,8 @@ dat %>%
 We can also visualise the locations of our conditions in this 2D space.
 
 ```{r plot-conditions-scatter, fig.width=6, fig.height=3, warning=FALSE}
-dat %>%
-  mutate(emo_cond = fct_infreq(as.factor(emo_cond))) %>%
+dat |>
+  mutate(emo_cond = fct_infreq(as.factor(emo_cond))) |>
   ggplot(aes(AROU.Warriner, VAL.Warriner, colour = emo_cond)) +
   geom_point() +
   scale_colour_manual(values = c("#999999", "#E69F00", "#56B4E9"))
@@ -75,11 +75,11 @@ dat %>%
 Let's imagine we decide those cut-offs are sensible. We can now generate matched stimuli, for only these two factorial cells.
 
 ```{r generate}
-stim <- dat %>%
-  split_by(emo_cond, "arou_neg" ~ "neutral") %>%
-  control_for(Length) %>%
-  control_for(Zipf.SUBTLEX_UK, -0.1:0.1) %>%
-  control_for(AoA.Kuperman, -1.5:1.5) %>%
+stim <- dat |>
+  split_by(emo_cond, "arou_neg" ~ "neutral") |>
+  control_for(Length) |>
+  control_for(Zipf.SUBTLEX_UK, -0.1:0.1) |>
+  control_for(AoA.Kuperman, -1.5:1.5) |>
   generate(20)
 ```
 

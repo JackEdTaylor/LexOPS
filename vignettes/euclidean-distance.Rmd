@@ -47,16 +47,16 @@ puppy_values <- filter(lexops, string == "puppy")
 example_words <- c("puppy", "trailer", "unhappiness", "cemetery", "love", "trailer", "overzealous", "juvenile", "moose")
 
 # plot
-lexops %>%
-  filter(string %in% example_words) %>%
+lexops |>
+  filter(string %in% example_words) |>
   mutate(
     cnc_dist = abs(CNC.Brysbaert - puppy_values$CNC.Brysbaert),
     val_dist = abs(VAL.Warriner - puppy_values$VAL.Warriner)
-  ) %>%
-  mutate(val_dist_t = 0, cnc_dist_t = 0) %>%
+  ) |>
+  mutate(val_dist_t = 0, cnc_dist_t = 0) |>
   bind_rows(
     mutate(., val_dist_t = val_dist, cnc_dist_t = cnc_dist)
-  ) %>%
+  ) |>
   ggplot(aes(cnc_dist, val_dist, label = string)) +
   geom_point() +
   geom_text(nudge_y = -0.25) +
@@ -92,16 +92,16 @@ puppy_values <- filter(lexops_scaled, string == "puppy")
 
 # plot
 # note that `c()` is used to remove attributes from scaled variables in puppy_values
-lexops_scaled %>%
-  filter(string %in% example_words) %>%
+lexops_scaled |>
+  filter(string %in% example_words) |>
   mutate(
     cnc_dist = abs(CNC.Brysbaert - c(puppy_values$CNC.Brysbaert)),
     val_dist = abs(VAL.Warriner - c(puppy_values$VAL.Warriner))
-  ) %>%
+  ) |>
   mutate(val_dist_t = 0, cnc_dist_t = 0) %>%
   bind_rows(
     mutate(., val_dist_t = val_dist, cnc_dist_t = cnc_dist)
-  ) %>%
+  ) |>
   ggplot(aes(cnc_dist, val_dist, label = string)) +
   geom_point() +
   geom_text(nudge_y = -0.25) +
@@ -126,17 +126,17 @@ $$d(a,b) = \sqrt{(a_1-b_1)^2 + (a_2-b_2)^2}$$
 Where $a$ is "puppy", and $b$ is "unhappiness", this can simply be represented like this:
 
 ```{r euc-graph3, echo = FALSE, fig.width=6, fig.height=6}
-lexops_scaled %>%
-  filter(string %in% example_words) %>%
+lexops_scaled |>
+  filter(string %in% example_words) |>
   mutate(
     cnc_dist = abs(CNC.Brysbaert - c(puppy_values$CNC.Brysbaert)),
     val_dist = abs(VAL.Warriner - c(puppy_values$VAL.Warriner))
-  ) %>%
+  ) |>
   mutate(val_dist_t = 0, cnc_dist_t = 0) %>%
   bind_rows(
     mutate(., val_dist_t = val_dist, cnc_dist_t = cnc_dist)
-  ) %>%
-  filter(string %in% c("puppy", "unhappiness")) %>%
+  ) |>
+  filter(string %in% c("puppy", "unhappiness")) |>
   ggplot(aes(cnc_dist, val_dist, label = string)) +
   geom_point() +
   geom_text(nudge_y = -0.1) +
@@ -188,23 +188,23 @@ As an example, if we decide to give concreteness twice the weight of valence, ou
 
 ```{r euc-graph4, echo = FALSE, fig.width=6, fig.height=6}
 # get values for "puppy"
-puppy_values <- lexops_scaled %>%
-  mutate(CNC.Brysbaert = 2*CNC.Brysbaert) %>%
+puppy_values <- lexops_scaled |>
+  mutate(CNC.Brysbaert = 2*CNC.Brysbaert) |>
   filter(string == "puppy")
 
 # plot
 # note that `c()` is used to remove attributes from scaled variables in puppy_values
-lexops_scaled %>%
-  mutate(CNC.Brysbaert = 2*CNC.Brysbaert) %>%
-  filter(string %in% example_words) %>%
+lexops_scaled |>
+  mutate(CNC.Brysbaert = 2*CNC.Brysbaert) |>
+  filter(string %in% example_words) |>
   mutate(
     cnc_dist = abs(CNC.Brysbaert - c(puppy_values$CNC.Brysbaert)),
     val_dist = abs(VAL.Warriner - c(puppy_values$VAL.Warriner))
-  ) %>%
+  ) |>
   mutate(val_dist_t = 0, cnc_dist_t = 0) %>%
   bind_rows(
     mutate(., val_dist_t = val_dist, cnc_dist_t = cnc_dist)
-  ) %>%
+  ) |>
   ggplot(aes(cnc_dist, val_dist, label = string)) +
   geom_point() +
   geom_text(nudge_y = -0.25) +
@@ -226,29 +226,29 @@ Note, however, that now the distances overall have increased. We can account for
 
 ```{r euc-graph5, echo = FALSE, fig.width=6, fig.height=6}
 # get values for "puppy"
-puppy_values <- lexops_scaled %>%
+puppy_values <- lexops_scaled |>
   mutate(
     CNC.Brysbaert = (2/mean(c(1, 2)))*CNC.Brysbaert,
     VAL.Warriner = (1/mean(c(1, 2)))*VAL.Warriner
-    ) %>%
+    ) |>
   filter(string == "puppy")
 
 # plot
 # note that `c()` is used to remove attributes from scaled variables in puppy_values
-lexops_scaled %>%
+lexops_scaled |>
   mutate(
     CNC.Brysbaert = (2/mean(c(1, 2)))*CNC.Brysbaert,
     VAL.Warriner = (1/mean(c(1, 2)))*VAL.Warriner
-    ) %>%
-  filter(string %in% example_words) %>%
+    ) |>
+  filter(string %in% example_words) |>
   mutate(
     cnc_dist = abs(CNC.Brysbaert - c(puppy_values$CNC.Brysbaert)),
     val_dist = abs(VAL.Warriner - c(puppy_values$VAL.Warriner))
-  ) %>%
+  ) |>
   mutate(val_dist_t = 0, cnc_dist_t = 0) %>%
   bind_rows(
     mutate(., val_dist_t = val_dist, cnc_dist_t = cnc_dist)
-  ) %>%
+  ) 
   ggplot(aes(cnc_dist, val_dist, label = string)) +
   geom_point() +
   geom_text(nudge_y = -0.1) +
@@ -273,126 +273,126 @@ By default, LexOPS automatically standardises weights in this way so that the di
 Imagine you want to find a close match in terms of length, frequency (Zipf), age of acquisition, and concreteness, for the word "moose". The values associated with "moose" on these variables look like this:
 
 ```{r match1, echo=FALSE}
-lexops %>%
-  filter(string == "moose") %>%
-  select(string, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) %>%
+lexops 
+  filter(string == "moose") 
+  select(string, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) 
   knitr::kable()
 ```
 
 You could find possible matches with variable-specific tolerances like so:
 
 ```{r match2, eval=FALSE}
-lexops %>%
+lexops 
   match_item(
     "moose",
     Length = -1:1,
     Zipf.BNC.Written = -0.2:0.2,
     AoA.Kuperman = -2:2,
     CNC.Brysbaert = -0.25:0.25
-  ) %>%
-  select(string, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) %>%
+  ) 
+  select(string, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) 
   head(5)
 ```
 
 ```{r match2-kable, echo=FALSE}
-lexops %>%
+lexops 
   match_item(
     "moose",
     Length = -1:1,
     Zipf.BNC.Written = -0.2:0.2,
     AoA.Kuperman = -2:2,
     CNC.Brysbaert = -0.25:0.25
-  ) %>%
-  select(string, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) %>%
-  head(5) %>%
+  ) 
+  select(string, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) 
+  head(5) 
   knitr::kable()
 ```
 
 Simply sorting by Euclidean distance gives a very similar result, but with some slight differences. Whereas the variable-specific tolerances excluded "hippo" (because it is >0.2 Zipf away from "moose"), in Euclidean distance it is a relatively close word, because its distance in frequency is compensated by its proximity in the other variables. As a result, "hippo" is now suggested as a close match.
 
 ```{r match3, eval=FALSE}
-lexops %>%
+lexops 
   mutate(
     Euc_Dist = euc_dists(., "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
-  ) %>%
-  arrange(Euc_Dist) %>%
-  filter(string != "moose") %>%
-  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) %>%
+  ) 
+  arrange(Euc_Dist) 
+  filter(string != "moose") 
+  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) 
   head(5)
 ```
 
 ```{r match3-kable, echo=FALSE}
-lexops %>%
+lexops 
   mutate(
     Euc_Dist = euc_dists(., "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
-  ) %>%
-  arrange(Euc_Dist) %>%
-  filter(string != "moose") %>%
-  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) %>%
-  head(5) %>%
+  ) 
+  arrange(Euc_Dist) 
+  filter(string != "moose") 
+  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) 
+  head(5) 
   knitr::kable()
 ```
 
 If we want to match by Euclidean distance in the same space, but still have strict cut-offs for frequency, we could just do the following:
 
 ```{r match4, eval=FALSE}
-lexops %>%
+lexops 
   mutate(
     Euc_Dist = euc_dists(., "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
-  ) %>%
+  ) 
   match_item(
     "moose",
     Euc_Dist = 0:Inf,
     Zipf.BNC.Written = -0.2:0.2
-  ) %>%
-  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) %>%
-  arrange(Euc_Dist) %>%
+  ) 
+  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) 
+  arrange(Euc_Dist) 
   head(5)
 ```
 
 ```{r match4-kable, echo=FALSE}
-lexops %>%
+lexops 
   mutate(
     Euc_Dist = euc_dists(., "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert))
-  ) %>%
+  ) 
   match_item(
     "moose",
     Euc_Dist = 0:Inf,
     Zipf.BNC.Written = -0.2:0.2
-  ) %>%
-  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) %>%
-  arrange(Euc_Dist) %>%
-  head(5) %>%
+  ) 
+  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) 
+  arrange(Euc_Dist) 
+  head(5) 
   knitr::kable()
 ```
 
 Additionally, we can set weights such that frequency accounts for more of Euclidean distance than other variables, with the `weights` argument:
 
 ```{r match5, eval=FALSE}
-lexops %>%
+lexops |>
   mutate(
     Euc_Dist = euc_dists(
-      ., "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert),
+      lexops, "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert),
       weights = c(1, 2, 1, 1)
     )
-  ) %>%
-  arrange(Euc_Dist) %>%
-  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) %>%
+  ) 
+  arrange(Euc_Dist) 
+  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) 
   head(5)
 ```
 
 ```{r match5-kable, echo=FALSE}
-lexops %>%
+lexops |>
   mutate(
     Euc_Dist = euc_dists(
-      ., "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert),
+      lexops, "moose", c(Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert),
       weights = c(1, 2, 1, 1)
     )
-  ) %>%
-  arrange(Euc_Dist) %>%
-  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) %>%
-  filter(string != "moose") %>%
-  head(5) %>%
+  ) |>
+  arrange(Euc_Dist) |>
+  select(string, Euc_Dist, Length, Zipf.BNC.Written, AoA.Kuperman, CNC.Brysbaert) |>
+  filter(string != "moose") |>
+  head(5) |>
   knitr::kable()
 ```
 
@@ -401,11 +401,11 @@ lexops %>%
 Similarly, we may want to design a study comparing concrete and abstract words, controlling for length, frequency, and age of acquisition. With variable specific tolerances, our code may look like this:
 
 ```{r generate1}
-stim <- lexops %>%
-  split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
-  control_for(Length, 0:0) %>%
-  control_for(Zipf.BNC.Written, -0.1:0.1) %>%
-  control_for(AoA.Kuperman, -2:2) %>%
+stim <- lexops |>
+  split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
+  control_for(Length, 0:0) |>
+  control_for(Zipf.BNC.Written, -0.1:0.1) |>
+  control_for(AoA.Kuperman, -2:2) |>
   generate(20)
 ```
 
@@ -418,14 +418,14 @@ plot_design(stim, "controls")
 To generate a similar stimulus set controlling for Euclidean distance, we could use the `control_for_euc()` function. Like `euc_dists()` this has options for scaling and weighting variables. The weights here reflect the relative importance of variables as controls. Generally, variables with lower weights are permitted to vary to a greater extent. [As mentioned](#Weights), the weights supplied will, by default, be standardised to average to 1 (i.e., to sum to the number of dimensions).
 
 ```{r generate2}
-stim2 <- lexops %>%
-  split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
+stim2 <- lexops |>
+  split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
   control_for_euc(
       c(Length, Zipf.BNC.Written, AoA.Kuperman),
       0:0.1,
       name = "euclidean_distance",
       weights = c(0.5, 1, 0.1)
-  ) %>%
+  ) |>
   generate(20)
 ```
 
@@ -438,15 +438,15 @@ plot_design(stim2, c("Length", "Zipf.BNC.Written", "AoA.Kuperman"))
 We may then decide that we also want to control for another variable, bigram probability. However, we want to control for this variable with a specific tolerance in the original units. LexOPS lets you do this by combining `control_for_euc()` with `control_for()` as many times as required.
 
 ```{r generate3}
-stim3 <- lexops %>%
-  split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
+stim3 <- lexops |>
+  split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
   control_for_euc(
       c(Length, Zipf.BNC.Written, AoA.Kuperman),
       0:0.1,
       name = "euclidean_distance",
       weights = c(0.5, 1, 0.1)
-  ) %>%
-  control_for(BG.BNC.Written, -0.0025:0.0025) %>%
+  ) |>
+  control_for(BG.BNC.Written, -0.0025:0.0025) |>
   generate(20)
 ```
 

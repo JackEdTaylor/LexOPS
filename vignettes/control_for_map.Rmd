@@ -39,9 +39,9 @@ sem_matches <- function(matches, target) {
   # for speed, return N ones if possible
   if (all(matches==target)) return(rep(1, length(matches)))
   # find each match-target association value
-  tibble(CUE = matches, TARGET = target) %>%
-    full_join(pairs, by=c("CUE", "TARGET")) %>%
-    filter(TARGET == target & CUE %in% matches) %>%
+  tibble(CUE = matches, TARGET = target) |>
+    full_join(pairs, by=c("CUE", "TARGET")) |>
+    filter(TARGET == target & CUE %in% matches) |>
     pull(root)
 }
 ```
@@ -67,17 +67,17 @@ We can now generate stimuli controlling for semantic similarity. If we want to g
 # speed up by removing unusable word pairs from pairs
 pairs <- filter(pairs, root>=0.5)
 
-stim <- lexops %>%
+stim <- lexops |>
   # speed up by removing strings unknown to pairs df
-  dplyr::filter(string %in% pairs$CUE) %>%
+  dplyr::filter(string %in% pairs$CUE) |>
   # create a random 2-level split
-  split_random(2) %>%
+  split_random(2) |>
   # control for semantic similarity
-  control_for_map(sem_matches, string, -0.5:0, name = "root_cosine") %>%
+  control_for_map(sem_matches, string, -0.5:0, name = "root_cosine") |>
   # control for other values
-  control_for(Length, 0:0) %>%
-  control_for(PoS.SUBTLEX_UK) %>%
-  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
+  control_for(Length, 0:0) |>
+  control_for(PoS.SUBTLEX_UK) |>
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
   # generate 20 items per factorial cell (40 total)
   generate(20)
 ```

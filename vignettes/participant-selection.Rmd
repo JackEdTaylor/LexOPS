@@ -53,14 +53,14 @@ Now let's imagine we want to assign 50 subjects to an intervention group, and 50
 In LexOPS, we could simply write this as follows:
 
 ```{r gen-subj}
-study_subj <- pool %>%
-  subset(!is.na(sex)) %>%
-  set_options(id_col = "subj_id") %>%
-  split_random(2) %>%
-  control_for(age, -1:1) %>%
-  control_for(sex) %>%
-  control_for(bmi, -0.5:0.5) %>%
-  control_for(iq, -5:5) %>%
+study_subj <- pool |>
+  subset(!is.na(sex)) |>
+  set_options(id_col = "subj_id") |>
+  split_random(2) |>
+  control_for(age, -1:1) |>
+  control_for(sex) |>
+  control_for(bmi, -0.5:0.5) |>
+  control_for(iq, -5:5) |>
   generate(50)
 ```
 
@@ -71,23 +71,23 @@ head(study_subj, 5)
 ```
 
 ```{r print-res-1-kable, echo=FALSE}
-study_subj %>%
-  head(5) %>%
+study_subj |>
+  head(5) |>
   knitr::kable()
 ```
 
 We can see the subjects' data in long format with the `long_format()` function. Here is the data for those same 10 subjects in long format. The `item_nr` column indicates which subjects are matched to one another.
 
 ```{r print-res-long-1, eval=FALSE}
-study_subj %>%
-  long_format() %>%
+study_subj |>
+  long_format() |>
   head(10)
 ```
 
 ```{r print-res-long-1-kable, echo=FALSE}
-study_subj %>%
-  long_format() %>%
-  head(10) %>%
+study_subj |>
+  long_format() |>
+  head(10) |>
   knitr::kable()
 ```
 
@@ -102,15 +102,15 @@ plot_design(study_subj)
 We can check how many males and females we have in each group like so:
 
 ```{r count-sex, eval=FALSE}
-study_subj %>%
-  long_format() %>%
+study_subj |>
+  long_format() |>
   count(condition, sex)
 ```
 
 ```{r count-sex-kable, echo=FALSE}
-study_subj %>%
-  long_format() %>%
-  count(condition, sex) %>%
+study_subj |>
+  long_format() |>
+  count(condition, sex) |>
   knitr::kable()
 ```
 

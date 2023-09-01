@@ -37,13 +37,13 @@ sensorimotor <- read_csv("https://osf.io/48wsc/download")
 Let's have a quick peak at the data.
 
 ```{r check-data-1, eval = FALSE}
-sensorimotor %>%
+sensorimotor |>
   head(5)
 ```
 
 ```{r check-data-1-kable, echo = FALSE}
-sensorimotor %>%
-  head(5) %>%
+sensorimotor |>
+  head(5) |>
   knitr::kable()
 ```
 
@@ -58,13 +58,13 @@ humour <- read_csv("https://raw.githubusercontent.com/tomasengelthaler/HumorNorm
 Let's have a look at this data too.
 
 ```{r check-data-2, eval = FALSE}
-humour %>%
+humour |>
   head(5)
 ```
 
 ```{r check-data-2-kable, echo = FALSE}
-humour %>%
-  head(5) %>%
+humour |>
+  head(5) |>
   knitr::kable()
 ```
 
@@ -73,22 +73,22 @@ humour %>%
 Firstly, we'll rename the `Word` column to have a lowercase "w", so it's consistent with the sensorimotor norms. Then, since all the Lancaster norms' words are in uppercase (whereas the Humour norms are in lowercase), we'll then convert the Lancaster norms words to lowercase.
 
 ```{r join-data-1}
-sensorimotor <- sensorimotor %>%
-  rename(word = Word) %>%
+sensorimotor <- sensorimotor |>
+  rename(word = Word) |>
   mutate(word = tolower(word))
 ```
 
 Next, we will prefix all the features from the humour norms with "Humour.", so they will be easily identifiable in the final dataset. We can use `rename_at()` and `vars(-word)` to add this prefix to all columns except the `word` column.
 
 ```{r join-data-2}
-humour <- humour %>%
+humour <- humour |>
   rename_at(vars(-word), ~paste("Humour", .x, sep="."))
 ```
 
 Joining the data together is then easy with the [dplyr join functions](https://dplyr.tidyverse.org/reference/join.html). Here we use `full_join()`, joining by the common column `"word"`. Finally, we join the data to the `lexops` in-built dataset, as this contains features we can use to control for length and frequency. Since the words are stored in `lexops` in the `string` column, we tell `left_join()` that these columns should be treated as the same thing, with `c("word"="string")`.
 
 ```{r join-data-3}
-sens_hum <- full_join(sensorimotor, humour, by="word") %>%
+sens_hum <- full_join(sensorimotor, humour, by="word") |>
   left_join(lexops, by=c("word"="string"))
 ```
 
@@ -97,9 +97,9 @@ sens_hum <- full_join(sensorimotor, humour, by="word") %>%
 Before we choose boundaries for our splits, we want to check the distributions of our independent variables.
 
 ```{r plot-joined-data, fig.show='hold', message=FALSE, warning=FALSE}
-sens_hum %>% ggplot(aes(Visual.mean)) + geom_density()
-sens_hum %>% ggplot(aes(Humour.mean)) + geom_density()
-sens_hum %>% ggplot(aes(Visual.mean, Humour.mean)) + geom_point(alpha=0.5)
+sens_hum |> ggplot(aes(Visual.mean)) + geom_density()
+sens_hum |> ggplot(aes(Humour.mean)) + geom_density()
+sens_hum |> ggplot(aes(Visual.mean, Humour.mean)) + geom_point(alpha=0.5)
 ```
 
 Finally, we can generate stimuli with our new words. We will create two levels of Visual ratings: `0:2` (low) and `3.5:5` (high), and two levels of Humour ratings: `2:2.5` (neutral, as consistently low humour ratings are often tabboo) and `3:5` (high). We'll control for word length exactly, and word frequency within a tolerance of `-0.2:0.2`.
@@ -107,12 +107,12 @@ Finally, we can generate stimuli with our new words. We will create two levels o
 Since we're using our own data, we need to use the `set_options()` function to tell LexOPS which column contains our unique identifier, i.e., our words (`id_col = "word"`).
 
 ```{r generate}
-stim <- sens_hum %>%
-  set_options(id_col = "word") %>%
-  split_by(Visual.mean, 0:2 ~ 3.5:5) %>%
-  split_by(Humour.mean, 2:2.5 ~ 3:5) %>%
-  control_for(Length, 0:0) %>%
-  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
+stim <- sens_hum |>
+  set_options(id_col = "word") |>
+  split_by(Visual.mean, 0:2 ~ 3.5:5) |>
+  split_by(Humour.mean, 2:2.5 ~ 3:5) |>
+  control_for(Length, 0:0) |>
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
   generate(25)
 ```
 
@@ -141,6 +141,6 @@ cite_design(stim)
 ```
 
 ```{r cite-design-kable, echo=FALSE}
-cite_design(stim) %>%
+cite_design(stim) |>
   knitr::kable()
 ```
