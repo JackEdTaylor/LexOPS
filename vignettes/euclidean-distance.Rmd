@@ -53,7 +53,7 @@ lexops |>
     cnc_dist = abs(CNC.Brysbaert - puppy_values$CNC.Brysbaert),
     val_dist = abs(VAL.Warriner - puppy_values$VAL.Warriner)
   ) |>
-  mutate(val_dist_t = 0, cnc_dist_t = 0) |>
+  mutate(val_dist_t = 0, cnc_dist_t = 0) %>%
   bind_rows(
     mutate(., val_dist_t = val_dist, cnc_dist_t = cnc_dist)
   ) |>
