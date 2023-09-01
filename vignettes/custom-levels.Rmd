@@ -56,7 +56,7 @@ dat |>
   mutate(emo_cond = fct_infreq(as.factor(emo_cond))) |>
   ggplot(aes(Value, fill = emo_cond)) +
   geom_histogram(binwidth = 0.5) +
-  facet_wrap(~Variable) +
+  facet_wrap(vars(Variable)) +
   scale_fill_manual(values = c("#999999", "#E69F00", "#56B4E9"))
 ```
 
