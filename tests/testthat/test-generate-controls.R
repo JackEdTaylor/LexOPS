@@ -314,14 +314,20 @@ testthat::test_that("control_for_euc", {
       dplyr::left_join(
         eg_df %>%
           dplyr::select(id, b, e) %>%
-          dplyr::mutate(b = scale(b), e = scale(e)) %>%
+          dplyr::mutate(
+            b = as.numeric(scale(b)),
+            e = as.numeric(scale(e))
+          ) %>%
           dplyr::rename(A1_b = b, A1_e = e),
         by = c("A1" = "id")
       ) %>%
       dplyr::left_join(
         eg_df %>%
           dplyr::select(id, b, e) %>%
-          dplyr::mutate(b = scale(b), e = scale(e)) %>%
+          dplyr::mutate(
+            b = as.numeric(scale(b)),
+            e = as.numeric(scale(e))
+          ) %>%
           dplyr::rename(A2_b = b, A2_e = e),
         by = c("A2" = "id")
       ) %>%
@@ -361,14 +367,20 @@ testthat::test_that("control_for_euc", {
       dplyr::left_join(
         eg_df %>%
           dplyr::select(id, b, e) %>%
-          dplyr::mutate(b = weights_std[1]*scale(b), e = weights_std[2]*scale(e)) %>%
+          dplyr::mutate(
+            b = weights_std[1]*as.numeric(scale(b)),
+            e = weights_std[2]*as.numeric(scale(e))
+          ) %>%
           dplyr::rename(A1_b = b, A1_e = e),
         by = c("A1" = "id")
       ) %>%
       dplyr::left_join(
         eg_df %>%
           dplyr::select(id, b, e) %>%
-          dplyr::mutate(b = weights_std[1]*scale(b), e = weights_std[2]*scale(e)) %>%
+          dplyr::mutate(
+            b = weights_std[1]*as.numeric(scale(b)),
+            e = weights_std[2]*as.numeric(scale(e))
+          ) %>%
           dplyr::rename(A2_b = b, A2_e = e),
         by = c("A2" = "id")
       ) %>%
@@ -408,14 +420,20 @@ testthat::test_that("control_for_euc", {
       dplyr::left_join(
         eg_df %>%
           dplyr::select(id, b, e) %>%
-          dplyr::mutate(b = weights[1]*scale(b), e = weights[2]*scale(e)) %>%
+          dplyr::mutate(
+            b = weights[1]*as.numeric(scale(b)),
+            e = weights[2]*as.numeric(scale(e))
+          ) %>%
           dplyr::rename(A1_b = b, A1_e = e),
         by = c("A1" = "id")
       ) %>%
       dplyr::left_join(
         eg_df %>%
           dplyr::select(id, b, e) %>%
-          dplyr::mutate(b = weights[1]*scale(b), e = weights[2]*scale(e)) %>%
+          dplyr::mutate(
+            b = weights[1]*as.numeric(scale(b)),
+            e = weights[2]*as.numeric(scale(e))
+          ) %>%
           dplyr::rename(A2_b = b, A2_e = e),
         by = c("A2" = "id")
       ) %>%
