@@ -1,7 +1,7 @@
 Package: LexOPS
 Title: A Package and Shiny App for Generating Matched Stimuli
 Version: 0.3.1.9000
-Date: 2022-09-28
+Date: 2023-07-04
 Authors@R: 
     c(
         person(given = "Jack",
@@ -20,7 +20,7 @@ Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 Imports:
     magrittr,
