@@ -53,20 +53,20 @@ set.seed(100)
 ```{r, eval = FALSE}
 library(LexOPS)
 
-stim <- lexops %>%
-  split_by(Syllables.CMU, 1:1 ~ 2:2) %>%
-  split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
-  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
-  control_for(Length) %>%
-  generate(n = 50)
+stim <- lexops |>
+  split_by(Syllables.CMU, 1:1 ~ 2:2) |>
+  split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
+  control_for(Length) |>
+  generate(n = 50, match_null = "balanced")
 ```
 
 ```{r, warning = FALSE, echo = FALSE}
-stim <- lexops %>%
-  split_by(Syllables.CMU, 1:1 ~ 2:2) %>%
-  split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
-  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
-  control_for(Length) %>%
+stim <- lexops |>
+  split_by(Syllables.CMU, 1:1 ~ 2:2) |>
+  split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
+  control_for(Length) |>
   generate(n = 50, match_null = "balanced", silent = TRUE)
 cat(sprintf("Generated 50/50 (100%%). 157 total iterations, 0.32 success rate.\n"))  # pseudoprint progress
 ```
@@ -75,8 +75,8 @@ A preview of what was generated:
 
 ```{r}
 # create a table of the first 5 rows of the output
-stim %>%
-  head(5) %>%
+stim |>
+  head(5) |>
   knitr::kable()
 ```
 
@@ -94,8 +94,8 @@ The `long_format()` function coerces the generated stimuli into long format.
 
 ```{r}
 # present the same 20 words as in the earlier table
-long_format(stim) %>%
-  head(20) %>%
+long_format(stim) |>
+  head(20) |>
   knitr::kable()
 ```
 
@@ -108,3 +108,31 @@ LexOPS::run_shiny()
 ```
 
 ![](man/figures/shiny-preview.png)
+
+### Matching on Custom Dataframes
+
+As well as the built-in dataframe `LexOPS::lexops`, you can generate matches from any dataframe object.
+
+Here is an example using `mtcars`. We pick five automatic and five manual models of car, matched for acceleration (within ±5 `qsec`) and the number of carburetor barrels (`carb`; exactly).
+
+```{r, eval=FALSE}
+mtcars |>
+  tibble::as_tibble(rownames = "car_id") |>
+  set_options(id_col = "car_id") |>
+  split_by(am, 0:0 ~ 1:1) |>
+  control_for(qsec, -5:5) |>
+  control_for(carb, 0:0) |>
+  generate(5)
+```
+
+```{r, warning=FALSE, echo=FALSE}
+mtcars_res <- mtcars |>
+  tibble::as_tibble(rownames = "car_id") |>
+  set_options(id_col = "car_id") |>
+  split_by(am, 0:0 ~ 1:1) |>
+  control_for(qsec, -5:5) |>
+  control_for(carb, 0:0) |>
+  generate(5, silent=TRUE)
+
+print(mtcars_res)
+```

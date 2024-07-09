@@ -51,12 +51,12 @@ within a tolerance of ±0.2 Zipf.
 ``` r
 library(LexOPS)
 
-stim <- lexops %>%
-  split_by(Syllables.CMU, 1:1 ~ 2:2) %>%
-  split_by(CNC.Brysbaert, 1:2 ~ 4:5) %>%
-  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
-  control_for(Length) %>%
-  generate(n = 50)
+stim <- lexops |>
+  split_by(Syllables.CMU, 1:1 ~ 2:2) |>
+  split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
+  control_for(Length) |>
+  generate(n = 50, match_null = "balanced")
 ```
 
     #> Generated 50/50 (100%). 157 total iterations, 0.32 success rate.
@@ -65,18 +65,18 @@ A preview of what was generated:
 
 ``` r
 # create a table of the first 5 rows of the output
-stim %>%
-  head(5) %>%
+stim |>
+  head(5) |>
   knitr::kable()
 ```
 
 | item_nr | A1_B1  | A1_B2  | A2_B1  | A2_B2  | match_null |
 |--------:|:-------|:-------|:-------|:-------|:-----------|
-|       1 | fresh  | frame  | basis  | river  | A1_B2      |
-|       2 | gist   | cuff   | akin   | tuba   | A2_B1      |
-|       3 | fate   | slip   | rely   | lily   | A1_B1      |
-|       4 | shrewd | wrench | equate | muzzle | A2_B2      |
-|       5 | famed  | reins  | ethic  | totem  | A2_B1      |
+|       1 | gist   | yank   | iffy   | tofu   | A1_B2      |
+|       2 | oomph  | speck  | hyper  | rabbi  | A2_B1      |
+|       3 | worst  | voice  | lucky  | cover  | A1_B1      |
+|       4 | suave  | stoop  | avail  | lilac  | A2_B2      |
+|       5 | shrewd | starch | bygone | condom | A2_B1      |
 
 ### Review Generated Stimuli
 
@@ -96,33 +96,33 @@ format.
 
 ``` r
 # present the same 20 words as in the earlier table
-long_format(stim) %>%
-  head(20) %>%
+long_format(stim) |>
+  head(20) |>
   knitr::kable()
 ```
 
 | item_nr | condition | match_null | string | Zipf.SUBTLEX_UK | Length | Syllables.CMU | CNC.Brysbaert |
 |--------:|:----------|:-----------|:-------|----------------:|-------:|--------------:|--------------:|
-|       1 | A1_B1     | A1_B2      | fresh  |        4.893319 |      5 |             1 |          1.97 |
-|       1 | A1_B2     | A1_B2      | frame  |        4.755413 |      5 |             1 |          4.30 |
-|       1 | A2_B1     | A1_B2      | basis  |        4.625308 |      5 |             2 |          1.83 |
-|       1 | A2_B2     | A1_B2      | river  |        4.926899 |      5 |             2 |          4.89 |
-|       2 | A1_B1     | A2_B1      | gist   |        2.974489 |      4 |             1 |          1.81 |
-|       2 | A1_B2     | A2_B1      | cuff   |        3.272077 |      4 |             1 |          4.61 |
-|       2 | A2_B1     | A2_B1      | akin   |        3.083126 |      4 |             2 |          1.71 |
-|       2 | A2_B2     | A2_B1      | tuba   |        2.951008 |      4 |             2 |          4.86 |
-|       3 | A1_B1     | A1_B1      | fate   |        4.224395 |      4 |             1 |          1.53 |
-|       3 | A1_B2     | A1_B1      | slip   |        4.332324 |      4 |             1 |          4.10 |
-|       3 | A2_B1     | A1_B1      | rely   |        4.318882 |      4 |             2 |          1.93 |
-|       3 | A2_B2     | A1_B1      | lily   |        4.253363 |      4 |             2 |          4.69 |
-|       4 | A1_B1     | A2_B2      | shrewd |        3.244739 |      6 |             1 |          1.92 |
-|       4 | A1_B2     | A2_B2      | wrench |        3.150581 |      6 |             1 |          4.93 |
-|       4 | A2_B1     | A2_B2      | equate |        2.976769 |      6 |             2 |          1.93 |
-|       4 | A2_B2     | A2_B2      | muzzle |        3.066804 |      6 |             2 |          4.59 |
-|       5 | A1_B1     | A2_B1      | famed  |        3.415895 |      5 |             1 |          1.81 |
-|       5 | A1_B2     | A2_B1      | reins  |        3.327180 |      5 |             1 |          4.56 |
-|       5 | A2_B1     | A2_B1      | ethic  |        3.303191 |      5 |             2 |          1.59 |
-|       5 | A2_B2     | A2_B1      | totem  |        3.239804 |      5 |             2 |          4.00 |
+|       1 | A1_B1     | A1_B2      | gist   |        2.974489 |      4 |             1 |          1.81 |
+|       1 | A1_B2     | A1_B2      | yank   |        2.933782 |      4 |             1 |          4.10 |
+|       1 | A2_B1     | A1_B2      | iffy   |        2.928732 |      4 |             2 |          1.68 |
+|       1 | A2_B2     | A1_B2      | tofu   |        3.045984 |      4 |             2 |          4.86 |
+|       2 | A1_B1     | A2_B1      | oomph  |        3.074134 |      5 |             1 |          1.52 |
+|       2 | A1_B2     | A2_B1      | speck  |        3.011706 |      5 |             1 |          4.46 |
+|       2 | A2_B1     | A2_B1      | hyper  |        3.208953 |      5 |             2 |          2.00 |
+|       2 | A2_B2     | A2_B1      | rabbi  |        3.315872 |      5 |             2 |          4.64 |
+|       3 | A1_B1     | A1_B1      | worst  |        4.915294 |      5 |             1 |          1.54 |
+|       3 | A1_B2     | A1_B1      | voice  |        4.887075 |      5 |             1 |          4.13 |
+|       3 | A2_B1     | A1_B1      | lucky  |        5.030973 |      5 |             2 |          1.76 |
+|       3 | A2_B2     | A1_B1      | cover  |        4.863260 |      5 |             2 |          4.23 |
+|       4 | A1_B1     | A2_B2      | suave  |        2.910580 |      5 |             1 |          1.48 |
+|       4 | A1_B2     | A2_B2      | stoop  |        3.045984 |      5 |             1 |          4.63 |
+|       4 | A2_B1     | A2_B2      | avail  |        2.877579 |      5 |             2 |          1.33 |
+|       4 | A2_B2     | A2_B2      | lilac  |        3.017955 |      5 |             2 |          4.69 |
+|       5 | A1_B1     | A2_B1      | shrewd |        3.244739 |      6 |             1 |          1.92 |
+|       5 | A1_B2     | A2_B1      | starch |        3.291232 |      6 |             1 |          4.29 |
+|       5 | A2_B1     | A2_B1      | bygone |        3.091935 |      6 |             2 |          1.69 |
+|       5 | A2_B2     | A2_B1      | condom |        3.225935 |      6 |             2 |          4.87 |
 
 ### Shiny App
 
@@ -138,3 +138,29 @@ LexOPS::run_shiny()
 ```
 
 ![](man/figures/shiny-preview.png)
+
+### Matching on Custom Dataframes
+
+As well as the built-in dataframe `LexOPS::lexops`, you can generate
+matches from any dataframe object.
+
+Here is an example using `mtcars`. We pick five automatic and five
+manual models of car, matched for acceleration (within ±5 `qsec`) and
+the number of carburetor barrels (`carb`; exactly).
+
+``` r
+mtcars |>
+  tibble::as_tibble(rownames = "car_id") |>
+  set_options(id_col = "car_id") |>
+  split_by(am, 0:0 ~ 1:1) |>
+  control_for(qsec, -5:5) |>
+  control_for(carb, 0:0) |>
+  generate(5)
+```
+
+    #>   item_nr                 A1             A2 match_null
+    #> 1       1           Merc 280 Ford Pantera L         A2
+    #> 2       2           Merc 230     Volvo 142E         A1
+    #> 3       3  Hornet Sportabout  Porsche 914-2         A1
+    #> 4       4 Cadillac Fleetwood      Mazda RX4         A1
+    #> 5       5   Dodge Challenger    Honda Civic         A2
