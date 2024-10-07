@@ -15,6 +15,24 @@ eg_df <- data.frame(
 
 # general errors ----
 testthat::test_that("general errors", {
+  testthat::expect_error({
+    # randomly repeat between 1 and 5 rows
+    n_reps <- sample(1:5, size=1)
+    rep_rows <- sample.int(nrow(eg_df), n_reps)
+    eg_df_reps <- rbind(eg_df, eg_df[rep_rows, ])
+
+    eg_df_reps %>%
+      set_options(id_col = "id") %>%
+      split_by(a, -5:0 ~ 0:5) %>%
+      control_for(b, -2.5:2.5) %>%
+      control_for(c, -2.5:2.5) %>%
+      control_for(d) %>%
+      generate(10)
+    },
+    "LexOPS assumes that id_col uniquely identifies the columns",
+    fixed = TRUE
+  )
+
   testthat::expect_error(
     eg_df %>%
       set_options(id_col = "id") %>%

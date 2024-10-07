@@ -370,6 +370,9 @@ generate.check <- function(df, n, match_null, seed, id_col, cond_col, is_shiny, 
   # check id_col is a string
   if (!is.character(id_col)) stop(sprintf("Expected id_col to be of class string, not %s", class(id_col)))
 
+  # check that id_col uniquely identifies the rows
+  if (length(unique(df[[id_col]])) != nrow(df)) stop("LexOPS assumes that id_col uniquely identifies the columns")
+
   # check n is a number or expected string
   if (!is.numeric(n) & n != "all") stop(sprintf('n must be numeric or a string of value "all"'))
 
