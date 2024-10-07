@@ -29,7 +29,7 @@ testthat::test_that("general errors", {
       control_for(d) %>%
       generate(10)
     },
-    "LexOPS assumes that id_col uniquely identifies the columns",
+    "LexOPS assumes that id_col uniquely identifies the rows",
     fixed = TRUE
   )
 
