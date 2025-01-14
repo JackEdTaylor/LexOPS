@@ -164,7 +164,7 @@ split_by.numeric <- function(df, column, breaks, new_column, prefix, filter){
 
   # check if overlapping
   if (any(rowSums(cuts_mat) > 1, na.rm=TRUE)) {
-    stop("overlapping breaks: overlapping breaks not permitted for split of type double - try assigning conditions manually as a factor instead")
+    stop("overlapping breaks: overlapping breaks not permitted for split of type numeric - consider assigning conditions manually as a factor instead")
   }
 
   cuts_lab_idx <- apply(cuts_mat, MARGIN=1, function(x) ifelse(any(x), which(x), NA))
