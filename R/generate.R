@@ -119,7 +119,7 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
     id_col <- "string"
     if (!id_col %in% colnames(df) & is.data.frame(df)) {
       df[[id_col]] <- 1:nrow(df)  # use row number as id if there isn't one
-      warning("No id_col detected; will use row numbers.")
+      warning("No id_col detected; will use current row numbers (after any subsetting).")
     }
     cond_col <- "LexOPS_splitCond"
     cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
