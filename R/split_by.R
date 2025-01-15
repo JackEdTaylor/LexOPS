@@ -155,17 +155,15 @@ split_by <- function(x, var, levels, filter = TRUE, standard_eval = FALSE){
 
 split_by.numeric <- function(df, column, breaks, new_column, prefix, filter){
 
-  # Check that splits are ordered and don't overlap
+  # Check that splits are ordered
   check_ordered(breaks)
+
+  # check if overlapping
+  check_overlapping(breaks)
 
   cut_labs <- paste0(prefix, 1:(length(breaks)))
 
   cuts_mat <- sapply(breaks, function(b) df[[column]]>=b[[1]] & df[[column]]<=b[[2]])
-
-  # check if overlapping
-  if (any(rowSums(cuts_mat) > 1, na.rm=TRUE)) {
-    stop("overlapping breaks: overlapping breaks not permitted for split of type numeric - consider assigning conditions manually as a factor instead")
-  }
 
   cuts_lab_idx <- apply(cuts_mat, MARGIN=1, function(x) ifelse(any(x), which(x), NA))
 
@@ -236,9 +234,25 @@ split_by.factor_group <- function(df, column, breaks, new_column, prefix, filter
 }
 
 # Checks
-check_ordered <- function(x){
-  check_order <- all( sapply(x, function(x_i) x_i[[1]] <= x_i[[2]]) )
 
-  if(!check_order) stop("lower bounds must be lower than upper bounds")
+# check that a numeric variable's breaks are ordered
+# note: checks within-level, but not across levels, so list(c(1, 2), c(5, 6), c(3, 4)) is okay
+check_ordered <- function(x){
+  # check order of each level
+  check_bounds <- all( sapply(x, function(x_i) x_i[[1]] <= x_i[[2]]) )
+
+  if(!check_bounds) stop("lower bounds must be lower than upper bounds")
 }
 
+# check that a numeric variable's breaks do not mean that some values could land in multiple levels
+check_overlapping <- function(x){
+  lower_bounds <- sapply(x, `[[`, 1)
+  upper_bounds <- sapply(x, `[[`, 2)
+
+  lower_bounds_s <- sort(lower_bounds)
+  upper_bounds_s <- upper_bounds[order(lower_bounds)]
+
+  check_intervals <- all(upper_bounds_s < dplyr::lead(lower_bounds_s, n=1), na.rm=TRUE)
+
+  if(!check_intervals) stop("overlapping levels - ensure that no value could fall into multiple levels")
+}
