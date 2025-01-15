@@ -20,7 +20,7 @@ testthat::test_that("silent_option", {
     capture.output({
       x <- eg_df %>%
         set_options(id_col = "id") %>%
-        split_by(a, -5:0 ~ 0:5) %>%
+        split_by(a, -5:-0.1 ~ 0.1:5) %>%
         control_for(b, -2.5:2.5) %>%
         control_for(c, -2.5:2.5) %>%
         control_for(d) %>%
@@ -35,7 +35,7 @@ testthat::test_that("silent_option", {
     capture.output({
       x <- eg_df %>%
         set_options(id_col = "id") %>%
-        split_by(a, -5:0 ~ 0:5) %>%
+        split_by(a, -5:-0.1 ~ 0.1:5) %>%
         control_for(b, -2.5:2.5) %>%
         control_for(c, -2.5:2.5) %>%
         control_for(d) %>%
@@ -50,7 +50,7 @@ testthat::test_that("silent_option", {
     capture.output({
       x <- eg_df %>%
         set_options(id_col = "id") %>%
-        split_by(a, -5:0 ~ 0:5) %>%
+        split_by(a, -5:-0.1 ~ 0.1:5) %>%
         control_for(b, -2.5:2.5) %>%
         control_for(c, -2.5:2.5) %>%
         control_for(d) %>%
@@ -65,7 +65,7 @@ testthat::test_that("silent_option", {
     capture.output({
       x <- eg_df %>%
         set_options(id_col = "id") %>%
-        split_by(a, -5:0 ~ 0:5) %>%
+        split_by(a, -5:-0.1 ~ 0.1:5) %>%
         control_for(b, -2.5:2.5) %>%
         control_for(c, -2.5:2.5) %>%
         control_for(d) %>%

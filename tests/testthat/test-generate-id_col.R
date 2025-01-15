@@ -19,7 +19,7 @@ testthat::test_that("no id_col given", {
   testthat::expect_equal(
     suppressWarnings(
       eg_df %>%
-        split_by(a, -5:0 ~ 0:5) %>%
+        split_by(a, -5:-0.1 ~ 0.1:5) %>%
         control_for(b, -2.5:2.5) %>%
         generate(17, silent=TRUE) %>%
         nrow()
@@ -29,18 +29,19 @@ testthat::test_that("no id_col given", {
   # test that including no id_col gives a warning
   testthat::expect_warning(
     eg_df %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for(b, -2.5:2.5) %>%
       generate(17, silent=TRUE),
-    "No id_col detected; will use row numbers."
+    "No id_col detected; will use current row numbers (after any subsetting).",
+    fixed = TRUE
   )
-  # since eg_df's id column is just the row numbers anyway, these should be identical
+  # since eg_df's id column is just the row numbers anyway, these should be identical if no filtering is done by split_by
   testthat::expect_identical(
     {
       df <- suppressWarnings(
         eg_df %>%
           set_options(id_col = "id") %>%
-          split_by(a, -5:0 ~ 0:5) %>%
+          split_by(a, -5:-0.00001 ~ 0.00001:5, filter=FALSE) %>%
           control_for(b, -2.5:2.5) %>%
           generate(10, seed=42, silent=TRUE)
       )
@@ -50,7 +51,7 @@ testthat::test_that("no id_col given", {
     {
       df <- suppressWarnings(
         eg_df %>%
-          split_by(a, -5:0 ~ 0:5) %>%
+          split_by(a, -5:-0.00001 ~ 0.00001:5, filter=FALSE) %>%
           control_for(b, -2.5:2.5) %>%
           generate(10, seed=42, silent=TRUE)
       )

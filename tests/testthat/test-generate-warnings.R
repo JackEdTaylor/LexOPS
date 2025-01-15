@@ -18,7 +18,7 @@ testthat::test_that("general warnings", {
   testthat::expect_warning(
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.01 ~ 0:0.01) %>%
       control_for(b, -2.5:2.5) %>%
       control_for(c, -2.5:2.5) %>%
       control_for(d) %>%
@@ -29,7 +29,7 @@ testthat::test_that("general warnings", {
   testthat::expect_warning(
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.01 ~ 0:0.01) %>%
       split_random(5, seed=1) %>%
       control_for(b, -2.5:2.5) %>%
       control_for(c, -2.5:2.5) %>%
@@ -41,7 +41,7 @@ testthat::test_that("general warnings", {
   testthat::expect_warning(
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.01 ~ 0:0.01) %>%
       control_for(d) %>%
       control_for(e) %>%
       generate(10, silent=TRUE),
@@ -52,7 +52,7 @@ testthat::test_that("general warnings", {
   testthat::expect_warning(
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.01 ~ 0:0.01) %>%
       control_for(b, -2.5:2.5) %>%
       control_for(c, -2.5:2.5) %>%
       control_for(d) %>%

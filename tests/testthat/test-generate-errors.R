@@ -23,7 +23,7 @@ testthat::test_that("general errors", {
 
     eg_df_reps %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for(b, -2.5:2.5) %>%
       control_for(c, -2.5:2.5) %>%
       control_for(d) %>%
@@ -36,7 +36,7 @@ testthat::test_that("general errors", {
   testthat::expect_error(
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for(b, -2.5:2.5) %>%
       control_for(c, -2.5:2.5) %>%
       control_for(d) %>%
@@ -48,7 +48,7 @@ testthat::test_that("general errors", {
   testthat::expect_error(
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for(b, -2.5:2.5) %>%
       control_for(c, -2.5:2.5) %>%
       control_for(d) %>%
@@ -60,7 +60,7 @@ testthat::test_that("general errors", {
   testthat::expect_error(
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       generate(10),
     "No controls defined - see ?LexOPS::generate for example usage of generate()",
     fixed = TRUE

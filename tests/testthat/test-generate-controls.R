@@ -19,7 +19,7 @@ testthat::test_that("controls", {
   testthat::expect_equal(
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for(d) %>%
       generate(20, silent=TRUE) %>%
       tidyr::pivot_longer(c(A1, A2), names_to = "condition", values_to = "id") %>%
@@ -34,7 +34,7 @@ testthat::test_that("controls", {
   testthat::expect_equal(
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for(e, 0:0) %>%
       generate(20, silent=TRUE) %>%
       tidyr::pivot_longer(c(A1, A2), names_to = "condition", values_to = "id") %>%
@@ -49,7 +49,7 @@ testthat::test_that("controls", {
   testthat::expect_equal(
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for(e, -1:1) %>%
       generate(20, silent=TRUE) %>%
       tidyr::pivot_longer(c(A1, A2), names_to = "condition", values_to = "id") %>%
@@ -65,7 +65,7 @@ testthat::test_that("controls", {
   testthat::expect_equal(
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for(b, -0.25:0.25) %>%
       generate(20, silent=TRUE) %>%
       tidyr::pivot_longer(c(A1, A2), names_to = "condition", values_to = "id") %>%
@@ -81,7 +81,7 @@ testthat::test_that("controls", {
   testthat::expect_equal(
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for(b, -0.37:0.1) %>%
       generate(30, silent=TRUE) %>%
       dplyr::left_join(
@@ -109,7 +109,7 @@ testthat::test_that("match_null options", {
   testthat::expect_true({
     match_null_counts <- eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for(d) %>%
       generate(32, match_null = "balanced", silent=TRUE) %>%
       dplyr::group_by(match_null) %>%
@@ -121,7 +121,7 @@ testthat::test_that("match_null options", {
   testthat::expect_true({
     match_null_counts <- eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for(d) %>%
       generate(33, match_null = "balanced", silent=TRUE) %>%
       dplyr::group_by(match_null) %>%
@@ -133,7 +133,7 @@ testthat::test_that("match_null options", {
   testthat::expect_true({
     match_nulls <- eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       split_by(e, 0:3 ~ 4:6) %>%
       control_for(d) %>%
       generate(12, match_null = "first", silent=TRUE) %>%
@@ -144,7 +144,7 @@ testthat::test_that("match_null options", {
   testthat::expect_true({
     match_nulls <- eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       split_by(e, 0:3 ~ 4:6) %>%
       control_for(d) %>%
       generate(12, match_null = "A1_B2", silent=TRUE) %>%
@@ -176,7 +176,7 @@ testthat::test_that("control_for_map", {
     library(stringdist)
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for_map(stringdist, f, 0:2, method="lv") %>%
       generate(36, silent=TRUE) %>%
       dplyr::left_join(
@@ -240,7 +240,7 @@ testthat::test_that("control_for_map", {
     library(stringdist)
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for_map(stringdist, f, 2:Inf, method="osa") %>%
       control_for_map(stringdist, g, 3:3, method="lv") %>%
       generate(29, silent=TRUE) %>%
@@ -287,7 +287,7 @@ testthat::test_that("control_for_map", {
 
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for_map(plus_minus_strdist, f, -3:0, minus=TRUE) %>%
       generate(27, silent=TRUE) %>%
       long_format() %>%
@@ -302,7 +302,7 @@ testthat::test_that("control_for_euc", {
   testthat::expect_equal({
     wide_res <- eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for_euc(
         c(b, e),
         0:1.5,
@@ -313,6 +313,7 @@ testthat::test_that("control_for_euc", {
     manual_euc_dist <- wide_res %>%
       dplyr::left_join(
         eg_df %>%
+          dplyr::filter((a>=-5 & a<=-0.1) | (a>=0.1 & a<=5)) %>%
           dplyr::select(id, b, e) %>%
           dplyr::mutate(
             b = as.numeric(scale(b)),
@@ -323,6 +324,7 @@ testthat::test_that("control_for_euc", {
       ) %>%
       dplyr::left_join(
         eg_df %>%
+          dplyr::filter((a>=-5 & a<=-0.1) | (a>=0.1 & a<=5)) %>%
           dplyr::select(id, b, e) %>%
           dplyr::mutate(
             b = as.numeric(scale(b)),
@@ -354,7 +356,7 @@ testthat::test_that("control_for_euc", {
 
     wide_res <- eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for_euc(
         c(b, e),
         0:1.5,
@@ -366,6 +368,7 @@ testthat::test_that("control_for_euc", {
     manual_euc_dist <- wide_res %>%
       dplyr::left_join(
         eg_df %>%
+          dplyr::filter((a>=-5 & a<=-0.1) | (a>=0.1 & a<=5)) %>%
           dplyr::select(id, b, e) %>%
           dplyr::mutate(
             b = weights_std[1]*as.numeric(scale(b)),
@@ -376,6 +379,7 @@ testthat::test_that("control_for_euc", {
       ) %>%
       dplyr::left_join(
         eg_df %>%
+          dplyr::filter((a>=-5 & a<=-0.1) | (a>=0.1 & a<=5)) %>%
           dplyr::select(id, b, e) %>%
           dplyr::mutate(
             b = weights_std[1]*as.numeric(scale(b)),
@@ -406,7 +410,7 @@ testthat::test_that("control_for_euc", {
 
     wide_res <- eg_df %>%
       set_options(id_col = "id") %>%
-      split_by(a, -5:0 ~ 0:5) %>%
+      split_by(a, -5:-0.1 ~ 0.1:5) %>%
       control_for_euc(
         c(b, e),
         0:10,
@@ -419,6 +423,7 @@ testthat::test_that("control_for_euc", {
     manual_euc_dist <- wide_res %>%
       dplyr::left_join(
         eg_df %>%
+          dplyr::filter((a>=-5 & a<=-0.1) | (a>=0.1 & a<=5)) %>%
           dplyr::select(id, b, e) %>%
           dplyr::mutate(
             b = weights[1]*as.numeric(scale(b)),
@@ -429,6 +434,7 @@ testthat::test_that("control_for_euc", {
       ) %>%
       dplyr::left_join(
         eg_df %>%
+          dplyr::filter((a>=-5 & a<=-0.1) | (a>=0.1 & a<=5)) %>%
           dplyr::select(id, b, e) %>%
           dplyr::mutate(
             b = weights[1]*as.numeric(scale(b)),
