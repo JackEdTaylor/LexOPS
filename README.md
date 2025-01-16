@@ -8,7 +8,7 @@
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 [![Version:
-0.3.1](https://img.shields.io/badge/version-0.3.1-blue.svg)](https://github.com/JackEdTaylor/LexOPS/releases)
+0.4.0](https://img.shields.io/badge/version-0.3.2-blue.svg)](https://github.com/JackEdTaylor/LexOPS/releases)
 [![DOI:
 10.3758/s13428-020-01389-1](https://zenodo.org/badge/DOI/10.3758/s13428-020-01389-1.svg)](https://doi.org/10.3758/s13428-020-01389-1)
 <!-- badges: end -->
@@ -102,27 +102,27 @@ long_format(stim) |>
 ```
 
 | item_nr | condition | match_null | string | Zipf.SUBTLEX_UK | Length | Syllables.CMU | CNC.Brysbaert |
-|--------:|:----------|:-----------|:-------|----------------:|-------:|--------------:|--------------:|
-|       1 | A1_B1     | A1_B2      | gist   |        2.974489 |      4 |             1 |          1.81 |
-|       1 | A1_B2     | A1_B2      | yank   |        2.933782 |      4 |             1 |          4.10 |
-|       1 | A2_B1     | A1_B2      | iffy   |        2.928732 |      4 |             2 |          1.68 |
-|       1 | A2_B2     | A1_B2      | tofu   |        3.045984 |      4 |             2 |          4.86 |
-|       2 | A1_B1     | A2_B1      | oomph  |        3.074134 |      5 |             1 |          1.52 |
-|       2 | A1_B2     | A2_B1      | speck  |        3.011706 |      5 |             1 |          4.46 |
-|       2 | A2_B1     | A2_B1      | hyper  |        3.208953 |      5 |             2 |          2.00 |
-|       2 | A2_B2     | A2_B1      | rabbi  |        3.315872 |      5 |             2 |          4.64 |
-|       3 | A1_B1     | A1_B1      | worst  |        4.915294 |      5 |             1 |          1.54 |
-|       3 | A1_B2     | A1_B1      | voice  |        4.887075 |      5 |             1 |          4.13 |
-|       3 | A2_B1     | A1_B1      | lucky  |        5.030973 |      5 |             2 |          1.76 |
-|       3 | A2_B2     | A1_B1      | cover  |        4.863260 |      5 |             2 |          4.23 |
-|       4 | A1_B1     | A2_B2      | suave  |        2.910580 |      5 |             1 |          1.48 |
-|       4 | A1_B2     | A2_B2      | stoop  |        3.045984 |      5 |             1 |          4.63 |
-|       4 | A2_B1     | A2_B2      | avail  |        2.877579 |      5 |             2 |          1.33 |
-|       4 | A2_B2     | A2_B2      | lilac  |        3.017955 |      5 |             2 |          4.69 |
-|       5 | A1_B1     | A2_B1      | shrewd |        3.244739 |      6 |             1 |          1.92 |
-|       5 | A1_B2     | A2_B1      | starch |        3.291232 |      6 |             1 |          4.29 |
-|       5 | A2_B1     | A2_B1      | bygone |        3.091935 |      6 |             2 |          1.69 |
-|       5 | A2_B2     | A2_B1      | condom |        3.225935 |      6 |             2 |          4.87 |
+|---:|:---|:---|:---|---:|---:|---:|---:|
+| 1 | A1_B1 | A1_B2 | gist | 2.974489 | 4 | 1 | 1.81 |
+| 1 | A1_B2 | A1_B2 | yank | 2.933782 | 4 | 1 | 4.10 |
+| 1 | A2_B1 | A1_B2 | iffy | 2.928732 | 4 | 2 | 1.68 |
+| 1 | A2_B2 | A1_B2 | tofu | 3.045984 | 4 | 2 | 4.86 |
+| 2 | A1_B1 | A2_B1 | oomph | 3.074134 | 5 | 1 | 1.52 |
+| 2 | A1_B2 | A2_B1 | speck | 3.011706 | 5 | 1 | 4.46 |
+| 2 | A2_B1 | A2_B1 | hyper | 3.208953 | 5 | 2 | 2.00 |
+| 2 | A2_B2 | A2_B1 | rabbi | 3.315872 | 5 | 2 | 4.64 |
+| 3 | A1_B1 | A1_B1 | worst | 4.915294 | 5 | 1 | 1.54 |
+| 3 | A1_B2 | A1_B1 | voice | 4.887075 | 5 | 1 | 4.13 |
+| 3 | A2_B1 | A1_B1 | lucky | 5.030973 | 5 | 2 | 1.76 |
+| 3 | A2_B2 | A1_B1 | cover | 4.863260 | 5 | 2 | 4.23 |
+| 4 | A1_B1 | A2_B2 | suave | 2.910580 | 5 | 1 | 1.48 |
+| 4 | A1_B2 | A2_B2 | stoop | 3.045984 | 5 | 1 | 4.63 |
+| 4 | A2_B1 | A2_B2 | avail | 2.877579 | 5 | 2 | 1.33 |
+| 4 | A2_B2 | A2_B2 | lilac | 3.017955 | 5 | 2 | 4.69 |
+| 5 | A1_B1 | A2_B1 | shrewd | 3.244739 | 6 | 1 | 1.92 |
+| 5 | A1_B2 | A2_B1 | starch | 3.291232 | 6 | 1 | 4.29 |
+| 5 | A2_B1 | A2_B1 | bygone | 3.091935 | 6 | 2 | 1.69 |
+| 5 | A2_B2 | A2_B1 | condom | 3.225935 | 6 | 2 | 4.87 |
 
 ### Shiny App
 
