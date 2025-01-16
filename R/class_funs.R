@@ -3,13 +3,22 @@
 #' Prints a summary about a LexOPS pipeline object (returned from functions like `split_by()`, `control_for()`, etc.), listing the splits and controls in the pipeline so far.
 #'
 #' @param x A LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
-#' @param ... Other arguments passed to or from other methods.
+#' @param ... Other arguments passed to or from other methods (unused).
 #'
 #' @export
 
 print.LexOPS_pipeline <- function(x, ...) {
   cat(format(x, ...), "\n")
 }
+
+#' Get a text summary about a LexOPS pipeline
+#'
+#' Generates a text summary of a LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
+#'
+#' @param x A LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
+#' @param ... Other arguments passed to or from other methods (unused).
+#'
+#' @export
 
 format.LexOPS_pipeline <- function(x, ...) {
   lp_info <- x$info
@@ -57,9 +66,21 @@ format.LexOPS_pipeline <- function(x, ...) {
     paste(collapse = "\n\n")
 }
 
+#' Check whether an object is of class LexOPS_pipeline
+#'
+#' @param x Object resulting from one of `split_by()`, `control_for()`, etc..
+#'
+#' @export
+
 is.LexOPS_pipeline <- function(x) {
   "LexOPS_pipeline" %in% class(x)
 }
+
+#' Set an object's class to LexOPS_pipeline
+#'
+#' @param x Object resulting from one of `split_by()`, `control_for()`, etc..
+#'
+#' @export
 
 as.LexOPS_pipeline <- function(x) {
   if (is.LexOPS_pipeline(x)) {
