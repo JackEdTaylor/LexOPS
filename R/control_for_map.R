@@ -11,7 +11,7 @@
 #' @param ... Arguments to be passed to `fun`
 #'
 #' @return Returns `df`, with details on the variables to be controlled for added to the attributes. Run the \code{\link{generate}} function to then generate the actual stimuli.
-#' @examples
+#' @examplesIf requireNamespace(c("lexopsdata", "stringdist"), quietly=TRUE)
 #'
 #' # Create two levels of arousal, controlling for orthographic similarity
 #' # (as optimal string alignment; default for `stringdist()`)

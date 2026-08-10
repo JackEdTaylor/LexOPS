@@ -8,7 +8,7 @@
 #'
 #' @return Returns `df`, with the options stored in the attributes.
 #'
-#' @examples
+#' @examplesIf requireNamespace(c("lexopsdata"), quietly=TRUE)
 #'
 #' # give a df with "word" as the identifying column
 #' lexops |>

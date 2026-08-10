@@ -10,7 +10,7 @@
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R object of list. If `TRUE`, `...` should be a single list specifying the variables to match by and their tolerances, in the form `list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName")`. Default = `FALSE`.
 #'
 #' @return Returns data frame based on `df`. If `filter` == TRUE, will only contain matches. If `filter` == FALSE, will be the original `df` object, with a new column, "matchFilter".
-#' @examples
+#' @examplesIf requireNamespace(c("lexopsdata"), quietly=TRUE)
 #'
 #' # Match by number of syllables exactly
 #' lexops |>

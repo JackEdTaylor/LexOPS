@@ -8,7 +8,7 @@
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `var` and `tol`. If `TRUE`, `var` should be a character vector referring to a column in `df` (e.g. `"Zipf.SUBTLEX_UK"`), and `tol` should be a vector of length 2, specifying the tolerance (e.g. `c(-0.1, 0.5)`). Default = `FALSE`.
 #'
 #' @return Returns `df`, with details on the variables to be controlled for added to the attributes. Run the `generate()` function to then generate the actual stimuli.
-#' @examples
+#' @examplesIf requireNamespace(c("lexopsdata"), quietly=TRUE)
 #'
 #' # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables, and control for word frequency
 #' lexops |>

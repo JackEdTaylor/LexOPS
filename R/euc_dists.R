@@ -12,7 +12,7 @@
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `vars`. If `TRUE`, `vars` should be a character vector referring to columns in `df` (e.g. `c("Length", "Zipf.SUBTLEX_UK")`). Default = `FALSE`.
 #'
 #' @return Returns a vector of Euclidean distances, in the order of rows in `df`.
-#' @examples
+#' @examplesIf requireNamespace(c("lexopsdata"), quietly=TRUE)
 #'
 #' # Get the distance of every entry in the `lexops` dataset from the word "thicket".
 #' # (Note: This will be calculated using the dimensions of frequency, arousal, and size)

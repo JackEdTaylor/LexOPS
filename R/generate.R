@@ -10,7 +10,7 @@
 #' @param is_shiny Allows printing in a shiny context with `shinyjs::html()`. Outputs from the cat() function are stored in the div with id "gen_console". Default is FALSE.
 #'
 #' @return Returns the generated stimuli.
-#' @examples
+#' @examplesIf requireNamespace(c("lexopsdata"), quietly=TRUE)
 #'
 #' # Generate 20 words per condition, for design with 3 levels of syllables, controlled for frequency
 #' lexops |>

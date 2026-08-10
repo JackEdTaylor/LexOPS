@@ -34,7 +34,7 @@ get_box_colour <- function(box_type) {
 #'  \item step
 #' }
 #'
-#' @examples
+#' @examplesIf requireNamespace(c("lexopsdata"), quietly=TRUE)
 #'
 #' # for matching by frequency (e.g. control for...)
 #' #sensible_slider_vals(LexOPS::lexops$Zipf.SUBTLEX_UK, 1, TRUE)
