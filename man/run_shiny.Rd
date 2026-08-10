@@ -27,5 +27,6 @@ The LexOPS shiny app requires additional packages. If any dependencies are missi
 \item \code{readr}
 \item \code{forcats}
 \item \code{stringdist}
+\item \code{lexopsdata} (http://github.com/JackEdTaylor/lexopsdata)
 }
 }

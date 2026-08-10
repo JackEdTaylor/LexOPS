@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{A LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
 
-\item{...}{Other arguments passed to or from other methods.}
+\item{...}{Other arguments passed to or from other methods (unused).}
 }
 \description{
 Prints a summary about a LexOPS pipeline object (returned from functions like \code{split_by()}, \code{control_for()}, etc.), listing the splits and controls in the pipeline so far.
