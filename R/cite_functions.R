@@ -82,7 +82,7 @@ citation_table <- function(cite_vars) {
     var = cite_vars,
     measure = sapply(cite_vars, LexOPS::var_to_measure, first_cite = TRUE, title_caps = TRUE, default = "Custom Measure", standard_eval = TRUE),
     source = sapply(cite_vars, LexOPS::var_to_source, first_cite = TRUE, default = "Custom Source", standard_eval = TRUE),
-    url = sapply(cite_vars, LexOPS::var_to_url, default = "Unknown", standard_eval = TRUE),
+    url = sapply(cite_vars, LexOPS::var_to_url, default = NA, standard_eval = TRUE),
     stringsAsFactors = FALSE
   )
   df$source[df$var == "Length"] <- NA
@@ -155,6 +155,7 @@ var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FA
       )
       out <- map[var_name]
       out[is.na(out)] <- default
+      out <- unname(out)
     } else {
       map <- c(
         ".1letter" = "1-letter (ARPABET) Representations",
@@ -193,6 +194,7 @@ var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FA
       )
       out <- map[var_name]
       out[is.na(out)] <- default
+      out <- unname(out)
     }
   } else {
     return(default)
@@ -267,6 +269,7 @@ var_to_source <- function(var, first_cite = TRUE, default = "", standard_eval = 
       )
       out <- map[var_name]
       out[is.na(out)] <- default
+      out <- unname(out)
     } else {
       map <- c(
         "BNC.All" = "all BNC texts",
@@ -290,6 +293,7 @@ var_to_source <- function(var, first_cite = TRUE, default = "", standard_eval = 
       )
       out <- map[var_name]
       out[is.na(out)] <- default
+      out <- unname(out)
     }
   } else {
     out <- default
@@ -352,6 +356,7 @@ var_to_url <- function(var, default = "", standard_eval = FALSE) {
     )
     out <- map[var_name]
     out[is.na(out)] <- default
+    out <- unname(out)
     out
   } else {
     default
