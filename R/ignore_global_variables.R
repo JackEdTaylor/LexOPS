@@ -2,7 +2,7 @@
 .lexops_data <- function() {
   if (!requireNamespace("lexopsdata", quietly = TRUE)) {
     warning(
-      "To use the lexops dataset, please install the lexopsdata package: remotes::install_github(\"JackEdTaylor/lexopsdata\")"
+      "To use the lexops dataset, please install the lexopsdata package:\nremotes::install_github(\"JackEdTaylor/lexopsdata\")"
     )
 
     return(data.frame())
