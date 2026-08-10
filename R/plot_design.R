@@ -117,7 +117,7 @@ plot_design <- function(df, include = "design", dodge_width = 0.1, point_size = 
     ggplot2::ggplot(ggplot2::aes(x = condition, y = value)) +
     ggplot2::geom_violin(colour = NA, fill = "grey", alpha = 0.5) +
     ggplot2::geom_point(ggplot2::aes(group = as.factor(item_nr)), position = point_pos, alpha = 0.75, size = point_size) +
-    ggplot2::geom_line(ggplot2::aes(group = as.factor(item_nr)), position = point_pos, alpha = 0.25, size = line_width) +
+    ggplot2::geom_line(ggplot2::aes(group = as.factor(item_nr)), position = point_pos, alpha = 0.25, linewidth = line_width) +
     ggplot2::facet_wrap(~variable, scales = "free") +
     ggplot2::theme_bw() +
     ggplot2::labs(x = "Condition", y = "Value")

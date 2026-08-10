@@ -31,7 +31,7 @@ plot_iterations <- function(df, line_width = 1) {
     dplyr::mutate(was_successful = ifelse(iteration %in% LexOPS_attrs$successful_iterations, 1, 0)) %>%
     dplyr::mutate(stim_generated = cumsum(was_successful)) %>%
     ggplot2::ggplot(ggplot2::aes(x = iteration, y = stim_generated)) +
-    ggplot2::geom_line(size = line_width) +
+    ggplot2::geom_line(linewidth = line_width) +
     ggplot2::labs(x = "Iteration", y = "Number of Items Generated (Cumulative)") +
     ggplot2::theme_bw()
 
