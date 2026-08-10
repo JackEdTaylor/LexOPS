@@ -41,21 +41,35 @@
 #' @export
 
 parse_levels <- function(var, levels = NA) {
-  var <- deparse(var) %>%
-    paste0(collapse = "") %>%
-    parse.unvectorise()
+  var <- parse.unvectorise(paste0(deparse(var), collapse = ""))
 
-  levels <- deparse(levels) %>%
-    paste0(collapse = "") %>%
-    strsplit("~", fixed = TRUE) %>%
-    .[[1]] %>%
-    gsub(" ", "", .)
+  levels <- paste0(deparse(levels), collapse = "")
+  levels <- strsplit(levels, "~", fixed = TRUE)[[1]]
+  levels <- gsub(" ", "", levels)
 
-  if ( all(grepl(":", levels)) | (any(grepl(":", levels)) & any(levels %in% c("NA", "NULL")) )) {
-    levels <- strsplit(levels, ":", fixed = TRUE) %>%
-      lapply( function(x) if ( length(x)==1 & any(x %in% c("NA", "NULL")) ) NA else as.numeric(x) )
+  # treat literal "NA" or "NULL" (from deparse) as actual NA
+  if (length(levels) == 1 && levels %in% c("NA", "NULL")) levels <- NA
+
+  if (all(grepl(":", levels)) || (any(grepl(":", levels)) && any(levels %in% c("NA", "NULL")))) {
+    levels <- strsplit(levels, ":", fixed = TRUE)
+    levels <- lapply(levels, function(x) {
+      if (length(x) == 1 && any(x %in% c("NA", "NULL"))) NA else as.numeric(x)
+    })
   } else {
-    levels <- lapply(levels, function(l) eval(parse(text = l)) )
+    # Attempt to evaluate each level; if it's a bare word (e.g. a), treat as string "a"
+    levels <- lapply(levels, function(l) {
+      l_trim <- gsub(" ", "", l)
+      # if it's explicitly quoted, evaluate as-is
+      if (grepl('^\".*\"$', l_trim) || grepl("^\'.*\'$", l_trim)) {
+        eval(parse(text = l_trim))
+      } else if (grepl("^[A-Za-z0-9_.-]+$", l_trim)) {
+        # bare word: return as string
+        l_trim
+      } else {
+        # fallback to evaluating the expression (e.g., c("a","b"))
+        eval(parse(text = l))
+      }
+    })
   }
 
   out <- if (all(is.na(levels))) {
@@ -86,40 +100,31 @@ parse_levels <- function(var, levels = NA) {
 #' @export
 
 parse_ellipsis <- function(...) {
-  deparse(...) %>%
-    paste0(collapse = "") %>%
-    lapply(parse.unvectorise) %>%
-    lapply(strsplit, "=", fixed = TRUE) %>%
-    .[[1]] %>%
-    lapply(function(x) {
-      # remove spaces
-      x <- x %>%
-        lapply(function(x_x) gsub(" ", "", x_x)) %>%
-        unlist()
-      # get var and (optionally) levels for this section
-      var <- x[1]
-      if (length(x == 2) & !is.na(x[2])) {
-        if (grepl(":", x[2])) {
-          levels <- strsplit(x[2], ":", fixed = TRUE) %>%
-            lapply(as.numeric) %>%
-            unlist()
-        } else {
-          levels <- lapply(x[2], function(l) eval(parse(text = l)) ) %>%
-            unlist()
-        }
-        c(var, levels)
+  s <- paste0(deparse(...), collapse = "")
+  vec <- parse.unvectorise(s)
+  parts <- lapply(vec, function(el) strsplit(el, "=", fixed = TRUE)[[1]])
+  lapply(parts, function(x) {
+    # remove spaces
+    x <- gsub(" ", "", x)
+    # get var and (optionally) levels for this section
+    var <- x[1]
+    if (length(x) == 2 && !is.na(x[2]) && nzchar(x[2])) {
+      if (grepl(":", x[2])) {
+        levels <- as.numeric(strsplit(x[2], ":", fixed = TRUE)[[1]])
       } else {
-        var
+        levels <- eval(parse(text = x[2]))
       }
-    })
+      c(var, levels)
+    } else {
+      var
+    }
+  })
 }
 
 parse.unvectorise <- function(vec_str) {
   if (grepl("^c\\(.+\\)$", vec_str)) {
-    vec_str %>%
-      gsub("^c\\(|\\)$", "", .) %>%
-      strsplit(", *") %>%
-      unlist()
+    inner <- gsub("^c\\(|\\)$", "", vec_str)
+    strsplit(inner, ", *")[[1]]
   } else {
     vec_str
   }
