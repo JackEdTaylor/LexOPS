@@ -292,8 +292,9 @@ var_to_source <- function(var, first_cite = TRUE, default = "", standard_eval = 
       out[is.na(out)] <- default
     }
   } else {
-    default
+    out <- default
   }
+  out
 }
 
 corpus_recode_name_source <- function(var) {
