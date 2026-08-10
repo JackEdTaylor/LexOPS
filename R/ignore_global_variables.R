@@ -1,10 +1,11 @@
 # function to load the lexops dataset if installed, or else give an error with installation instructions
 .lexops_data <- function() {
   if (!requireNamespace("lexopsdata", quietly = TRUE)) {
-    stop(
-      "To use the lexops dataset, please install the lexopsdata package: remotes::install_github(\"JackEdTaylor/lexopsdata\")",
-      call. = FALSE
+    warning(
+      "To use the lexops dataset, please install the lexopsdata package: remotes::install_github(\"JackEdTaylor/lexopsdata\")"
     )
+
+    return(data.frame())
   }
 
   lexopsdata::lexops
@@ -38,12 +39,6 @@
   utils::globalVariables("matchFilter")
   utils::globalVariables("is_stim")
   utils::globalVariables("control_for_euc_val")
-
-  # don't make the `lexops` active binding during roxygen2 documentation generation
-  calls <- sys.calls()
-  if (any(grepl("roxygenize|roxygen2", vapply(calls, function(x) paste(deparse(x), collapse = " "), character(1)), perl = TRUE))) {
-    return(invisible())
-  }
 
   # instead of lazyload, bind the `lexops` to the .lexops_data() function
   ns <- asNamespace(pkgname)
