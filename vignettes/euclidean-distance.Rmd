@@ -26,7 +26,7 @@ theme_set(theme_minimal())
 
 # Introduction
 
-Euclidean distance is the straight-line distance between two points in $n$-dimensional space. Between points $a$ and $b$, the Euclidean distance $d(a,b)$ is calculated as:
+Euclidean distance is the straight-line distance between two points in $n$-dimensional space. Between points $a$ and $b$, the Euclidean distance $d(a,b)$ is:
 
 $$d(a,b) = \sqrt{\sum_{i=1}^n(a_i - b_i)^2}$$
 
@@ -120,7 +120,7 @@ lexops_scaled |>
   labs(x = "Concreteness Distance", y = "Valence Distance")
 ```
 
-To visualise in more detail what is happening, Euclidean distance in 2-dimensional space is just Pythagoras' theorem:
+To help visualise this, Euclidean distance in 2-dimensional space is just Pythagoras' theorem:
 
 $$d(a,b) = \sqrt{(a_1-b_1)^2 + (a_2-b_2)^2}$$
 
