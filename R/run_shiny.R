@@ -41,9 +41,21 @@ run_shiny <- function(...) {
   if (any(unlist(shiny_deps_missing))) {
     deps_vec <- shiny_deps[shiny_deps_missing == TRUE]
     deps_vec_gh <- github_deps[github_deps_missing == TRUE]
-    deps_inst_cran <- sprintf("install.packages(c(%s))", paste(sprintf("\"%s\"", deps_vec), collapse=", "))
-    deps_inst_gh <- sprintf("remotes::install_github(c(%s))", paste(sprintf("\"%s\"", deps_vec_gh), collapse=", "))
-    deps_inst_str <- paste(deps_inst_cran, deps_inst_gh, sep="; ")
+
+    deps_inst_cran <- if (length(deps_vec)) {
+      sprintf("install.packages(c(%s))", paste(sprintf("\"%s\"", deps_vec), collapse=", "))
+    } else {
+      NULL
+    }
+
+    deps_inst_gh <- if (length(deps_vec_gh)) {
+      sprintf("remotes::install_github(c(%s))", paste(sprintf("\"%s\"", deps_vec_gh), collapse=", "))
+    } else {
+      NULL
+    }
+
+    deps_inst_str <- paste(c(deps_inst_cran, deps_inst_gh), collapse="; ")
+
     stop(sprintf("You are missing %s packages required by the LexOPS shiny app. Install them with:\n%s", length(deps_vec) + length(deps_vec_gh), deps_inst_str))
   }
   # run app
