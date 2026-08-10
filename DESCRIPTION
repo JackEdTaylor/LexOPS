@@ -7,7 +7,7 @@ Authors@R:
         person(given = "Jack",
                family = "Taylor",
                role = c("aut", "cre"),
-               email = "jack.taylor@glasgow.ac.uk",
+               email = "Taylor@psych.uni-frankfurt.de",
                comment = c(ORCID = "0000-0003-4765-0118")),
         person(given = "Alistair",
                family = "Beith",
