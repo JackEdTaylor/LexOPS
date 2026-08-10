@@ -32,4 +32,7 @@ export(var_to_url)
 importFrom(graphics,hist)
 importFrom(magrittr,"%>%")
 importFrom(rlang,":=")
-importFrom(stats,quantile)
+importFrom(stats,
+  quantile,
+  setNames
+)

@@ -46,6 +46,7 @@
 #'   generate(10)
 #'
 #' @export
+#' @importFrom stats setNames
 
 control_for_euc <- function(x, vars, tol, name = NA, scale = TRUE, center = TRUE, weights = NA, standardise_weights = TRUE, euc_df = NA, standard_eval = FALSE) {
 

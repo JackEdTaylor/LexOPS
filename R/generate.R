@@ -85,6 +85,7 @@
 #'  generate(20, match_null = "inclusive")
 #'
 #' @export
+#' @importFrom stats setNames
 
 generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE, is_shiny = FALSE) {
   if (is_shiny) {
