@@ -20,6 +20,7 @@ Returns \code{df}, with the options stored in the attributes.
 When the first function called in a generate pipeline, allows the user to set options that will be passed to all subsequent functions in the pipeline.
 }
 \examples{
+\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
 
 # give a df with "word" as the identifying column
 lexops |>
@@ -29,5 +30,5 @@ lexops |>
   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) |>
   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
   generate(n = 20)
-
+\dontshow{\}) # examplesIf}
 }

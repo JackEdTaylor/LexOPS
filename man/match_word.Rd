@@ -33,6 +33,7 @@ Returns data frame based on \code{df}. If \code{filter} == TRUE, will only conta
 The \code{match_word()} function has been replaced by \code{match_item()}. This wrapper for the function has been kept to support backwards compatibility to code written in older versions of LexOPS. This wrapper may be removed in the future, so please update your code to use \code{match_item()}.
 }
 \examples{
+\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
 
 # Match by number of syllables exactly
 lexops |>
@@ -84,7 +85,7 @@ targ_word_pronun <- lexops |>
 lexops |>
   mutate(pld = stringdist(targ_word_pronun, eSpeak.br_1letter, method="lv")) |>
   match_word(targ_word, pld = 0:2)
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link{lexops}} for the default data frame and associated variables.

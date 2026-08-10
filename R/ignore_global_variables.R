@@ -39,7 +39,13 @@
   utils::globalVariables("is_stim")
   utils::globalVariables("control_for_euc_val")
 
-# instead of lazyload, bind the `lexops` to the .lexops_data() function
+  # don't make the `lexops` active binding during roxygen2 documentation generation
+  calls <- sys.calls()
+  if (any(grepl("roxygenize|roxygen2", vapply(calls, function(x) paste(deparse(x), collapse = " "), character(1)), perl = TRUE))) {
+    return(invisible())
+  }
+
+  # instead of lazyload, bind the `lexops` to the .lexops_data() function
   ns <- asNamespace(pkgname)
   if (!exists("lexops", envir = ns, inherits = FALSE) || !bindingIsActive("lexops", ns)) {
     if (exists("lexops", envir = ns, inherits = FALSE) && !bindingIsActive("lexops", ns)) {

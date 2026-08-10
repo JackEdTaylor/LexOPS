@@ -33,6 +33,7 @@ Returns the generated stimuli.
 Generates the stimuli from the data frame after it has been passed through \code{split_by()}, and optionally, \code{control_for()}. Will generate \code{n} items per condition. If <\code{n} items can be generated, will generate as many as possible given the experiment's design. Can be reproducible with \code{seed} argument.
 }
 \examples{
+\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
 
 # Generate 20 words per condition, for design with 3 levels of syllables, controlled for frequency
 lexops |>
@@ -105,5 +106,5 @@ lexops |>
  control_for(Rhyme.eSpeak.br) |>
  control_for_map(stringdist, eSpeak.br_1letter, 0:2, method="lv") |>
  generate(20, match_null = "inclusive")
-
+\dontshow{\}) # examplesIf}
 }

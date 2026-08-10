@@ -33,6 +33,7 @@ Returns data frame based on \code{df}. If \code{filter} == TRUE, will only conta
 Suggests items that are suitable matches for a target item, based on selected variables of a data frame. Note that unlike functions in the generate pipeline (e.g. \code{control_for()}), multiple variables' tolerances can be defined in one function.
 }
 \examples{
+\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
 
 # Match by number of syllables exactly
 lexops |>
@@ -84,7 +85,7 @@ targ_word_pronun <- lexops |>
 lexops |>
   mutate(pld = stringdist(targ_word_pronun, eSpeak.br_1letter, method="lv")) |>
   match_item(targ_word, pld = 0:2)
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link{lexops}} for the default data frame and associated variables.

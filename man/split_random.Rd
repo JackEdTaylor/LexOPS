@@ -22,6 +22,7 @@ Returns \code{df}, with a new column (name defined by \code{cond_col} argument) 
 Adds a split to the data comparable to that made by \code{split_by()}, but split randomly through the data. All entries in \code{df} are assigned a level randomly.
 }
 \examples{
+\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
 
 # 2 (syllables: few, many) by 2 (random: level 1, level 2) design
 lexops |>
@@ -29,5 +30,5 @@ lexops |>
   split_random(nlevels = 2) |>
   control_for(Length) |>
   generate(n = 100)
-
+\dontshow{\}) # examplesIf}
 }

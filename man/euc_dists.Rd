@@ -40,6 +40,7 @@ Returns a vector of Euclidean distances, in the order of rows in \code{df}.
 Caclulates the Euclidean distance of a word from all other words in a df, on selected variables.
 }
 \examples{
+\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
 
 # Get the distance of every entry in the `lexops` dataset from the word "thicket".
 # (Note: This will be calculated using the dimensions of frequency, arousal, and size)
@@ -68,4 +69,5 @@ lexops |>
     c("Zipf.SUBTLEX_UK", "AROU.Warriner", "SIZE.Glasgow_Norms"),
     standard_eval = TRUE
   )
+\dontshow{\}) # examplesIf}
 }

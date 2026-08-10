@@ -43,6 +43,7 @@ Returns \code{df}, with details on the variables to be controlled for added to t
 This function is a wrapper for \code{\link{control_for_map}} that allows you to easily control for Euclidean distance.
 }
 \examples{
+\dontshow{if (requireNamespace("lexopsdata", quietly=TRUE)) withAutoprint(\{ # examplesIf}
 
 stim <- lexops |>
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
@@ -72,5 +73,5 @@ stim <- lexops |>
     euc_df = lexops
   ) |>
   generate(10)
-
+\dontshow{\}) # examplesIf}
 }

@@ -22,6 +22,7 @@ Returns \code{df}, with details on the variables to be controlled for added to t
 Specifies variables that should be controlled for in the generated stimuli, after splitting. Can be run multiple times to control for multiple variables.
 }
 \examples{
+\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
 
 # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables, and control for word frequency
 lexops |>
@@ -39,5 +40,5 @@ lexops |>
  split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) |>
  control_for("Zipf.SUBTLEX_UK", c(-0.2, 0.2), standard_eval = TRUE) |>
  control_for("PoS.SUBTLEX_UK", standard_eval = TRUE)
-
+\dontshow{\}) # examplesIf}
 }

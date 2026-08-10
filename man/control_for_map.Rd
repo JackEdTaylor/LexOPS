@@ -28,6 +28,7 @@ Returns \code{df}, with details on the variables to be controlled for added to t
 Some variables (e.g. similarity measures) are hard to control for with \code{\link{control_for}} as they need to be recalculated for each word relative to each other, rather than there being a single value for each possible stimulus. The \code{control_for_map} function declares a function that the \code{\link{generate}} function should apply to each match_null within an iteration of stimulus generation. The function given as \code{fun} should be able to take the data in the column given in \code{var} as the first argument, and should be able to take the match_null's value in that column as the second argument.
 }
 \examples{
+\dontshow{if (requireNamespace(c("lexopsdata", "stringdist"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
 
 # Create two levels of arousal, controlling for orthographic similarity
 # (as optimal string alignment; default for `stringdist()`)
@@ -54,5 +55,5 @@ library(stringdist)
 lexops |>
  split_by(AROU.Warriner, 1:3 ~ 7:9) |>
  control_for_map(stringdist, "eSpeak.br_1letter", c(0, 2), standard_eval=TRUE, method="lv")
-
+\dontshow{\}) # examplesIf}
 }

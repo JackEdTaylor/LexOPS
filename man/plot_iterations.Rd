@@ -18,6 +18,7 @@ A ggplot object showing how conditions differ in independent variables, and are 
 Plots iterations by number of items generated, when given a dataframe which has been passed through \code{generate()}.
 }
 \examples{
+\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
 
 stim <- lexops |>
   dplyr::filter(PK.Brysbaert >= .75) |>
@@ -27,5 +28,5 @@ stim <- lexops |>
   control_for(Length) |>
   generate(n = 50, match_null = "balanced")
 plot_iterations(stim)
-
+\dontshow{\}) # examplesIf}
 }

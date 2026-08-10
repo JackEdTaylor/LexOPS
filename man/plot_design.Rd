@@ -36,6 +36,7 @@ A ggplot object showing how conditions differ in independent variables, and are 
 Takes the output from \code{generate()} or \code{long_format()}, and plots conditions' distributions on numeric variables used in the generate pipeline (i.e. indepdent variables, controls). Alternatively, distributions of any numeric variables in the original dataframe can be queried.
 }
 \examples{
+\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
 
 stim <- lexops |>
   dplyr::filter(PK.Brysbaert >= .75) |>
@@ -45,5 +46,5 @@ stim <- lexops |>
   control_for(Length) |>
   generate(n = 50, match_null = "balanced")
 plot_design(stim)
-
+\dontshow{\}) # examplesIf}
 }

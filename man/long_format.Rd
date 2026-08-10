@@ -20,11 +20,12 @@ Returns the generated stimuli, but converted into long format, containing reques
 Converts the generated stimuli from the \code{generate()} function into long format.
 }
 \examples{
+\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
 
 lexops |>
   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) |>
   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
   generate(n = 20) |>
   long_format(include = "all")
-
+\dontshow{\}) # examplesIf}
 }

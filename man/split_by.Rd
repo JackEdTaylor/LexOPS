@@ -24,6 +24,7 @@ Returns \code{df}, with a new column (name defined by \code{cond_col} argument o
 Specifies splits for one IV for a factorial design. Can be called multiple times for multiple splits.
 }
 \examples{
+\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
 
 # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables
 lexops |>
@@ -50,7 +51,7 @@ lexops |>
 lexops |>
   split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) |>
   split_by("PoS.SUBTLEX_UK", list(c("noun", "name"), "verb"), standard_eval = TRUE)
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link{lexops}} for the default data frame and associated variables.
