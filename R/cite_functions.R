@@ -32,7 +32,7 @@ cite_design <- function(df, include = "design") {
   cat(sprintf("Please also cite LexOPS: Taylor, Beith and Sereno (2020), http://doi.org/10.3758/s13428-020-01389-1\n"))
 
   # get vector of splits (IVs)
-  splits <- sapply(LexOPS_attrs$splits, dplyr::first)
+  splits <- sapply(LexOPS_attrs$splits, function(x) x[[1]])
 
   # remove random splits
   if (!is.null(LexOPS_attrs$random_splits)) {
@@ -40,7 +40,7 @@ cite_design <- function(df, include = "design") {
   }
 
   # get vector of control variables
-  controls <- c( sapply(LexOPS_attrs$controls, dplyr::first), sapply(LexOPS_attrs$control_functions, dplyr::first) )
+  controls <- c( sapply(LexOPS_attrs$controls, function(x) x[[1]]), sapply(LexOPS_attrs$control_functions, function(x) x[[1]]) )
 
   # factor vector of variables to plot
   cite_vars <- if (all(include == "design")) {
@@ -78,16 +78,16 @@ citation_table <- function(cite_vars) {
   # remove string from cite_vars if present
   cite_vars <- cite_vars[cite_vars != "string"]
   # create tibble containing citation info
-  dplyr::tibble(
+  df <- data.frame(
     var = cite_vars,
     measure = sapply(cite_vars, LexOPS::var_to_measure, first_cite = TRUE, title_caps = TRUE, default = "Custom Measure", standard_eval = TRUE),
     source = sapply(cite_vars, LexOPS::var_to_source, first_cite = TRUE, default = "Custom Source", standard_eval = TRUE),
-    url = sapply(cite_vars, LexOPS::var_to_url, default = "Unknown", standard_eval = TRUE)
-  ) |>
-    dplyr::mutate(
-      source = ifelse(var=="Length", NA, source),
-      url = ifelse(var=="Length", NA, url)
-    )
+    url = sapply(cite_vars, LexOPS::var_to_url, default = "Unknown", standard_eval = TRUE),
+    stringsAsFactors = FALSE
+  )
+  df$source[df$var == "Length"] <- NA
+  df$url[df$var == "Length"] <- NA
+  df
 }
 
 #' Convert a variable name to its measure
@@ -118,8 +118,7 @@ var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FA
   var_name <- var_to_measure_name(var, include_pronunciations)
   if (!is.null(var_name) & !is.na(var_name)) {
     if (first_cite) {
-      out <- dplyr::recode(
-        var_name,
+      map <- c(
         ".1letter" = "1-letter (ARPABET) Representations",
         ".PrN" = "Number of Pronunciations",
         ".br_IPA" = "International Phonetic Alphabet (IPA) Representations of Words' British Pronunciations",
@@ -152,12 +151,12 @@ var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FA
         "RT." = "Lexical Decision Response Time (RT)",
         "Accuracy." = "Lexical Decision Accuracy",
         "PREV." = "Word Prevalence",
-        "PK." = "Proportion Known",
-        .default = default
+        "PK." = "Proportion Known"
       )
+      out <- map[var_name]
+      out[is.na(out)] <- default
     } else {
-      out <- dplyr::recode(
-        var_name,
+      map <- c(
         ".1letter" = "1-letter (ARPABET) Representations",
         ".PrN" = "Number of Pronunciations",
         ".br_IPA" = "IPA Representations of Words' British Pronunciations",
@@ -190,9 +189,10 @@ var_to_measure <- function(var, first_cite = TRUE, default = "", title_caps = FA
         "RT." = "Lexical Decision RT",
         "Accuracy." = "Lexical Decision Accuracy",
         "PREV." = "Word Prevalence",
-        "PK." = "Proportion Known",
-        .default = default
+        "PK." = "Proportion Known"
       )
+      out <- map[var_name]
+      out[is.na(out)] <- default
     }
   } else {
     return(default)
@@ -245,8 +245,7 @@ var_to_source <- function(var, first_cite = TRUE, default = "", standard_eval = 
   var_name <- corpus_recode_name_source(var)
   if (!is.null(var_name) & !is.na(var_name)) {
     if (first_cite) {
-      dplyr::recode(
-        var_name,
+      map <- c(
         "BNC.All" = 'all sources of the British National Corpus (BNC; "The British National Corpus, version 3 (BNC XML Edition)," 2007)',
         "BNC.Written" = 'written sources of the British National Corpus (BNC; "The British National Corpus, version 3 (BNC XML Edition)," 2007)',
         "BNC.Spoken" = 'spoken sources of the British National Corpus (BNC; "The British National Corpus, version 3 (BNC XML Edition)," 2007)',
@@ -264,12 +263,12 @@ var_to_source <- function(var, first_cite = TRUE, default = "", standard_eval = 
         "PREV.Brysbaert" = "Brysbaert, Mandera, McCormick, and Keuleers (2019)",
         "PK.Brysbaert" = "Brysbaert, Mandera, McCormick, and Keuleers (2019)",
         "ELP" = "the English Lexicon Project (ELP; Balota et al., 2007)",
-        "BLP" = "the British Lexicon Project (BLP; Keuleers, Lacey, Rastle, & Brysbaert, 2012)",
-        .default = default
+        "BLP" = "the British Lexicon Project (BLP; Keuleers, Lacey, Rastle, & Brysbaert, 2012)"
       )
+      out <- map[var_name]
+      out[is.na(out)] <- default
     } else {
-      dplyr::recode(
-        var_name,
+      map <- c(
         "BNC.All" = "all BNC texts",
         "BNC.Written" = "written sources of the BNC",
         "BNC.Spoken" = "spoken sources of the BNC",
@@ -287,9 +286,10 @@ var_to_source <- function(var, first_cite = TRUE, default = "", standard_eval = 
         "PREV.Brysbaert" = "Brysbaert et al. (2018)",
         "PK.Brysbaert" = "Brysbaert et al. (2018)",
         "ELP" = "the ELP (Balota et al., 2007)",
-        "BLP" = "the BLP (Keuleers et al., 2012)",
-        .default = default
+        "BLP" = "the BLP (Keuleers et al., 2012)"
       )
+      out <- map[var_name]
+      out[is.na(out)] <- default
     }
   } else {
     default
@@ -329,8 +329,7 @@ var_to_url <- function(var, default = "", standard_eval = FALSE) {
   if (!standard_eval) var <- substitute(var)
   var_name <- corpus_recode_name_source(var)
   if (!is.null(var_name) & !is.na(var_name)) {
-    dplyr::recode(
-      var_name,
+    map <- c(
       "BNC.All" = "http://www.natcorp.ox.ac.uk/",
       "BNC.Written" = "http://www.natcorp.ox.ac.uk/",
       "BNC.Spoken" = "http://www.natcorp.ox.ac.uk/",
@@ -348,9 +347,11 @@ var_to_url <- function(var, default = "", standard_eval = FALSE) {
       "PREV.Brysbaert" = "https://doi.org/10.3758/s13428-018-1077-9",
       "PK.Brysbaert" = "https://doi.org/10.3758/s13428-018-1077-9",
       "ELP" = "https://doi.org/10.3758/BF03193014",
-      "BLP" = "https://doi.org/10.3758/s13428-011-0118-4",
-      .default = default
+      "BLP" = "https://doi.org/10.3758/s13428-011-0118-4"
     )
+    out <- map[var_name]
+    out[is.na(out)] <- default
+    out
   } else {
     default
   }

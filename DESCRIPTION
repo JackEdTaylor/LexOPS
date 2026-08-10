@@ -20,18 +20,18 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
 Imports:
-    magrittr,
-    dplyr,
-    purrr,
     rlang,
     ggplot2,
-    tidyr,
-    tibble,
-    stringr,
     stats,
-    scales
+    scales,
+    magrittr
 Suggests:
     lexopsdata,
+    stringr,
+    tidyr,
+    tibble,
+    dplyr,
+    purrr,
     knitr,
     rmarkdown,
     testthat (>= 2.1.0),

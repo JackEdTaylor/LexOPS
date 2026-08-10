@@ -30,40 +30,39 @@ format.LexOPS_pipeline <- function(x, ...) {
 
   splits_txt <- sapply(lp_info$splits, function(x) {
     name <- x[[1]]
-    levels <- x[2:length(x)] %>%
-      sapply(paste, collapse=":") %>%
-      paste(collapse = " ~ ")
+    levels <- sapply(x[2:length(x)], paste, collapse = ":")
+    levels <- paste(levels, collapse = " ~ ")
     paste(name, levels, sep = ", ")
-  }) %>%
-    sprintf("  %s", .) %>%
-    paste(collapse = "\n") %>%
-    sprintf("%g Splits:\n%s", Ns$splits, .)
+  })
+  splits_txt <- sprintf("  %s", splits_txt)
+  splits_txt <- paste(splits_txt, collapse = "\n")
+  splits_txt <- sprintf("%g Splits:\n%s", Ns$splits, splits_txt)
 
   controls_txt <- sapply(lp_info$controls, function(x) {
     name <- x[[1]]
-    if (length(x)>1) {
-      tol <- paste(x[[2]], collapse=":")
+    if (length(x) > 1) {
+      tol <- paste(x[[2]], collapse = ":")
       paste(name, tol, sep = ", ")
     } else {
       name
     }
-  }) %>%
-    sprintf("  %s", .) %>%
-    paste(collapse = "\n") %>%
-    sprintf("%g Controls:\n%s", Ns$controls, .)
+  })
+  controls_txt <- sprintf("  %s", controls_txt)
+  controls_txt <- paste(controls_txt, collapse = "\n")
+  controls_txt <- sprintf("%g Controls:\n%s", Ns$controls, controls_txt)
 
   control_funs_txt <- sapply(lp_info$control_functions, function(x) {
     name <- x[[1]]
     fun_var <- x[[3]]
-    fun_tol <- paste(x[[4]], collapse=":")
-    paste(c(name, fun_var, fun_tol), collapse=", ")
-  }) %>%
-    sprintf("  %s", .) %>%
-    paste(collapse = "\n") %>%
-    sprintf("%g Control functions:\n%s", Ns$control_functions, .)
+    fun_tol <- paste(x[[4]], collapse = ":")
+    paste(c(name, fun_var, fun_tol), collapse = ", ")
+  })
+  control_funs_txt <- sprintf("  %s", control_funs_txt)
+  control_funs_txt <- paste(control_funs_txt, collapse = "\n")
+  control_funs_txt <- sprintf("%g Control functions:\n%s", Ns$control_functions, control_funs_txt)
 
-  c(factorial_summ, splits_txt, controls_txt, control_funs_txt) %>%
-    paste(collapse = "\n\n")
+  out <- c(factorial_summ, splits_txt, controls_txt, control_funs_txt)
+  paste(out, collapse = "\n\n")
 }
 
 #' Check whether an object is of class LexOPS_pipeline

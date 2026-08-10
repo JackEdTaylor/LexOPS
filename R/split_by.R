@@ -107,13 +107,14 @@ split_by <- function(x, var, levels, filter = TRUE, standard_eval = FALSE){
   }
 
   # Get next column name and split prefix
-  current_splits <- names(df)[stringr::str_which(names(df), paste0("^", cond_col, "_[:upper:]$"))]
+  current_splits <- names(df)[grepl(cond_col_regex, names(df))]
 
   if (length(current_splits) == 0) {
-    prefix <-  "A"
+    prefix <- "A"
   } else {
-    current_prefix <- stringr::str_extract(current_splits, sprintf("(?<=^%s_)[:upper:]", cond_col))
-    prefix <- dplyr::first(LETTERS[LETTERS != current_prefix])
+    # extract prefix letter(s) after cond_col_
+    current_prefix <- sub(paste0("^", cond_col, "_"), "", current_splits)
+    prefix <- setdiff(LETTERS, unique(current_prefix))[1]
   }
 
   new_column <- paste(cond_col, prefix, sep = "_")
@@ -184,14 +185,14 @@ split_by.factor <- function(df, column, breaks, new_column, prefix, filter){
     stop("not all breaks are existing factors")
   }
 
-  df_filter <- tibble::tibble(!!column := breaks,
-                              !!new_column := paste0(prefix, 1:length(breaks)))
+  df_filter <- data.frame(value = breaks, stringsAsFactors = FALSE)
+  names(df_filter) <- column
+  df_filter[[new_column]] <- paste0(prefix, seq_along(breaks))
 
-  if(filter){
-    df <- dplyr::inner_join(df, df_filter, by = column)
-  }else{
-    df <- dplyr::left_join(df, df_filter, by = column)
-  }
+  # merge without reordering rows: use match
+  map_idx <- match(df[[column]], df_filter[[column]])
+  df[[new_column]] <- df_filter[[new_column]][map_idx]
+  if (filter) df <- df[!is.na(df[[new_column]]), , drop = FALSE]
 
   df[[new_column]] <- as.factor(df[[new_column]])
 
@@ -210,19 +211,15 @@ split_by.factor_group <- function(df, column, breaks, new_column, prefix, filter
 
   breaks_base <- paste0(prefix, 1:length(breaks))
 
-  breaks_IDs <- lapply(1:length(breaks), function(i) {
-      paste(breaks_base[i], letters[1:breaks_lengths[i]], sep="_")
-  }) %>%
-    unlist()
+  breaks_IDs <- unlist(lapply(1:length(breaks), function(i) paste(breaks_base[i], letters[1:breaks_lengths[i]], sep = "_")))
 
-  df_filter <- tibble::tibble(!!column := unlist(breaks),
-                              !!new_column := breaks_IDs)
+  df_filter <- data.frame(value = unlist(breaks), stringsAsFactors = FALSE)
+  names(df_filter) <- column
+  df_filter[[new_column]] <- breaks_IDs
 
-  if(filter){
-    df <- dplyr::inner_join(df, df_filter, by = column)
-  }else{
-    df <- dplyr::left_join(df, df_filter, by = column)
-  }
+  map_idx <- match(df[[column]], df_filter[[column]])
+  df[[new_column]] <- df_filter[[new_column]][map_idx]
+  if (filter) df <- df[!is.na(df[[new_column]]), , drop = FALSE]
 
   # remove the last section of the new_column, which will be _a, _b, _c, etc.
   # note that \K is a special escape for PERL
@@ -252,7 +249,9 @@ check_overlapping <- function(x){
   lower_bounds_s <- sort(lower_bounds)
   upper_bounds_s <- upper_bounds[order(lower_bounds)]
 
-  check_intervals <- all(upper_bounds_s < dplyr::lead(lower_bounds_s, n=1), na.rm=TRUE)
+  # compare each upper bound to the next lower bound; treat last comparison as TRUE
+  next_lower <- c(lower_bounds_s[-1], Inf)
+  check_intervals <- all(upper_bounds_s < next_lower)
 
   if(!check_intervals) stop("overlapping levels - ensure that no value could fall into multiple levels")
 }

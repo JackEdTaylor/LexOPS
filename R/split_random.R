@@ -57,13 +57,13 @@ split_random <- function(x, nlevels = 2, seed = NA, equal_size = FALSE){
   }
 
   # Get next column name and split prefix
-  current_splits <- names(df)[stringr::str_which(names(df), paste0("^", cond_col, "_[:upper:]$"))]
+  current_splits <- grep(paste0("^", cond_col, "_[A-Z]$"), names(df), value = TRUE)
 
   if (length(current_splits) == 0) {
-    prefix <-  "A"
+    prefix <- "A"
   } else {
-    current_prefix <- stringr::str_extract(current_splits, sprintf("(?<=^%s_)[:upper:]", cond_col))
-    prefix <- dplyr::first(LETTERS[LETTERS != current_prefix])
+    current_prefix <- sub(paste0("^", cond_col, "_"), "", current_splits)
+    prefix <- setdiff(LETTERS, current_prefix)[1]
   }
 
   new_column <- paste(cond_col, prefix, sep = "_")

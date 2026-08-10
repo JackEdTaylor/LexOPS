@@ -91,28 +91,26 @@ control_for_euc <- function(x, vars, tol, name = NA, scale = TRUE, center = TRUE
   if (all(is.na(euc_df))) euc_df <- df
 
   control_for_euc.calc_euc <- function(matches, target, ed_vars = control[[1]], scale_ = scale, center_ = center, weights_ = weights, standardise_weights_ = standardise_weights, euc_df_ = euc_df, id_col_ = id_col) {
-    if (!target %in% dplyr::pull(euc_df_, !!dplyr::sym(id_col_))) return(NA)
+    if (!target %in% euc_df_[[id_col_]]) return(NA)
     # get all euclidean distances
-    df_ed <- dplyr::mutate(
-      dplyr::select(euc_df_, !!dplyr::sym(id_col_)),
-      control_for_euc_val = LexOPS::euc_dists(
-        df = dplyr::select(euc_df_, !!dplyr::sym(id_col_), dplyr::all_of(ed_vars)),
-        target = target,
-        vars = ed_vars,
-        scale = scale_,
-        center = center_,
-        weights = weights_,
-        standardise_weights = standardise_weights_,
-        id_col = id_col_,
-        standard_eval = TRUE
-      )
+    df_ids <- euc_df_[[id_col_]]
+    df_vals <- LexOPS::euc_dists(
+      df = euc_df_[, c(id_col_, ed_vars), drop = FALSE],
+      target = target,
+      vars = ed_vars,
+      scale = scale_,
+      center = center_,
+      weights = weights_,
+      standardise_weights = standardise_weights_,
+      id_col = id_col_,
+      standard_eval = TRUE
     )
-    # return result
-    out_df <- data.frame(matches, stringsAsFactors = FALSE) %>%
-      magrittr::set_colnames(id_col_) %>%
-      dplyr::left_join(df_ed, by = id_col_) %>%
-      dplyr::pull(control_for_euc_val) %>%
-      as.numeric()
+    df_ed <- setNames(data.frame(df_ids, stringsAsFactors = FALSE), id_col_)
+    df_ed$control_for_euc_val <- as.numeric(df_vals)
+    # return result matched to 'matches'
+    matches_df <- setNames(data.frame(matches, stringsAsFactors = FALSE), id_col_)
+    merged <- merge(matches_df, df_ed, by = id_col_, all.x = TRUE, sort = FALSE)
+    as.numeric(merged$control_for_euc_val)
   }
 
   # make a LexOPS pipeline object

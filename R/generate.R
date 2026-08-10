@@ -131,11 +131,18 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
   # get the columns containing the split data
   LexOPS_splitCols <- colnames(df)[grepl(cond_col_regex, colnames(df))]
 
-  df <- df %>%
-    # create new column, which will give the cell of the design that each string belongs to
-    tidyr::unite(!!dplyr::sym(cond_col), dplyr::all_of(LexOPS_splitCols), sep = "_") %>%
-    # remove strings that are members of no condition (i.e. if filter=FALSE in previous functions)
-    dplyr::filter(!is.na(!!dplyr::sym(cond_col)))
+  # create new column which gives the cell of the design that each string belongs to
+  # mimic tidyr::unite(na.rm = FALSE) behaviour: if any component is NA, result is NA
+  if (length(LexOPS_splitCols) > 0) {
+    df[[cond_col]] <- apply(df[LexOPS_splitCols], 1, function(row) {
+      if (any(is.na(row))) return(NA_character_)
+      paste(as.character(row), collapse = "_")
+    })
+  } else {
+    df[[cond_col]] <- NA_character_
+  }
+  # remove strings that are members of no condition
+  df <- df[!is.na(df[[cond_col]]), , drop = FALSE]
 
   all_conds <- sort(unique(df[[cond_col]]))
 
@@ -149,11 +156,9 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
   if (!is.null(lp_info$controls) | !is.null(lp_info$control_functions)) {
 
     # get the absolute smallest number of possible match rows (a count of the least frequent condition)
-    min_nr_of_match_rows <- df %>%
-      dplyr::group_by(!!dplyr::sym(cond_col)) %>%
-      dplyr::count() %>%
-      dplyr::pull(n) %>%
-      min()
+    # count rows per condition and take minimum
+    cond_table <- table(df[[cond_col]])
+    min_nr_of_match_rows <- min(as.integer(cond_table))
     # if n is "all", set to the largest possible number of match rows
     if (n == "all") {
       n <- min_nr_of_match_rows
@@ -184,16 +189,13 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
       if (n_all) warning('`match_null="balanced"` may not work when `n="all"`. Check distributions of match_null in the output.')
       # As close to equal number of each condition as possible, randomly ordered.
       # If doesn't perfectly divide, the condition(s) which are over-represented are also randomly chosen.
-      all_conds %>%
-        sample(length(all_conds)) %>%
-        rep_len(null_cond_n) %>%
-        sample(null_cond_n)
+      # permute conditions, repeat to length and resample to randomise order
+      perm <- sample(all_conds, length(all_conds))
+      rep_len(perm, null_cond_n)[sample(null_cond_n)]
     } else if (match_null == "inclusive") {
       # same as balanced for starting match null
-      all_conds %>%
-        sample(length(all_conds)) %>%
-        rep_len(null_cond_n) %>%
-        sample(null_cond_n)
+      perm <- sample(all_conds, length(all_conds))
+      rep_len(perm, null_cond_n)[sample(null_cond_n)]
     } else if (match_null %in% all_conds) {
       rep(match_null, null_cond_n)
     }
@@ -206,7 +208,7 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
     out <- matrix(ncol=length(all_conds)+1, nrow=n)
     printing_points <- round(seq(0, n, n/20))
     successful_iterations <- c()
-    control_for_map_values <- dplyr::tibble()
+    control_for_map_values <- NULL
 
     while(n_generated < n) {
       n_tried <- n_tried + 1
@@ -233,21 +235,23 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
       words_tried_this_generated <- c(words_tried_this_generated, this_word)
 
       matches <- sapply(all_conds[all_conds != this_match_null], function(cnd) {
-        m <- df[(!df[[id_col]] %in% out & df[[cond_col]] == cnd) | df[[id_col]]==this_word, ] %>%
-          generate.find_matches(
-            target = this_word,
-            vars = lp_info$controls,
-            matchCond = this_match_null,
-            id_col = id_col,
-            cond_col = cond_col
-          ) %>%
-          generate.find_fun_matches(
-            target = this_word,
-            vars_pre_calc = lp_info$control_functions,
-            matchCond = this_match_null,
-            id_col = id_col,
-            cond_col = cond_col
-          )
+        m_df <- df[(!df[[id_col]] %in% out & df[[cond_col]] == cnd) | df[[id_col]]==this_word, ]
+        m <- generate.find_matches(
+          m_df,
+          target = this_word,
+          vars = lp_info$controls,
+          matchCond = this_match_null,
+          id_col = id_col,
+          cond_col = cond_col
+        )
+        m <- generate.find_fun_matches(
+          m,
+          target = this_word,
+          vars_pre_calc = lp_info$control_functions,
+          matchCond = this_match_null,
+          id_col = id_col,
+          cond_col = cond_col
+        )
         # remove the target word
         m <- m[m[[id_col]]!=this_word, ]
 
@@ -255,9 +259,7 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
           item_out <- NA
           } else {
             # pick a match randomly
-            item_out <- m %>%
-              dplyr::pull(id_col) %>%
-              sample(1)
+            item_out <- sample(m[[id_col]], 1)
             # store any control_for_map values
             if (length(lp_info$control_functions) > 0) {
               out_cont_map_val <- sapply(lp_info$control_functions, function(cont) {
@@ -270,19 +272,19 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
               names(out_cont_map_val) <- sapply(lp_info$control_functions, function(cont) cont[[1]] )
               out_val <- item_out
               names(out_val) <- id_col
-              control_for_map_values <<- dplyr::bind_rows(control_for_map_values, c(out_val, out_cont_map_val))
-
-              if (!this_word %in% control_for_map_values[[id_col]]) {
+              newrow <- as.data.frame(as.list(c(out_val, out_cont_map_val)), stringsAsFactors = FALSE)
+              if (is.null(control_for_map_values)) control_for_map_values <<- newrow else control_for_map_values <<- rbind(control_for_map_values, newrow)
+              # ensure this_word row exists in control_for_map_values
+              if (is.null(control_for_map_values) || !(this_word %in% control_for_map_values[[id_col]])) {
                 this_word_map_val <- sapply(lp_info$control_functions, function(cont) {
-                  # get the representation in the given column
                   this_word_rep <- df[[ cont[[3]] ]][df[[id_col]]==this_word]
-                  # get the value from the function
                   unname(cont[[2]](this_word, this_word))
                 })
                 names(this_word_map_val) <- sapply(lp_info$control_functions, function(cont) cont[[1]] )
                 this_word_val <- this_word
                 names(this_word_val) <- id_col
-                control_for_map_values <<- dplyr::bind_rows(control_for_map_values, c(this_word_val, this_word_map_val))
+                newrow2 <- as.data.frame(as.list(c(this_word_val, this_word_map_val)), stringsAsFactors = FALSE)
+                if (is.null(control_for_map_values)) control_for_map_values <<- newrow2 else control_for_map_values <<- rbind(control_for_map_values, newrow2)
               }
 
             }
@@ -336,17 +338,22 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
     # create meta_df
     meta_df <- df
 
-    # add control_for_map() values if any
-    if (length(lp_info$control_functions) > 0) {
-      meta_df <- dplyr::left_join(meta_df, control_for_map_values, by=id_col)
+    # add control_for_map() values if any (merge preserving order)
+    if (length(lp_info$control_functions) > 0 & !is.null(control_for_map_values)) {
+      meta_df <- merge(meta_df, control_for_map_values, by = id_col, all.x = TRUE, sort = FALSE)
     }
 
     df <- as.data.frame(out, stringsAsFactors = FALSE)
     colnames(df) <- c(all_conds, "match_null")
-    df <- df %>%
-      tidyr::drop_na(-match_null) %>%  # na.omit() but allowing NAs in match_null column
-      dplyr::mutate(item_nr = dplyr::row_number()) %>%  # add the item number as item_nr
-      dplyr::select(item_nr, dplyr::everything())
+    # drop rows with NA in any of the condition columns (allow NA in match_null)
+    cols_check <- setdiff(colnames(df), "match_null")
+    if (nrow(df) > 0) {
+      keep_rows <- apply(df[, cols_check, drop = FALSE], 1, function(r) all(!is.na(r)))
+      df <- df[keep_rows, , drop = FALSE]
+    }
+    # add the item number as item_nr and put it first
+    df$item_nr <- seq_len(nrow(df))
+    df <- df[c("item_nr", setdiff(names(df), "item_nr"))]
     # add the original df to the attributes
     lp_info$meta_df <- meta_df
     # add the success rate to the attributes
@@ -404,7 +411,9 @@ generate.filter_tol <- function(df_matches, vars) {
   # generate the expression
   filter_char <- sapply(vars, function(tol) {
     if(is.numeric(df_matches[[tol[[1]]]]) & length(tol)>=3) {
-      sprintf("dplyr::between(`%s`, %s, %s)", tol[[1]], tol[[3]]+tol[[2]][1], tol[[3]]+tol[[2]][2])
+      left <- tol[[3]] + tol[[2]][1]
+      right <- tol[[3]] + tol[[2]][2]
+      sprintf("(`%s` >= %s & `%s` <= %s)", tol[[1]], left, tol[[1]], right)
     } else {
       if (is.numeric(df_matches[[tol[[1]]]])) {
         sprintf("`%s`==%s", tol[[1]], tol[[2]])
@@ -412,10 +421,12 @@ generate.filter_tol <- function(df_matches, vars) {
         sprintf("`%s`==\"%s\"", tol[[1]], tol[[2]])
       }
     }
-  }) %>%
-    paste(collapse = " & ")
-  # filter the dataframe on the generated expression
-  dplyr::filter(df_matches, eval(parse(text = filter_char)))
+  })
+  filter_char <- paste(filter_char, collapse = " & ")
+  # filter the dataframe on the generated expression (evaluate in df_matches environment)
+  keep <- with(df_matches, eval(parse(text = filter_char)))
+  keep[is.na(keep)] <- FALSE  # any that evaluate to NA should also be excluded
+  df_matches[keep, , drop = FALSE]
 }
 
 # function to find matches for a particular word (better than current match_word() function?)
@@ -462,8 +473,7 @@ generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, mat
   if (all(unlist(are_inclusive))) {
     matches
   } else {
-    rep(NA, length(matches)) %>%
-      magrittr::set_names(names(matches))
+    setNames(rep(NA, length(matches)), names(matches))
   }
 }
 

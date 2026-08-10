@@ -122,24 +122,23 @@ match_item <- function(df = LexOPS::lexops, target, ..., id_col = "string", filt
   if (!target %in% df[[id_col]]) stop(sprintf("'%s' not found in '%s' column of df", target, id_col))
 
   # get the euclidean distance, and add as a new column, 2nd after the id_col column; all NA if no numeric variables
-  vars_sans_tols <- sapply(vars, dplyr::first, USE.NAMES = FALSE)
-  numeric_vars <- vars_sans_tols[sapply(df[, vars_sans_tols], is.numeric)]
-  df <- if (length(numeric_vars)>0) {
-    dplyr::mutate(df, euclidean_distance = LexOPS::euc_dists(df, target = target, vars = numeric_vars, id_col = id_col, standard_eval = TRUE))
+  vars_sans_tols <- sapply(vars, function(x) x[[1]], USE.NAMES = FALSE)
+  numeric_vars <- vars_sans_tols[sapply(df[, vars_sans_tols, drop = FALSE], is.numeric)]
+  if (length(numeric_vars) > 0) {
+    df$euclidean_distance <- LexOPS::euc_dists(df, target = target, vars = numeric_vars, id_col = id_col, standard_eval = TRUE)
   } else {
-    dplyr::mutate(df, euclidean_distance = NA)
+    df$euclidean_distance <- NA
   }
-
-  df <- df %>%
-    dplyr::arrange(euclidean_distance) %>%
-    dplyr::select(!!(dplyr::sym(id_col)), euclidean_distance, dplyr::everything())
+  # reorder rows by euclidean_distance and move id_col and euclidean_distance to front
+  df <- df[order(df$euclidean_distance), , drop = FALSE]
+  cols_order <- c(id_col, "euclidean_distance", setdiff(names(df), c(id_col, "euclidean_distance")))
+  df <- df[, cols_order, drop = FALSE]
 
   # get the numeric and character tolerances relative to the target word
   numFilt <- lapply(vars, function(listObj) {
     if (is.numeric(df[[listObj[1]]])) {
       out <- listObj
-      match_string_val <- dplyr::filter(df, !!dplyr::sym(id_col) == target) %>%
-        dplyr::pull(!!dplyr::sym(listObj[[1]]))
+      match_string_val <- df[[ listObj[[1]] ]][df[[id_col]] == target]
       if (length(listObj) == 3) {
         out[2:3] <- as.numeric(out[2:3]) + match_string_val
       } else if (length(listObj) == 1) {
@@ -153,9 +152,7 @@ match_item <- function(df = LexOPS::lexops, target, ..., id_col = "string", filt
   charFilt <- lapply(vars, function(listObj) {
     if (!is.numeric(df[[listObj[1]]])) {
       out <- listObj
-      out[2] <- dplyr::filter(df, !!dplyr::sym(id_col) == target) %>%
-        dplyr::pull(!!dplyr::sym(listObj[[1]])) %>%
-        as.character()
+      out[2] <- as.character(df[[ listObj[[1]] ]][df[[id_col]] == target])
       return(out)
     }
   })
@@ -164,24 +161,32 @@ match_item <- function(df = LexOPS::lexops, target, ..., id_col = "string", filt
   # filter out words that don't fit the filters
   if (length(numFilt) > 0) {
 
-    numFilt_string <- numFilt %>%
-      lapply(function(filt) sprintf("dplyr::between(%s, %f, %f)", filt[1], as.numeric(filt[2]), as.numeric(filt[3]))) %>%
-      paste0(collapse = " & ")
-
-    numOut <- dplyr::filter(df, !!rlang::parse_expr(numFilt_string))
+    # build numeric mask
+    num_mask <- rep(TRUE, nrow(df))
+    for (filt in numFilt) {
+      varname <- filt[[1]]
+      lower <- as.numeric(filt[[2]])
+      upper <- as.numeric(filt[[3]])
+      num_mask <- num_mask & (df[[varname]] >= lower & df[[varname]] <= upper)
+    }
+    numOut <- df[num_mask, , drop = FALSE]
   }
   if (length(charFilt) > 0) {
-
-    charFilt_string <- charFilt %>%
-      lapply(function(filt) sprintf("%s == \"%s\"", as.character(filt[1]), as.character(filt[2]))) %>%
-      paste0(collapse = " & ")
-
-    charOut <- dplyr::filter(df, !!rlang::parse_expr(charFilt_string))
+    # build character mask
+    char_mask <- rep(TRUE, nrow(df))
+    for (filt in charFilt) {
+      varname <- as.character(filt[1])
+      val <- as.character(filt[2])
+      char_mask <- char_mask & (as.character(df[[varname]]) == val)
+    }
+    charOut <- df[char_mask, , drop = FALSE]
   }
 
   # return the result
   if (length(numFilt) > 0 & length(charFilt) > 0) {
-    out <- dplyr::inner_join(charOut, numOut, by = colnames(charOut))
+    # intersection of both masks
+    both_mask <- (rownames(df) %in% rownames(numOut)) & (rownames(df) %in% rownames(charOut))
+    out <- df[both_mask, , drop = FALSE]
   } else if (length(numFilt) > 0 & length(charFilt) == 0) {
     out <- numOut
   } else {
@@ -190,12 +195,12 @@ match_item <- function(df = LexOPS::lexops, target, ..., id_col = "string", filt
 
   # if the filter argument is FALSE, return the original df, but with new column matchFilter
   if (!filter) {
-    out <- dplyr::mutate(df, matchFilter = !!(dplyr::sym(id_col)) %in% out[[id_col]]) %>%
-      dplyr::select(!!dplyr::sym(id_col), matchFilter, dplyr::everything())
+    df$matchFilter <- df[[id_col]] %in% out[[id_col]]
+    out <- df[c(id_col, "matchFilter", setdiff(names(df), c(id_col, "matchFilter")))]
   }
 
   # remove the target word
-  out <- dplyr::filter(out, !!(dplyr::sym(id_col)) != target)
+  out <- out[out[[id_col]] != target, , drop = FALSE]
 
   # return the result
   out

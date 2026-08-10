@@ -53,8 +53,8 @@ long_format <- function(df, include = "design", include_candids = FALSE) {
     if (include == "all") {
       colnames(LexOPS_attrs$meta_df)[!colnames(LexOPS_attrs$meta_df) %in% c(id_col, "LexOPS_cond")]
     } else {
-      splits <- sapply(LexOPS_attrs$splits, dplyr::first)
-      controls <- c( sapply(LexOPS_attrs$controls, dplyr::first), sapply(LexOPS_attrs$control_functions, dplyr::first) )
+      splits <- sapply(LexOPS_attrs$splits, function(x) x[[1]])
+      controls <- c( sapply(LexOPS_attrs$controls, function(x) x[[1]]), sapply(LexOPS_attrs$control_functions, function(x) x[[1]]) )
       if (include == "design") {
         colnames(LexOPS_attrs$meta_df)[colnames(LexOPS_attrs$meta_df) %in% c(splits, controls)]
       } else if (include == "splits") {
@@ -71,22 +71,30 @@ long_format <- function(df, include = "design", include_candids = FALSE) {
   # ensure the id_col is the same type as in the meta_df
   if (!is.character(meta_df[[id_col]])) meta_df[[id_col]] <- as.character(meta_df[[id_col]])
 
-  if (include_candids) {
-    # gather outside pipeline for later reference
-    out_stim <- tidyr::gather(df, "condition", !!id_col, -match_null, -item_nr)
-    # put in long format, and include the specified variables
-    out <- dplyr::full_join(out_stim, meta_df, by = id_col) %>%
-      dplyr::mutate(is_stim = dplyr::if_else(string %in% out_stim$string, TRUE, FALSE)) %>%
-      dplyr::select(item_nr, condition, match_null, dplyr::everything()) %>%
-      dplyr::arrange(item_nr)
-  } else {
-    # put in long format, and include the specified variables
-    out <- tidyr::gather(df, "condition", !!id_col, -match_null, -item_nr) %>%
-      dplyr::left_join(meta_df, by = id_col) %>%
-      dplyr::select(item_nr, condition, match_null, dplyr::everything()) %>%
-      dplyr::arrange(item_nr)
-  }
+  # gather wide condition columns into long format
+  all_condition_cols <- setdiff(colnames(df), c("item_nr", "match_null"))
+  # build long dataframe: one row per item_nr per condition
+  out_stim_list <- lapply(all_condition_cols, function(cond) {
+    ids <- df[[cond]]
+    tmp <- data.frame(item_nr = df$item_nr, condition = cond, match_null = df$match_null, stringsAsFactors = FALSE)
+    tmp[[id_col]] <- ids
+    tmp
+  })
+  out_stim <- do.call(rbind, out_stim_list)
 
+  if (include_candids) {
+    # full join out_stim and meta_df by id_col
+    out <- merge(out_stim, meta_df, by = id_col, all = TRUE, sort = FALSE)
+    # is_stim: whether id appears in out_stim
+    out$is_stim <- out[[id_col]] %in% out_stim[[id_col]]
+  } else {
+    # left join meta_df onto out_stim (keep only rows in out_stim)
+    out <- merge(out_stim, meta_df, by = id_col, all.x = TRUE, sort = FALSE)
+  }
+  # reorder columns to put item_nr, condition, match_null first and arrange by item_nr
+  remaining <- setdiff(names(out), c("item_nr", "condition", "match_null"))
+  out <- out[c("item_nr", "condition", "match_null", remaining)]
+  out <- out[order(out$item_nr), , drop = FALSE]
   # make note that the df is long format
   LexOPS_attrs$is.long_format <- TRUE
 

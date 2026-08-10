@@ -33,7 +33,7 @@ plot_design <- function(df, include = "design", dodge_width = 0.1, point_size = 
       LexOPS_attrs <- list()
       LexOPS_attrs$generated <- TRUE
       LexOPS_attrs$is.long_format <- TRUE
-      if (is.null(LexOPS_attrs$meta_df)) LexOPS_attrs$meta_df <- dplyr::select(df, -condition, -item_nr)
+      if (is.null(LexOPS_attrs$meta_df)) LexOPS_attrs$meta_df <- df[, setdiff(names(df), c("condition", "item_nr")), drop = FALSE]
     } else {
       LexOPS_attrs <- NULL
     }
@@ -56,7 +56,7 @@ plot_design <- function(df, include = "design", dodge_width = 0.1, point_size = 
   if (is.null(LexOPS_attrs$is.long_format)) df <- LexOPS::long_format(df)
 
   # get vector of splits (IVs)
-  splits <- sapply(LexOPS_attrs$splits, dplyr::first)
+  splits <- sapply(LexOPS_attrs$splits, function(x) x[[1]])
 
   # remove random splits
   if (!is.null(LexOPS_attrs$random_splits)) {
@@ -64,23 +64,26 @@ plot_design <- function(df, include = "design", dodge_width = 0.1, point_size = 
   }
 
   # get vector of control variables
-  controls <- c( sapply(LexOPS_attrs$controls, dplyr::first), sapply(LexOPS_attrs$control_functions, dplyr::first) )
+  controls <- c( sapply(LexOPS_attrs$controls, function(x) x[[1]]), sapply(LexOPS_attrs$control_functions, function(x) x[[1]]) )
 
   # get df which contains all the original variables for the generated stimuli
-  meta_df <- LexOPS_attrs$meta_df %>%
-    dplyr::filter(!!dplyr::sym(id_col) %in% df[[id_col]])
+  meta_df <- LexOPS_attrs$meta_df[LexOPS_attrs$meta_df[[id_col]] %in% df[[id_col]], , drop = FALSE]
 
   # convert to numeric if appropriate
   num_cols <- colnames(meta_df)[sapply(meta_df, function(x) suppressWarnings(all(!is.na(as.numeric(x))))) & colnames(meta_df) != id_col]
-  meta_df <- suppressWarnings(dplyr::mutate(meta_df, dplyr::across(dplyr::all_of(num_cols), as.numeric)))
+  if (length(num_cols) > 0) {
+    for (nc in num_cols) meta_df[[nc]] <- suppressWarnings(as.numeric(meta_df[[nc]]))
+  }
 
   # check the id col is as character in both df and meta_df
   df[[id_col]] <- as.character(df[[id_col]])
   meta_df[[id_col]] <- as.character(meta_df[[id_col]])
 
-  # join this to df
-  plot_df <- dplyr::select(df, c(item_nr, condition, !!dplyr::sym(id_col))) %>%
-    dplyr::right_join(meta_df, by = id_col)
+  # join this to df (preserve df row order)
+  df_subset <- df[, c("item_nr", "condition", id_col), drop = FALSE]
+  map_idx <- match(df_subset[[id_col]], meta_df[[id_col]])
+  extra_meta <- if (all(is.na(map_idx))) meta_df[integer(0), , drop = FALSE] else meta_df[map_idx, , drop = FALSE]
+  plot_df <- cbind(df_subset, extra_meta[setdiff(names(extra_meta), id_col)])
 
   # factor vector of variables to plot
   plot_vars <- if (all(include == "design")) {
@@ -110,11 +113,16 @@ plot_design <- function(df, include = "design", dodge_width = 0.1, point_size = 
   # generate the point positions
   point_pos <- ggplot2::position_dodge(dodge_width)
 
-  # plot the numeric variables
-  plot_df %>%
-    dplyr::rename_at(plot_vars, ~ plot_vars_headings) %>%
-    tidyr::gather("variable", "value", plot_vars_headings) %>%
-    ggplot2::ggplot(ggplot2::aes(x = condition, y = value)) +
+  # build plotting dataframe: one row per variable per original row
+  plot_data_list <- lapply(seq_along(plot_vars), function(i) {
+    v <- plot_vars[i]
+    heading <- plot_vars_headings[i]
+    vals <- as.numeric(plot_df[[v]])
+    data.frame(item_nr = plot_df$item_nr, condition = plot_df$condition, variable = heading, value = vals, stringsAsFactors = FALSE)
+  })
+  plot_data <- do.call(rbind, plot_data_list)
+
+  ggplot2::ggplot(plot_data, ggplot2::aes(x = condition, y = value)) +
     ggplot2::geom_violin(colour = NA, fill = "grey", alpha = 0.5) +
     ggplot2::geom_point(ggplot2::aes(group = as.factor(item_nr)), position = point_pos, alpha = 0.75, size = point_size) +
     ggplot2::geom_line(ggplot2::aes(group = as.factor(item_nr)), position = point_pos, alpha = 0.25, linewidth = line_width) +

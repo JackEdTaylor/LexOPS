@@ -45,8 +45,7 @@
 
 euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, center = TRUE, weights = NA, standardise_weights = TRUE, id_col = "string", standard_eval = FALSE) {
   if (!standard_eval) {
-    vars <- parse_levels(substitute(vars)) %>%
-      unlist()
+    vars <- unlist(parse_levels(substitute(vars)))
     # revert to "all" if parse_levels(vars) returns "\"all\""
     if (all(vars=="\"all\"") & length(vars)==1) vars <- "all"
   }
@@ -92,27 +91,26 @@ euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, c
   # calculate Euclidean distance of word from all others on specified dimensions
 
   # firstly, scale all specified dimensions as required
-  df[, vars] <- lapply(df[, vars], base::scale, center, scale)
+  df[, vars] <- lapply(df[, vars, drop = FALSE], function(col) as.numeric(base::scale(col, center, scale)))
 
   # get all the other vectors (including the target)
-  dims <- df[, vars]
+  dims <- df[, vars, drop = FALSE]
 
   # apply weights
   if (any(!is.na(weights))) {
-    dims <- lapply(1:ncol(dims), function(i) dims[, i] * weights[i]) %>%
-      as.data.frame() %>%
-      stats::setNames(names(dims))
+    orig_names <- colnames(dims)
+    tmp <- lapply(seq_len(ncol(dims)), function(i) dims[, i] * weights[i])
+    dims <- as.data.frame(tmp)
+    names(dims) <- orig_names
   }
 
   # get the vector for the target word
-  target_dims <- dims[df[[id_col]] == target, vars]
+  target_dims <- dims[df[[id_col]] == target, , drop = FALSE]
 
   # get the distance squared
-  dist_sq <- as.data.frame(
-    lapply(colnames(dims), function(d) {
-      (dims[d] - c(target_dims[[d]]))**2
-    })
-  )
+  dist_sq <- as.data.frame(lapply(colnames(dims), function(d) {
+    (dims[[d]] - target_dims[[d]])^2
+  }))
 
   # get the row-wise euclidean distance
   sqrt(rowSums(dist_sq))

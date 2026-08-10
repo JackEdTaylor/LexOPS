@@ -26,11 +26,13 @@ plot_iterations <- function(df, line_width = 1) {
   # check is generated stimuli
   if (is.null(LexOPS_attrs$generated)) stop("Must run `generate()` on `df` before using `plot_design()`")
 
-  # Create a tibble which will contain the result of each iteration
-  dplyr::tibble(iteration = 1:max(LexOPS_attrs$successful_iterations)) %>%
-    dplyr::mutate(was_successful = ifelse(iteration %in% LexOPS_attrs$successful_iterations, 1, 0)) %>%
-    dplyr::mutate(stim_generated = cumsum(was_successful)) %>%
-    ggplot2::ggplot(ggplot2::aes(x = iteration, y = stim_generated)) +
+  # Build iteration dataframe with base R
+  iterations <- seq_len(max(LexOPS_attrs$successful_iterations))
+  df_iter <- data.frame(iteration = iterations, stringsAsFactors = FALSE)
+  df_iter$was_successful <- as.integer(df_iter$iteration %in% LexOPS_attrs$successful_iterations)
+  df_iter$stim_generated <- cumsum(df_iter$was_successful)
+
+  ggplot2::ggplot(df_iter, ggplot2::aes(x = iteration, y = stim_generated)) +
     ggplot2::geom_line(linewidth = line_width) +
     ggplot2::labs(x = "Iteration", y = "Number of Items Generated (Cumulative)") +
     ggplot2::theme_bw()

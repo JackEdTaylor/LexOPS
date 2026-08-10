@@ -30,7 +30,7 @@ plot_sample <- function(df, include = "design", force = TRUE, id_col = "string")
       LexOPS_attrs <- list()
       LexOPS_attrs$generated <- TRUE
       LexOPS_attrs$is.long_format <- TRUE
-      if (is.null(LexOPS_attrs$meta_df)) LexOPS_attrs$meta_df <- dplyr::select(df, -condition, -item_nr)
+      if (is.null(LexOPS_attrs$meta_df)) LexOPS_attrs$meta_df <- df[, setdiff(names(df), c("condition", "item_nr")), drop = FALSE]
     } else {
       LexOPS_attrs <- NULL
     }
@@ -49,7 +49,7 @@ plot_sample <- function(df, include = "design", force = TRUE, id_col = "string")
   if (is.null(LexOPS_attrs$is.long_format)) df <- LexOPS::long_format(df)
 
   # get vector of splits (IVs)
-  splits <- sapply(LexOPS_attrs$splits, dplyr::first)
+  splits <- sapply(LexOPS_attrs$splits, function(x) x[[1]])
 
   # remove random splits
   if (!is.null(LexOPS_attrs$random_splits)) {
@@ -57,13 +57,16 @@ plot_sample <- function(df, include = "design", force = TRUE, id_col = "string")
   }
 
   # get vector of control variables
-  controls <- c( sapply(LexOPS_attrs$controls, dplyr::first), sapply(LexOPS_attrs$control_functions, dplyr::first) )
+  controls <- c( sapply(LexOPS_attrs$controls, function(x) x[[1]]), sapply(LexOPS_attrs$control_functions, function(x) x[[1]]) )
 
   # get df which contains all the original variables for the generated stimuli
   meta_df <- LexOPS_attrs$meta_df
 
   # convert to numeric if appropriate
-  meta_df <- suppressWarnings(dplyr::mutate_if(meta_df, function(x) all(!is.na(as.numeric(x))), as.numeric))
+  num_cols_all <- colnames(meta_df)[sapply(meta_df, function(x) suppressWarnings(all(!is.na(as.numeric(x))))) & colnames(meta_df) != id_col]
+  if (length(num_cols_all) > 0) {
+    for (nc in num_cols_all) meta_df[[nc]] <- suppressWarnings(as.numeric(meta_df[[nc]]))
+  }
 
   # factor vector of variables to plot
   plot_vars <- if (all(include == "design")) {
@@ -91,20 +94,29 @@ plot_sample <- function(df, include = "design", force = TRUE, id_col = "string")
   }, USE.NAMES = FALSE)
 
   # get the original df, recording whether each possible candidate was selected
-  plot_df_all <- dplyr::select(meta_df, !!dplyr::sym(id_col), plot_vars) %>%
-    dplyr::mutate(is_stim = "All Candidates")
+  plot_df_all <- meta_df[, c(id_col, plot_vars), drop = FALSE]
+  plot_df_all$is_stim <- "All Candidates"
 
-  plot_df_gen <- dplyr::filter(plot_df_all, !!dplyr::sym(id_col) %in% df[[id_col]]) %>%
-    dplyr::mutate(is_stim = "Generated Stimuli")
+  plot_df_gen <- plot_df_all[plot_df_all[[id_col]] %in% df[[id_col]], , drop = FALSE]
+  plot_df_gen$is_stim <- "Generated Stimuli"
 
-  plot_df <- dplyr::bind_rows(plot_df_all, plot_df_gen) %>%
-    dplyr::mutate(is_stim = factor(is_stim, levels = c("All Candidates", "Generated Stimuli")))
+  plot_df <- rbind(plot_df_all, plot_df_gen)
+  plot_df$is_stim <- factor(plot_df$is_stim, levels = c("All Candidates", "Generated Stimuli"))
 
-  # plot the result
-  plot_df %>%
-    dplyr::rename_at(plot_vars, ~ plot_vars_headings) %>%
-    tidyr::gather("variable", "value", plot_vars_headings) %>%
-    ggplot2::ggplot(ggplot2::aes(value, fill = is_stim)) +
+  # rename plot_vars in plot_df to headings
+  for (i in seq_along(plot_vars)) {
+    old <- plot_vars[i]
+    new <- plot_vars_headings[i]
+    if (old %in% names(plot_df)) names(plot_df)[names(plot_df) == old] <- new
+  }
+
+  # gather to long format for plotting
+  plot_data_list <- lapply(plot_vars_headings, function(h) {
+    data.frame(value = plot_df[[h]], variable = h, is_stim = plot_df$is_stim, stringsAsFactors = FALSE)
+  })
+  plot_data <- do.call(rbind, plot_data_list)
+
+  ggplot2::ggplot(plot_data, ggplot2::aes(value, fill = is_stim)) +
     ggplot2::geom_density(alpha = 0.75, colour = NA) +
     ggplot2::facet_wrap(~variable, scales = "free") +
     ggplot2::theme_bw() +
