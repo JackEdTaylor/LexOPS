@@ -489,11 +489,36 @@ generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, id_c
 
   # calculate the new columns based on the supplied functions and arguments
   # (each item of var should have a structure of `list(name, fun, var, tol)`)
-  func_col_names <- sapply(vars_pre_calc, function(x) x[[1]])  # get the names (set after `purrr::map()`)
-  df_matches <- vars_pre_calc %>%
-    purrr::map( ~ .x[[2]](df_matches[[ .x[[3]] ]], df[[ .x[[3]] ]][df[[id_col]]==target] ) ) %>%
-    purrr::set_names(func_col_names) %>%
-    dplyr::bind_cols(df_matches, .)
+  func_col_names <- sapply(vars_pre_calc, function(x) x[[1]])
+  # calculate new columns as list and bind to df_matches
+  # build new columns with strict length checks
+  n_rows_matches <- nrow(df_matches)
+  newcols <- lapply(seq_along(vars_pre_calc), function(i) {
+    x <- vars_pre_calc[[i]]
+    fun <- x[[2]]
+    var <- x[[3]]
+    col_name <- func_col_names[[i]]
+    arg1 <- df_matches[[ var ]]
+    target_input <- df[[ var ]][df[[id_col]]==target]
+    res <- tryCatch(fun(arg1, target_input), error = function(e) stop(sprintf("control function '%s' error when applied to candidates: %s", col_name, conditionMessage(e))))
+    # drop names to avoid rowname-based alignment during cbind
+    res <- unname(res)
+    if (length(res) == 1) {
+      rep(res, n_rows_matches)
+    } else if (length(res) == n_rows_matches) {
+      res
+    } else if (length(res) == 0) {
+      rep(NA, n_rows_matches)
+    } else {
+      stop(sprintf("control function '%s' returned length %d but expected 1 or %d", col_name, length(res), n_rows_matches))
+    }
+  })
+  names(newcols) <- func_col_names
+  newcols_df <- as.data.frame(newcols, stringsAsFactors = FALSE, check.names = FALSE)
+  # cbind but ensure no rownames remain to prevent alignment by name in bind
+  rownames(newcols_df) <- NULL
+  rownames(df_matches) <- NULL
+  df_matches <- data.frame(df_matches, newcols_df, stringsAsFactors = FALSE, check.names = FALSE)
 
   # create vars list which will be used for matching purposes
   vars <- lapply(1:length(vars_pre_calc), function(cont_nr) {
