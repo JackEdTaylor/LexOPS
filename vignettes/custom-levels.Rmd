@@ -18,6 +18,7 @@ library(tidyr)
 library(ggplot2)
 library(forcats)
 library(LexOPS)
+library(lexopsdata)
 ```
 
 ```{r hidden-setup, include=FALSE}

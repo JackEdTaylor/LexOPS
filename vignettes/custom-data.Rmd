@@ -8,7 +8,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-The built-in variables of LexOPS are useful but not exhaustive. Thankfully, LexOPS can work with any suitable list of features. For this example, we will join the [Lancaster Sensorimotor norms](https://osf.io/7emr6/) to [Engelthaler and Hills' humour ratings](https://github.com/tomasengelthaler/HumorNorms), and the in-built LexOPS dataset (`LexOPS::lexops`). We can then use this to generate stimuli with a visual rating by humour interaction, controlling for length and frequency.
+The [lexops dataset](https://github.com/JackEdTaylor/lexopsdata) is useful but not exhaustive. Thankfully, LexOPS can work with any suitable list of features. For this example, we will join the [Lancaster Sensorimotor norms](https://osf.io/7emr6/) to [Engelthaler and Hills' humour ratings](https://github.com/tomasengelthaler/HumorNorms), and the lexops dataset (`LexOPS::lexops`). We can then use this to generate stimuli with a visual rating by humour interaction, controlling for length and frequency.
 
 # Packages
 
@@ -17,6 +17,7 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 library(LexOPS)
+library(lexopsdata)
 ```
 
 ```{r hidden-setup, include=FALSE}

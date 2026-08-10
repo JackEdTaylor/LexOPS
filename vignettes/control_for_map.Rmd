@@ -16,6 +16,7 @@ The `control_for()` function works well when your variable is 1-dimensional, wit
 library(readr)
 library(dplyr)
 library(LexOPS)
+library(lexopsdata)
 ```
 
 ```{r hidden-setup, include=FALSE}

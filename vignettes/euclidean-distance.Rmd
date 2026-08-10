@@ -16,6 +16,7 @@ Euclidean distance can be a useful way of matching by or controlling for multipl
 library(dplyr)
 library(ggplot2)
 library(LexOPS)
+library(lexopsdata)
 ```
 
 ```{r hidden-setup, include=FALSE}
