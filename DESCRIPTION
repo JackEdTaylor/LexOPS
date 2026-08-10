@@ -14,13 +14,10 @@ Authors@R:
                role = "aut",
                comment = c(ORCID = "0000-0002-2260-4441"))
     )
-Description: LexOPS is a package for generating controlled matched items for factorial designs. It has an inbuilt dataset of word features for word stimuli in Psychology experiments. Full documentation is available at <https://jackedtaylor.github.io/LexOPSdocs/>. There is a shiny app built with GUIs for most package functionality.
+Description: LexOPS is a package for generating controlled matched items for factorial designs. Full documentation is available at <https://jackedtaylor.github.io/LexOPSdocs/>. There is a shiny app built with GUIs for most package functionality.
 License: GPL-3
 Encoding: UTF-8
-LazyData: true
-LazyDataCompression: xz
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 Imports:
     magrittr,
@@ -33,7 +30,8 @@ Imports:
     stringr,
     stats,
     scales
-Suggests: 
+Suggests:
+    lexopsdata,
     knitr,
     rmarkdown,
     testthat (>= 2.1.0),
@@ -51,3 +49,4 @@ Suggests:
     forcats
 URL: https://JackEdTaylor.github.io/LexOPSdocs/
 BugReports: https://github.com/JackEdTaylor/LexOPS/issues
+Config/roxygen2/version: 8.1.0

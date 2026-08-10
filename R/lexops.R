@@ -73,4 +73,7 @@
 #'  \item{RT.ELP}{Lexical Decision Response Time according to the English Lexicon Project \url{http://doi.org/10.3758/BF03193014}.}
 #'  \item{Accuracy.ELP}{Lexical Decision Accuracy according to the English Lexicon Project \url{http://doi.org/10.3758/BF03193014}.}
 #' }
-"lexops"
+#' @name lexops
+#' @docType data
+#' @export
+NULL
