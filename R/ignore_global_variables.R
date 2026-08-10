@@ -40,7 +40,7 @@
   utils::globalVariables("is_stim")
   utils::globalVariables("control_for_euc_val")
 
-  # instead of lazyload, bind the `lexops` to the .lexops_data() function
+  # instead of lazyload, bind `lexops` to the .lexops_data() function
   ns <- asNamespace(pkgname)
   if (!exists("lexops", envir = ns, inherits = FALSE) || !bindingIsActive("lexops", ns)) {
     if (exists("lexops", envir = ns, inherits = FALSE) && !bindingIsActive("lexops", ns)) {
