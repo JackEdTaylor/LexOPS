@@ -4,7 +4,7 @@
     warning(
       "To use the lexops dataset, please install the lexopsdata package:\nremotes::install_github(\"JackEdTaylor/lexopsdata\")"
     )
-
+    # return empty dataframe if unavailable
     return(data.frame())
   }
 
