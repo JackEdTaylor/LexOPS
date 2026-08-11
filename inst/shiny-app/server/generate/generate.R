@@ -109,6 +109,9 @@ generated_stim <- reactive({
   # get the controls
   control_opts <- control_opts_react()
 
+  # set the seed
+  if (input$preference_use_a_random_seed) set.seed(input$preference_random_seed)
+
   df <- lexops_react()
 
   # filters
@@ -132,9 +135,8 @@ generated_stim <- reactive({
   if (gen_splitby_boxes_N() > 0) {
     for (i in 1:gen_splitby_boxes_N()) {
       if (split_opts[[i]]$var == "Random") {
-        gen_seed <- if (input$preference_use_a_random_seed) input$preference_random_seed else NA
         df <- df %>%
-          LexOPS::split_random(split_opts[[i]]$n_levels, seed = gen_seed)
+          LexOPS::split_random(split_opts[[i]]$n_levels, equal_size=TRUE)
       } else {
         df <- df %>%
           LexOPS::split_by(split_opts[[i]]$var, split_opts[[i]]$selection, standard_eval = TRUE)
@@ -160,8 +162,7 @@ generated_stim <- reactive({
     match_null <- gen_match_null()
 
     shinyjs::html("gen_console", "Generating...")
-    gen_seed <- if (input$preference_use_a_random_seed) input$preference_random_seed else NA
-    out <- LexOPS::generate(df, n = n, match_null = match_null, seed = gen_seed, is_shiny = TRUE)
+    out <- LexOPS::generate(df, n = n, match_null = match_null, is_shiny = TRUE)
 
     if ((n!="all" & nrow(out) == n) | n=="all") {
       shinyjs::html("gen_console", " - Done!", add=TRUE)
