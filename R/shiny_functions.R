@@ -232,7 +232,7 @@ box_vis.rhyme <- function(var, box_type, rhyme_word, rhyme_word_val, df) {
   df %>%
     dplyr::select(string, !!(dplyr::sym(var)), PK.Brysbaert) %>%
     dplyr::filter(!!(dplyr::sym(var))==rhyme_word_val & PK.Brysbaert>=0.75 & string!=rhyme_word) %>%
-    dplyr::sample_n(ifelse(nrow(.)<15, nrow(.), 15)) %>%
+    dplyr::slice_sample(n = 15) %>%
     dplyr::mutate(wordcloudsize=1, wordcloudalpha=0.9) %>%
     dplyr::add_row(string=rhyme_word, wordcloudsize=5, wordcloudalpha=1, .before=1) %>%
     ggplot2::ggplot(ggplot2::aes(label=string, size=wordcloudsize, alpha=wordcloudalpha)) +
