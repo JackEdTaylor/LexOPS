@@ -12,8 +12,8 @@
 }
 
 .onLoad <- function(libname, pkgname) {
-  # prevent note about global variables in devtools::check()
 
+  # prevent note about global variables in devtools::check()
   utils::globalVariables("x")
   utils::globalVariables("n")
   utils::globalVariables("alpha_level")
@@ -22,20 +22,12 @@
   utils::globalVariables("wordcloudalpha")
   utils::globalVariables("string")
   utils::globalVariables("PK.Brysbaert")
-  utils::globalVariables("LexOPS_cond")
   utils::globalVariables("item_nr")
   utils::globalVariables("condition")
-  utils::globalVariables("match_null")
   utils::globalVariables("value")
   utils::globalVariables("iteration")
-  utils::globalVariables("was_successful")
   utils::globalVariables("stim_generated")
-  utils::globalVariables("tmp")
-  utils::globalVariables("euclidean_distance")
-  utils::globalVariables("var")
-  utils::globalVariables("matchFilter")
   utils::globalVariables("is_stim")
-  utils::globalVariables("control_for_euc_val")
 
   # instead of lazyload, bind `lexops` to the .lexops_data() function
   ns <- asNamespace(pkgname)
