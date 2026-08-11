@@ -38,22 +38,24 @@ testthat::test_that("no id_col given", {
   # since eg_df's id column is just the row numbers anyway, these should be identical if no filtering is done by split_by
   testthat::expect_identical(
     {
+      set.seed(42)
       df <- suppressWarnings(
         eg_df %>%
           set_options(id_col = "id") %>%
           split_by(a, -5:-0.00001 ~ 0.00001:5, filter=FALSE) %>%
           control_for(b, -2.5:2.5) %>%
-          generate(10, seed=42, silent=TRUE)
+          generate(10, silent=TRUE)
       )
       attributes(df) <- NULL
       df
     },
     {
+      set.seed(42)
       df <- suppressWarnings(
         eg_df %>%
           split_by(a, -5:-0.00001 ~ 0.00001:5, filter=FALSE) %>%
           control_for(b, -2.5:2.5) %>%
-          generate(10, seed=42, silent=TRUE)
+          generate(10, silent=TRUE)
       )
       attributes(df) <- NULL
       df

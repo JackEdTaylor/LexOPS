@@ -1,11 +1,10 @@
 #' Generate stimuli
 #'
-#' Generates the stimuli from the data frame after it has been passed through `split_by()`, and optionally, `control_for()`. Will generate `n` items per condition. If <`n` items can be generated, will generate as many as possible given the experiment's design. Can be reproducible with `seed` argument.
+#' Generates the stimuli from the data frame after it has been passed through `split_by()`, and optionally, `control_for()`. Will generate `n` items per condition. If <`n` items can be generated, will generate as many as possible given the experiment's design.
 #'
 #' @param x A LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
 #' @param n The number of strings per condition (default = 20). Set to `"all"` to generate as many as possible.
 #' @param match_null The condition that words should be matched to. Should be a string indicating condition (e.g. `"A1_B2_C1"`), or a string indicating one of the following options: "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition (default), "inclusive" to match each condition within the tolerances to every other condition, "first" for the lowest condition (e.g. `"A1"` or `"A1_B1_C1_D1"`, etc.), "random" for randomly selected null condition each iteration.
-#' @param seed An integer specifying the random seed, allowing reproduction of exact stimuli lists. If `NA`, will not set the seed. Default is `NA`.
 #' @param silent Logical: should output to the console (via `cat()`) be suppressed? Default is FALSE.
 #' @param is_shiny Allows printing in a shiny context with `shinyjs::html()`. Outputs from the cat() function are stored in the div with id "gen_console". Default is FALSE.
 #'
@@ -87,7 +86,7 @@
 #' @export
 #' @importFrom stats setNames
 
-generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE, is_shiny = FALSE) {
+generate <- function(x, n=20, match_null = "balanced", silent = FALSE, is_shiny = FALSE) {
   if (is_shiny) {
     # if in a shiny context, replace the base cat() function with one which captures the console output
     cat <- function(str) shinyjs::html("gen_console", sprintf("%s", str))
@@ -127,7 +126,7 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
   }
 
   # check for problems with arguments
-  generate.check(df, n, match_null, seed, id_col, cond_col, is_shiny, lp_info)
+  generate.check(df, n, match_null, id_col, cond_col, is_shiny, lp_info)
 
   # get the columns containing the split data
   LexOPS_splitCols <- colnames(df)[grepl(cond_col_regex, colnames(df))]
@@ -149,9 +148,6 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
 
   # check match_null is an expected value
   if (!match_null %in% c(all_conds, "inclusive", "balanced", "random", "first")) stop('Unknown match_null; expected "inclusive", "random", "balanced", "first", or a specific condition (e.g. "A2_B1_C1")')
-
-  # set the seed if specified
-  if (!is.na(seed)) set.seed(seed)
 
   # if no controls, just return the df with the condition variable, otherwise generate matches
   if (!is.null(lp_info$controls) | !is.null(lp_info$control_functions)) {
@@ -374,7 +370,7 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
 }
 
 # function to check supplied arguments makes sense
-generate.check <- function(df, n, match_null, seed, id_col, cond_col, is_shiny, lp_info) {
+generate.check <- function(df, n, match_null, id_col, cond_col, is_shiny, lp_info) {
   # check id_col is a string
   if (!is.character(id_col)) stop(sprintf("Expected id_col to be of class string, not %s", class(id_col)))
 

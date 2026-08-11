@@ -18,13 +18,14 @@ testthat::test_that("reproducibility", {
   # check updates won't alter existing code's output
   testthat::expect_identical(
     {
+      set.seed(42)
       df <- eg_df %>%
         set_options(id_col = "id") %>%
         split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
         control_for(b, -2.5:2.5) %>%
         control_for(c, -2.5:2.5) %>%
         control_for(d) %>%
-        generate(10, seed=42, silent=TRUE)
+        generate(10, silent=TRUE)
       attributes(df) <- NULL
       df
     },
@@ -41,94 +42,120 @@ testthat::test_that("reproducibility", {
   )
   # non-standard vs. non-standard (seed test)
   testthat::expect_identical(
-    eg_df %>%
-      set_options(id_col = "id") %>%
-      split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-      control_for(b, -2.5:2.5) %>%
-      control_for(c, -2.5:2.5) %>%
-      control_for(d) %>%
-      generate(10, seed = 42, silent = TRUE),
-    eg_df %>%
-      set_options(id_col = "id") %>%
-      split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-      control_for(b, -2.5:2.5) %>%
-      control_for(c, -2.5:2.5) %>%
-      control_for(d) %>%
-      generate(10, seed = 42, silent = TRUE)
+    {
+      set.seed(42)
+      eg_df %>%
+        set_options(id_col = "id") %>%
+        split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
+        control_for(b, -2.5:2.5) %>%
+        control_for(c, -2.5:2.5) %>%
+        control_for(d) %>%
+        generate(10, silent = TRUE)
+    },
+    {
+      set.seed(42)
+      eg_df %>%
+        set_options(id_col = "id") %>%
+        split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
+        control_for(b, -2.5:2.5) %>%
+        control_for(c, -2.5:2.5) %>%
+        control_for(d) %>%
+        generate(10, silent = TRUE)
+    }
   )
   # standard vs. standard (seed test)
   testthat::expect_identical(
-    eg_df %>%
-      set_options(id_col = "id") %>%
-      split_by("a", list(c(-5, -0.0001), c(0.0001, 5)), standard_eval = TRUE) %>%
-      control_for("b", c(-2.5, 2.5), standard_eval = TRUE) %>%
-      control_for("c", c(-2.5, 2.5), standard_eval = TRUE) %>%
-      control_for("d", standard_eval = TRUE) %>%
-      generate(10, seed = 42, silent = TRUE),
-    eg_df %>%
-      set_options(id_col = "id") %>%
-      split_by("a", list(c(-5, -0.0001), c(0.0001, 5)), standard_eval = TRUE) %>%
-      control_for("b", c(-2.5, 2.5), standard_eval = TRUE) %>%
-      control_for("c", c(-2.5, 2.5), standard_eval = TRUE) %>%
-      control_for("d", standard_eval = TRUE) %>%
-      generate(10, seed = 42, silent = TRUE)
+    {
+      set.seed(42)
+      eg_df %>%
+        set_options(id_col = "id") %>%
+        split_by("a", list(c(-5, -0.0001), c(0.0001, 5)), standard_eval = TRUE) %>%
+        control_for("b", c(-2.5, 2.5), standard_eval = TRUE) %>%
+        control_for("c", c(-2.5, 2.5), standard_eval = TRUE) %>%
+        control_for("d", standard_eval = TRUE) %>%
+        generate(10, silent = TRUE)
+    },
+    {
+      set.seed(42)
+      eg_df %>%
+        set_options(id_col = "id") %>%
+        split_by("a", list(c(-5, -0.0001), c(0.0001, 5)), standard_eval = TRUE) %>%
+        control_for("b", c(-2.5, 2.5), standard_eval = TRUE) %>%
+        control_for("c", c(-2.5, 2.5), standard_eval = TRUE) %>%
+        control_for("d", standard_eval = TRUE) %>%
+        generate(10, silent = TRUE)
+    }
   )
   # non-standard vs. standard (transferability test)
   testthat::expect_identical(
-    eg_df %>%
-      set_options(id_col = "id") %>%
-      split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-      control_for(b, -2.5:2.5) %>%
-      control_for(c, -2.5:2.5) %>%
-      control_for(d) %>%
-      generate(10, seed = 42, silent = TRUE),
-    eg_df %>%
-      set_options(id_col = "id") %>%
-      split_by("a", list(c(-5, -0.0001), c(0.0001, 5)), standard_eval = TRUE) %>%
-      control_for("b", c(-2.5, 2.5), standard_eval = TRUE) %>%
-      control_for("c", c(-2.5, 2.5), standard_eval = TRUE) %>%
-      control_for("d", standard_eval = TRUE) %>%
-      generate(10, seed = 42, silent = TRUE)
+    {
+      set.seed(42)
+      eg_df %>%
+        set_options(id_col = "id") %>%
+        split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
+        control_for(b, -2.5:2.5) %>%
+        control_for(c, -2.5:2.5) %>%
+        control_for(d) %>%
+        generate(10, silent = TRUE)
+    },
+    {
+      set.seed(42)
+      eg_df %>%
+        set_options(id_col = "id") %>%
+        split_by("a", list(c(-5, -0.0001), c(0.0001, 5)), standard_eval = TRUE) %>%
+        control_for("b", c(-2.5, 2.5), standard_eval = TRUE) %>%
+        control_for("c", c(-2.5, 2.5), standard_eval = TRUE) %>%
+        control_for("d", standard_eval = TRUE) %>%
+        generate(10, silent = TRUE)
+    }
   )
   # hybrid vs. hybrid (mixed transferability test)
   testthat::expect_identical(
-    eg_df %>%
-      set_options(id_col = "id") %>%
-      split_by("a", list(c(-5, -0.0001), c(0.0001, 5)), standard_eval = TRUE) %>%
-      control_for(b, -2.5:2.5) %>%
-      control_for("c", c(-2.5, 2.5), standard_eval = TRUE) %>%
-      control_for(d) %>%
-      generate(10, seed = 42, silent = TRUE),
-    eg_df %>%
-      set_options(id_col = "id") %>%
-      split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-      control_for("b", c(-2.5, 2.5), standard_eval = TRUE) %>%
-      control_for(c, -2.5:2.5) %>%
-      control_for("d", standard_eval = TRUE) %>%
-      generate(10, seed = 42, silent = TRUE)
+    {
+      set.seed(42)
+      eg_df %>%
+        set_options(id_col = "id") %>%
+        split_by("a", list(c(-5, -0.0001), c(0.0001, 5)), standard_eval = TRUE) %>%
+        control_for(b, -2.5:2.5) %>%
+        control_for("c", c(-2.5, 2.5), standard_eval = TRUE) %>%
+        control_for(d) %>%
+        generate(10, silent = TRUE)
+    },
+    {
+      set.seed(42)
+      eg_df %>%
+        set_options(id_col = "id") %>%
+        split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
+        control_for("b", c(-2.5, 2.5), standard_eval = TRUE) %>%
+        control_for(c, -2.5:2.5) %>%
+        control_for("d", standard_eval = TRUE) %>%
+        generate(10, silent = TRUE)
+    }
   )
   # check order doesn't matter when one split
   testthat::expect_identical(
     {
+      set.seed(69)
       x <- eg_df %>%
         set_options(id_col = "id") %>%
         split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
         control_for(b, -2.5:2.5) %>%
         control_for(c, -2.5:2.5) %>%
         control_for(d) %>%
-        generate(10, seed = 69, silent = TRUE) %>%
+        generate(10, silent = TRUE) %>%
         as.data.frame()
       attr(x, "LexOPS_info") <- NULL
       x
     },
     {
+      set.seed(69)
       x <- eg_df %>%
         set_options(id_col = "id") %>%
         control_for(d) %>%
         control_for(b, -2.5:2.5) %>%
         control_for(c, -2.5:2.5) %>%
         split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-        generate(10, seed = 69, silent = TRUE) %>%
+        generate(10, silent = TRUE) %>%
         as.data.frame()
       attr(x, "LexOPS_info") <- NULL
       x
@@ -137,25 +164,27 @@ testthat::test_that("reproducibility", {
   # check order doesn't matter when two splits, but same order of splits
   testthat::expect_identical(
     {
+      set.seed(69)
       x <- eg_df %>%
         set_options(id_col = "id") %>%
         control_for(c, -2.5:2.5) %>%
         split_by(e, 0:3 ~ 4:6) %>%
         control_for(d) %>%
         split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-        generate(10, seed = 69, silent = TRUE) %>%
+        generate(10, silent = TRUE) %>%
         as.data.frame()
       attr(x, "LexOPS_info") <- NULL
       x
     },
     {
+      set.seed(69)
       x <- eg_df %>%
         set_options(id_col = "id") %>%
         control_for(c, -2.5:2.5) %>%
         split_by(e, 0:3 ~ 4:6) %>%
         split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
         control_for(d) %>%
-        generate(10, seed = 69, silent = TRUE) %>%
+        generate(10, silent = TRUE) %>%
         as.data.frame()
       attr(x, "LexOPS_info") <- NULL
       x
@@ -163,22 +192,25 @@ testthat::test_that("reproducibility", {
   )
   # check order does matter when two splits, with different order of splits
   testthat::expect_false({
+    set.seed(69)
     x <- eg_df %>%
       set_options(id_col = "id") %>%
       control_for(c, -2.5:2.5) %>%
       split_by(e, 0:3 ~ 4:6) %>%
       control_for(d) %>%
       split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-      generate(10, seed = 69, silent = TRUE) %>%
+      generate(10, silent = TRUE) %>%
       as.data.frame()
     attr(x, "LexOPS_info") <- NULL
+
+    set.seed(69)
     y <- eg_df %>%
       set_options(id_col = "id") %>%
       control_for(c, -2.5:2.5) %>%
       split_by(a, -5:-0.1 ~ 0.1:5) %>%
       split_by(e, 0:3 ~ 4:6) %>%
       control_for(d) %>%
-      generate(10, seed = 69, silent = TRUE) %>%
+      generate(10, silent = TRUE) %>%
       as.data.frame()
     attr(y, "LexOPS_info") <- NULL
 
