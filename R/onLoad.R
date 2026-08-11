@@ -20,7 +20,6 @@
   utils::globalVariables("qm")
   utils::globalVariables("wordcloudsize")
   utils::globalVariables("wordcloudalpha")
-  utils::globalVariables("x")
   utils::globalVariables("string")
   utils::globalVariables("PK.Brysbaert")
   utils::globalVariables("LexOPS_cond")
