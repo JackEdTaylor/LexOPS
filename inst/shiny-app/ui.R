@@ -342,6 +342,7 @@ tagList(
                                           box(title = "Random Seed", status = "primary",
                                               collapsible = F, width = 12,
                                               fluidRow(
+                                                  column(12, p("Setting a random seed ensures reproducibility: the same options will produce the same stimuli each time you generate items from the pipeline.")),
                                                   column(12, checkboxInput("preference_use_a_random_seed", "Use a random seed for the Generate Pipeline", FALSE)),
                                                   column(12, numericInput("preference_random_seed", "Random seed value", value = sample(1:2147483647, 1), step = 1, max = 2147483647))
                                               )
