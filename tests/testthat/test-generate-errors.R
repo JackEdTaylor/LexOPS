@@ -69,7 +69,7 @@ testthat::test_that("general errors", {
   testthat::expect_error(
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_random(2) %>%
+      split_random(2, equal_size=TRUE) %>%
       generate(10),
     "No controls defined - see ?LexOPS::generate for example usage of generate()",
     fixed = TRUE

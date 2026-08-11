@@ -339,7 +339,7 @@ testthat::test_that("splits", {
   testthat::expect_equal(
     eg_df %>%
       set_options(id_col = "id") %>%
-      split_random(3) %>%
+      split_random(3, equal_size=TRUE) %>%
       control_for(d) %>%
       generate(4, silent = TRUE) %>%
       nrow(),
@@ -363,7 +363,7 @@ testthat::test_that("splits", {
     eg_df %>%
       set_options(id_col = "id") %>%
       split_by(a, -3:0 ~ 0.25:3) %>%
-      split_random(3) %>%
+      split_random(3, equal_size=TRUE) %>%
       control_for(d) %>%
       generate(4, silent = TRUE) %>%
       dplyr::left_join(
