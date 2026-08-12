@@ -1,9 +1,19 @@
 context("LexOPS::lexops dataset")
 
-# inbuilt dataset ----
+# lexops dataset ----
 testthat::test_that("LexOPS::lexops", {
   # can call lexops and it is dataframe
-  testthat::expect_true(is.data.frame(lexops))
+  testthat::expect_true(
+    if (!requireNamespace("lexopsdata", quietly=TRUE)) {
+      # suppress warning about lexopsdata not being installed
+      suppressWarnings(is.data.frame(lexops))
+    } else {
+      # should still be an (empty) dataframe if not installed
+      is.data.frame(lexops)
+    }
+  )
+  # only run the remaining tests if the lexopsdata package is installed
+  testthat::skip_if_not_installed("lexopsdata")
   # has the expected number of rows
   testthat::expect_true(nrow(lexops)==262532)
   # can run a generate pipeline on the dataframe
