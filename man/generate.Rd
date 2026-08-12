@@ -4,14 +4,7 @@
 \alias{generate}
 \title{Generate stimuli}
 \usage{
-generate(
-  x,
-  n = 20,
-  match_null = "balanced",
-  seed = NA,
-  silent = FALSE,
-  is_shiny = FALSE
-)
+generate(x, n = 20, match_null = "balanced", silent = FALSE, is_shiny = FALSE)
 }
 \arguments{
 \item{x}{A LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
@@ -19,8 +12,6 @@ generate(
 \item{n}{The number of strings per condition (default = 20). Set to \code{"all"} to generate as many as possible.}
 
 \item{match_null}{The condition that words should be matched to. Should be a string indicating condition (e.g. \code{"A1_B2_C1"}), or a string indicating one of the following options: "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition (default), "inclusive" to match each condition within the tolerances to every other condition, "first" for the lowest condition (e.g. \code{"A1"} or \code{"A1_B1_C1_D1"}, etc.), "random" for randomly selected null condition each iteration.}
-
-\item{seed}{An integer specifying the random seed, allowing reproduction of exact stimuli lists. If \code{NA}, will not set the seed. Default is \code{NA}.}
 
 \item{silent}{Logical: should output to the console (via \code{cat()}) be suppressed? Default is FALSE.}
 
@@ -30,7 +21,7 @@ generate(
 Returns the generated stimuli.
 }
 \description{
-Generates the stimuli from the data frame after it has been passed through \code{split_by()}, and optionally, \code{control_for()}. Will generate \code{n} items per condition. If <\code{n} items can be generated, will generate as many as possible given the experiment's design. Can be reproducible with \code{seed} argument.
+Generates the stimuli from the data frame after it has been passed through \code{split_by()}, and optionally, \code{control_for()}. Will generate \code{n} items per condition. If <\code{n} items can be generated, will generate as many as possible given the experiment's design.
 }
 \examples{
 \dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
