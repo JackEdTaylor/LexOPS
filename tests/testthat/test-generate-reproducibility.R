@@ -53,7 +53,7 @@ testthat::test_that("reproducibility", {
         control_for(d)
 
       set.seed(42)
-      df_b <- df_a %>%
+      df <- df_a %>%
         generate(10, silent=TRUE)
 
       attributes(df) <- NULL
