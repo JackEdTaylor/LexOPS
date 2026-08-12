@@ -447,7 +447,7 @@ generate.find_matches <- function(df, target, vars, matchCond, id_col, cond_col)
   df_matches_filt
 }
 
-# function to check whether the matches are inclusive (neceessary if match_null = "inclusive")
+# function to check whether the matches are inclusive (necessary if match_null = "inclusive")
 # This treats each possible condition for the current item as the match null for one iteration, and tests that all other words are suitable matches
 # if TRUE, will return the matches unchanged, else will return same vector with all values replaced by NAs
 generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, matchCond, id_col, cond_col) {
