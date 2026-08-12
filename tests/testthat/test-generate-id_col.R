@@ -18,19 +18,19 @@ testthat::test_that("no id_col given", {
   # check that generate still works when there is no id col
   testthat::expect_equal(
     suppressWarnings(
-      eg_df %>%
-        split_by(a, -5:-0.1 ~ 0.1:5) %>%
-        control_for(b, -2.5:2.5) %>%
-        generate(17, silent=TRUE) %>%
+      eg_df |>
+        split_by(a, -5:-0.1 ~ 0.1:5) |>
+        control_for(b, -2.5:2.5) |>
+        generate(17, silent=TRUE) |>
         nrow()
     ),
     17
   )
   # test that including no id_col gives a warning
   testthat::expect_warning(
-    eg_df %>%
-      split_by(a, -5:-0.1 ~ 0.1:5) %>%
-      control_for(b, -2.5:2.5) %>%
+    eg_df |>
+      split_by(a, -5:-0.1 ~ 0.1:5) |>
+      control_for(b, -2.5:2.5) |>
       generate(17, silent=TRUE),
     "No id_col detected; will use current row numbers (after any subsetting).",
     fixed = TRUE
@@ -40,10 +40,10 @@ testthat::test_that("no id_col given", {
     {
       set.seed(42)
       df <- suppressWarnings(
-        eg_df %>%
-          set_options(id_col = "id") %>%
-          split_by(a, -5:-0.00001 ~ 0.00001:5, filter=FALSE) %>%
-          control_for(b, -2.5:2.5) %>%
+        eg_df |>
+          set_options(id_col = "id") |>
+          split_by(a, -5:-0.00001 ~ 0.00001:5, filter=FALSE) |>
+          control_for(b, -2.5:2.5) |>
           generate(10, silent=TRUE)
       )
       attributes(df) <- NULL
@@ -52,9 +52,9 @@ testthat::test_that("no id_col given", {
     {
       set.seed(42)
       df <- suppressWarnings(
-        eg_df %>%
-          split_by(a, -5:-0.00001 ~ 0.00001:5, filter=FALSE) %>%
-          control_for(b, -2.5:2.5) %>%
+        eg_df |>
+          split_by(a, -5:-0.00001 ~ 0.00001:5, filter=FALSE) |>
+          control_for(b, -2.5:2.5) |>
           generate(10, silent=TRUE)
       )
       attributes(df) <- NULL

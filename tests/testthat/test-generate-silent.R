@@ -18,60 +18,60 @@ testthat::test_that("silent_option", {
   # check that printing to console works as normal for n = x when silent = FALSE
   testthat::expect_gt(
     capture.output({
-      x <- eg_df %>%
-        set_options(id_col = "id") %>%
-        split_by(a, -5:-0.1 ~ 0.1:5) %>%
-        control_for(b, -2.5:2.5) %>%
-        control_for(c, -2.5:2.5) %>%
-        control_for(d) %>%
+      x <- eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.1 ~ 0.1:5) |>
+        control_for(b, -2.5:2.5) |>
+        control_for(c, -2.5:2.5) |>
+        control_for(d) |>
         generate(10)
-    }) %>%
-      nchar() %>%
+    }) |>
+      nchar() |>
       sum(),
     0
   )
   # check that printing to console works as normal for n = "all" when silent = FALSE
   testthat::expect_gt(
     capture.output({
-      x <- eg_df %>%
-        set_options(id_col = "id") %>%
-        split_by(a, -5:-0.1 ~ 0.1:5) %>%
-        control_for(b, -2.5:2.5) %>%
-        control_for(c, -2.5:2.5) %>%
-        control_for(d) %>%
+      x <- eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.1 ~ 0.1:5) |>
+        control_for(b, -2.5:2.5) |>
+        control_for(c, -2.5:2.5) |>
+        control_for(d) |>
         generate("all", match_null = "random")
-    }) %>%
-      nchar() %>%
+    }) |>
+      nchar() |>
       sum(),
     0
   )
   # check that the silent option works for n = x
   testthat::expect_equal(
     capture.output({
-      x <- eg_df %>%
-        set_options(id_col = "id") %>%
-        split_by(a, -5:-0.1 ~ 0.1:5) %>%
-        control_for(b, -2.5:2.5) %>%
-        control_for(c, -2.5:2.5) %>%
-        control_for(d) %>%
+      x <- eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.1 ~ 0.1:5) |>
+        control_for(b, -2.5:2.5) |>
+        control_for(c, -2.5:2.5) |>
+        control_for(d) |>
         generate(10, silent = TRUE)
-    }) %>%
-      nchar() %>%
+    }) |>
+      nchar() |>
       sum(),
     0
   )
   # check that the silent option works for n = "all"
   testthat::expect_equal(
     capture.output({
-      x <- eg_df %>%
-        set_options(id_col = "id") %>%
-        split_by(a, -5:-0.1 ~ 0.1:5) %>%
-        control_for(b, -2.5:2.5) %>%
-        control_for(c, -2.5:2.5) %>%
-        control_for(d) %>%
+      x <- eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.1 ~ 0.1:5) |>
+        control_for(b, -2.5:2.5) |>
+        control_for(c, -2.5:2.5) |>
+        control_for(d) |>
         generate("all", match_null = "random", silent = TRUE)
-    }) %>%
-      nchar() %>%
+    }) |>
+      nchar() |>
       sum(),
     0
   )

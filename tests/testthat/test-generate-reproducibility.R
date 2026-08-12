@@ -19,12 +19,12 @@ testthat::test_that("reproducibility", {
   testthat::expect_identical(
     {
       set.seed(42)
-      df <- eg_df %>%
-        set_options(id_col = "id") %>%
-        split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-        control_for(b, -2.5:2.5) %>%
-        control_for(c, -2.5:2.5) %>%
-        control_for(d) %>%
+      df <- eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.0001 ~ 0.0001:5) |>
+        control_for(b, -2.5:2.5) |>
+        control_for(c, -2.5:2.5) |>
+        control_for(d) |>
         generate(10, silent=TRUE)
       attributes(df) <- NULL
       df
@@ -45,15 +45,15 @@ testthat::test_that("reproducibility", {
   testthat::expect_identical(
     {
       set.seed(42)
-      df_a <- eg_df %>%
-        set_options(id_col = "id") %>%
-        split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-        split_random(2, equal_size=TRUE) %>%
-        control_for(c, -2.5:2.5) %>%
+      df_a <- eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.0001 ~ 0.0001:5) |>
+        split_random(2, equal_size=TRUE) |>
+        control_for(c, -2.5:2.5) |>
         control_for(d)
 
       set.seed(42)
-      df <- df_a %>%
+      df <- df_a |>
         generate(10, silent=TRUE)
 
       attributes(df) <- NULL
@@ -61,12 +61,12 @@ testthat::test_that("reproducibility", {
     },
     {
       # internal seed code from v0.4.0
-      # df <- eg_df %>%
-      #   set_options(id_col = "id") %>%
-      #   split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-      #   split_random(2, equal_size=TRUE, seed=42) %>%
-      #   control_for(c, -2.5:2.5) %>%
-      #   control_for(d) %>%
+      # df <- eg_df |>
+      #   set_options(id_col = "id") |>
+      #   split_by(a, -5:-0.0001 ~ 0.0001:5) |>
+      #   split_random(2, equal_size=TRUE, seed=42) |>
+      #   control_for(c, -2.5:2.5) |>
+      #   control_for(d) |>
       #   generate(10, seed=42)
       # result from internal seed method using v0.4.0
       df <- data.frame(
@@ -85,22 +85,22 @@ testthat::test_that("reproducibility", {
   testthat::expect_identical(
     {
       set.seed(42)
-      eg_df %>%
-        set_options(id_col = "id") %>%
-        split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-        control_for(b, -2.5:2.5) %>%
-        control_for(c, -2.5:2.5) %>%
-        control_for(d) %>%
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.0001 ~ 0.0001:5) |>
+        control_for(b, -2.5:2.5) |>
+        control_for(c, -2.5:2.5) |>
+        control_for(d) |>
         generate(10, silent = TRUE)
     },
     {
       set.seed(42)
-      eg_df %>%
-        set_options(id_col = "id") %>%
-        split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-        control_for(b, -2.5:2.5) %>%
-        control_for(c, -2.5:2.5) %>%
-        control_for(d) %>%
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.0001 ~ 0.0001:5) |>
+        control_for(b, -2.5:2.5) |>
+        control_for(c, -2.5:2.5) |>
+        control_for(d) |>
         generate(10, silent = TRUE)
     }
   )
@@ -108,22 +108,22 @@ testthat::test_that("reproducibility", {
   testthat::expect_identical(
     {
       set.seed(42)
-      eg_df %>%
-        set_options(id_col = "id") %>%
-        split_by("a", list(c(-5, -0.0001), c(0.0001, 5)), standard_eval = TRUE) %>%
-        control_for("b", c(-2.5, 2.5), standard_eval = TRUE) %>%
-        control_for("c", c(-2.5, 2.5), standard_eval = TRUE) %>%
-        control_for("d", standard_eval = TRUE) %>%
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by("a", list(c(-5, -0.0001), c(0.0001, 5)), standard_eval = TRUE) |>
+        control_for("b", c(-2.5, 2.5), standard_eval = TRUE) |>
+        control_for("c", c(-2.5, 2.5), standard_eval = TRUE) |>
+        control_for("d", standard_eval = TRUE) |>
         generate(10, silent = TRUE)
     },
     {
       set.seed(42)
-      eg_df %>%
-        set_options(id_col = "id") %>%
-        split_by("a", list(c(-5, -0.0001), c(0.0001, 5)), standard_eval = TRUE) %>%
-        control_for("b", c(-2.5, 2.5), standard_eval = TRUE) %>%
-        control_for("c", c(-2.5, 2.5), standard_eval = TRUE) %>%
-        control_for("d", standard_eval = TRUE) %>%
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by("a", list(c(-5, -0.0001), c(0.0001, 5)), standard_eval = TRUE) |>
+        control_for("b", c(-2.5, 2.5), standard_eval = TRUE) |>
+        control_for("c", c(-2.5, 2.5), standard_eval = TRUE) |>
+        control_for("d", standard_eval = TRUE) |>
         generate(10, silent = TRUE)
     }
   )
@@ -131,22 +131,22 @@ testthat::test_that("reproducibility", {
   testthat::expect_identical(
     {
       set.seed(42)
-      eg_df %>%
-        set_options(id_col = "id") %>%
-        split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-        control_for(b, -2.5:2.5) %>%
-        control_for(c, -2.5:2.5) %>%
-        control_for(d) %>%
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.0001 ~ 0.0001:5) |>
+        control_for(b, -2.5:2.5) |>
+        control_for(c, -2.5:2.5) |>
+        control_for(d) |>
         generate(10, silent = TRUE)
     },
     {
       set.seed(42)
-      eg_df %>%
-        set_options(id_col = "id") %>%
-        split_by("a", list(c(-5, -0.0001), c(0.0001, 5)), standard_eval = TRUE) %>%
-        control_for("b", c(-2.5, 2.5), standard_eval = TRUE) %>%
-        control_for("c", c(-2.5, 2.5), standard_eval = TRUE) %>%
-        control_for("d", standard_eval = TRUE) %>%
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by("a", list(c(-5, -0.0001), c(0.0001, 5)), standard_eval = TRUE) |>
+        control_for("b", c(-2.5, 2.5), standard_eval = TRUE) |>
+        control_for("c", c(-2.5, 2.5), standard_eval = TRUE) |>
+        control_for("d", standard_eval = TRUE) |>
         generate(10, silent = TRUE)
     }
   )
@@ -154,22 +154,22 @@ testthat::test_that("reproducibility", {
   testthat::expect_identical(
     {
       set.seed(42)
-      eg_df %>%
-        set_options(id_col = "id") %>%
-        split_by("a", list(c(-5, -0.0001), c(0.0001, 5)), standard_eval = TRUE) %>%
-        control_for(b, -2.5:2.5) %>%
-        control_for("c", c(-2.5, 2.5), standard_eval = TRUE) %>%
-        control_for(d) %>%
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by("a", list(c(-5, -0.0001), c(0.0001, 5)), standard_eval = TRUE) |>
+        control_for(b, -2.5:2.5) |>
+        control_for("c", c(-2.5, 2.5), standard_eval = TRUE) |>
+        control_for(d) |>
         generate(10, silent = TRUE)
     },
     {
       set.seed(42)
-      eg_df %>%
-        set_options(id_col = "id") %>%
-        split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-        control_for("b", c(-2.5, 2.5), standard_eval = TRUE) %>%
-        control_for(c, -2.5:2.5) %>%
-        control_for("d", standard_eval = TRUE) %>%
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.0001 ~ 0.0001:5) |>
+        control_for("b", c(-2.5, 2.5), standard_eval = TRUE) |>
+        control_for(c, -2.5:2.5) |>
+        control_for("d", standard_eval = TRUE) |>
         generate(10, silent = TRUE)
     }
   )
@@ -177,26 +177,26 @@ testthat::test_that("reproducibility", {
   testthat::expect_identical(
     {
       set.seed(69)
-      x <- eg_df %>%
-        set_options(id_col = "id") %>%
-        split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-        control_for(b, -2.5:2.5) %>%
-        control_for(c, -2.5:2.5) %>%
-        control_for(d) %>%
-        generate(10, silent = TRUE) %>%
+      x <- eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.0001 ~ 0.0001:5) |>
+        control_for(b, -2.5:2.5) |>
+        control_for(c, -2.5:2.5) |>
+        control_for(d) |>
+        generate(10, silent = TRUE) |>
         as.data.frame()
       attr(x, "LexOPS_info") <- NULL
       x
     },
     {
       set.seed(69)
-      x <- eg_df %>%
-        set_options(id_col = "id") %>%
-        control_for(d) %>%
-        control_for(b, -2.5:2.5) %>%
-        control_for(c, -2.5:2.5) %>%
-        split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-        generate(10, silent = TRUE) %>%
+      x <- eg_df |>
+        set_options(id_col = "id") |>
+        control_for(d) |>
+        control_for(b, -2.5:2.5) |>
+        control_for(c, -2.5:2.5) |>
+        split_by(a, -5:-0.0001 ~ 0.0001:5) |>
+        generate(10, silent = TRUE) |>
         as.data.frame()
       attr(x, "LexOPS_info") <- NULL
       x
@@ -206,26 +206,26 @@ testthat::test_that("reproducibility", {
   testthat::expect_identical(
     {
       set.seed(69)
-      x <- eg_df %>%
-        set_options(id_col = "id") %>%
-        control_for(c, -2.5:2.5) %>%
-        split_by(e, 0:3 ~ 4:6) %>%
-        control_for(d) %>%
-        split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-        generate(10, silent = TRUE) %>%
+      x <- eg_df |>
+        set_options(id_col = "id") |>
+        control_for(c, -2.5:2.5) |>
+        split_by(e, 0:3 ~ 4:6) |>
+        control_for(d) |>
+        split_by(a, -5:-0.0001 ~ 0.0001:5) |>
+        generate(10, silent = TRUE) |>
         as.data.frame()
       attr(x, "LexOPS_info") <- NULL
       x
     },
     {
       set.seed(69)
-      x <- eg_df %>%
-        set_options(id_col = "id") %>%
-        control_for(c, -2.5:2.5) %>%
-        split_by(e, 0:3 ~ 4:6) %>%
-        split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-        control_for(d) %>%
-        generate(10, silent = TRUE) %>%
+      x <- eg_df |>
+        set_options(id_col = "id") |>
+        control_for(c, -2.5:2.5) |>
+        split_by(e, 0:3 ~ 4:6) |>
+        split_by(a, -5:-0.0001 ~ 0.0001:5) |>
+        control_for(d) |>
+        generate(10, silent = TRUE) |>
         as.data.frame()
       attr(x, "LexOPS_info") <- NULL
       x
@@ -234,24 +234,24 @@ testthat::test_that("reproducibility", {
   # check order does matter when two splits, with different order of splits
   testthat::expect_false({
     set.seed(69)
-    x <- eg_df %>%
-      set_options(id_col = "id") %>%
-      control_for(c, -2.5:2.5) %>%
-      split_by(e, 0:3 ~ 4:6) %>%
-      control_for(d) %>%
-      split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
-      generate(10, silent = TRUE) %>%
+    x <- eg_df |>
+      set_options(id_col = "id") |>
+      control_for(c, -2.5:2.5) |>
+      split_by(e, 0:3 ~ 4:6) |>
+      control_for(d) |>
+      split_by(a, -5:-0.0001 ~ 0.0001:5) |>
+      generate(10, silent = TRUE) |>
       as.data.frame()
     attr(x, "LexOPS_info") <- NULL
 
     set.seed(69)
-    y <- eg_df %>%
-      set_options(id_col = "id") %>%
-      control_for(c, -2.5:2.5) %>%
-      split_by(a, -5:-0.1 ~ 0.1:5) %>%
-      split_by(e, 0:3 ~ 4:6) %>%
-      control_for(d) %>%
-      generate(10, silent = TRUE) %>%
+    y <- eg_df |>
+      set_options(id_col = "id") |>
+      control_for(c, -2.5:2.5) |>
+      split_by(a, -5:-0.1 ~ 0.1:5) |>
+      split_by(e, 0:3 ~ 4:6) |>
+      control_for(d) |>
+      generate(10, silent = TRUE) |>
       as.data.frame()
     attr(y, "LexOPS_info") <- NULL
 
