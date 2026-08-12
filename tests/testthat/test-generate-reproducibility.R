@@ -40,6 +40,47 @@ testthat::test_that("reproducibility", {
       df
     }
   )
+  # check that using the same external seed twice can reproduce the older internal seeds' results when split_random() is used
+  # (useful if users want to force newer versions of LexOPS to reproduce older results)
+  testthat::expect_identical(
+    {
+      set.seed(42)
+      df_a <- eg_df %>%
+        set_options(id_col = "id") %>%
+        split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
+        split_random(2, equal_size=TRUE) %>%
+        control_for(c, -2.5:2.5) %>%
+        control_for(d)
+
+      set.seed(42)
+      df_b <- df_a %>%
+        generate(10, silent=TRUE)
+
+      attributes(df) <- NULL
+      df
+    },
+    {
+      # internal seed code from v0.4.0
+      # df <- eg_df %>%
+      #   set_options(id_col = "id") %>%
+      #   split_by(a, -5:-0.0001 ~ 0.0001:5) %>%
+      #   split_random(2, equal_size=TRUE, seed=42) %>%
+      #   control_for(c, -2.5:2.5) %>%
+      #   control_for(d) %>%
+      #   generate(10, seed=42)
+      # result from internal seed method using v0.4.0
+      df <- data.frame(
+        item_nr = 1:10,
+        A1_B1 = c("24", "100", "6", "37", "84", "14", "10", "99", "75", "81"),
+        A1_B2 = c("42", "28", "91", "3", "60", "38", "97", "26", "35", "34"),
+        A2_B1 = c("8", "85", "51", "53", "71", "15", "63", "93", "5", "76"),
+        A2_B2 = c("86", "21", "64", "89", "50", "33", "95", "47", "20", "4"),
+        match_null = c("A2_B2", "A1_B2", "A2_B2", "A1_B2", "A1_B1", "A1_B1", "A2_B2", "A1_B1", "A2_B1", "A2_B1")
+      )
+      attributes(df) <- NULL
+      df
+    }
+  )
   # non-standard vs. non-standard (seed test)
   testthat::expect_identical(
     {
