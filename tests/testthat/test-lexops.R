@@ -6,9 +6,9 @@ testthat::test_that("LexOPS::lexops", {
   testthat::expect_true(
     if (!requireNamespace("lexopsdata", quietly=TRUE)) {
       # suppress warning about lexopsdata not being installed
+      # (should still be an (empty) dataframe if not installed)
       suppressWarnings(is.data.frame(lexops))
     } else {
-      # should still be an (empty) dataframe if not installed
       is.data.frame(lexops)
     }
   )
