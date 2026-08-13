@@ -43,6 +43,28 @@ testthat::test_that("splits", {
     10
   )
 
+  # test that categorical splits can be either quoted or unquoted, and this doesn't affect results
+  testthat::expect_equal(
+    {
+      set.seed(99)
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by(d, "a" ~ "b") |>
+        control_for(b, -2.5:2.5) |>
+        control_for(c, -2.5:2.5) |>
+        generate(10, silent=TRUE)
+    },
+    {
+      set.seed(99)
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by(d, a ~ b) |>
+        control_for(b, -2.5:2.5) |>
+        control_for(c, -2.5:2.5) |>
+        generate(10, silent=TRUE)
+    }
+  )
+
   # test that exact integer splits are applied correctly
   testthat::expect_equal(
     eg_df |>
