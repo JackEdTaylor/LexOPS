@@ -43,7 +43,7 @@ testthat::test_that("splits", {
     10
   )
 
-  # test that categorical splits can be either quoted or unquoted, and this doesn't affect results
+  # test that categorical splits' levels can be either quoted or unquoted, and this doesn't affect results
   testthat::expect_equal(
     {
       set.seed(99)
