@@ -2,7 +2,7 @@
 .lexops_data <- function() {
   if (!requireNamespace("lexopsdata", quietly = TRUE)) {
     warning(
-      "To use the lexops dataset, please install the lexopsdata package:\npak::pkg_install(\"JackEdTaylor/lexopsdata\")"
+      "To use the lexops dataset, please install the lexopsdata package:\npak::pkg_install(\"JackEdTaylor/lexopsdata@*release\")"
     )
     # return empty dataframe if unavailable
     return(data.frame())

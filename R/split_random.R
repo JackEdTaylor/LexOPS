@@ -29,7 +29,7 @@ split_random <- function(x, nlevels = 2, equal_size = FALSE){
 
   # if the dataframe is empty, return an error and suggest installing lexops
   if (rlang::is_empty(df)) {
-    stop("Dataframe in x is empty! If you are trying to use the lexops dataset, ensure it is installed:\npak::pkg_install(\"JackEdTaylor/lexopsdata\")")
+    stop("Dataframe in x is empty! If you are trying to use the lexops dataset, ensure it is installed:\npak::pkg_install(\"JackEdTaylor/lexopsdata@*release\")")
   }
 
   # get pipeline info
