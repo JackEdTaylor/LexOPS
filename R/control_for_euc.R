@@ -57,6 +57,11 @@ control_for_euc <- function(x, vars, tol, name = NA, scale = TRUE, center = TRUE
     df <- x
   }
 
+  # if the dataframe is empty, return an error and suggest installing lexops
+  if (rlang::is_empty(df)) {
+    stop("Dataframe in x is empty! If you are trying to use the lexops dataset, ensure it is installed:\npak::pkg_install(\"JackEdTaylor/lexopsdata\")")
+  }
+
   control <- if (standard_eval) {
     if (is.list(levels)) {
       prepend(tol, vars)

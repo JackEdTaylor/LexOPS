@@ -64,6 +64,11 @@ control_for_map <- function(x, fun, var, tol = NA, name = NA, standard_eval = FA
     df <- x
   }
 
+  # if the dataframe is empty, return an error and suggest installing lexops
+  if (rlang::is_empty(df)) {
+    stop("Dataframe in x is empty! If you are trying to use the lexops dataset, ensure it is installed:\npak::pkg_install(\"JackEdTaylor/lexopsdata\")")
+  }
+
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
   # check the variable specified in var is in the dataframe
