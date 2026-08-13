@@ -18,19 +18,26 @@ library(LexOPS)
 
 <!-- badges: start -->
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
-[![Version: 0.4.0](https://img.shields.io/badge/version-0.4.0-blue.svg)](https://github.com/JackEdTaylor/LexOPS/releases)
+[![Version: 0.5.0](https://img.shields.io/badge/version-0.5.0-blue.svg)](https://github.com/JackEdTaylor/LexOPS/releases)
 [![DOI: 10.3758/s13428-020-01389-1](https://zenodo.org/badge/DOI/10.3758/s13428-020-01389-1.svg)](https://doi.org/10.3758/s13428-020-01389-1)
 <!-- badges: end -->
 
-LexOPS is an R package for generating matched stimuli for factorial design experiments. You can use the functions on any dataframe, but there is an inbuilt database of example features for English words for psycholinguistics studies in English (`LexOPS::lexops`).
+LexOPS is an R package for generating matched stimuli for factorial design experiments. You can use the functions on any dataframe, but there is an associated database of example features for English words for psycholinguistics studies in English (`LexOPS::lexops`).
 
 ## Installation
 
 LexOPS can be installed as an R package with:
 
 ```{r, eval=FALSE}
-devtools::install_github("JackEdTaylor/LexOPS@*release")
+pak::pkg_install("JackEdTaylor/LexOPS@*release")
 ```
+
+If you want to use the lexops dataset of English words, you will also need the [`lexopsdata` package](https://github.com/JackEdTaylor/lexopsdata):
+
+```{r, eval=FALSE}
+pak::pkg_install("JackEdTaylor/lexopsdata@*release")
+```
+
 
 ## How to Use
 
@@ -40,14 +47,14 @@ devtools::install_github("JackEdTaylor/LexOPS@*release")
 
 ## TL;DR
 
-LexOPS makes it easy to generate matched stimuli in a reproducible way. The functions work on any dataframe, but there is an inbuilt dataset, `LexOPS::lexops`, containing psycholinguistic variables for English words.
+LexOPS makes it easy to generate matched stimuli in a reproducible way. The functions work on any dataframe, but there is an associated dataset, `LexOPS::lexops`, containing psycholinguistic variables for English words.
 
 ### The "Generate Pipeline"
 
-The following example pipeline generates 50 words per condition (200 in total), for a study with a 2 x 2, syllables (1, 2) by concreteness (low, high) design. Words are matched by length exactly, and by word frequency within a tolerance of ±0.2 Zipf.
+The following example pipeline takes variables from the [lexops dataset](https://github.com/JackEdTaylor/lexopsdata). It generates 50 words per condition (200 in total), for a study with a 2 x 2, syllables (1, 2) by concreteness (low, high) design. Words are matched by length exactly, and by word frequency within a tolerance of ±0.2 Zipf.
 
 ```{r, include=FALSE}
-set.seed(100)
+set.seed(99)
 ```
 
 ```{r, eval = FALSE}
@@ -56,25 +63,27 @@ library(LexOPS)
 stim <- lexops |>
   split_by(Syllables.CMU, 1:1 ~ 2:2) |>
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
-  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
   control_for(Length) |>
-  generate(n = 50, match_null = "balanced")
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
+  generate(n = 50, match_null = "inclusive")
 ```
 
 ```{r, warning = FALSE, echo = FALSE}
+# if (!requireNamespace("lexopsdata")) pak::pkg_install("JackEdTaylor/lexopsdata@*release")
+
 stim <- lexops |>
   split_by(Syllables.CMU, 1:1 ~ 2:2) |>
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
-  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
   control_for(Length) |>
-  generate(n = 50, match_null = "balanced", silent = TRUE)
-cat(sprintf("Generated 50/50 (100%%). 157 total iterations, 0.32 success rate.\n"))  # pseudoprint progress
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
+  generate(n = 50, match_null = "inclusive", silent = TRUE)
+cat(sprintf("Generated 50/50 (100%%). 245 total iterations, 0.20 success rate.\n"))  # pseudoprint progress
 ```
 
 A preview of what was generated:
 
 ```{r}
-# create a table of the first 5 rows of the output
+# show the first 5 rows of the output
 stim |>
   head(5) |>
   knitr::kable()
@@ -111,7 +120,7 @@ LexOPS::run_shiny()
 
 ### Matching on Custom Dataframes
 
-As well as the built-in dataframe `LexOPS::lexops`, you can generate matches from any dataframe object.
+As well as using the [lexops dataset](https://github.com/JackEdTaylor/lexopsdata), you can generate matches from any dataframe object.
 
 Here is an example using `mtcars`. We pick five automatic and five manual models of car, matched for acceleration (within ±5 `qsec`) and the number of carburetor barrels (`carb`; exactly).
 
