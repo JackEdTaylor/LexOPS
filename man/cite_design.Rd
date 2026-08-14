@@ -18,6 +18,7 @@ A tibble that lists measures and sources of data that should be cited (if known)
 Takes the output from \code{generate()} or \code{long_format()}, and generates a tibble that lists known references that should be cited.
 }
 \examples{
+\dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 
 stim <- lexops |>
   dplyr::filter(PK.Brysbaert >= .75) |>
@@ -27,5 +28,5 @@ stim <- lexops |>
   control_for(Length) |>
   generate(n = 50, match_null = "balanced")
 cite_design(stim)
-
+\dontshow{\}) # examplesIf}
 }

@@ -7,7 +7,7 @@
 #'
 #' @return A tibble that lists measures and sources of data that should be cited (if known).
 #'
-#' @examples
+#' @examplesIf rlang::is_installed("lexopsdata")
 #'
 #' stim <- lexops |>
 #'   dplyr::filter(PK.Brysbaert >= .75) |>
