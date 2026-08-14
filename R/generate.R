@@ -377,7 +377,7 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
 }
 
 # function to check supplied arguments makes sense
-generate.check <- function(df, n, match_null, id_col, cond_col, is_shiny, lp_info)
+generate.check <- function(df, n, match_null, id_col, cond_col, is_shiny, lp_info) {
 
   # check that id_col uniquely identifies the rows
   if (length(unique(df[[id_col]])) != nrow(df)) stop("LexOPS assumes that id_col uniquely identifies the rows")
