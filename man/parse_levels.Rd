@@ -2,7 +2,7 @@
 % Please edit documentation in R/parsers.R
 \name{parse_levels}
 \alias{parse_levels}
-\title{A non-standard evaluation parser}
+\title{A non-standard evaluation parser for levels (e.g., for \code{split_by()})}
 \usage{
 parse_levels(var, levels = NA)
 }
@@ -15,7 +15,7 @@ parse_levels(var, levels = NA)
 Returns a list object in the form \code{list("column_name", c(1, 2), c(3, 4), c(5, 6))}.
 }
 \description{
-This is just a handy function I use for parsing two non-standard variables, a column name and associated tolerances/levels, into a single list object.
+A non-standard evaluation parser for levels (e.g., for \code{split_by()})
 }
 \examples{
 

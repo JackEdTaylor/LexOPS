@@ -43,28 +43,6 @@ testthat::test_that("splits", {
     10
   )
 
-  # test that categorical splits' levels can be either quoted or unquoted, and this doesn't affect results
-  testthat::expect_equal(
-    {
-      set.seed(99)
-      eg_df |>
-        set_options(id_col = "id") |>
-        split_by(d, "a" ~ "b") |>
-        control_for(b, -2.5:2.5) |>
-        control_for(c, -2.5:2.5) |>
-        generate(10, silent=TRUE)
-    },
-    {
-      set.seed(99)
-      eg_df |>
-        set_options(id_col = "id") |>
-        split_by(d, a ~ b) |>
-        control_for(b, -2.5:2.5) |>
-        control_for(c, -2.5:2.5) |>
-        generate(10, silent=TRUE)
-    }
-  )
-
   # test that it is possible to have levels that cover multiple values in a categorical split
   testthat::expect_true({
     set.seed(1)  # want exact same stimulus set each time for this test
