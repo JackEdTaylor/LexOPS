@@ -382,6 +382,9 @@ generate.check <- function(df, n, match_null, id_col, cond_col, is_shiny, lp_inf
   # check that id_col uniquely identifies the rows
   if (length(unique(df[[id_col]])) != nrow(df)) stop("LexOPS assumes that id_col uniquely identifies the rows")
 
+  # warn about coercion if column id_col is a factor
+  if (is.factor(df[[id_col]])) warning(sprintf("id_col '%s' is a factor; will be coerced to character vector representation of factor levels", id_col))
+
   # check n is a number or expected string
   if (!is.numeric(n) & n != "all") stop(sprintf('n must be numeric or a string of value "all"'))
 
