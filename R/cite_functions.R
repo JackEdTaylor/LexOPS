@@ -1,6 +1,6 @@
 #' Generate a citation
 #'
-#' Takes the output from `generate()` or `long_format()`, and generates a tibble that lists known references that should be cited.
+#' Takes the output from `generate()` or `long_format()`, and generates a tibble that lists known references that should be cited. This function will only be useful if you use variables from the lexops dataset (`LexOPS::lexops`) with their original names.
 #'
 #' @param df Output from `generate()` or `long_format()`
 #' @param include A string indicating which variables to include in the citation. This can be those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Alternatively, this can be a character vector of the variables that should be cited, that were in the original dataframe. Default is `"design"`.

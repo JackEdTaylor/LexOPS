@@ -15,7 +15,7 @@ cite_design(df, include = "design")
 A tibble that lists measures and sources of data that should be cited (if known).
 }
 \description{
-Takes the output from \code{generate()} or \code{long_format()}, and generates a tibble that lists known references that should be cited.
+Takes the output from \code{generate()} or \code{long_format()}, and generates a tibble that lists known references that should be cited. This function will only be useful if you use variables from the lexops dataset (\code{LexOPS::lexops}) with their original names.
 }
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
