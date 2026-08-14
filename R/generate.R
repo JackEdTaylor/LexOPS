@@ -377,9 +377,7 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
 }
 
 # function to check supplied arguments makes sense
-generate.check <- function(df, n, match_null, id_col, cond_col, is_shiny, lp_info) {
-  # check id_col is a string
-  if (!is.character(id_col)) stop(sprintf("Expected id_col to be of class string, not %s", class(id_col)))
+generate.check <- function(df, n, match_null, id_col, cond_col, is_shiny, lp_info)
 
   # check that id_col uniquely identifies the rows
   if (length(unique(df[[id_col]])) != nrow(df)) stop("LexOPS assumes that id_col uniquely identifies the rows")
