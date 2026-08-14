@@ -257,4 +257,25 @@ testthat::test_that("reproducibility", {
 
     identical(x, y)
   })
+  # check that trying to provide an internal seed (now deprecated) produces an error
+  testthat::expect_error(
+    eg_df |>
+      set_options(id_col = "id") |>
+      split_by(a, -5:-0.0001 ~ 0.0001:5) |>
+      split_by(e, 0:3 ~ 4:6) |>
+      control_for(c, -2.5:2.5) |>
+      control_for(d) |>
+      generate(10, silent = TRUE, seed = 42),
+    regexp = "The seed argument is deprecated"
+  )
+  # check that trying to provide an internal seed to split_random() also produces an error
+  testthat::expect_error(
+    eg_df |>
+      set_options(id_col = "id") |>
+      split_random(2, equal_size=TRUE, seed=42) |>
+      control_for(c, -2.5:2.5) |>
+      control_for(d) |>
+      generate(10, silent = TRUE),
+    regexp = "The seed argument is deprecated"
+  )
 })

@@ -4,12 +4,14 @@
 \alias{split_random}
 \title{Add a random split to the data.}
 \usage{
-split_random(x, nlevels = 2, equal_size = FALSE)
+split_random(x, nlevels = 2, seed = NA, equal_size = FALSE)
 }
 \arguments{
 \item{x}{A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
 
 \item{nlevels}{An integer, specifying how many levels this random split should have (default = 2).}
+
+\item{seed}{Deprecated: set seeds externally (e.g., \code{set.seed()}).}
 
 \item{equal_size}{Logical; should LexOPS create equal (or as close to equal as possible) numbers of candidates for each level? When \code{FALSE}, will sample N levels with replacement, when \code{TRUE} will sample N rows. Setting to \code{TRUE} is recommended, as it will generally create more candidate matches. Default is \code{FALSE} to avoid altering reproducibility of existing pipelines.}
 }

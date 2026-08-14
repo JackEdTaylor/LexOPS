@@ -5,6 +5,7 @@
 #' @param x A LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
 #' @param n The number of strings per condition (default = 20). Set to `"all"` to generate as many as possible.
 #' @param match_null The condition that words should be matched to. Should be a string indicating condition (e.g. `"A1_B2_C1"`), or a string indicating one of the following options: "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition (default), "inclusive" to match each condition within the tolerances to every other condition, "first" for the lowest condition (e.g. `"A1"` or `"A1_B1_C1_D1"`, etc.), "random" for randomly selected null condition each iteration.
+#' @param seed Deprecated: set seeds externally (e.g., `set.seed()`).
 #' @param silent Logical: should output to the console (via `cat()`) be suppressed? Default is FALSE.
 #' @param is_shiny Allows printing in a shiny context with `shinyjs::html()`. Outputs from the cat() function are stored in the div with id "gen_console". Default is FALSE.
 #'
@@ -86,7 +87,13 @@
 #' @export
 #' @importFrom stats setNames
 
-generate <- function(x, n=20, match_null = "balanced", silent = FALSE, is_shiny = FALSE) {
+generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE, is_shiny = FALSE) {
+
+  # give informative error if the user tries to provide a seed
+  if (!is.na(seed)) {
+    stop("The seed argument is deprecated. Seeds are now set externally. For more information see https://github.com/JackEdTaylor/LexOPS/releases/tag/0.5.0")
+  }
+
   if (is_shiny) {
     # if in a shiny context, replace the base cat() function with one which captures the console output
     cat <- function(str) shinyjs::html("gen_console", sprintf("%s", str))
