@@ -53,6 +53,22 @@ testthat::test_that("parse_ellipsis()", {
       "character2"
     )
   )
+  # passing a single value stores just that value as the second element
+  testthat::expect_equal(
+    parse_ellipsis(substitute(c(character1 = "value1"))),
+    list(
+      c("character1", "value1")
+    )
+  )
+  # passing a single value works for numerics too
+  testthat::expect_equal(
+    parse_ellipsis(substitute(c(numeric1 = 8.65, numeric2 = 9/10, numeric3 = 4))),
+    list(
+      c("numeric1", 8.65),
+      c("numeric2", 0.9),
+      c("numeric3", 4)
+    )
+  )
 })
 
 # parse_unvectorise() ----
