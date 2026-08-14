@@ -65,6 +65,24 @@ testthat::test_that("splits", {
     }
   )
 
+  # test that it is possible to have levels that cover multiple values in a categorical split
+  testthat::expect_true({
+    set.seed(1)  # want exact same stimulus set each time for this test
+    stim <- eg_df |>
+      set_options(id_col = "id") |>
+      split_by(d, "a" ~ c("b", "c")) |>
+      control_for(b, -2.5:2.5) |>
+      control_for(c, -2.5:2.5) |>
+      generate(25, silent=TRUE)
+
+  stim_lf <- long_format(stim)
+
+  A1 <- subset(stim_lf, condition=="A1")
+  A2 <- subset(stim_lf, condition=="A2")
+
+  all(A1$d == "a") & all(c("b", "c") %in% A2$d)
+  })
+
   # test that exact integer splits are applied correctly
   testthat::expect_equal(
     eg_df |>
@@ -356,12 +374,40 @@ testthat::test_that("splits", {
       nrow(),
     4
   )
+})
 
+# random splits ----
+testthat::test_that("random splits", {
   # test that split_random() works
   testthat::expect_equal(
     eg_df |>
       set_options(id_col = "id") |>
       split_random(3, equal_size=TRUE) |>
+      control_for(d) |>
+      generate(4, silent = TRUE) |>
+      nrow(),
+    4
+  )
+
+  # split_random() doesn't need the dataframe to already be a LexOPS pipeline
+  testthat::expect_equal(
+    # suppress warning about no id_col being set/detected
+    suppressWarnings(
+      eg_df |>
+        split_random(3, equal_size=TRUE) |>
+        control_for(d) |>
+        generate(4, silent = TRUE) |>
+        nrow()
+    ),
+    4
+  )
+
+  # can combine multiple split_random()
+  testthat::expect_equal(
+    eg_df |>
+      set_options(id_col = "id") |>
+      split_random(2, equal_size=TRUE) |>
+      split_random(2, equal_size=TRUE) |>
       control_for(d) |>
       generate(4, silent = TRUE) |>
       nrow(),

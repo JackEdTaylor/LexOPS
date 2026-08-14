@@ -15,6 +15,14 @@ eg_df <- data.frame(
 
 # general errors ----
 testthat::test_that("general errors", {
+  # non-LexOPS pipeline objects
+  testthat::expect_error(
+    generate(eg_df, 10),
+    "x must be a LexOPS_pipeline",
+    fixed = TRUE
+  )
+
+  # repeats in the id_col
   testthat::expect_error({
     # randomly repeat between 1 and 5 rows
     n_reps <- sample(1:5, size=1)
@@ -33,6 +41,7 @@ testthat::test_that("general errors", {
     fixed = TRUE
   )
 
+  # non-numeric argument for n
   testthat::expect_error(
     eg_df |>
       set_options(id_col = "id") |>
@@ -45,6 +54,7 @@ testthat::test_that("general errors", {
     fixed = TRUE
   )
 
+  # unknown match_null argument
   testthat::expect_error(
     eg_df |>
       set_options(id_col = "id") |>
@@ -57,6 +67,7 @@ testthat::test_that("general errors", {
     fixed = TRUE
   )
 
+  # only a split_by()
   testthat::expect_error(
     eg_df |>
       set_options(id_col = "id") |>
@@ -66,6 +77,7 @@ testthat::test_that("general errors", {
     fixed = TRUE
   )
 
+  # only a split_random()
   testthat::expect_error(
     eg_df |>
       set_options(id_col = "id") |>
@@ -75,6 +87,7 @@ testthat::test_that("general errors", {
     fixed = TRUE
   )
 
+  # only control_for()
   testthat::expect_error(
     eg_df |>
       set_options(id_col = "id") |>
@@ -86,6 +99,7 @@ testthat::test_that("general errors", {
     fixed = TRUE
   )
 
+  # only control_for_euc()
   testthat::expect_error(
     eg_df |>
       set_options(id_col = "id") |>
@@ -94,4 +108,5 @@ testthat::test_that("general errors", {
     "No splits defined - see ?LexOPS::generate for example usage of generate()",
     fixed = TRUE
   )
+
 })

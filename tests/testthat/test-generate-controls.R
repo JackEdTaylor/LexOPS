@@ -294,6 +294,24 @@ testthat::test_that("control_for_map", {
       dplyr::filter(as.numeric(control_map_1) <= 0 & as.numeric(control_map_1) >= -3) |>
       nrow()
   }, 54)
+  # if the function returns the wrong number of outputs, will get an informative error
+  testthat::expect_error(
+    {
+      library(stringdist)
+
+      stringdist2 <- function(...) {
+        out <- stringdist(...)
+        out[1:(length(out)-1)]
+      }
+
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.1 ~ 0.1:5) |>
+        control_for_map(stringdist2, f, 0:2, method="lv") |>
+        generate(36, silent=TRUE)
+    },
+    regexp = "control function '.+' returned length \\d+ but expected 1 or \\d+"
+  )
 })
 
 # control_for_euc ----
@@ -459,4 +477,57 @@ testthat::test_that("control_for_euc", {
       dplyr::filter(gen_euc_dist == man_euc_dist) |>
       nrow()
   }, 20)
+  # test that standard and non-standard evaluation are equivalent
+  testthat::expect_equal(
+    {
+      set.seed(77)
+      x <- eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.1 ~ 0.1:5) |>
+        control_for_euc(
+          c(b, e),
+          0:1.5,
+          name = "gen_euc_dist"
+        ) |>
+        generate(20, silent=TRUE) |>
+        as.data.frame()
+
+      attr(x, "LexOPS_info") <- NULL
+
+      x
+    },
+    {
+      set.seed(77)
+      x <- eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.1 ~ 0.1:5) |>
+        control_for_euc(
+          c("b", "e"),
+          c(0, 1.5),
+          name = "gen_euc_dist",
+          standard_eval = TRUE
+        ) |>
+        generate(20, silent=TRUE) |>
+        as.data.frame()
+
+      attr(x, "LexOPS_info") <- NULL
+
+      x
+    }
+  )
+  # test that control_for_euc() can be the first function in a pipeline
+  testthat::expect_equal(
+    eg_df |>
+      # rename to default id_col
+      dplyr::rename(string = id) |>
+      control_for_euc(
+        c(b, e),
+        0:1.5,
+        name = "gen_euc_dist"
+      ) |>
+      split_by(a, -5:-0.1 ~ 0.1:5) |>
+      generate(20, silent=TRUE) |>
+      nrow(),
+    20
+  )
 })
