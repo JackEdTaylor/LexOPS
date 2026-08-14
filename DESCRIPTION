@@ -26,7 +26,7 @@ Imports:
     scales,
     magrittr
 Suggests:
-    lexopsdata,
+    lexopsdata (>= 0.0.1),
     stringr,
     tidyr,
     tibble,
@@ -50,3 +50,5 @@ Suggests:
 URL: https://JackEdTaylor.github.io/LexOPSdocs/
 BugReports: https://github.com/JackEdTaylor/LexOPS/issues
 Config/roxygen2/version: 8.1.0
+Remotes:  
+    JackEdTaylor/lexopsdata
