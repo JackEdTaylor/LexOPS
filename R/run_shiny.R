@@ -27,37 +27,16 @@ run_shiny <- function(...) {
   if (app_dir == "") {
     stop("Could not find the directory for the LexOPS Shiny App. Try re-installing `LexOPS`.")
   }
-  # check CRAN dependencies
-  shiny_deps <- c("shiny", "shinydashboard", "plotly", "ggwordcloud", "colourpicker", "shinycssloaders", "shinyjs", "viridis", "DT", "readr", "forcats", "stringdist", "dplyr", "tidyr", "tibble", "purrr")
-  shiny_deps_missing <- lapply(shiny_deps, function(pkg) {
-    if (!requireNamespace(pkg, quietly = TRUE)) TRUE else FALSE
-  })
-  # check github dependencies
-  github_deps <- c("lexopsdata" = "http://github.com/JackEdTaylor/lexopsdata")
-  github_deps_missing <- lapply(names(github_deps), function(pkg) {
-    if (!requireNamespace(pkg, quietly = TRUE)) TRUE else FALSE
-  })
-  # if missing any dependencies, stop and tell the user how to install
-  if (any(unlist(shiny_deps_missing))) {
-    deps_vec <- shiny_deps[shiny_deps_missing == TRUE]
-    deps_vec_gh <- github_deps[github_deps_missing == TRUE]
-
-    deps_inst_cran <- if (length(deps_vec)) {
-      sprintf("install.packages(c(%s))", paste(sprintf("\"%s\"", deps_vec), collapse=", "))
-    } else {
-      NULL
+  # check dependencies
+  rlang::check_installed(
+    c("lexopsdata", "shiny", "shinydashboard", "plotly", "ggwordcloud", "colourpicker", "shinycssloaders", "shinyjs", "viridis", "DT", "readr", "forcats", "stringdist", "dplyr", "tidyr", "tibble", "purrr"),
+    reason = "dependencies for the LexOPS shiny app",
+    action = function(pkg, ...) {
+      # use github repository for lexopsdata
+      pkg[pkg=="lexopsdata"] <- "JackEdTaylor/lexopsdata@*release"
+      pak::pkg_install(pkg)
     }
-
-    deps_inst_gh <- if (length(deps_vec_gh)) {
-      sprintf("remotes::install_github(c(%s))", paste(sprintf("\"%s\"", deps_vec_gh), collapse=", "))
-    } else {
-      NULL
-    }
-
-    deps_inst_str <- paste(c(deps_inst_cran, deps_inst_gh), collapse="; ")
-
-    stop(sprintf("You are missing %s packages required by the LexOPS shiny app. Install them with:\n%s", length(deps_vec) + length(deps_vec_gh), deps_inst_str))
-  }
+  )
   # run app
   shiny::runApp(app_dir, ...)
 }
