@@ -1,11 +1,25 @@
-# function to load the lexops dataset if installed, or else give an error with installation instructions
+# function to return the lexops dataset if installed
 .lexops_data <- function() {
-  if (!rlang::is_installed("lexopsdata")) {
-    warning(
-      "To use the lexops dataset, please install the lexopsdata package:\npak::pkg_install(\"JackEdTaylor/lexopsdata@*release\")"
+  if (rlang::is_interactive()) {
+    # if running interactively, prompt to install if missing
+    rlang::check_installed(
+      "lexopsdata",
+      reason = "to use the lexops dataset",
+      action = function(pkg, ...) {
+        # use github repository for lexopsdata
+        pkg[pkg=="lexopsdata"] <- "JackEdTaylor/lexopsdata@*release"
+        pak::pkg_install(pkg)
+      }
     )
-    # return empty dataframe if unavailable
-    return(data.frame())
+  } else {
+    # if not running interactively, give a warning and return an empty dataframe if missing
+    if (!rlang::is_installed("lexopsdata")) {
+      warning(
+        "To use the lexops dataset, please install the lexopsdata package:\npak::pkg_install(\"JackEdTaylor/lexopsdata@*release\")"
+      )
+      # return empty dataframe if unavailable and not in interactive session
+      return(data.frame())
+    }
   }
 
   lexopsdata::lexops

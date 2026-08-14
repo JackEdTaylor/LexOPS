@@ -21,6 +21,7 @@ Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
 Imports:
     rlang,
+    pak,
     ggplot2,
     stats,
     scales,
