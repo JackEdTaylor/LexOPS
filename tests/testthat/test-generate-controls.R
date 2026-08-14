@@ -15,6 +15,23 @@ eg_df <- data.frame(
 
 # controls ----
 testthat::test_that("controls", {
+  # test that a meaningful error is given if something other than a dataframe is passed
+  testthat::expect_error(
+    control_for("uh oh!", d),
+    regexp = "Expected df to be of class data frame, not character",
+    fixed = TRUE
+  )
+  testthat::expect_error(
+    control_for_map("uh oh!", function() {}, d),
+    regexp = "Expected df to be of class data frame, not character",
+    fixed = TRUE
+  )
+  # error from as.LexOPS_pipeline() for control_for_euc(), because of different order of operations
+  testthat::expect_error(
+    control_for_euc("uh oh!", c(a, b), -10:10),
+    regexp = "Expected data.frame object",
+    fixed = TRUE
+  )
   # test that categorical controls are applied correctly
   testthat::expect_equal(
     eg_df |>
