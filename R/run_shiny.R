@@ -30,7 +30,7 @@ run_shiny <- function(...) {
   # check dependencies
   rlang::check_installed(
     c("lexopsdata", "shiny", "shinydashboard", "plotly", "ggwordcloud", "colourpicker", "shinycssloaders", "shinyjs", "viridis", "DT", "readr", "forcats", "stringdist", "dplyr", "tidyr", "tibble", "purrr"),
-    reason = "dependencies for the LexOPS shiny app",
+    reason = "to run the LexOPS shiny app",
     action = function(pkg, ...) {
       # use github repository for lexopsdata
       pkg[pkg=="lexopsdata"] <- "JackEdTaylor/lexopsdata@*release"
