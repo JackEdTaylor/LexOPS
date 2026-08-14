@@ -182,7 +182,7 @@ split_by.factor <- function(df, column, breaks, new_column, prefix, filter){
   if(all(breaks %in% levels(df[[column]]))){
     breaks <- factor(breaks, levels = levels(df[[column]]))
   }else{
-    stop("not all breaks are existing factors")
+    stop("not all breaks are existing factor levels")
   }
 
   df_filter <- data.frame(value = breaks, stringsAsFactors = FALSE)
