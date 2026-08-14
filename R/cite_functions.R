@@ -75,9 +75,7 @@ cite_design <- function(df, include = "design") {
 #' @export
 
 citation_table <- function(cite_vars) {
-  # remove string from cite_vars if present
-  cite_vars <- cite_vars[cite_vars != "string"]
-  # create tibble containing citation info
+  # create dataframe containing citation info
   df <- data.frame(
     var = cite_vars,
     measure = sapply(cite_vars, LexOPS::var_to_measure, first_cite = TRUE, title_caps = TRUE, default = "Custom Measure", standard_eval = TRUE),
