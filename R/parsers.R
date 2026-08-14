@@ -65,6 +65,12 @@ parse_levels <- function(var, levels = NA) {
       } else if (grepl("^[A-Za-z0-9_.-]+$", l_trim)) {
         # bare word: return as string
         l_trim
+      } else if (grepl("^c\\(.*\\)$", l_trim)) {
+        # unquoted strings in a character vector: add quotes and then evaluate the expression
+        l_requoted <- sub("^c\\(", "c(\"", l_trim)
+        l_requoted <- sub("\\)$", "\")", l_requoted)
+        l_requoted <- gsub(",", "\",\"", l_requoted)
+        eval(parse(text = l_requoted))
       } else {
         # fallback to evaluating the expression (e.g., c("a","b"))
         eval(parse(text = l))
