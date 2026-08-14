@@ -29,13 +29,13 @@ set_options <- function(df, id_col = "string", cond_col = "LexOPS_splitCond"){
   }
 
   # check id_col is a character vector
-  if (!is.character(id_col)) {
-    stop("`id_col` must be a character vector")
+  if (!is.character(id_col) || length(id_col)!=1) {
+    stop("`id_col` must be a character vector of length 1")
   }
 
   # check cond_col is a character vector
-  if (!is.character(cond_col)) {
-    stop("`cond_col` must be a character vector")
+  if (!is.character(cond_col) || length(cond_col)!=1) {
+    stop("`cond_col` must be a character vector of length 1")
   }
 
   # add the options to the info
