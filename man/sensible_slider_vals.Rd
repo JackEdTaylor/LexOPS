@@ -25,7 +25,7 @@ A list object, containing the following reccommended argument values for \code{s
 Function for converting a numeric vector into recommended arguments for \code{shiny::sliderInput()}, for sliders in LexOPS.
 }
 \examples{
-\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 
 # for matching by frequency (e.g. control for...)
 #sensible_slider_vals(LexOPS::lexops$Zipf.SUBTLEX_UK, 1, TRUE)

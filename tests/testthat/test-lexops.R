@@ -4,7 +4,7 @@ context("LexOPS::lexops dataset")
 testthat::test_that("LexOPS::lexops", {
   # can call lexops and it is dataframe
   testthat::expect_true(
-    if (!requireNamespace("lexopsdata", quietly=TRUE)) {
+    if (!rlang::is_installed("lexopsdata")) {
       # suppress warning about lexopsdata not being installed
       # (should still be an (empty) dataframe if not installed)
       suppressWarnings(is.data.frame(lexops))

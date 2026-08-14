@@ -20,7 +20,7 @@ Returns the generated stimuli, but converted into long format, containing reques
 Converts the generated stimuli from the \code{generate()} function into long format.
 }
 \examples{
-\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 
 lexops |>
   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) |>

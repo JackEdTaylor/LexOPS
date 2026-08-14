@@ -22,7 +22,7 @@ Returns \code{df}, with details on the variables to be controlled for added to t
 Specifies variables that should be controlled for in the generated stimuli, after splitting. Can be run multiple times to control for multiple variables.
 }
 \examples{
-\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 
 # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables, and control for word frequency
 lexops |>

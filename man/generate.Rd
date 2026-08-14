@@ -33,7 +33,7 @@ Returns the generated stimuli.
 Generates the stimuli from the data frame after it has been passed through \code{split_by()}, and optionally, \code{control_for()}. Will generate \code{n} items per condition. If <\code{n} items can be generated, will generate as many as possible given the experiment's design.
 }
 \examples{
-\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("lexopsdata") & rlang::is_installed("stringdist")) withAutoprint(\{ # examplesIf}
 
 # Generate 20 words per condition, for design with 3 levels of syllables, controlled for frequency
 lexops |>

@@ -9,7 +9,7 @@
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `var` and `levels`. If `TRUE`, `var` should be a character vector referring to a column in `df` (e.g. `"Zipf.SUBTLEX_UK"`), and `levels` should be a list containing multiple vectors of length 2, each specifying the boundaries of one level's bin (e.g. `list(c(1, 3), c(4, 6), c(7, 20))`). Default = `FALSE`.
 #'
 #' @return Returns `df`, with a new column (name defined by `cond_col` argument of `set_options()`) identifying which level of the IV each string belongs to.
-#' @examplesIf requireNamespace(c("lexopsdata"), quietly=TRUE)
+#' @examplesIf rlang::is_installed("lexopsdata")
 #'
 #' # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables
 #' lexops |>

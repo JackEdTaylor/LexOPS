@@ -12,7 +12,7 @@
 #'
 #' @return A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
 #'
-#' @examplesIf requireNamespace(c("lexopsdata"), quietly=TRUE)
+#' @examplesIf rlang::is_installed("lexopsdata")
 #'
 #' stim <- lexops |>
 #'   dplyr::filter(PK.Brysbaert >= .75) |>

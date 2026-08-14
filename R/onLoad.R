@@ -1,6 +1,6 @@
 # function to load the lexops dataset if installed, or else give an error with installation instructions
 .lexops_data <- function() {
-  if (!requireNamespace("lexopsdata", quietly = TRUE)) {
+  if (!rlang::is_installed("lexopsdata")) {
     warning(
       "To use the lexops dataset, please install the lexopsdata package:\npak::pkg_install(\"JackEdTaylor/lexopsdata@*release\")"
     )

@@ -7,7 +7,7 @@
 #' @param include_candids Logical; whether to include data about unused candidates in the result. If `TRUE`, will store whether each word was actually used in column, `is_stim`. Default is `FALSE`.
 #'
 #' @return Returns the generated stimuli, but converted into long format, containing requested variables from the original `df`, and the variables of `item_nr`, `condition`, `euclidean_distance` (from the match_null).
-#' @examplesIf requireNamespace(c("lexopsdata"), quietly=TRUE)
+#' @examplesIf rlang::is_installed("lexopsdata")
 #'
 #' lexops |>
 #'   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) |>

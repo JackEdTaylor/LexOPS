@@ -70,7 +70,7 @@ stim <- lexops |>
 ```
 
 ```{r, warning = FALSE, echo = FALSE}
-# if (!requireNamespace("lexopsdata")) pak::pkg_install("JackEdTaylor/lexopsdata@*release")
+# if (!rlang::is_installed("lexopsdata")) pak::pkg_install("JackEdTaylor/lexopsdata@*release")
 
 stim <- lexops |>
   split_by(Syllables.CMU, 1:1 ~ 2:2) |>

@@ -8,7 +8,7 @@
 #' @param equal_size Logical; should LexOPS create equal (or as close to equal as possible) numbers of candidates for each level? When `FALSE`, will sample N levels with replacement, when `TRUE` will sample N rows. Setting to `TRUE` is recommended, as it will generally create more candidate matches. Default is `FALSE` to avoid altering reproducibility of existing pipelines.
 #'
 #' @return Returns `df`, with a new column (name defined by `cond_col` argument) identifying which level of the randomly generated IV each string belongs to.
-#' @examplesIf requireNamespace(c("lexopsdata"), quietly=TRUE)
+#' @examplesIf rlang::is_installed("lexopsdata")
 #'
 #' # 2 (syllables: few, many) by 2 (random: level 1, level 2) design
 #' lexops |>

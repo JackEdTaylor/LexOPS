@@ -24,7 +24,7 @@ Returns \code{df}, with a new column (name defined by \code{cond_col} argument o
 Specifies splits for one IV for a factorial design. Can be called multiple times for multiple splits.
 }
 \examples{
-\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 
 # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables
 lexops |>

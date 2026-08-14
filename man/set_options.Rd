@@ -20,7 +20,7 @@ Returns \code{df}, with the options stored in the attributes.
 When the first function called in a generate pipeline, allows the user to set options that will be passed to all subsequent functions in the pipeline.
 }
 \examples{
-\dontshow{if (requireNamespace(c("lexopsdata"), quietly=TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 
 # give a df with "word" as the identifying column
 lexops |>
