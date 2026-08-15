@@ -116,6 +116,17 @@ testthat::test_that("control maps errors", {
     regexp = "control_for_map() expects only one tolerance: check there are no tildes (~)",
     fixed = TRUE
   )
+  # informative error is given if the user tries to pass a non-function object as the fun argument
+  testthat::expect_error(
+    {
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.1 ~ 0.1:5) |>
+        control_for_map("uh oh!", f, 0:2)
+    },
+    regexp = "Argument `fun` should be an object of class, 'function'",
+    fixed = TRUE
+  )
 })
 
 # controls ----
