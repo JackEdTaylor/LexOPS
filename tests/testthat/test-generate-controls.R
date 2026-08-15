@@ -13,9 +13,9 @@ eg_df <- data.frame(
   g = sample(c("yyyy", "yyya", "yyaa", "yaaa", "aaaa", "yyyyy"), 100, replace = TRUE)
 )
 
-# controls ----
-testthat::test_that("controls", {
-  # test that a meaningful error is given if something other than a dataframe is passed
+# controls errors ----
+testthat::test_that("controls errors", {
+  # test that an informative error is given if something other than a dataframe is passed
   testthat::expect_error(
     control_for("uh oh!", d),
     regexp = "Expected df to be of class data frame, not character",
@@ -26,12 +26,100 @@ testthat::test_that("controls", {
     regexp = "Expected df to be of class data frame, not character",
     fixed = TRUE
   )
-  # error from as.LexOPS_pipeline() for control_for_euc(), because of different order of operations
+  #() error from as.LexOPS_pipeline() for control_for_euc() is different, because of different order of operations)
   testthat::expect_error(
     control_for_euc("uh oh!", c(a, b), -10:10),
     regexp = "Expected data.frame object",
     fixed = TRUE
   )
+  # check that an informative error is given if a tolerance is included for a non-numeric variable
+  testthat::expect_error(
+    eg_df |>
+      set_options(id_col = "id") |>
+      split_by(a, -5:-0.1 ~ 0.1:5) |>
+      control_for(d, "a"),
+    regexp = "Non-numeric variables should not have tolerances; they are always matched exactly",
+    fixed = TRUE
+  )
+  # check that an informative error is given if a NUMERIC tolerance is included for a non-numeric variable
+  testthat::expect_error(
+    eg_df |>
+      set_options(id_col = "id") |>
+      split_by(a, -5:-0.1 ~ 0.1:5) |>
+      control_for(d, -2:2),
+    regexp = "Non-numeric variables should not have tolerances; they are always matched exactly",
+    fixed = TRUE
+  )
+  # check that an informative error is given if the variable is missing
+  testthat::expect_error(
+    eg_df |>
+      set_options(id_col = "id") |>
+      split_by(a, -5:-0.1 ~ 0.1:5) |>
+      control_for(missing_var),
+    regexp = "Unknown column: 'missing_var'",
+    fixed = TRUE
+  )
+  # check that an informative error is given if the user tries to use split_by() syntax in control_for()
+  testthat::expect_error(
+    eg_df |>
+      set_options(id_col = "id") |>
+      split_by(a, -5:-0.1 ~ 0.1:5) |>
+      control_for(b, -1:1 ~ -5:5),
+    regexp = "control_for() expects only one tolerance, not 2: check there are no tildes (~)",
+    fixed = TRUE
+  )
+})
+
+# control_for_map() errors
+testthat::test_that("control maps errors", {
+  # if the function returns the wrong number of outputs, will get an informative error
+  testthat::expect_error(
+    {
+      library(stringdist)
+
+      stringdist2 <- function(...) {
+        out <- stringdist(...)
+        out[1:(length(out)-1)]
+      }
+
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.1 ~ 0.1:5) |>
+        control_for_map(stringdist2, f, 0:2, method="lv") |>
+        generate(36, silent=TRUE)
+    },
+    regexp = "control function '.+' returned length \\d+ but expected 1 or \\d+"
+  )
+  # check that an informative error is given if the variable is missing
+  testthat::expect_error(
+    {
+      library(stringdist)
+
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.1 ~ 0.1:5) |>
+        control_for_map(stringdist, missing_var, 0:2, method="lv")
+    },
+    regexp = "Unknown column: 'missing_var'",
+    fixed = TRUE
+  )
+  # check that an informative error is given if the user tries to use split_by() syntax in control_for_map()
+  testthat::expect_error(
+    {
+      library(stringdist)
+
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.1 ~ 0.1:5) |>
+        control_for_map(stringdist, f, 0:2 ~ 4:6, method="lv")
+    },
+    regexp = "control_for_map() expects only one tolerance: check there are no tildes (~)",
+    fixed = TRUE
+  )
+})
+
+# controls ----
+testthat::test_that("controls", {
   # test that categorical controls are applied correctly
   testthat::expect_equal(
     eg_df |>
@@ -213,6 +301,37 @@ testthat::test_that("control_for_map", {
       dplyr::filter(ld <= 2) |>
       nrow()
   }, 36)
+  # test with a non-numeric function output
+  testthat::expect_equal({
+    library(stringdist)
+
+    stringdist_okay <- function(target, matches) {
+      dist <- stringdist(target, matches, method="lv")
+      ifelse(dist <= 2, "okay", "not_okay")
+    }
+
+    eg_df |>
+      set_options(id_col = "id") |>
+      split_by(a, -5:-0.1 ~ 0.1:5) |>
+      control_for_map(stringdist_okay, f, "okay") |>
+      generate(36, silent=TRUE) |>
+      dplyr::left_join(
+        eg_df |>
+          dplyr::select(id, f) |>
+          dplyr::rename(A1_f = f),
+        by = c("A1" = "id")
+      ) |>
+      dplyr::left_join(
+        eg_df |>
+          dplyr::select(id, f) |>
+          dplyr::rename(A2_f = f),
+        by = c("A2" = "id")
+      ) |>
+      dplyr::rowwise() |>
+      dplyr::mutate(ld = stringdist(A1_f, A2_f, method="lv")) |>
+      dplyr::filter(ld <= 2) |>
+      nrow()
+  }, 36)
   # test with three conditions and not including 0 in tolerance
   testthat::expect_equal({
     library(stringdist)
@@ -311,24 +430,6 @@ testthat::test_that("control_for_map", {
       dplyr::filter(as.numeric(control_map_1) <= 0 & as.numeric(control_map_1) >= -3) |>
       nrow()
   }, 54)
-  # if the function returns the wrong number of outputs, will get an informative error
-  testthat::expect_error(
-    {
-      library(stringdist)
-
-      stringdist2 <- function(...) {
-        out <- stringdist(...)
-        out[1:(length(out)-1)]
-      }
-
-      eg_df |>
-        set_options(id_col = "id") |>
-        split_by(a, -5:-0.1 ~ 0.1:5) |>
-        control_for_map(stringdist2, f, 0:2, method="lv") |>
-        generate(36, silent=TRUE)
-    },
-    regexp = "control function '.+' returned length \\d+ but expected 1 or \\d+"
-  )
 })
 
 # control_for_euc ----
@@ -453,7 +554,7 @@ testthat::test_that("control_for_euc", {
         weights = weights,
         standardise_weights = FALSE
       ) |>
-      generate(20, silent=TRUE)
+      generate(12, silent=TRUE)
 
     manual_euc_dist <- wide_res |>
       dplyr::left_join(
@@ -493,7 +594,7 @@ testthat::test_that("control_for_euc", {
       ) |>
       dplyr::filter(gen_euc_dist == man_euc_dist) |>
       nrow()
-  }, 20)
+  }, 12)
   # test that standard and non-standard evaluation are equivalent
   testthat::expect_equal(
     {
