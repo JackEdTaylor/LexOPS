@@ -55,5 +55,17 @@ library(stringdist)
 lexops |>
  split_by(AROU.Warriner, 1:3 ~ 7:9) |>
  control_for_map(stringdist, "eSpeak.br_1letter", c(0, 2), standard_eval=TRUE, method="lv")
+
+ # Use a function that returns a non-numeric output
+ library(stringdist)
+
+ stringdist_okay <- function(target, matches) {
+   dist <- stringdist(target, matches, method="lv")
+   ifelse(dist <= 4, "okay", "not_okay")
+ }
+
+ lexops |>
+   split_by(AROU.Warriner, 1:3 ~ 7:9) |>
+   control_for_map(stringdist_okay, string, "not_okay")
 \dontshow{\}) # examplesIf}
 }
