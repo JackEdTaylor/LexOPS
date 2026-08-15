@@ -51,7 +51,7 @@ control_for <- function(x, var, tol = NA, standard_eval = FALSE) {
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
   # check the variable specified in var is in the dataframe
-  if (!var[[1]] %in% colnames(df)) stop(sprintf("'%s' not in df?", var[[1]]))
+  if (!var[[1]] %in% colnames(df)) stop(sprintf("Unknown column: '%s'", var[[1]]))
   # check numeric and non-numeric variables are correctly specified
   if (length(var) > 1) {
     if (length(var)!=2) stop(sprintf("Expected list length of 1 (variable) or 2 (variable, tolerance), not %i.", length(var)))
