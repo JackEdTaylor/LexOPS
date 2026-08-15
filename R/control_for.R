@@ -55,7 +55,7 @@ control_for <- function(x, var, tol = NA, standard_eval = FALSE) {
   # check numeric and non-numeric variables are correctly specified
   if (length(var) > 1) {
     if (length(var)!=2) stop(sprintf("Expected list length of 1 (variable) or 2 (variable, tolerance), not %i.", length(var)))
-    if (!is.numeric(df[[var[[1]]]]) & is.numeric(var[[2]])) stop("Did not expect tolerance for non-numeric variable.")
+    if (!is.numeric(df[[var[[1]]]])) stop("Non-numeric variables should not have tolerances; they are always matched exactly")
   }
   if (length(var)==1 & is.numeric(df[[var[[1]]]])) warning(sprintf("No tolerance given for numeric variable '%s', will control for exactly.", var[[1]]))
 
