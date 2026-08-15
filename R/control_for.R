@@ -96,36 +96,3 @@ control_for <- function(x, var, tol = NA, standard_eval = FALSE) {
 
   lp
 }
-
-# # should throw errors
-#
-# lexops |>
-#   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2))
-#
-# lexops |>
-#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) |>
-#   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2), cond_col = "splitID")
-#
-# lexops |>
-#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) |>
-#   control_for(PoS.SUBTLEX_UK, c(-0.1, 0.1))
-#
-# # should give warning
-#
-# lexops |>
-#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) |>
-#   control_for(Zipf.SUBTLEX_UK, c(-0.2, 0.2)) |>
-#   control_for(Length)
-#
-# # should work
-#
-# lexops |>
-#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) |>
-#   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
-#   control_for(PoS.SUBTLEX_UK)
-#
-# # should be identical output to above
-# lexops |>
-#   split_by(Syllables.CMU, c(1, 3) ~ c(4, 6) ~ c(7, 20)) |>
-#   control_for("Zipf.SUBTLEX_UK", c(-0.2, 0.2), standard_eval = TRUE) |>
-#   control_for("PoS.SUBTLEX_UK", standard_eval = TRUE)
