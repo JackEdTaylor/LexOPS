@@ -67,12 +67,12 @@ control_for_map <- function(x, fun, var, tol = NA, name = NA, standard_eval = FA
   # check the df is a dataframe
   if (!is.data.frame(df)) stop(sprintf("Expected df to be of class data frame, not %s", class(df)))
   # check the variable specified in var is in the dataframe
-  if (!var[[2]] %in% colnames(df)) stop(sprintf("'%s' not in df?", var[[2]]))
+  if (!var[[2]] %in% colnames(df)) stop(sprintf("Unknown column: '%s'", var[[2]]))
   # check fun is of class "function"
   if (!is.function(fun)) stop("Argument `fun` should be an object of class, 'function'.")
   # check numeric and non-numeric variables are correctly specified
   if (length(var) > 2) {
-    if (length(var)!=3) stop(sprintf("Expected list length of 2 (function, variable) or 3 (function, variable, tolerance), not %i.", length(var)))
+    if (length(var)!=3) stop("control_for() expects only one tolerance: check there are no tildes (~)")
   }
 
   # get pipeline info
