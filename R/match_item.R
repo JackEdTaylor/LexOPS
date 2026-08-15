@@ -28,7 +28,7 @@
 #' lexops |>
 #'   match_item("thicket", Length, Zipf.SUBTLEX_UK = -0.2:0.2)
 #'
-#' # The syntax makes matching by multiple variables easiy and readable
+#' # The syntax supports matching by multiple variables
 #' lexops |>
 #'   match_item(
 #'     "elephant",
