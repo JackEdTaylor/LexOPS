@@ -83,8 +83,6 @@ match_item <- function(df = LexOPS::lexops, target, ..., id_col = "string", filt
   }
   # check id_col is a string
   if (!is.character(id_col)) stop(sprintf("Expected id_col to be of class string, not %s", class(id_col)))
-  # check target is a string
-  if (!is.character(target)) stop(sprintf("Expected target to be of class string, not %s", class(target)))
   # check all variables in vars are in the dataframe
   varsPresent <- sapply(vars, function(listobj) listobj[1] %in% colnames(df))
   if (!all(varsPresent)) {
