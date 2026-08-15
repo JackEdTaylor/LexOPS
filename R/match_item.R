@@ -81,8 +81,8 @@ match_item <- function(df = LexOPS::lexops, target, ..., id_col = "string", filt
     warning('"euclidean_distance" column will be ignored, as this is overwritten by `match_item()`')
     df$euclidean_distance <- NULL
   }
-  # check id_col is a string
-  if (!is.character(id_col)) stop(sprintf("Expected id_col to be of class string, not %s", class(id_col)))
+  # check id_col is a character vector
+  if (!is.character(id_col)) stop(sprintf("Expected id_col to be of class character, not %s", class(id_col)))
   # check all variables in vars are in the dataframe
   varsPresent <- sapply(vars, function(listobj) listobj[1] %in% colnames(df))
   if (!all(varsPresent)) {
