@@ -115,8 +115,8 @@ match_item <- function(df = LexOPS::lexops, target, ..., id_col = "string", filt
     )
   }
   # check id_col is a column in df
-  if (!id_col %in% colnames(df)) stop(sprintf("'%s' column not found in df", id_col))
-  # check target word in id_col
+  if (!id_col %in% colnames(df)) stop(sprintf("id_col '%s' not found in df", id_col))
+  # check target item in id_col
   if (!target %in% df[[id_col]]) stop(sprintf("'%s' not found in '%s' column of df", target, id_col))
 
   # get the euclidean distance, and add as a new column, 2nd after the id_col column; all NA if no numeric variables
