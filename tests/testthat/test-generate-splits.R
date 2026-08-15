@@ -460,3 +460,87 @@ testthat::test_that("random splits", {
     4
   )
 })
+
+# split_by() errors ----
+testthat::test_that("split_by() errors", {
+  # ensure that numeric levels are in order
+  testthat::expect_error({
+    # ignore expected warning about missing levels
+    # (because there are no observations for 2 < x < 1)
+    suppressWarnings(
+      eg_df |>
+        split_by(a, 2:1 ~ 2.1:2.5 ~ 3.2:4)
+    )
+  },
+  "lower bounds must be lower than upper bounds",
+  fixed = TRUE
+  )
+
+  # check that the expected warning was indeed what was produced
+  testthat::expect_warning({
+    # ignore expected warning about missing levels
+    # (because there are no observations for 2 < x < 1)
+    tryCatch(
+      eg_df |>
+        split_by(a, 2:1 ~ 2.1:2.5 ~ 3.2:4),
+      error = function(e) {}
+    )
+  },
+  "No entries could be found for some levels. Check all levels of a are possible.",
+  fixed = TRUE
+  )
+
+  # ensure that numeric levels are exclusive
+  testthat::expect_error({
+    eg_df |>
+      split_by(a, -5:0 ~ 0:1 ~ 1.1:5)
+  },
+  "overlapping levels - ensure that no value could fall into multiple levels",
+  fixed = TRUE
+  )
+
+  # test whether non-exclusive levels are still detected when out of order
+  testthat::expect_error({
+    eg_df |>
+      split_by(a, -5:0 ~ 1.1:5 ~ 0:1)
+  },
+  "overlapping levels - ensure that no value could fall into multiple levels",
+  fixed = TRUE
+  )
+
+  # get error when missing categorical levels
+  testthat::expect_error(
+    # suppress expected additional warning about missing levels
+    suppressWarnings(
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by(d, "a" ~ "b" ~ "MISSING")
+    ),
+    regexp = "not all breaks are existing factor levels",
+    fixed = TRUE
+  )
+
+  # get informative warning when missing categorical levels
+  testthat::expect_warning(
+    # suppress expected additional warning about missing levels
+    tryCatch(
+      eg_df |>
+        set_options(id_col = "id") |>
+        split_by(d, "a" ~ "b" ~ "MISSING"),
+      error=function(e){}
+    ),
+    regexp = "No entries could be found for some levels. Check all levels of d are possible.",
+    fixed = TRUE
+  )
+
+  # get informative warning when missing numeric levels
+  testthat::expect_warning(
+    eg_df |>
+      set_options(id_col = "id") |>
+      split_by(a, -2:2 ~ 1000:1005),
+    regexp = "No entries could be found for some levels. Check all levels of a are possible.",
+    fixed = TRUE
+  )
+
+})
+
