@@ -81,12 +81,6 @@ control_for <- function(x, var, tol = NA, standard_eval = FALSE) {
     cond_col_regex <- sprintf("^%s_[A-Z]$", cond_col)
   }
 
-  # check that the conditions are present in the attributes
-  if (is.null(cond_col)) {
-    # if the column containing the condition info is missing and not defined manually, throw error
-    stop("Could not identify split conditions column! Make sure you run split_by() before generate().")
-  }
-
   # add the specified controls to df's attributes
   if (is.null(lp_info$controls)) {
     lp_info$controls <- list(var)
