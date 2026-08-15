@@ -57,8 +57,6 @@ euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, c
     warning("No numeric columns specified in `vars`")
     return(rep(NA, nrow(df)))
   }
-  # check that vars is an expected input
-  if (!is.vector(vars) & all(vars != "all")) stop('Expected vars to be either a vector of column names, or "all"')
   # if vars == "all", change vars to all numeric columns
   if (all(vars == "all")) {
     vars <- colnames(df)[sapply(df, is.numeric)]
