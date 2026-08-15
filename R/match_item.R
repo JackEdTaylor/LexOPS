@@ -71,7 +71,7 @@ match_item <- function(df = LexOPS::lexops, target, ..., id_col = "string", filt
   if (standard_eval) {
     vars <- (...)
   } else {
-    vars <- substitute(c(...)) %>%
+    vars <- substitute(c(...)) |>
       parse_ellipsis()
   }
   # check the df is a dataframe
