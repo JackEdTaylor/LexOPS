@@ -72,7 +72,7 @@ control_for_map <- function(x, fun, var, tol = NA, name = NA, standard_eval = FA
   if (!is.function(fun)) stop("Argument `fun` should be an object of class, 'function'.")
   # check numeric and non-numeric variables are correctly specified
   if (length(var) > 2) {
-    if (length(var)!=3) stop("control_for() expects only one tolerance: check there are no tildes (~)")
+    if (length(var)!=3) stop("control_for_map() expects only one tolerance: check there are no tildes (~)")
   }
 
   # get pipeline info
