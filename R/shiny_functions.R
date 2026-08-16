@@ -4,11 +4,11 @@
 #'
 #' @param box_type A character vector (one of: "primary", "warning", "Success", "danger", and "info"), specifying which kind of box to generate the colour for.
 #'
-#' @return The colour;s hex value.
+#' @return The colour's hex value.
 #'
 #' @examples
 #'
-#' #get_box_colour("primary")
+#' LexOPS:::get_box_colour("primary")
 
 get_box_colour <- function(box_type) {
   switch(box_type,
@@ -37,13 +37,13 @@ get_box_colour <- function(box_type) {
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'
 #' # for matching by frequency (e.g. control for...)
-#' #sensible_slider_vals(LexOPS::lexops$Zipf.SUBTLEX_UK, 1, TRUE)
+#' LexOPS:::sensible_slider_vals(LexOPS::lexops$Zipf.SUBTLEX_UK, 1, TRUE)
 #'
 #' # for 3 levels of arousal (e.g. split by...)
-#' #sensible_slider_vals(LexOPS::lexops$AROU.Warriner, 3)
+#' LexOPS:::sensible_slider_vals(LexOPS::lexops$AROU.Warriner, 3)
 #'
 #' # for filtering by word prevalence (e.g. control for...)
-#' #sensible_slider_vals(LexOPS::lexops$PREV.Brysbaert, 1)
+#' LexOPS:::sensible_slider_vals(LexOPS::lexops$PREV.Brysbaert, 1)
 #'
 #' @importFrom graphics hist
 #' @importFrom stats quantile
@@ -93,7 +93,7 @@ sensible_slider_vals <- function(numeric_vec, n_levels, is_tolerance = FALSE) {
 #' Function for generating a visualisation for a box's selected options
 #'
 #' @param var Character vector specifying which variable is selected
-#' @param box_type Which type of box is it? (one of: "primary", "warning", "Success", "danger", and "info")
+#' @param box_type Which type of box is it? (one of: "primary", "warning", "success", "danger", and "info")
 #' @param tol The area which should be highlighted. Can be a numeric vector of length two, a character vector of acceptable categories, or a list of such vectors. Each item in a `tol` list specifies one level.
 #' @param match_string If the variable is being matched for, which string is it relative to. Leave as `NA` if not a matching box.
 #' @param shade_label A character vector specifying what to label the levels. Order should match that of `tol`. Leave as `NA` if not doing a split.
@@ -103,24 +103,24 @@ sensible_slider_vals <- function(numeric_vec, n_levels, is_tolerance = FALSE) {
 #'
 #' @return A ggplot/ggwordcloud object with the required visualisation.
 #'
-#' @examples
+#' @examplesIf rlang::is_installed(c("lexopsdata", "ggwordcloud", "dplyr"))
 #'
-#' #box_vis("CMU.PrN", "warning", c(-1, 1), "test")
+#' LexOPS:::box_vis("CMU.PrN", "warning", c(-1, 1), "test")
 #'
-#' #box_vis("CMU.PrN", "warning", list(c(1, 1), c(3, 3)), shade_label = c("A1", "A2"))
+#' LexOPS:::box_vis("CMU.PrN", "warning", list(c(1, 1), c(3, 3)), shade_label = c("A1", "A2"))
 #'
-#' #box_vis("AROU.Glasgow_Norms", "info", c(-1, 0.5), match_string = "thicket")
+#' LexOPS:::box_vis("AROU.Glasgow_Norms", "info", c(-1, 0.5), match_string = "thicket")
 #'
-#' #box_vis("Rhyme.eSpeak.br", "danger", match_string = "thicket")
+#' LexOPS:::box_vis("Rhyme.eSpeak.br", "danger", match_string = "thicket")
 #'
-#' #box_vis("PoS.SUBTLEX_UK", "warning", match_string = "laura", cat_vis = "match_string_val")
+#' LexOPS:::box_vis("PoS.SUBTLEX_UK", "warning", match_string = "jimmy", cat_vis = "match_string_val")
 #'
-#' #box_vis("PoS.SUBTLEX_UK", "warning", tol = "noun", match_string = "laura", cat_vis = "tol")
+#' LexOPS:::box_vis("PoS.SUBTLEX_UK", "warning", tol = "noun", match_string = "laura", cat_vis = "tol")
 #'
-#' #box_vis("PoS.ELP", "warning")
+#' LexOPS:::box_vis("PoS.ELP", "warning")
 #'
 #' # ignore shade_label for categorical histogram?
-#' #box_vis("PoS.SUBTLEX_UK", "warning", list("noun", "verb"), shade_label = c("B1", "B2"))
+#' LexOPS:::box_vis("PoS.SUBTLEX_UK", "warning", list("noun", "verb"), shade_label = c("B1", "B2"))
 
 box_vis <- function(var, box_type = "primary", tol = NA, match_string = NA, shade_label = NA, shade_relative = TRUE, cat_vis = NA, df = LexOPS::lexops) {
 
@@ -146,7 +146,7 @@ box_vis <- function(var, box_type = "primary", tol = NA, match_string = NA, shad
 
       # add red line for match_string_val if necessary
       if (all(!is.na(match_string_val))) {
-        pl <- pl + ggplot2::geom_vline(xintercept=match_string_val, colour="red", size=1.25)
+        pl <- pl + ggplot2::geom_vline(xintercept=match_string_val, colour="red", linewidth=1.25)
         # also adjust the values in `shade` to make them relative to `match_string_val`
         if (shade_relative) shade <- lapply(shade, function(i) match_string_val + i)
       }
@@ -267,9 +267,9 @@ box_vis.categorical <- function(var, box_type, cat_to_highlight, df) {
 #'
 #' @return A ggplot/ggwordcloud object with the required visualisation.
 #'
-#' @examples
+#' @examplesIf rlang::is_installed(c("lexopsdata", "dplyr"))
 #'
-#' #box_vis.question_marks("Unknown!", "info")
+#' LexOPS:::box_vis.question_marks("Unknown!", "info")
 
 box_vis.question_marks <- function(message, box_type) {
   dplyr::tibble(qm = c(message, rep("?", 99)),

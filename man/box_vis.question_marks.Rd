@@ -18,6 +18,8 @@ A ggplot/ggwordcloud object with the required visualisation.
 Function for generating a visualisation of question marks surrounding a message
 }
 \examples{
+\dontshow{if (rlang::is_installed(c("lexopsdata", "dplyr"))) withAutoprint(\{ # examplesIf}
 
-#box_vis.question_marks("Unknown!", "info")
+LexOPS:::box_vis.question_marks("Unknown!", "info")
+\dontshow{\}) # examplesIf}
 }

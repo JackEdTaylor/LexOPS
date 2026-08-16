@@ -28,12 +28,12 @@ Function for converting a numeric vector into recommended arguments for \code{sh
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 
 # for matching by frequency (e.g. control for...)
-#sensible_slider_vals(LexOPS::lexops$Zipf.SUBTLEX_UK, 1, TRUE)
+LexOPS:::sensible_slider_vals(LexOPS::lexops$Zipf.SUBTLEX_UK, 1, TRUE)
 
 # for 3 levels of arousal (e.g. split by...)
-#sensible_slider_vals(LexOPS::lexops$AROU.Warriner, 3)
+LexOPS:::sensible_slider_vals(LexOPS::lexops$AROU.Warriner, 3)
 
 # for filtering by word prevalence (e.g. control for...)
-#sensible_slider_vals(LexOPS::lexops$PREV.Brysbaert, 1)
+LexOPS:::sensible_slider_vals(LexOPS::lexops$PREV.Brysbaert, 1)
 \dontshow{\}) # examplesIf}
 }

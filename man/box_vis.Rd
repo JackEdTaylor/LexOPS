@@ -18,7 +18,7 @@ box_vis(
 \arguments{
 \item{var}{Character vector specifying which variable is selected}
 
-\item{box_type}{Which type of box is it? (one of: "primary", "warning", "Success", "danger", and "info")}
+\item{box_type}{Which type of box is it? (one of: "primary", "warning", "success", "danger", and "info")}
 
 \item{tol}{The area which should be highlighted. Can be a numeric vector of length two, a character vector of acceptable categories, or a list of such vectors. Each item in a \code{tol} list specifies one level.}
 
@@ -39,21 +39,23 @@ A ggplot/ggwordcloud object with the required visualisation.
 Function for generating a visualisation for a box's selected options
 }
 \examples{
+\dontshow{if (rlang::is_installed(c("lexopsdata", "ggwordcloud", "dplyr"))) withAutoprint(\{ # examplesIf}
 
-#box_vis("CMU.PrN", "warning", c(-1, 1), "test")
+LexOPS:::box_vis("CMU.PrN", "warning", c(-1, 1), "test")
 
-#box_vis("CMU.PrN", "warning", list(c(1, 1), c(3, 3)), shade_label = c("A1", "A2"))
+LexOPS:::box_vis("CMU.PrN", "warning", list(c(1, 1), c(3, 3)), shade_label = c("A1", "A2"))
 
-#box_vis("AROU.Glasgow_Norms", "info", c(-1, 0.5), match_string = "thicket")
+LexOPS:::box_vis("AROU.Glasgow_Norms", "info", c(-1, 0.5), match_string = "thicket")
 
-#box_vis("Rhyme.eSpeak.br", "danger", match_string = "thicket")
+LexOPS:::box_vis("Rhyme.eSpeak.br", "danger", match_string = "thicket")
 
-#box_vis("PoS.SUBTLEX_UK", "warning", match_string = "laura", cat_vis = "match_string_val")
+LexOPS:::box_vis("PoS.SUBTLEX_UK", "warning", match_string = "jimmy", cat_vis = "match_string_val")
 
-#box_vis("PoS.SUBTLEX_UK", "warning", tol = "noun", match_string = "laura", cat_vis = "tol")
+LexOPS:::box_vis("PoS.SUBTLEX_UK", "warning", tol = "noun", match_string = "laura", cat_vis = "tol")
 
-#box_vis("PoS.ELP", "warning")
+LexOPS:::box_vis("PoS.ELP", "warning")
 
 # ignore shade_label for categorical histogram?
-#box_vis("PoS.SUBTLEX_UK", "warning", list("noun", "verb"), shade_label = c("B1", "B2"))
+LexOPS:::box_vis("PoS.SUBTLEX_UK", "warning", list("noun", "verb"), shade_label = c("B1", "B2"))
+\dontshow{\}) # examplesIf}
 }
