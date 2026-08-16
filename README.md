@@ -12,6 +12,8 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 [![DOI:
 10.3758/s13428-020-01389-1](https://zenodo.org/badge/DOI/10.3758/s13428-020-01389-1.svg)](https://doi.org/10.3758/s13428-020-01389-1)
 [![R-CMD-check](https://github.com/jackedtaylor/lexops/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jackedtaylor/lexops/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/jackedtaylor/lexops/graph/badge.svg)](https://app.codecov.io/gh/jackedtaylor/lexops)
 <!-- badges: end -->
 
 LexOPS is an R package for generating matched stimuli for factorial
