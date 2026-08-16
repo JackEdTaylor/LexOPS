@@ -73,6 +73,17 @@ testthat::test_that("plot_design()", {
   testthat::expect_no_error(
     plot_design(stim1, include=c("a", "b"))
   )
+  # still works when random splits are included
+  testthat::expect_no_error({
+    stim2 <- eg_df |>
+      set_options(id_col = "id") |>
+      split_by(a, -5:-0.1 ~ 0.1:5) |>
+      split_random(2, equal_size=TRUE) |>
+      control_for(d) |>
+      generate(5, silent=TRUE)
+
+    plot_design(stim2)
+  })
 })
 
 # plot_sample() ----
