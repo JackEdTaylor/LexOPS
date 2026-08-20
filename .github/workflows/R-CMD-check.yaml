@@ -39,17 +39,6 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
 
-      - name: Include custom repository
-        shell: bash
-        run: |
-          cat > "$RUNNER_TEMP/repositories" <<'EOF'
-          ## name	URL	default
-          CRAN	https://cloud.r-project.org	true
-          lexopsdata	https://JackEdTaylor.github.io/lexopsdata	true
-          EOF
-
-          echo "R_REPOSITORIES=$RUNNER_TEMP/repositories" >> "$GITHUB_ENV"
-
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
