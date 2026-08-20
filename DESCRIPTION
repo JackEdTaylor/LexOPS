@@ -48,8 +48,8 @@ Suggests:
     DT,
     readr,
     forcats
+Additional_repositories:
+    https://JackEdTaylor.github.io/lexopsdata/
 URL: https://JackEdTaylor.github.io/LexOPSdocs/, https://github.com/JackEdTaylor/LexOPS/
 BugReports: https://github.com/JackEdTaylor/LexOPS/issues
 Config/roxygen2/version: 8.1.0
-Remotes:  
-    JackEdTaylor/lexopsdata
