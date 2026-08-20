@@ -10,7 +10,7 @@ citEntry(
   journal      = "Behavior Research Methods",
   number       = "52",
   pages        = "2372–2382",
-  doi          = "http://doi.org/10.3758/s13428-020-01389-1",
+  doi          = "10.3758/s13428-020-01389-1",
 
   textVersion  =
   paste("Taylor, J. E., Beith, A., & Sereno, S. C. (2020).",
