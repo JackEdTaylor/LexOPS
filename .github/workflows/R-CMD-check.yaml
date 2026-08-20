@@ -39,6 +39,11 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
 
+      - name: Configure R repositories
+        run: |
+          Rscript -e 'options(repos = c(CRAN = "https://cloud.r-project.org", lexopsdata = "https://JackEdTaylor.github.io/lexopsdata"))'
+
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
