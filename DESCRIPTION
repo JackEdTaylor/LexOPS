@@ -1,7 +1,7 @@
 Package: LexOPS
 Title: A Package and Shiny App for Generating Matched Stimuli
-Version: 0.5.1.9000
-Date: 2026-08-14
+Version: 0.5.2
+Date: 2026-08-20
 Authors@R: 
     c(
         person(given = "Jack",
@@ -48,7 +48,7 @@ Suggests:
     DT,
     readr,
     forcats
-URL: https://JackEdTaylor.github.io/LexOPSdocs/
+URL: https://JackEdTaylor.github.io/LexOPSdocs/, https://github.com/JackEdTaylor/LexOPS/
 BugReports: https://github.com/JackEdTaylor/LexOPS/issues
 Config/roxygen2/version: 8.1.0
 Remotes:  

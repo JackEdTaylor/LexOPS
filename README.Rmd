@@ -18,7 +18,7 @@ library(LexOPS)
 
 <!-- badges: start -->
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
-[![Version: 0.5.1](https://img.shields.io/badge/version-0.5.1-blue.svg)](https://github.com/JackEdTaylor/LexOPS/releases)
+[![Version: 0.5.2](https://img.shields.io/badge/version-0.5.2-blue.svg)](https://github.com/JackEdTaylor/LexOPS/releases)
 [![DOI: 10.3758/s13428-020-01389-1](https://zenodo.org/badge/DOI/10.3758/s13428-020-01389-1.svg)](https://doi.org/10.3758/s13428-020-01389-1)
 [![R-CMD-check](https://github.com/jackedtaylor/lexops/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jackedtaylor/lexops/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/jackedtaylor/lexops/graph/badge.svg)](https://app.codecov.io/gh/jackedtaylor/lexops)
@@ -64,8 +64,6 @@ stim <- lexops |>
 ```
 
 ```{r, warning = FALSE, echo = FALSE}
-# if (!rlang::is_installed("lexopsdata")) pak::pkg_install("JackEdTaylor/lexopsdata@*release")
-
 stim <- lexops |>
   split_by(Syllables.CMU, 1:1 ~ 2:2) |>
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
