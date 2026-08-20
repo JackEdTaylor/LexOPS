@@ -6,9 +6,9 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![Version:
-0.5.2](https://img.shields.io/badge/version-0.5.2-blue.svg)](https://github.com/JackEdTaylor/LexOPS/releases)
+0.5.2.9000](https://img.shields.io/badge/version-0.5.2.9000-blue.svg)](https://github.com/JackEdTaylor/LexOPS/releases)
 [![DOI:
 10.3758/s13428-020-01389-1](https://zenodo.org/badge/DOI/10.3758/s13428-020-01389-1.svg)](https://doi.org/10.3758/s13428-020-01389-1)
 [![R-CMD-check](https://github.com/jackedtaylor/lexops/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jackedtaylor/lexops/actions/workflows/R-CMD-check.yaml)
