@@ -18,14 +18,12 @@
 # control for length and frequency
 #' stim <- lexops |>
 #'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
-#'   control_for_euc(c(Zipf.BNC.Written, Length), 0:0.005) |>
-#'   generate(10)
+#'   control_for_euc(c(Zipf.BNC.Written, Length), 0:0.005)
 #'
 #' # bypass non-standard evaluation
 #' stim <- lexops %>%
 #'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
-#'   control_for_euc(c("Zipf.BNC.Written", "Length"), c(0, 0.005), standard_eval = TRUE) |>
-#'   generate(10)
+#'   control_for_euc(c("Zipf.BNC.Written", "Length"), c(0, 0.005), standard_eval = TRUE)
 #'
 #' # generate stimuli from a filtered dataframe, but calculate
 #' # Euclidean distance from an (original) unfiltered dataframe
@@ -42,8 +40,7 @@
 #'     0:0.005,
 #'     name = "Euclidean Distance",
 #'     euc_df = lexops
-#'   ) |>
-#'   generate(10)
+#'   )
 #'
 #' @export
 #' @importFrom stats setNames

@@ -13,9 +13,7 @@
 #' # 2 (syllables: few, many) by 2 (random: level 1, level 2) design
 #' lexops |>
 #'   split_by(Syllables.CMU, 1:3 ~ 4:6) |>
-#'   split_random(nlevels = 2) |>
-#'   control_for(Length) |>
-#'   generate(n = 100)
+#'   split_random(nlevels = 2, equal_size = TRUE)
 #'
 #' @export
 
