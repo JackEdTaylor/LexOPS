@@ -4,11 +4,10 @@
     # if running interactively, prompt to install if missing
     rlang::check_installed(
       "lexopsdata",
-      reason = "to use the lexops dataset",
+      reason = "to use the lexops dataset; https://github.com/JackEdTaylor/lexopsdata",
       action = function(pkg, ...) {
         # use github repository for lexopsdata
-        pkg[pkg=="lexopsdata"] <- "JackEdTaylor/lexopsdata@*release"
-        pak::pkg_install(pkg)
+        pak::pkg_install("JackEdTaylor/lexopsdata@*release")
       }
     )
   } else {
