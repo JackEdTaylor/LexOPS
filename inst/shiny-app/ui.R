@@ -17,6 +17,7 @@ library(stringr)
 library(forcats)
 library(stringdist)
 library(LexOPS)
+library(lexopsdata)
 
 tagList(
     useShinyjs(),
