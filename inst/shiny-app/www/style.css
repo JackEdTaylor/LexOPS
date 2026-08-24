@@ -12,6 +12,27 @@
 	font-family: "Century Schoolbook", serif;
 	text-align: center;
 	color: #FFFFFF;
+	position: fixed;
+	inset: 0;
+	width: 100vw;
+	height: 100vh;
+}
+
+#loading_spinner {
+	position: absolute;
+  inset: 0;
+  background-color: #555555;
+  mask: url('shared/busy-indicators/spinners/pulse3.svg') center / cover no-repeat;
+  -webkit-mask: url('shared/busy-indicators/spinners/pulse3.svg') center / cover no-repeat;
+}
+
+#loading_hex {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
 
 .center-fit {

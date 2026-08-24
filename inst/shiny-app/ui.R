@@ -25,9 +25,13 @@ tagList(
     ),
     div(
         id = "loading_page",
-        img(src = "hex-250.png", class = "center-fit"),
-        tags$br(), tags$br(),
-        icon("spinner", class = "fa-spin")
+        # spinner icon in background
+        tags$div( id = "loading_spinner" ),
+        # superimposed hex
+        tags$div(
+          id = "loading_hex",
+          img(src = "hex-250.png", class = "center-fit")
+        )
     ),
 
     hidden(
