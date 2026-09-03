@@ -40,6 +40,56 @@ testthat::test_that("reproducibility", {
       df
     }
   )
+  # check updates won't alter control_for_euc() results
+  testthat::expect_identical(
+    {
+      set.seed(31415926)
+      df <- eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.0001 ~ 0.0001:5) |>
+        control_for_euc(c(b, c), 0:0.2) |>
+        generate(10, silent=TRUE)
+      attributes(df) <- NULL
+      df
+    },
+    {
+      df <- data.frame(
+        item_nr = 1:10,
+        A1 = c("62", "29", "75", "1", "81", "34", "82", "27", "35", "99"),
+        A2 = c("69", "93", "30", "89", "59", "55", "63", "48", "9", "51"),
+        match_null = c("A1", "A1", "A2", "A1", "A1", "A2", "A2", "A2", "A1", "A2")
+      )
+      attributes(df) <- NULL
+      df
+    }
+  )
+  # check updates won't alter control_for_euc() results with weighting
+  testthat::expect_identical(
+    {
+      set.seed(31415926)
+      df <- eg_df |>
+        set_options(id_col = "id") |>
+        split_by(a, -5:-0.0001 ~ 0.0001:5) |>
+        control_for_euc(
+          c(b, c),
+          weights = c(4, 1),
+          0:0.2
+        ) |>
+        generate(10, silent=TRUE)
+      attributes(df) <- NULL
+      df
+    },
+    {
+      df <- data.frame(
+        item_nr = 1:10,
+        A1 = c("62", "29", "46", "37", "99", "88", "1", "67", "75", "45"),
+        A2 = c("20", "11", "5", "30", "9", "39", "93", "69", "53", "56"),
+        match_null = c("A1", "A1", "A2", "A1", "A1", "A2", "A2", "A2", "A1", "A2")
+      )
+      attributes(df) <- NULL
+      df
+    }
+  )
   # check that using the same external seed twice can reproduce the older internal seeds' results when split_random() is used
   # (useful if users want to force newer versions of LexOPS to reproduce older results)
   testthat::expect_identical(
