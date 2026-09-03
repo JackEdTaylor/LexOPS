@@ -87,31 +87,27 @@ control_for_euc <- function(x, vars, tol, name = NA, scale = TRUE, center = TRUE
 
   if (all(is.na(euc_df))) euc_df <- df
 
-  control_for_euc.calc_euc <- function(matches, target, ed_vars = control[[1]], scale_ = scale, center_ = center, weights_ = weights, standardise_weights_ = standardise_weights, euc_df_ = euc_df, id_col_ = id_col) {
-    if (!target %in% euc_df_[[id_col_]]) return(NA)
-    # get all euclidean distances
-    df_ids <- euc_df_[[id_col_]]
-    df_vals <- LexOPS::euc_dists(
-      df = euc_df_[, c(id_col_, ed_vars), drop = FALSE],
-      target = target,
-      vars = ed_vars,
-      scale = scale_,
-      center = center_,
-      weights = weights_,
-      standardise_weights = standardise_weights_,
-      id_col = id_col_,
-      standard_eval = TRUE
-    )
-    df_ed <- setNames(data.frame(df_ids, stringsAsFactors = FALSE), id_col_)
-    df_ed$control_for_euc_val <- as.numeric(df_vals)
-    # return result matched to 'matches'
-    matches_df <- setNames(data.frame(matches, stringsAsFactors = FALSE), id_col_)
-    merged <- merge(matches_df, df_ed, by = id_col_, all.x = TRUE, sort = FALSE)
-    as.numeric(merged$control_for_euc_val)
-  }
-
   # make a LexOPS pipeline object
   lp <- as.LexOPS_pipeline(df)
+
+  # Scale and weight the reference coordinates once; generation only needs
+  # distances for the candidates passed to the control function.
+  euc_ids <- euc_df[[id_col]]
+  euc_dims <- euc_df[, control[[1]], drop = FALSE]
+  euc_dims[] <- lapply(euc_dims, function(col) as.numeric(base::scale(col, center, scale)))
+  if (any(!is.na(weights))) {
+    weights_used <- if (standardise_weights) weights / mean(weights) else weights
+    euc_dims[] <- lapply(seq_along(euc_dims), function(i) euc_dims[[i]] * weights_used[i])
+  }
+
+  control_for_euc.calc_euc <- function(matches, target) {
+    target_row <- match(target, euc_ids)
+    if (is.na(target_row)) return(NA)
+    match_rows <- match(matches, euc_ids)
+    target_dims <- as.numeric(euc_dims[target_row, , drop = TRUE])
+    candidate_dims <- euc_dims[match_rows, , drop = FALSE]
+    sqrt(rowSums((candidate_dims - rep(target_dims, each = nrow(candidate_dims)))^2))
+  }
 
   # add the info to the output object
   lp$info <- lp_info
