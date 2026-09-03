@@ -27,9 +27,8 @@
 #'
 #' # generate stimuli from a filtered dataframe, but calculate
 #' # Euclidean distance from an (original) unfiltered dataframe
-#' library(dplyr)
 #' stim <- lexops |>
-#'   filter(
+#'   subset(
 #'     Zipf.SUBTLEX_UK <= 5,
 #'     between(Length, 3, 12),
 #'     PK.Brysbaert >= 0.9
