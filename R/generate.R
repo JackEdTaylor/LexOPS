@@ -266,7 +266,8 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
           vars_pre_calc = lp_info$control_functions,
           matchCond = this_match_null,
           id_col = id_col,
-          cond_col = cond_col
+          cond_col = cond_col,
+          target_row = match(this_word, m[[id_col]])
         )
         # remove the target word
         m <- m[m[[id_col]]!=this_word, ]
@@ -278,10 +279,11 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
             item_out <- sample(m[[id_col]], 1)
             # store any control_for_map values
             if (length(lp_info$control_functions) > 0) {
+              item_row <- match(item_out, df[[id_col]])
               out_cont_map_val <- sapply(lp_info$control_functions, function(cont) {
                 # get the representations of the words in the given column
-                this_word_rep <- df[[ cont[[3]] ]][df[[id_col]]==this_word]
-                out_rep <- df[[ cont[[3]] ]][df[[id_col]]==item_out]
+                this_word_rep <- df[[ cont[[3]] ]][target_row]
+                out_rep <- df[[ cont[[3]] ]][item_row]
                 # get the value from the function
                 unname(cont[[2]](out_rep, this_word_rep))
               })
@@ -289,13 +291,12 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
               out_val <- item_out
               names(out_val) <- id_col
               newrow <- as.data.frame(as.list(c(out_val, out_cont_map_val)), stringsAsFactors = FALSE)
-              item_row <- match(item_out, df[[id_col]])
               control_for_map_values[[length(control_for_map_values) + 1]] <<- newrow
               control_for_map_value_rows <<- c(control_for_map_value_rows, item_row)
               # ensure this_word row exists in control_for_map_values
               if (!(target_row %in% control_for_map_value_rows)) {
                 this_word_map_val <- sapply(lp_info$control_functions, function(cont) {
-                  this_word_rep <- df[[ cont[[3]] ]][df[[id_col]]==this_word]
+                  this_word_rep <- df[[ cont[[3]] ]][target_row]
                   unname(cont[[2]](this_word, this_word))
                 })
                 names(this_word_map_val) <- control_function_names
@@ -511,19 +512,21 @@ generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, mat
 }
 
 # function to find matches for a particular word using functions defined by `control_for_fun()`
-generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, id_col, cond_col) {
+generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, id_col, cond_col, target_row = NULL) {
   # if no control functions, return the df unchanged
   if (length(vars_pre_calc)==0) return(df)
 
   # if df has a 0 rows (e.g. if generate.find_matches() found no matches), return df unchanged
   if (nrow(df)==0) return(df)
 
+  if (is.null(target_row)) target_row <- match(target, df[[id_col]])
+
   # get the new columns' values for the target word
   target_vals <- sapply(vars_pre_calc, function(x) {
     fun <- x[[2]]
     var <- x[[3]]
     tol <- x[[4]]
-    target_input <- df[[var]][df[[id_col]]==target]
+    target_input <- df[[var]][target_row]
     fun(target_input, target_input)
   })
 
@@ -542,7 +545,7 @@ generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, id_c
     var <- x[[3]]
     col_name <- func_col_names[[i]]
     arg1 <- df_matches[[ var ]]
-    target_input <- df[[ var ]][df[[id_col]]==target]
+    target_input <- df[[ var ]][target_row]
     res <- tryCatch(fun(arg1, target_input), error = function(e) stop(sprintf("control function '%s' error when applied to candidates: %s", col_name, conditionMessage(e))))
     # drop names to avoid rowname-based alignment during cbind
     res <- unname(res)
