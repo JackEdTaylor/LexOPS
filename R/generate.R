@@ -211,13 +211,19 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
     printing_points <- round(seq(0, n, n/20))
     successful_iterations <- c()
     control_for_map_values <- NULL
+    # Index rows once so each candidate attempt only inspects the relevant condition.
+    df_rows <- seq_len(nrow(df))
+    rows_by_condition <- split(df_rows, df[[cond_col]])
+    used_rows <- rep(FALSE, nrow(df))
 
     while(n_generated < n) {
       n_tried <- n_tried + 1
       n_tried_this_n_generated <- n_tried_this_n_generated + 1
 
       this_match_null <- null_conds[n_generated+1]
-      null_word_bank <- df[[id_col]][!df[[id_col]] %in% out & df[[cond_col]] %in% this_match_null & !df[[id_col]] %in% words_tried_this_generated]
+      null_rows <- rows_by_condition[[this_match_null]]
+      null_rows <- null_rows[!used_rows[null_rows] & !df[[id_col]][null_rows] %in% words_tried_this_generated]
+      null_word_bank <- df[[id_col]][null_rows]
 
       if (length(null_word_bank) == 0) {
         if (n_all) {
@@ -235,16 +241,20 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
 
       this_word <- sample(null_word_bank, 1)
       words_tried_this_generated <- c(words_tried_this_generated, this_word)
+      target_row <- match(this_word, df[[id_col]])
 
       matches <- sapply(all_conds[all_conds != this_match_null], function(cnd) {
-        m_df <- df[(!df[[id_col]] %in% out & df[[cond_col]] == cnd) | df[[id_col]]==this_word, ]
+        candidate_rows <- rows_by_condition[[cnd]]
+        candidate_rows <- candidate_rows[!used_rows[candidate_rows]]
         m <- generate.find_matches(
-          m_df,
+          df,
           target = this_word,
           vars = lp_info$controls,
           matchCond = this_match_null,
           id_col = id_col,
-          cond_col = cond_col
+          cond_col = cond_col,
+          candidate_rows = sort(c(candidate_rows, target_row)),
+          target_row = target_row
         )
         m <- generate.find_fun_matches(
           m,
@@ -302,7 +312,7 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
       # check the matches are inclusive if match_null = "inclusive"
       if (match_null == "inclusive") {
         matches <- generate.are_matches_inclusive(
-          df = df[!df[[id_col]] %in% out | df[[id_col]]==this_word, ],
+          df = df[!used_rows | df_rows == target_row, , drop = FALSE],
           matches,
           vars=lp_info$controls, vars_pre_calc = lp_info$control_functions,
           matchCond=this_match_null, id_col, cond_col
@@ -323,6 +333,7 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
       if (all(!is.na(matches))) {
         this_match_null_out <- if (match_null=="inclusive") NA else this_match_null  # if match_null is inclusive, don't store initial match_nullvalue
         out[n_generated + 1, ] <- c(matches, this_match_null_out)
+        used_rows[match(matches, df[[id_col]])] <- TRUE
         n_generated <- n_generated + 1
         successful_iterations <- c(successful_iterations, n_tried)
         n_tried_this_n_generated <- 0
