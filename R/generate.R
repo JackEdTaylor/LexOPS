@@ -314,7 +314,7 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
       # add the target word
       matches[this_match_null] <- this_word
       # ensure ordered correctly (e.g. A1, A2, A3)
-      matches <- matches[order(factor(names(matches)))]
+      matches <- matches[match(all_conds, names(matches))]
 
       # check the matches are inclusive if match_null = "inclusive"
       if (match_null == "inclusive") {
