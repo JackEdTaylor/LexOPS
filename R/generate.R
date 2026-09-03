@@ -210,7 +210,11 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
     out <- matrix(ncol=length(all_conds)+1, nrow=n)
     printing_points <- round(seq(0, n, n/20))
     successful_iterations <- c()
-    control_for_map_values <- NULL
+    control_for_map_values <- list()
+    control_for_map_value_rows <- integer()
+    control_function_names <- if (length(lp_info$control_functions) > 0) {
+      sapply(lp_info$control_functions, function(cont) cont[[1]])
+    }
     # Index rows once so each candidate attempt only inspects the relevant condition.
     df_rows <- seq_len(nrow(df))
     rows_by_condition <- split(df_rows, df[[cond_col]])
@@ -281,22 +285,25 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
                 # get the value from the function
                 unname(cont[[2]](out_rep, this_word_rep))
               })
-              names(out_cont_map_val) <- sapply(lp_info$control_functions, function(cont) cont[[1]] )
+              names(out_cont_map_val) <- control_function_names
               out_val <- item_out
               names(out_val) <- id_col
               newrow <- as.data.frame(as.list(c(out_val, out_cont_map_val)), stringsAsFactors = FALSE)
-              if (is.null(control_for_map_values)) control_for_map_values <<- newrow else control_for_map_values <<- rbind(control_for_map_values, newrow)
+              item_row <- match(item_out, df[[id_col]])
+              control_for_map_values[[length(control_for_map_values) + 1]] <<- newrow
+              control_for_map_value_rows <<- c(control_for_map_value_rows, item_row)
               # ensure this_word row exists in control_for_map_values
-              if (is.null(control_for_map_values) || !(this_word %in% control_for_map_values[[id_col]])) {
+              if (!(target_row %in% control_for_map_value_rows)) {
                 this_word_map_val <- sapply(lp_info$control_functions, function(cont) {
                   this_word_rep <- df[[ cont[[3]] ]][df[[id_col]]==this_word]
                   unname(cont[[2]](this_word, this_word))
                 })
-                names(this_word_map_val) <- sapply(lp_info$control_functions, function(cont) cont[[1]] )
+                names(this_word_map_val) <- control_function_names
                 this_word_val <- this_word
                 names(this_word_val) <- id_col
                 newrow2 <- as.data.frame(as.list(c(this_word_val, this_word_map_val)), stringsAsFactors = FALSE)
-                if (is.null(control_for_map_values)) control_for_map_values <<- newrow2 else control_for_map_values <<- rbind(control_for_map_values, newrow2)
+                control_for_map_values[[length(control_for_map_values) + 1]] <<- newrow2
+                control_for_map_value_rows <<- c(control_for_map_value_rows, target_row)
               }
 
             }
@@ -352,7 +359,8 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
     meta_df <- df
 
     # add control_for_map() values if any (merge preserving order)
-    if (length(lp_info$control_functions) > 0 & !is.null(control_for_map_values)) {
+    if (length(lp_info$control_functions) > 0 & length(control_for_map_values) > 0) {
+      control_for_map_values <- do.call(rbind, control_for_map_values)
       meta_df <- merge(meta_df, control_for_map_values, by = id_col, all.x = TRUE, sort = FALSE)
     }
 
