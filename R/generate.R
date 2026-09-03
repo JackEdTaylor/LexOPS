@@ -319,10 +319,11 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
       # check the matches are inclusive if match_null = "inclusive"
       if (match_null == "inclusive") {
         matches <- generate.are_matches_inclusive(
-          df = df[!used_rows | df_rows == target_row, , drop = FALSE],
+          df = df,
           matches,
           vars=lp_info$controls, vars_pre_calc = lp_info$control_functions,
-          matchCond=this_match_null, id_col, cond_col
+          matchCond=this_match_null, id_col, cond_col,
+          candidate_rows = df_rows[!used_rows | df_rows == target_row]
         )
       }
 
@@ -483,7 +484,7 @@ generate.find_matches <- function(df, target, vars, matchCond, id_col, cond_col,
 # function to check whether the matches are inclusive (necessary if match_null = "inclusive")
 # This treats each possible condition for the current item as the match null for one iteration, and tests that all other words are suitable matches
 # if TRUE, will return the matches unchanged, else will return same vector with all values replaced by NAs
-generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, matchCond, id_col, cond_col) {
+generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, matchCond, id_col, cond_col, candidate_rows = seq_len(nrow(df))) {
   # if there are NAs in matches, return NAs
   if (any(is.na(matches))) return(rep(NA, length(matches)))
   # if no controls, return matches unchanged
@@ -492,10 +493,12 @@ generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, mat
   are_inclusive <- lapply(matches, function(this_word) {
     # get this word's condition
     matchCond_this_word <- names(matches)[matches==this_word]
+    this_word_row <- match(this_word, df[[id_col]])
+    this_candidate_rows <- candidate_rows[df[[cond_col]][candidate_rows] != matchCond_this_word | candidate_rows == this_word_row]
     # get list of suitable matches based on controls
-    df_matches_this_word <- generate.find_matches(df, this_word, vars, matchCond_this_word, id_col, cond_col)
+    df_matches_this_word <- generate.find_matches(df, this_word, vars, matchCond_this_word, id_col, cond_col, this_candidate_rows, this_word_row)
     # get a similar list, but mapping any specified functions
-    df_matches_this_word_funs <- generate.find_fun_matches(df, this_word, vars_pre_calc, matchCond_this_word, id_col, cond_col)
+    df_matches_this_word_funs <- generate.find_fun_matches(df[this_candidate_rows, , drop = FALSE], this_word, vars_pre_calc, matchCond_this_word, id_col, cond_col)
     # check the other items are in there, and return this value
     all(matches[matches != this_word] %in% df_matches_this_word[[id_col]]) & all(matches[matches != this_word] %in% df_matches_this_word_funs[[id_col]])
   })
