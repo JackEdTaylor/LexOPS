@@ -411,44 +411,52 @@ generate.check <- function(df, n, match_null, id_col, cond_col, is_shiny, lp_inf
 
 # function to filter exactly for categories, and with tolerances for numeric in a vectorised manner
 generate.filter_tol <- function(df_matches, vars) {
-  # generate the expression
-  filter_char <- sapply(vars, function(tol) {
-    if(is.numeric(df_matches[[tol[[1]]]]) & length(tol)>=3) {
-      left <- tol[[3]] + tol[[2]][1]
-      right <- tol[[3]] + tol[[2]][2]
-      sprintf("(`%s` >= %s & `%s` <= %s)", tol[[1]], left, tol[[1]], right)
-    } else {
-      if (is.numeric(df_matches[[tol[[1]]]])) {
-        sprintf("`%s`==%s", tol[[1]], tol[[2]])
-      } else {
-        sprintf("`%s`==\"%s\"", tol[[1]], tol[[2]])
-      }
-    }
-  })
-  filter_char <- paste(filter_char, collapse = " & ")
-  # filter the dataframe on the generated expression (evaluate in df_matches environment)
-  keep <- with(df_matches, eval(parse(text = filter_char)))
-  keep[is.na(keep)] <- FALSE  # any that evaluate to NA should also be excluded
+  keep <- generate.filter_tol_keep(df_matches, vars)
   df_matches[keep, , drop = FALSE]
 }
 
+generate.filter_tol_keep <- function(df_matches, vars, rows = seq_len(nrow(df_matches))) {
+  keep <- rep(TRUE, length(rows))
+  for (tol in vars) {
+    values <- df_matches[[tol[[1]]]][rows]
+    keep_this <- rep(TRUE, length(rows))
+    if (is.numeric(values) && length(tol) >= 3) {
+      keep_this <- values >= tol[[3]] + tol[[2]][1] & values <= tol[[3]] + tol[[2]][2]
+    } else if (is.numeric(values)) {
+      keep_this <- values == tol[[2]]
+    } else {
+      keep_this <- values == tol[[2]]
+    }
+    keep <- keep & keep_this
+  }
+  keep[is.na(keep)] <- FALSE  # any that evaluate to NA should also be excluded
+  keep
+}
+
 # function to find matches for a particular word (better than current match_word() function?)
-generate.find_matches <- function(df, target, vars, matchCond, id_col, cond_col) {
+generate.find_matches <- function(df, target, vars, matchCond, id_col, cond_col, candidate_rows = NULL, target_row = NULL) {
   # if no controls, return the df unchanged
-  if (length(vars)==0) return(df)
+  if (length(vars)==0) {
+    if (is.null(candidate_rows)) return(df)
+    return(df[candidate_rows, , drop = FALSE])
+  }
   # get a copy of df excluding the null condition, but keep the target word
-  df_matches <- df[df[[cond_col]] != matchCond | df[[id_col]] == target, ]
+  if (is.null(candidate_rows)) {
+    candidate_rows <- which(df[[cond_col]] != matchCond | df[[id_col]] == target)
+  }
+  if (is.null(target_row)) target_row <- match(target, df[[id_col]])
   # add a 2nd (for categorical) or 3rd (for numeric) item to each control's list, indicating the value for the string being matched to
   vars <- lapply(vars, function(cont) {
     cont_val <- if (is.factor(df[[cont[[1]]]])) {
-      as.character(df[[cont[[1]]]][df[[id_col]]==target])
+      as.character(df[[cont[[1]]]][target_row])
     } else {
-      df[[cont[[1]]]][df[[id_col]]==target]
+      df[[cont[[1]]]][target_row]
     }
     if (is.list(cont)) append(cont, cont_val) else list(cont, cont_val)
   })
   # for each control, filter out non-suitable matches for this word
-  df_matches_filt <- generate.filter_tol(df_matches, vars)
+  keep <- generate.filter_tol_keep(df, vars, candidate_rows)
+  df_matches_filt <- df[candidate_rows[keep], , drop = FALSE]
 
   df_matches_filt
 }
