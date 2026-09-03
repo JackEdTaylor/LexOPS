@@ -26,7 +26,7 @@
 #'   control_for_euc(c("Zipf.BNC.Written", "Length"), c(0, 0.005), standard_eval = TRUE)
 #'
 #' # generate stimuli from a filtered dataframe, but calculate
-#' # Euclidean distance from an (original) unfiltered dataframe
+#' # Euclidean distance from an (original) unsubsetted dataframe
 #' stim <- lexops |>
 #'   subset(
 #'     Zipf.SUBTLEX_UK <= 5,
