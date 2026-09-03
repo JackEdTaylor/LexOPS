@@ -40,6 +40,31 @@ testthat::test_that("reproducibility", {
       df
     }
   )
+  # check updates won't alter existing code's output with inclusive matching
+  testthat::expect_identical(
+    {
+      set.seed(42)
+      df <- eg_df |>
+        set_options(id_col = "id") |>
+        split_by(d, "a" ~ "b" ~ "c") |>
+        control_for(b, -0.5:0.5) |>
+        control_for(c, -0.25:0.25) |>
+        generate(10, match_null="inclusive", silent=TRUE)
+      attributes(df) <- NULL
+      df
+    },
+    {
+      df <- data.frame(
+        item_nr = 1:10,
+        A1 = c("17", "35", "25", "70", "90", "56", "80", "52", "58", "75"),
+        A2 = c("67", "9", "38", "31", "88", "98", "42", "89", "37", "30"),
+        A3 = c("91", "51", "18", "73", "45", "39", "64", "12", "1", "72"),
+        match_null = as.character(NA)
+      )
+      attributes(df) <- NULL
+      df
+    }
+  )
   # check updates won't alter control_for_euc() results
   testthat::expect_identical(
     {
