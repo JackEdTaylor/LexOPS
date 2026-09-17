@@ -7,7 +7,7 @@
       reason = "to use the lexops dataset; https://github.com/JackEdTaylor/lexopsdata",
       action = function(pkg, ...) {
         # use github repository for lexopsdata
-        pak::pkg_install("JackEdTaylor/lexopsdata@*release")
+        pak::pkg_install("JackEdTaylor/lexopsdata@*release", ask=TRUE)
       }
     )
   } else {
