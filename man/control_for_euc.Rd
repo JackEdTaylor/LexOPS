@@ -54,11 +54,10 @@ stim <- lexops \%>\%
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
   control_for_euc(c("Zipf.BNC.Written", "Length"), c(0, 0.005), standard_eval = TRUE)
 
-# generate stimuli from a filtered dataframe, but calculate
-# Euclidean distance from an (original) unfiltered dataframe
-library(dplyr)
+# generate stimuli from a subsetted dataframe, but calculate
+# Euclidean distance from an (original) unsubsetted dataframe
 stim <- lexops |>
-  filter(
+  subset(
     Zipf.SUBTLEX_UK <= 5,
     between(Length, 3, 12),
     PK.Brysbaert >= 0.9
