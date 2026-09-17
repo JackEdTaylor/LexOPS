@@ -13,10 +13,14 @@ The `control_for()` function works well when your variable is 1-dimensional, wit
 # Packages
 
 ```{r packages, message=FALSE}
+if (!requireNamespace("lexopsdata", quietly = TRUE)) {
+  knitr::opts_chunk$set(eval = FALSE)
+} else {
+  library(lexopsdata)
+}
 library(readr)
 library(dplyr)
 library(LexOPS)
-library(lexopsdata)
 ```
 
 ```{r hidden-setup, include=FALSE}

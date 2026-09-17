@@ -13,12 +13,16 @@ By default, LexOPS will split by a single variable for each use of `split_by()`,
 # Packages
 
 ```{r packages, message=FALSE}
+if (!requireNamespace("lexopsdata", quietly = TRUE)) {
+  knitr::opts_chunk$set(eval = FALSE)
+} else {
+  library(lexopsdata)
+}
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(forcats)
 library(LexOPS)
-library(lexopsdata)
 ```
 
 ```{r hidden-setup, include=FALSE}

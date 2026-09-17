@@ -13,11 +13,15 @@ The [lexops dataset](https://github.com/JackEdTaylor/lexopsdata) is useful but n
 # Packages
 
 ```{r packages, message=FALSE}
+if (!requireNamespace("lexopsdata", quietly = TRUE)) {
+  knitr::opts_chunk$set(eval = FALSE)
+} else {
+  library(lexopsdata)
+}
 library(readr)
 library(dplyr)
 library(ggplot2)
 library(LexOPS)
-library(lexopsdata)
 ```
 
 ```{r hidden-setup, include=FALSE}
