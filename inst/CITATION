@@ -1,20 +1,22 @@
 citHeader("To cite LexOPS in publications use:")
 
-citEntry(
-  entry        = "Article",
-  title        = "{LexOPS}: An {R} package and user interface for the controlled generation of word stimuli",
-  author       = personList(as.person("Jack E. Taylor"),
-                   as.person("Alistair Beith"),
-                   as.person("Sara C. Sereno")),
-  year         = "2020",
-  journal      = "Behavior Research Methods",
-  number       = "52",
-  pages        = "2372–2382",
-  doi          = "10.3758/s13428-020-01389-1",
-
-  textVersion  =
-  paste("Taylor, J. E., Beith, A., & Sereno, S. C. (2020).",
-        "LexOPS: An R package and user interface for the controlled generation of word stimuli.",
-        "Behavior Research Methods, 52, 2372–2382.",
-        "http://doi.org/10.3758/s13428-020-01389-1")
+bibentry(
+  bibtype = "Article",
+  title = "{LexOPS}: An {R} package and user interface for the controlled generation of word stimuli",
+  author = c(
+    person("Jack E.", "Taylor"),
+    person("Alistair", "Beith"),
+    person("Sara C.", "Sereno")
+  ),
+  year = "2020",
+  journal = "Behavior Research Methods",
+  volume = "52",
+  pages = "2372--2382",
+  doi = "10.3758/s13428-020-01389-1",
+  textVersion = paste(
+    "Taylor, J. E., Beith, A., & Sereno, S. C. (2020).",
+    "LexOPS: An R package and user interface for the controlled generation of word stimuli.",
+    "Behavior Research Methods, 52, 2372-2382.",
+    "http://doi.org/10.3758/s13428-020-01389-1"
+  )
 )
