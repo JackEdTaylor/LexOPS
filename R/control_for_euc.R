@@ -28,11 +28,7 @@
 #' # generate stimuli from a subsetted dataframe, but calculate
 #' # Euclidean distance from an (original) unsubsetted dataframe
 #' stim <- lexops |>
-#'   subset(
-#'     Zipf.SUBTLEX_UK <= 5,
-#'     between(Length, 3, 12),
-#'     PK.Brysbaert >= 0.9
-#'   ) |>
+#'   subset(PK.Brysbaert >= 0.9) |>
 #'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
 #'   control_for_euc(
 #'     c(Zipf.SUBTLEX_UK, Length),
