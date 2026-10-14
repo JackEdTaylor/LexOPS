@@ -12,6 +12,8 @@
 #' @return Returns the generated stimuli.
 #' @examplesIf rlang::is_installed("lexopsdata") & rlang::is_installed("stringdist")
 #'
+#' library(lexopsdata)
+#'
 #' # Generate 10 words per condition, for design with 3 levels of syllables, controlled for frequency
 #' lexops |>
 #'   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) |>
@@ -81,6 +83,8 @@
 #'  control_for(Rhyme.eSpeak.br) |>
 #'  control_for_map(stringdist, eSpeak.br_1letter, 0:2, method="lv") |>
 #'  generate(10, match_null = "inclusive")
+#'
+#' @seealso \code{\link[lexopsdata]{lexops}} for the default data frame and associated variables.
 #'
 #' @export
 #' @importFrom stats setNames

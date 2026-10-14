@@ -1,6 +1,6 @@
 #' Generate a citation
 #'
-#' Takes the output from `generate()` or `long_format()`, and generates a tibble that lists known references that should be cited. This function will only be useful if you use variables from the lexops dataset (`LexOPS::lexops`) with their original names.
+#' Takes the output from `generate()` or `long_format()`, and generates a tibble that lists known references that should be cited. This function will only be useful if you use variables from the lexops dataset (`lexopsdata::lexops`) with their original names.
 #'
 #' @param df Output from `generate()` or `long_format()`
 #' @param include A string indicating which variables to include in the citation. This can be those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Alternatively, this can be a character vector of the variables that should be cited, that were in the original dataframe. Default is `"design"`.
@@ -9,13 +9,15 @@
 #'
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'
+#' library(lexopsdata)
+#'
 #' stim <- lexops |>
-#'   dplyr::filter(PK.Brysbaert >= .75) |>
 #'   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>
 #'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
 #'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
 #'   control_for(Length) |>
 #'   generate(n = 50, match_null = "balanced")
+#'
 #' cite_design(stim)
 #'
 #' @export
@@ -62,7 +64,7 @@ cite_design <- function(df, include = "design") {
 
 #' Generate a citation
 #'
-#' Get the measure name, source, and url for any vector of column names from `LexOPS::lexops`.
+#' Get the measure name, source, and url for any vector of column names from `lexopsdata::lexops`.
 #'
 #' @param cite_vars A character vector of column names
 #'
@@ -90,7 +92,7 @@ citation_table <- function(cite_vars) {
 
 #' Convert a variable name to its measure
 #'
-#' Converts the name of a variable from `LexOPS::lexops` (e.g. "fpmw.SUBTLEX_US") into the name of its measure (e.g. "frequency per million words").
+#' Converts the name of a variable from `lexopsdata::lexops` (e.g. "fpmw.SUBTLEX_US") into the name of its measure (e.g. "frequency per million words").
 #'
 #' @param var The variable name (non-standard evaluation)
 #' @param first_cite Logical; if `TRUE`, gives full name (e.g. frequency per million words), if `FALSE`, gives abbreviated name (e.g. FPMW)
@@ -221,7 +223,7 @@ var_to_measure_name <- function(var, include_pronunciations=TRUE) {
 
 #' Convert a variable name to APA citation
 #'
-#' Converts the name of a variable from `LexOPS::lexops` (e.g. "Zipf.SUBTLEX_US") into an APA-style citation (e.g. "SUBTLEX-US (Brysbaert & New, 2009)").
+#' Converts the name of a variable from `lexopsdata::lexops` (e.g. "Zipf.SUBTLEX_US") into an APA-style citation (e.g. "SUBTLEX-US (Brysbaert & New, 2009)").
 #'
 #' @param var The variable name (non-standard evaluation)
 #' @param first_cite Logical; if `TRUE`, gives full citation, if `FALSE`, gives abbreviated (i.e. "et al.") citation
@@ -310,7 +312,7 @@ corpus_recode_name_source <- function(var) {
 
 #' Convert a variable name to a url reference.
 #'
-#' Converts the name of a variable from `LexOPS::lexops` (e.g. "Zipf.SUBTLEX_US") into a url (usually doi).
+#' Converts the name of a variable from `lexopsdata::lexops` (e.g. "Zipf.SUBTLEX_US") into a url (usually doi).
 #'
 #' @param var The variable name (non-standard evaluation)
 #' @param default The character string that should be returned if the variable does not have a known citeable source

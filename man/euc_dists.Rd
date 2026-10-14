@@ -5,7 +5,7 @@
 \title{Calculate a word's Euclidean distance from other words}
 \usage{
 euc_dists(
-  df = LexOPS::lexops,
+  df = lexopsdata::lexops,
   target,
   vars = "all",
   scale = TRUE,
@@ -41,6 +41,8 @@ Caclulates the Euclidean distance of a word from all other words in a df, on sel
 }
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
+
+library(lexopsdata)
 
 # Get the distance of every entry in the `lexops` dataset from the word "thicket".
 # (Note: This will be calculated using the dimensions of frequency, arousal, and size)

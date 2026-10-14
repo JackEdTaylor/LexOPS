@@ -24,6 +24,8 @@ Specifies variables that should be controlled for in the generated stimuli, afte
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 
+library(lexopsdata)
+
 # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables, and control for word frequency
 lexops |>
   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) |>

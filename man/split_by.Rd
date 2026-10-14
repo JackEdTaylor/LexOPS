@@ -26,6 +26,8 @@ Specifies splits for one IV for a factorial design. Can be called multiple times
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 
+library(lexopsdata)
+
 # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables
 lexops |>
   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20)
@@ -54,5 +56,5 @@ lexops |>
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\code{\link{lexops}} for the default data frame and associated variables.
+\code{\link[lexopsdata]{lexops}} for the default data frame and associated variables.
 }

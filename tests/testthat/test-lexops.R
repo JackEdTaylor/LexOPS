@@ -1,7 +1,7 @@
-context("LexOPS::lexops dataset")
+context("lexopsdata::lexops dataset")
 
 # lexops dataset ----
-testthat::test_that("LexOPS::lexops", {
+testthat::test_that("lexopsdata::lexops", {
   # only run the tests if the lexopsdata package is installed
   testthat::skip_if_not_installed("lexopsdata")
   # can call lexops and it is dataframe

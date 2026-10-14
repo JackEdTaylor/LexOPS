@@ -36,14 +36,16 @@ get_box_colour <- function(box_type) {
 #'
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'
+#' library(lexopsdata)
+#'
 #' # for matching by frequency (e.g. control for...)
-#' LexOPS:::sensible_slider_vals(LexOPS::lexops$Zipf.SUBTLEX_UK, 1, TRUE)
+#' LexOPS:::sensible_slider_vals(lexopsdata::lexops$Zipf.SUBTLEX_UK, 1, TRUE)
 #'
 #' # for 3 levels of arousal (e.g. split by...)
-#' LexOPS:::sensible_slider_vals(LexOPS::lexops$AROU.Warriner, 3)
+#' LexOPS:::sensible_slider_vals(lexopsdata::lexops$AROU.Warriner, 3)
 #'
 #' # for filtering by word prevalence (e.g. control for...)
-#' LexOPS:::sensible_slider_vals(LexOPS::lexops$PREV.Brysbaert, 1)
+#' LexOPS:::sensible_slider_vals(lexopsdata::lexops$PREV.Brysbaert, 1)
 #'
 #' @importFrom graphics hist
 #' @importFrom stats quantile
@@ -99,7 +101,7 @@ sensible_slider_vals <- function(numeric_vec, n_levels, is_tolerance = FALSE) {
 #' @param shade_label A character vector specifying what to label the levels. Order should match that of `tol`. Leave as `NA` if not doing a split.
 #' @param shade_relative If `TRUE`, the value of tol is taken to be relative to the value for match_string. If `FALSE`, the raw values of tol are used. If `match_string` is not defined, `shade_relative` has no effect. Default is `TRUE`.
 #' @param cat_vis which category should be highlighted (if a categorical variable)? Can be one of `tol` or `match_string_val`.
-#' @param df A dataframe. Default is `LexOPS::lexops`.
+#' @param df A dataframe. Default is `lexopsdata::lexops`.
 #'
 #' @return A ggplot/ggwordcloud object with the required visualisation.
 #'
@@ -122,7 +124,7 @@ sensible_slider_vals <- function(numeric_vec, n_levels, is_tolerance = FALSE) {
 #' # ignore shade_label for categorical histogram?
 #' LexOPS:::box_vis("PoS.SUBTLEX_UK", "warning", list("noun", "verb"), shade_label = c("B1", "B2"))
 
-box_vis <- function(var, box_type = "primary", tol = NA, match_string = NA, shade_label = NA, shade_relative = TRUE, cat_vis = NA, df = LexOPS::lexops) {
+box_vis <- function(var, box_type = "primary", tol = NA, match_string = NA, shade_label = NA, shade_relative = TRUE, cat_vis = NA, df = lexopsdata::lexops) {
 
   match_string_val <- if (is.na(match_string)) NA else dplyr::filter(df, string == match_string) %>% dplyr::pull(!!dplyr::sym(var))
 

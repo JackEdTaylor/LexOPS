@@ -30,6 +30,8 @@ Some variables (e.g. similarity measures) are hard to control for with \code{\li
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 
+library(lexopsdata)
+
 # Create two levels of arousal, controlling for orthographic similarity
 # (as optimal string alignment; default for `stringdist()`)
 library(stringdist)

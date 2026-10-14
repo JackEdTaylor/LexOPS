@@ -13,6 +13,8 @@
 #' @return Returns `df`, with details on the variables to be controlled for added to the attributes. Run the \code{\link{generate}} function to then generate the actual stimuli.
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'
+#' library(lexopsdata)
+#'
 #' # Create two levels of arousal, controlling for orthographic similarity
 #' # (as optimal string alignment; default for `stringdist()`)
 #' library(stringdist)

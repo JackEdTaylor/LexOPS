@@ -2,15 +2,17 @@
 #'
 #' Suggests items that are suitable matches for a target item, based on selected variables of a data frame. Note that unlike functions in the generate pipeline (e.g. `control_for()`), multiple variables' tolerances can be defined in one function.
 #'
-#' @param df A data frame to reorder, containing the target string (default = LexOPS::lexops).
+#' @param df A data frame to reorder, containing the target string (default = lexopsdata::lexops).
 #' @param target The target string
 #' @param ... Should specify the variables and tolerances in the form `Length = 0:0, Zipf.SUBTLEX_UK = -0.1:0.1, PoS.SUBTLEX_UK`. Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.
-#' @param id_col A character vector specifying the column identifying unique observations (e.g. in `LexOPS::lexops`, the `id_col` is `"string"`).
+#' @param id_col A character vector specifying the column identifying unique observations (e.g. in `lexopsdata::lexops`, the `id_col` is `"string"`).
 #' @param filter Logical. If TRUE, matches outside the tolerances specified in vars are removed. If FALSE, a new column, matchFilter is calculated indicating whether or not the string is within all variables' tolerances. (Default = TRUE.)
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R object of list. If `TRUE`, `...` should be a single list specifying the variables to match by and their tolerances, in the form `list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName")`. Default = `FALSE`.
 #'
 #' @return Returns data frame based on `df`. If `filter` == TRUE, will only contain matches. If `filter` == FALSE, will be the original `df` object, with a new column, "matchFilter".
 #' @examplesIf rlang::is_installed("lexopsdata")
+#'
+#' library(lexopsdata)
 #'
 #' # Match by number of syllables exactly
 #' lexops |>
@@ -63,11 +65,11 @@
 #'   mutate(pld = stringdist(targ_word_pronun, eSpeak.br_1letter, method="lv")) |>
 #'   match_item(targ_word, pld = 0:2)
 #'
-#' @seealso \code{\link{lexops}} for the default data frame and associated variables.
+#' @seealso \code{\link[lexopsdata]{lexops}} for the default data frame and associated variables.
 #'
 #' @export
 
-match_item <- function(df = LexOPS::lexops, target, ..., id_col = "string", filter = TRUE, standard_eval = FALSE) {
+match_item <- function(df = lexopsdata::lexops, target, ..., id_col = "string", filter = TRUE, standard_eval = FALSE) {
   if (standard_eval) {
     vars <- (...)
   } else {

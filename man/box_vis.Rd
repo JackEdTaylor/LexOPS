@@ -12,7 +12,7 @@ box_vis(
   shade_label = NA,
   shade_relative = TRUE,
   cat_vis = NA,
-  df = LexOPS::lexops
+  df = lexopsdata::lexops
 )
 }
 \arguments{
@@ -30,7 +30,7 @@ box_vis(
 
 \item{cat_vis}{which category should be highlighted (if a categorical variable)? Can be one of \code{tol} or \code{match_string_val}.}
 
-\item{df}{A dataframe. Default is \code{LexOPS::lexops}.}
+\item{df}{A dataframe. Default is \code{lexopsdata::lexops}.}
 }
 \value{
 A ggplot/ggwordcloud object with the required visualisation.

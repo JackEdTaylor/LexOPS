@@ -11,6 +11,8 @@
 #' @return Returns `df`, with a new column (name defined by `cond_col` argument of `set_options()`) identifying which level of the IV each string belongs to.
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'
+#' library(lexopsdata)
+#'
 #' # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables
 #' lexops |>
 #'   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20)
@@ -37,7 +39,7 @@
 #'   split_by("Syllables.CMU", list(c(1, 3), c(4, 6), c(7, 20)), standard_eval = TRUE) |>
 #'   split_by("PoS.SUBTLEX_UK", list(c("noun", "name"), "verb"), standard_eval = TRUE)
 #'
-#' @seealso \code{\link{lexops}} for the default data frame and associated variables.
+#' @seealso \code{\link[lexopsdata]{lexops}} for the default data frame and associated variables.
 #'
 #' @export
 

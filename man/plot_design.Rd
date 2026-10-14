@@ -27,7 +27,7 @@ plot_design(
 
 \item{force}{Logical, should the function be forced to try and work if attributes are missing (default is \code{TRUE})? If \code{TRUE}, will expect the dataframe to have a structure similar to that produced by \code{long_format()}, where \code{condition} is character or factor, and \code{item_nr} is numeric or factor. Other variables will be plot-able if given to the \code{include} argument.}
 
-\item{id_col}{A character vector specifying the column identifying unique observations (e.g. in \code{LexOPS::lexops}, the \code{id_col} is \code{"string"}). Ignored unless \code{force=TRUE}, in which case it is required.}
+\item{id_col}{A character vector specifying the column identifying unique observations (e.g. in \code{lexopsdata::lexops}, the \code{id_col} is \code{"string"}). Ignored unless \code{force=TRUE}, in which case it is required.}
 }
 \value{
 A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
@@ -37,6 +37,8 @@ Takes the output from \code{generate()} or \code{long_format()}, and plots condi
 }
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
+
+library(lexopsdata)
 
 stim <- lexops |>
   dplyr::filter(PK.Brysbaert >= .75) |>

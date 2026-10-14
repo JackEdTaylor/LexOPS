@@ -42,14 +42,9 @@
   utils::globalVariables("stim_generated")
   utils::globalVariables("is_stim")
 
-  # instead of lazyload, bind `lexops` to the .lexops_data() function
+  # bind lexops to the .lexops_data() function
   ns <- asNamespace(pkgname)
-  if (!exists("lexops", envir = ns, inherits = FALSE) || !bindingIsActive("lexops", ns)) {
-    if (exists("lexops", envir = ns, inherits = FALSE) && !bindingIsActive("lexops", ns)) {
-      unlockBinding("lexops", ns)
-    }
-    makeActiveBinding("lexops", .lexops_data, ns)
-  }
+  makeActiveBinding("lexops", .lexops_data, ns)
 
   invisible()
 }

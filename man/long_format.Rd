@@ -22,6 +22,8 @@ Converts the generated stimuli from the \code{generate()} function into long for
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 
+library(lexopsdata)
+
 lexops |>
   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) |>
   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>

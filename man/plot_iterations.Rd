@@ -20,6 +20,8 @@ Plots iterations by number of items generated, when given a dataframe which has 
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 
+library(lexopsdata)
+
 stim <- lexops |>
   dplyr::filter(PK.Brysbaert >= .75) |>
   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>

@@ -10,6 +10,8 @@
 #' @return Returns `df`, with details on the variables to be controlled for added to the attributes. Run the `generate()` function to then generate the actual stimuli.
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'
+#' library(lexopsdata)
+#'
 #' # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables, and control for word frequency
 #' lexops |>
 #'   split_by(Syllables.CMU, 1:3 ~ 4:6 ~ 7:20) |>

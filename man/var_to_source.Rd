@@ -19,7 +19,7 @@ var_to_source(var, first_cite = TRUE, default = "", standard_eval = FALSE)
 A citation of a variable's source in APA format. Returns \code{default} if not recognised as a citeabile source.
 }
 \description{
-Converts the name of a variable from \code{LexOPS::lexops} (e.g. "Zipf.SUBTLEX_US") into an APA-style citation (e.g. "SUBTLEX-US (Brysbaert & New, 2009)").
+Converts the name of a variable from \code{lexopsdata::lexops} (e.g. "Zipf.SUBTLEX_US") into an APA-style citation (e.g. "SUBTLEX-US (Brysbaert & New, 2009)").
 }
 \examples{
 

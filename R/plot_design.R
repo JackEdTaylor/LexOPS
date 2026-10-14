@@ -8,11 +8,13 @@
 #' @param point_size Size of points (default = 0.75)
 #' @param line_width Thickness of lines (default = 1)
 #' @param force Logical, should the function be forced to try and work if attributes are missing (default is `TRUE`)? If `TRUE`, will expect the dataframe to have a structure similar to that produced by `long_format()`, where `condition` is character or factor, and `item_nr` is numeric or factor. Other variables will be plot-able if given to the `include` argument.
-#' @param id_col A character vector specifying the column identifying unique observations (e.g. in `LexOPS::lexops`, the `id_col` is `"string"`). Ignored unless `force=TRUE`, in which case it is required.
+#' @param id_col A character vector specifying the column identifying unique observations (e.g. in `lexopsdata::lexops`, the `id_col` is `"string"`). Ignored unless `force=TRUE`, in which case it is required.
 #'
 #' @return A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
 #'
 #' @examplesIf rlang::is_installed("lexopsdata")
+#'
+#' library(lexopsdata)
 #'
 #' stim <- lexops |>
 #'   dplyr::filter(PK.Brysbaert >= .75) |>

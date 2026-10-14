@@ -14,6 +14,8 @@
 #' @return Returns a vector of Euclidean distances, in the order of rows in `df`.
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'
+#' library(lexopsdata)
+#'
 #' # Get the distance of every entry in the `lexops` dataset from the word "thicket".
 #' # (Note: This will be calculated using the dimensions of frequency, arousal, and size)
 #' lexops |>
@@ -43,7 +45,7 @@
 #'   )
 #' @export
 
-euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, center = TRUE, weights = NA, standardise_weights = TRUE, id_col = "string", standard_eval = FALSE) {
+euc_dists <- function(df = lexopsdata::lexops, target, vars = "all", scale = TRUE, center = TRUE, weights = NA, standardise_weights = TRUE, id_col = "string", standard_eval = FALSE) {
   if (!standard_eval) {
     vars <- unlist(parse_levels(substitute(vars)))
     # revert to "all" if parse_levels(vars) returns "\"all\""

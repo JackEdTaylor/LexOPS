@@ -15,18 +15,20 @@ cite_design(df, include = "design")
 A tibble that lists measures and sources of data that should be cited (if known).
 }
 \description{
-Takes the output from \code{generate()} or \code{long_format()}, and generates a tibble that lists known references that should be cited. This function will only be useful if you use variables from the lexops dataset (\code{LexOPS::lexops}) with their original names.
+Takes the output from \code{generate()} or \code{long_format()}, and generates a tibble that lists known references that should be cited. This function will only be useful if you use variables from the lexops dataset (\code{lexopsdata::lexops}) with their original names.
 }
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 
+library(lexopsdata)
+
 stim <- lexops |>
-  dplyr::filter(PK.Brysbaert >= .75) |>
   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
   control_for(Length) |>
   generate(n = 50, match_null = "balanced")
+
 cite_design(stim)
 \dontshow{\}) # examplesIf}
 }

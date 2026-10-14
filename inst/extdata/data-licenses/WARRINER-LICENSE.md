@@ -1,1 +1,0 @@
-The Warriner et al. (2013) norms are licensed under a [Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License](https://creativecommons.org/licenses/by-nc-nd/3.0/deed.en_US), as detailed [here](http://crr.ugent.be/archives/1003).

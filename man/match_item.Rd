@@ -5,7 +5,7 @@
 \title{Get suitable matches for a single item on one or several dimensions.}
 \usage{
 match_item(
-  df = LexOPS::lexops,
+  df = lexopsdata::lexops,
   target,
   ...,
   id_col = "string",
@@ -14,13 +14,13 @@ match_item(
 )
 }
 \arguments{
-\item{df}{A data frame to reorder, containing the target string (default = LexOPS::lexops).}
+\item{df}{A data frame to reorder, containing the target string (default = lexopsdata::lexops).}
 
 \item{target}{The target string}
 
 \item{...}{Should specify the variables and tolerances in the form \verb{Length = 0:0, Zipf.SUBTLEX_UK = -0.1:0.1, PoS.SUBTLEX_UK}. Numeric variables can include tolerances (as elements 2:3 of a vector). Numeric variables with no tolerances will be matched exactly.}
 
-\item{id_col}{A character vector specifying the column identifying unique observations (e.g. in \code{LexOPS::lexops}, the \code{id_col} is \code{"string"}).}
+\item{id_col}{A character vector specifying the column identifying unique observations (e.g. in \code{lexopsdata::lexops}, the \code{id_col} is \code{"string"}).}
 
 \item{filter}{Logical. If TRUE, matches outside the tolerances specified in vars are removed. If FALSE, a new column, matchFilter is calculated indicating whether or not the string is within all variables' tolerances. (Default = TRUE.)}
 
@@ -34,6 +34,8 @@ Suggests items that are suitable matches for a target item, based on selected va
 }
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
+
+library(lexopsdata)
 
 # Match by number of syllables exactly
 lexops |>
@@ -88,5 +90,5 @@ lexops |>
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\code{\link{lexops}} for the default data frame and associated variables.
+\code{\link[lexopsdata]{lexops}} for the default data frame and associated variables.
 }

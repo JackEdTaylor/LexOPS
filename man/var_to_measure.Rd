@@ -30,7 +30,7 @@ var_to_measure(
 A citation of a variable's source in APA format. Returns \code{default} if not recognised as a citeabile source.
 }
 \description{
-Converts the name of a variable from \code{LexOPS::lexops} (e.g. "fpmw.SUBTLEX_US") into the name of its measure (e.g. "frequency per million words").
+Converts the name of a variable from \code{lexopsdata::lexops} (e.g. "fpmw.SUBTLEX_US") into the name of its measure (e.g. "frequency per million words").
 }
 \examples{
 

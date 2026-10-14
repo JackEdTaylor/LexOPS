@@ -9,6 +9,8 @@
 #'
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'
+#' library(lexopsdata)
+#'
 #' stim <- lexops |>
 #'   dplyr::filter(PK.Brysbaert >= .75) |>
 #'   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>

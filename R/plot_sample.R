@@ -5,11 +5,13 @@
 #' @param df Output from `generate()` or `long_format()`
 #' @param include A character vector indicating which variables to include in the plot. This can be those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Alternatively, this can be a character vector of the variables that should be plotted, that were in the original dataframe. Default is `"design"`.
 #' @param force Logical, should the function be forced to try and work if attributes are missing (default is `TRUE`)? If `TRUE`, will expect the dataframe to have a structure similar to that produced by `long_format()`, where `condition` is character or factor, and `item_nr` is numeric or factor. Other variables will be plot-able if given to the `include` argument.
-#' @param id_col A character vector specifying the column identifying unique observations (e.g. in `LexOPS::lexops`, the `id_col` is `"string"`). Ignored unless `force=TRUE`, in which case it is required.
+#' @param id_col A character vector specifying the column identifying unique observations (e.g. in `lexopsdata::lexops`, the `id_col` is `"string"`). Ignored unless `force=TRUE`, in which case it is required.
 #'
 #' @return A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
 #'
 #' @examplesIf rlang::is_installed("lexopsdata")
+#'
+#' library(lexopsdata)
 #'
 #' stim <- lexops |>
 #'   dplyr::filter(PK.Brysbaert >= .75) |>

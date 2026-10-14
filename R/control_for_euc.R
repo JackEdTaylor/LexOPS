@@ -15,6 +15,8 @@
 #' @return Returns `df`, with details on the variables to be controlled for added to the attributes. Run the \code{\link{generate}} function to then generate the actual stimuli.
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'
+#' library(lexopsdata)
+#'
 # control for length and frequency
 #' stim <- lexops |>
 #'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>

@@ -45,6 +45,8 @@ This function is a wrapper for \code{\link{control_for_map}} that allows you to 
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 
+library(lexopsdata)
+
 stim <- lexops |>
   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
   control_for_euc(c(Zipf.BNC.Written, Length), 0:0.005)

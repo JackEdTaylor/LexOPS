@@ -24,6 +24,8 @@ Adds a split to the data comparable to that made by \code{split_by()}, but split
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 
+library(lexopsdata)
+
 # 2 (syllables: few, many) by 2 (random: level 1, level 2) design
 lexops |>
   split_by(Syllables.CMU, 1:3 ~ 4:6) |>
