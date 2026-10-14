@@ -104,13 +104,3 @@ long_format <- function(df, include = "design", include_candids = FALSE) {
   out
 
 }
-
-
-# # should work
-# lexops %>%
-#   dplyr::filter(PK.Brysbaert >= .75) %>%
-#   split_by(Length, 1:3 ~ 4:6 ~ 7:20) %>%
-#   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) %>%
-#   control_for(PoS.SUBTLEX_UK) %>%
-#   generate(n = 50) %>%
-#   long_format()
