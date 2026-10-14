@@ -203,31 +203,3 @@ match_item <- function(df = LexOPS::lexops, target, ..., id_col = "string", filt
   # return the result
   out
 }
-
-# these should throw each of the possible errors
-
-# LexOPS::lexops %>% match_item("thicket", list(c("Length", -1, 1), "Rhyme", c("unreal", 1)))
-#
-# LexOPS::lexops %>% match_item("thicket", list(c("Length", -1, 1), c("Rhyme.CMU", 1, 2), "Zipf.SUBTLEX_UK"))
-#
-# LexOPS::lexops %>% match_item("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5)))
-#
-# LexOPS::lexops %>% match_item("111", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)))
-#
-# LexOPS::lexops %>% match_item("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)))
-#
-# LexOPS::lexops %>% match_item("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)), df="hi")
-#
-# LexOPS::lexops %>% match_item(2, list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)), id_col = "string")
-#
-# LexOPS::lexops %>% match_item("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -1.5, 1.5)), id_col = 3*1)
-#
-# # these should work
-#
-# LexOPS::lexops %>% match_item("thicket", list(c("Zipf.SUBTLEX_UK", -0.2, 0.2)))
-#
-# LexOPS::lexops %>% match_item("thicket", list(c("Length", 0, 0)))
-#
-# LexOPS::lexops %>% match_item("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -0.2, 0.2)))
-#
-# LexOPS::lexops %>% match_item("thicket", list(c("Length", 0, 0), c("Zipf.SUBTLEX_UK", -0.2, 0.2), "Rhyme.eSpeak.br"))
