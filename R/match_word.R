@@ -15,35 +15,35 @@
 #' library(lexopsdata)
 #'
 #' # Match by number of syllables exactly
-#' lexops |>
-#'   match_word("thicket", Syllables.CMU)
+#' match_word(lexops, "thicket", Syllables.CMU)
 #'
 #' # Match by number of syllables exactly, but keep all entries in the original dataframe
-#' lexops |>
-#'   match_word("thicket", Syllables.CMU, filter = FALSE)
+#' match_word(lexops, "thicket", Syllables.CMU, filter = FALSE)
 #'
 #' # Match by number of syllables exactly, and rhyme
-#' lexops |>
-#'   match_word("thicket", Syllables.CMU, Rhyme.CMU)
+#' match_word(lexops, "thicket", Syllables.CMU, Rhyme.CMU)
 #'
 #' # Match by length exactly, and closely by frequency (within 0.2 Zipf either way)
-#' lexops |>
-#'   match_word("thicket", Length, Zipf.SUBTLEX_UK = -0.2:0.2)
+#' match_word(lexops, "thicket", Length, Zipf.SUBTLEX_UK = -0.2:0.2)
 #'
-#' # The syntax makes matching by multiple variables easiy and readable
-#' lexops |>
-#'   match_word(
-#'     "elephant",
-#'     BG.SUBTLEX_UK = -0.005:0.005,
-#'     Length = 0:0,
-#'     Zipf.SUBTLEX_UK = -0.1:0.1,
-#'     PoS.SUBTLEX_UK,
-#'     RT.ELP = -10:10
-#'   )
+#' # The syntax supports matching by multiple variables
+#' match_word(
+#'   lexops,
+#'   "elephant",
+#'   BG.SUBTLEX_UK = -0.005:0.005,
+#'   Length = 0:0,
+#'   Zipf.SUBTLEX_UK = -0.1:0.1,
+#'   PoS.SUBTLEX_UK,
+#'   RT.ELP = -10:10
+#' )
 #'
 #' # Match using standard evaluation
-#' lexops |>
-#'   match_word("thicket", list("Length", c("Zipf.SUBTLEX_UK", -0.2, 0.2)), standard_eval = TRUE)
+#' match_word(
+#'   lexops,
+#'   "thicket",
+#'   list("Length", c("Zipf.SUBTLEX_UK", -0.2, 0.2)),
+#'   standard_eval = TRUE
+#' )
 #'
 #' # Find matches within an orthographic levenshtein distance of 5 from "thicket":
 #' library(dplyr)
