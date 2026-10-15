@@ -1,6 +1,6 @@
 Package: LexOPS
 Title: A Package and Shiny App for Generating Matched Stimuli
-Version: 0.6.0
+Version: 0.6.0.9000
 Date: 2026-10-15
 Authors@R: 
     c(
