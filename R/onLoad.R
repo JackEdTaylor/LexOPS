@@ -13,9 +13,16 @@
   } else {
     # if not running interactively, give a warning and return an empty dataframe if missing
     if (!rlang::is_installed("lexopsdata")) {
-      warning(
-        "To use the lexops dataset, please install the lexopsdata package:\npak::pkg_install(\"JackEdTaylor/lexopsdata@*release\")"
+      checking_package <- identical(
+        Sys.getenv("_R_CHECK_PACKAGE_NAME_"),
+        "LexOPS"
       )
+
+      if (!checking_package) {
+        warning(
+          "To use the lexops dataset, please install the lexopsdata package:\npak::pkg_install(\"JackEdTaylor/lexopsdata@*release\")"
+        )
+      }
       # return empty dataframe if unavailable and not in interactive session
       return(data.frame())
     }
