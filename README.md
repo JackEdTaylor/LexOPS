@@ -16,10 +16,10 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 coverage](https://codecov.io/gh/jackedtaylor/lexops/graph/badge.svg)](https://app.codecov.io/gh/jackedtaylor/lexops)
 <!-- badges: end -->
 
-LexOPS is an R package for generating matched stimuli for factorial
+LexOPS is an R package for selecting matched stimuli for factorial
 design experiments. You can use the functions on any dataframe, but
 there is a database of example features for English words for
-psycholinguistics studies in English (`lexopsdata::lexops`).
+psycholinguistics studies in English (`lexops`).
 
 ## Installation
 
@@ -41,8 +41,7 @@ pak::pkg_install("JackEdTaylor/LexOPS@*release")
 
 LexOPS makes it easy to generate matched stimuli in a reproducible way.
 The functions work on any dataframe, but there is an associated dataset,
-`lexopsdata::lexops`, containing psycholinguistic variables for English
-words.
+`lexops`, containing psycholinguistic variables for English words.
 
 ### The “Generate Pipeline”
 
