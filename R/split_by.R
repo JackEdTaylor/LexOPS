@@ -94,14 +94,13 @@ split_by <- function(x, var, levels, filter = TRUE, standard_eval = FALSE){
 
   # check that all the defined levels have at least one possible value in the distribution or values
   if (is.numeric(df[[split[[1]]]])) {
+    split_values <- df[[split[[1]]]]
     true_levels <- lapply(split[-1], function(x) {
-      split_var <- split[[1]]
-      nrow(df[df[[split_var]] >= x[1] & df[[split_var]] <= x[2], ]) > 0
+      any(!is.na(split_values) & split_values >= x[1] & split_values <= x[2])
     })
   } else {
     true_levels <- lapply(split[-1], function(x) {
-      split_var <- split[[1]]
-      nrow(df[any(x %in% df[[split_var]]), ]) > 0
+      any(x %in% df[[split[[1]]]])
     })
   }
   if (!all(unlist(true_levels))) {
@@ -166,14 +165,16 @@ split_by.numeric <- function(df, column, breaks, new_column, prefix, filter){
 
   cut_labs <- paste0(prefix, 1:(length(breaks)))
 
-  cuts_mat <- sapply(breaks, function(b) df[[column]]>=b[[1]] & df[[column]]<=b[[2]])
-
-  cuts_lab_idx <- apply(cuts_mat, MARGIN=1, function(x) ifelse(any(x), which(x), NA))
-
-  df[[new_column]] <- cut_labs[cuts_lab_idx]
+  values <- df[[column]]
+  split_labels <- rep(NA_character_, length(values))
+  for (i in seq_along(breaks)) {
+    in_level <- !is.na(values) & values >= breaks[[i]][1] & values <= breaks[[i]][2]
+    split_labels[in_level] <- cut_labs[i]
+  }
+  df[[new_column]] <- split_labels
 
   if(filter){
-    df <- df[!is.na(df[[new_column]]), ]
+    df <- df[!is.na(df[[new_column]]), , drop = FALSE]
   }
 
   return(df)
