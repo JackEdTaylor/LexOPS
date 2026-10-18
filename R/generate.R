@@ -140,13 +140,13 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
   # get the columns containing the split data
   LexOPS_splitCols <- colnames(df)[grepl(cond_col_regex, colnames(df))]
 
-  # create new column which gives the cell of the design that each string belongs to
-  # mimic tidyr::unite(na.rm = FALSE) behaviour: if any component is NA, result is NA
+  # create new column which gives the cell of the design that each item belongs to
   if (length(LexOPS_splitCols) > 0) {
-    df[[cond_col]] <- apply(df[LexOPS_splitCols], 1, function(row) {
-      if (any(is.na(row))) return(NA_character_)
-      paste(as.character(row), collapse = "_")
-    })
+    split_values <- lapply(LexOPS_splitCols, function(col) as.character(df[[col]]))
+    condition <- do.call(paste, c(split_values, sep = "_"))
+    missing_split <- Reduce(`|`, lapply(split_values, is.na))
+    condition[missing_split] <- NA_character_
+    df[[cond_col]] <- condition
   } else {
     df[[cond_col]] <- NA_character_
   }
@@ -375,8 +375,7 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
     # drop rows with NA in any of the condition columns (allow NA in match_null)
     cols_check <- setdiff(colnames(df), "match_null")
     if (nrow(df) > 0) {
-      keep_rows <- apply(df[, cols_check, drop = FALSE], 1, function(r) all(!is.na(r)))
-      df <- df[keep_rows, , drop = FALSE]
+      df <- df[stats::complete.cases(df[, cols_check, drop = FALSE]), , drop = FALSE]
     }
     # add the item number as item_nr and put it first
     df$item_nr <- seq_len(nrow(df))
