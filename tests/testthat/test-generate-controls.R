@@ -867,6 +867,7 @@ testthat::test_that("control_for_euc", {
 
     wide_res |>
       long_format() |>
+      dplyr::mutate(gen_euc_dist = as.numeric(gen_euc_dist)) |>
       dplyr::left_join(
         dplyr::select(
           manual_euc_dist, item_nr,
@@ -936,12 +937,13 @@ testthat::test_that("control_for_euc", {
 
     wide_res |>
       long_format() |>
+      dplyr::mutate(gen_euc_dist = as.numeric(gen_euc_dist)) |>
       dplyr::filter(condition != match_null) |>
       dplyr::left_join(
         dplyr::select(manual_euc_dist, item_nr, man_euc_dist),
         by = "item_nr"
       ) |>
-      dplyr::filter(gen_euc_dist == man_euc_dist) |>
+      dplyr::filter(abs(gen_euc_dist - man_euc_dist) <= 1e-12) |>
       nrow()
   }, 20)
   # test that weight standardisation can be disabled
@@ -996,7 +998,7 @@ testthat::test_that("control_for_euc", {
         dplyr::select(manual_euc_dist, item_nr, man_euc_dist),
         by = "item_nr"
       ) |>
-      dplyr::filter(gen_euc_dist == man_euc_dist) |>
+      dplyr::filter(abs(gen_euc_dist - man_euc_dist) <= 1e-12) |>
       nrow()
   }, 12)
   # test that standard and non-standard evaluation are equivalent
