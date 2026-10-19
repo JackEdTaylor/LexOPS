@@ -993,7 +993,7 @@ testthat::test_that("control_for_euc", {
 
     wide_res |>
       long_format() |>
-      dplyr::mutate(gen_euc_dist = as.numeric(gen_euc_dist))
+      dplyr::mutate(gen_euc_dist = as.numeric(gen_euc_dist)) |>
       dplyr::filter(condition != match_null) |>
       dplyr::left_join(
         dplyr::select(manual_euc_dist, item_nr, man_euc_dist),
