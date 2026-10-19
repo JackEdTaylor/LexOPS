@@ -91,12 +91,17 @@ euc_dists <- function(df = lexopsdata::lexops, target, vars = "all", scale = TRU
   # calculate Euclidean distance of word from all others on specified dimensions
 
   # first, scale all dimensions as requested
+  df[, vars] <- lapply(df[, vars, drop = FALSE], function(col) as.numeric(base::scale(col, center, scale)))
+
+  # get all the other vectors (including the target)
   dims <- df[, vars, drop = FALSE]
-  dims[] <- lapply(dims, function(col) as.numeric(base::scale(col, center, scale)))
 
   # apply weights
   if (any(!is.na(weights))) {
-    dims[] <- lapply(seq_len(ncol(dims)), function(i) dims[, i] * weights[i])
+    orig_names <- colnames(dims)
+    tmp <- lapply(seq_len(ncol(dims)), function(i) dims[, i] * weights[i])
+    dims <- as.data.frame(tmp)
+    names(dims) <- orig_names
   }
 
   # get the vector for the target word
