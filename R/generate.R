@@ -486,19 +486,22 @@ generate.find_matches <- function(df, target, vars, matchCond, id_col, cond_col,
 }
 
 # function to check whether the matches are inclusive (necessary if match_null = "inclusive")
-# This treats each possible condition for the current item as the match null for one iteration, and tests that all other words are suitable matches
+# This treats each possible condition for the current item as the match null for one iteration, and tests that all other items are suitable matches
 # if TRUE, will return the matches unchanged, else will return same vector with all values replaced by NAs
 generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, matchCond, id_col, cond_col, candidate_rows = seq_len(nrow(df))) {
   # if there are NAs in matches, return NAs
   if (any(is.na(matches))) return(rep(NA, length(matches)))
   # if no controls, return matches unchanged
   if (length(vars)==0) return(matches)
+  # get the selected rows
+  matched_rows <- match(unname(matches), df[[id_col]])
+  selected_rows <- candidate_rows[candidate_rows %in% matched_rows]
   # check words are matched inclusively
   are_inclusive <- lapply(matches, function(this_word) {
     # get this word's condition
     matchCond_this_word <- names(matches)[matches==this_word]
     this_word_row <- match(this_word, df[[id_col]])
-    this_candidate_rows <- candidate_rows[df[[cond_col]][candidate_rows] != matchCond_this_word | candidate_rows == this_word_row]
+    this_candidate_rows <- selected_rows[df[[cond_col]][selected_rows] != matchCond_this_word | selected_rows == this_word_row]
     # get list of suitable matches based on controls
     df_matches_this_word <- generate.find_matches(df, this_word, vars, matchCond_this_word, id_col, cond_col, this_candidate_rows, this_word_row)
     # get a similar list, but mapping any specified functions
