@@ -500,8 +500,7 @@ testthat::test_that("control_for_map", {
       dplyr::group_by(item_nr) |>
       dplyr::mutate(manual_max_strdist = max_stringdist(cond_f)) |>
       dplyr::ungroup() |>
-      dplyr::filter(is.na(gen_strdist)) |>
-      nrow()
+      dplyr::filter(is.na(gen_strdist))
   },
   69
   )
@@ -617,7 +616,9 @@ testthat::test_that("control_for_euc", {
         by = "item_nr"
       ) |>
       # NB: only one row per pair should have the Euclidean distance, as the other in the pair will be the match null and will have a distance of zero from itself
-      dplyr::filter(gen_euc_dist == man_euc_dist) |>
+      dplyr::filter(
+        abs(gen_euc_dist - man_euc_dist) <= 1e-12
+      ) |>
       nrow()
   }, 20)
   # test inclusive matching with 3 conditions is within the requested tolerance
@@ -761,7 +762,7 @@ testthat::test_that("control_for_euc", {
         man_euc_dist_12, man_euc_dist_13, man_euc_dist_23
       ))) |>
       dplyr::ungroup() |>
-      dplyr::filter(gen_euc_dist == max_man_euc_dist) |>
+      dplyr::filter(abs(gen_euc_dist - max_man_euc_dist) <= 1e-12) |>
       nrow()
   }, 60)
   # test inclusive matching with 4 factorial cells and 2 splits returns a long-format column that is the maximum of the possible euclidean distances
@@ -879,7 +880,10 @@ testthat::test_that("control_for_euc", {
         man_euc_dist_A2_B1_A2_B2
       ))) |>
       dplyr::ungroup() |>
-      dplyr::filter(max_man_euc_dist <= 1.5, gen_euc_dist == max_man_euc_dist) |>
+      dplyr::filter(
+        max_man_euc_dist <= 1.5,
+        abs(gen_euc_dist - max_man_euc_dist) <= 1e-12
+      ) |>
       nrow()
   }, 24)
   # test weighted Euclidean distance is calculated as expected
