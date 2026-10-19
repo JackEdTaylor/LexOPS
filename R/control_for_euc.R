@@ -39,6 +39,9 @@
 #'     euc_df = lexops
 #'   )
 #'
+#' @details
+#' The long format version of the generated items (`long_format()`) will include a column, with the name defined by the `name` argument. This will include the calculated Euclidean distances. If the match null is set in `generate()` to be inclusive (`match_null="inclusive"`) and there are more than two factorial cells, this column will contain the maximum of all Euclidean distances for a given item.
+#'
 #' @export
 #' @importFrom stats setNames
 
@@ -107,10 +110,17 @@ control_for_euc <- function(x, vars, tol, name = NA, scale = TRUE, center = TRUE
     sqrt(rowSums((candidate_dims - rep(target_dims, each = nrow(candidate_dims)))^2))
   }
 
+  control_for_euc.max_euc <- function(matches) {
+    match_rows <- match(matches, euc_ids)
+    if (anyNA(match_rows)) return(NA_real_)
+    if (length(match_rows) < 2) return(0)
+    max(as.numeric(stats::dist(euc_dims[match_rows, , drop = FALSE])))
+  }
+
   # add the info to the output object
   lp$info <- lp_info
 
-  control_for_map(
+  lp <- control_for_map(
     lp,
     fun = control_for_euc.calc_euc,
     var = id_col,
@@ -118,4 +128,9 @@ control_for_euc <- function(x, vars, tol, name = NA, scale = TRUE, center = TRUE
     name = name,
     standard_eval = TRUE
   )
+
+  control_nr <- length(lp$info$control_functions)
+  lp$info$control_functions[[control_nr]]$inclusive_max <- control_for_euc.max_euc
+
+  lp
 }

@@ -27,6 +27,9 @@ Returns \code{df}, with details on the variables to be controlled for added to t
 \description{
 Some variables (e.g. similarity measures) are hard to control for with \code{\link{control_for}} as they need to be recalculated for each word relative to each other, rather than there being a single value for each possible stimulus. The \code{control_for_map} function declares a function that the \code{\link{generate}} function should apply to each match_null within an iteration of stimulus generation. The function given as \code{fun} should be able to take the data in the column given in \code{var} as the first argument, and should be able to take the match_null's value in that column as the second argument.
 }
+\details{
+The long format version of the generated items (\code{long_format()}) will include a column, with the name defined by the \code{name} argument. This will include the values returned by the function \code{fun}. If the match null is set in \code{generate()} to be inclusive (\code{match_null="inclusive"}) and there are more than two factorial cells, this column will only contain \code{NA}s.
+}
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 

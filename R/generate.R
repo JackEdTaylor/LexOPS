@@ -271,7 +271,8 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
           matchCond = this_match_null,
           id_col = id_col,
           cond_col = cond_col,
-          target_row = match(this_word, m[[id_col]])
+          target_row = match(this_word, m[[id_col]]),
+          inclusive = match_null == "inclusive"
         )
         # remove the target word
         m <- m[m[[id_col]]!=this_word, ]
@@ -367,6 +368,22 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
     # add control_for_map() values if any (merge preserving order)
     if (length(lp_info$control_functions) > 0 & length(control_for_map_values) > 0) {
       control_for_map_values <- do.call(rbind, control_for_map_values)
+      # if there are more >2 factorial cells and inclusive matching is used, return a value of NA, rather than just the first, initial value that was calculated for the matched set
+      if (match_null == "inclusive" && length(all_conds) > 2) {
+        for (cont in lp_info$control_functions) {
+          if (is.null(cont$inclusive_max)) {
+            control_for_map_values[[cont[[1]]]] <- NA
+          }
+        }
+      }
+      has_group_control <- any(vapply(lp_info$control_functions, function(cont) !is.null(cont$inclusive_max), logical(1)))
+      if (match_null == "inclusive" && has_group_control) {
+        complete_rows <- stats::complete.cases(out[, seq_along(all_conds), drop = FALSE])
+        generated_ids <- unique(as.vector(out[complete_rows, seq_along(all_conds), drop = FALSE]))
+        repeated_generated_ids <- control_for_map_values[[id_col]] %in% generated_ids &
+          duplicated(control_for_map_values[[id_col]])
+        control_for_map_values <- control_for_map_values[!repeated_generated_ids, , drop = FALSE]
+      }
       meta_df <- merge(meta_df, control_for_map_values, by = id_col, all.x = TRUE, sort = FALSE)
     }
 
@@ -376,6 +393,17 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
     cols_check <- setdiff(colnames(df), "match_null")
     if (nrow(df) > 0) {
       df <- df[stats::complete.cases(df[, cols_check, drop = FALSE]), , drop = FALSE]
+    }
+    if (match_null == "inclusive" && nrow(df) > 0) {
+      for (cont in lp_info$control_functions) {
+        if (is.null(cont$inclusive_max)) next
+        for (row in seq_len(nrow(df))) {
+          matched_ids <- unlist(df[row, all_conds, drop = FALSE], use.names = FALSE)
+          group_distance <- cont$inclusive_max(matched_ids)
+          meta_rows <- match(matched_ids, meta_df[[id_col]])
+          meta_df[[cont[[1]]]][meta_rows] <- group_distance
+        }
+      }
     }
     # add the item number as item_nr and put it first
     df$item_nr <- seq_len(nrow(df))
@@ -492,10 +520,12 @@ generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, mat
   # if there are NAs in matches, return NAs
   if (any(is.na(matches))) return(rep(NA, length(matches)))
   # if no controls, return matches unchanged
-  if (length(vars)==0) return(matches)
+  if (length(vars)==0 && length(vars_pre_calc)==0) return(matches)
   # get the selected rows
   matched_rows <- match(unname(matches), df[[id_col]])
   selected_rows <- candidate_rows[candidate_rows %in% matched_rows]
+  group_controls <- Filter(function(cont) !is.null(cont$inclusive_max), vars_pre_calc)
+  vars_pre_calc <- Filter(function(cont) is.null(cont$inclusive_max), vars_pre_calc)
   # check words are matched inclusively
   are_inclusive <- lapply(matches, function(this_word) {
     # get this word's condition
@@ -509,8 +539,12 @@ generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, mat
     # check the other items are in there, and return this value
     all(matches[matches != this_word] %in% df_matches_this_word[[id_col]]) & all(matches[matches != this_word] %in% df_matches_this_word_funs[[id_col]])
   })
+  are_group_controls_inclusive <- vapply(group_controls, function(cont) {
+    group_distance <- cont$inclusive_max(unname(matches))
+    !is.na(group_distance) && group_distance >= cont[[4]][1] && group_distance <= cont[[4]][2]
+  }, logical(1))
   # leave unchanged if inclusive, otherwise return NAs
-  if (all(unlist(are_inclusive))) {
+  if (all(unlist(are_inclusive)) && all(are_group_controls_inclusive)) {
     matches
   } else {
     setNames(rep(NA, length(matches)), names(matches))
@@ -518,7 +552,7 @@ generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, mat
 }
 
 # function to find matches for a particular word using functions defined by `control_for_fun()`
-generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, id_col, cond_col, target_row = NULL) {
+generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, id_col, cond_col, target_row = NULL, inclusive = FALSE) {
   # if no control functions, return the df unchanged
   if (length(vars_pre_calc)==0) return(df)
 
@@ -577,7 +611,9 @@ generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, id_c
     cont <- vars_pre_calc[[cont_nr]]
     col_name <- func_col_names[[cont_nr]]
     if (length(cont) >= 4) {
-      list(col_name, cont[[4]])
+      tol <- cont[[4]]
+      if (inclusive && !is.null(cont$inclusive_max)) tol[1] <- -Inf
+      list(col_name, tol)
     } else {
       list(col_name)
     }

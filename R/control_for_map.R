@@ -53,6 +53,9 @@
 #'    split_by(AROU.Warriner, 1:3 ~ 7:9) |>
 #'    control_for_map(stringdist_okay, string, "not_okay")
 #'
+#' @details
+#' The long format version of the generated items (`long_format()`) will include a column, with the name defined by the `name` argument. This will include the values returned by the function `fun`. If the match null is set in `generate()` to be inclusive (`match_null="inclusive"`) and there are more than two factorial cells, this column will only contain `NA`s.
+#'
 #' @export
 
 control_for_map <- function(x, fun, var, tol = NA, name = NA, standard_eval = FALSE, ...) {

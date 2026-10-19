@@ -42,6 +42,9 @@ Returns \code{df}, with details on the variables to be controlled for added to t
 \description{
 This function is a wrapper for \code{\link{control_for_map}} that allows you to easily control for Euclidean distance.
 }
+\details{
+The long format version of the generated items (\code{long_format()}) will include a column, with the name defined by the \code{name} argument. This will include the calculated Euclidean distances. If the match null is set in \code{generate()} to be inclusive (\code{match_null="inclusive"}) and there are more than two factorial cells, this column will contain the maximum of all Euclidean distances for a given item.
+}
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
 
