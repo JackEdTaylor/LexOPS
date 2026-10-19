@@ -312,6 +312,35 @@ testthat::test_that("control_for_map", {
       dplyr::filter(ld <= 2) |>
       nrow()
   }, 36)
+  # test that the returned value matches that calculate manually
+  testthat::expect_equal({
+    library(stringdist)
+    wide_res <- eg_df |>
+      set_options(id_col = "id") |>
+      split_by(a, -5:-0.1 ~ 0.1:5) |>
+      control_for_map(stringdist, f, 0:2, method="lv", name="gen_ld") |>
+      generate(36, silent=TRUE)
+
+    wide_res |>
+      dplyr::left_join(
+        eg_df |>
+          dplyr::select(id, f) |>
+          dplyr::rename(A1_f = f),
+        by = c("A1" = "id")
+      ) |>
+      dplyr::left_join(
+        eg_df |>
+          dplyr::select(id, f) |>
+          dplyr::rename(A2_f = f),
+        by = c("A2" = "id")
+      ) |>
+      dplyr::rowwise() |>
+      dplyr::mutate(ld = stringdist(A1_f, A2_f, method="lv")) |>
+      dplyr::right_join(long_format(wide_res), by=c("item_nr", "match_null")) |>
+      # each row either has the expected distance, or else a distance of 0 from itself
+      dplyr::filter(ld == gen_ld | gen_ld == 0) |>
+      nrow()
+  }, 72)
   # test with a non-numeric function output
   testthat::expect_equal({
     library(stringdist)
@@ -381,6 +410,100 @@ testthat::test_that("control_for_map", {
       nrow()
     },
   46  # (n_items * n_cells) - n_items; as each of the 2 conditions will be within the tolerance to each other, and the match null will be an exact match with itself
+  )
+  # test with three conditions and inclusive matching
+  testthat::expect_equal({
+    library(stringdist)
+    wide_res <- eg_df |>
+      set_options(id_col = "id") |>
+      split_by(d, "a" ~ "b" ~ "c") |>
+      control_for_map(stringdist, f, 0:4, method="lv", name="gen_strdist") |>
+      generate(23, match_null="inclusive", silent=TRUE)
+
+    max_stringdist <- function(strings, method="lv") {
+      max(stringdistmatrix(strings, method=method))
+    }
+
+    wide_res |>
+      long_format() |>
+      dplyr::left_join(
+        eg_df |>
+          dplyr::select(id, f) |>
+          dplyr::rename(A1_f = f),
+        by = c("id")
+      ) |>
+      dplyr::left_join(
+        eg_df |>
+          dplyr::select(id, f) |>
+          dplyr::rename(A2_f = f),
+        by = c("id")
+      ) |>
+      dplyr::left_join(
+        eg_df |>
+          dplyr::select(id, f) |>
+          dplyr::rename(A3_f = f),
+        by = c("id")
+      ) |>
+      dplyr::mutate(cond_f = dplyr::case_when(
+        condition == "A1" ~ A1_f,
+        condition == "A2" ~ A2_f,
+        condition == "A3" ~ A3_f
+      )) |>
+      dplyr::select(-A1_f, -A2_f, -A3_f) |>
+      dplyr::group_by(item_nr) |>
+      dplyr::mutate(manual_max_strdist = max_stringdist(cond_f)) |>
+      dplyr::ungroup() |>
+      dplyr::filter(manual_max_strdist <= 4) |>
+      nrow()
+  },
+  69
+  )
+  # test that with three conditions and inclusive matching, the resultant column is NA
+  testthat::expect_equal({
+    library(stringdist)
+    wide_res <- eg_df |>
+      set_options(id_col = "id") |>
+      split_by(d, "a" ~ "b" ~ "c") |>
+      control_for_map(stringdist, f, 0:4, method="lv", name="gen_strdist") |>
+      generate(23, match_null="inclusive", silent=TRUE)
+
+    max_stringdist <- function(strings, method="lv") {
+      max(stringdistmatrix(strings, method=method))
+    }
+
+    wide_res |>
+      long_format() |>
+      dplyr::left_join(
+        eg_df |>
+          dplyr::select(id, f) |>
+          dplyr::rename(A1_f = f),
+        by = c("id")
+      ) |>
+      dplyr::left_join(
+        eg_df |>
+          dplyr::select(id, f) |>
+          dplyr::rename(A2_f = f),
+        by = c("id")
+      ) |>
+      dplyr::left_join(
+        eg_df |>
+          dplyr::select(id, f) |>
+          dplyr::rename(A3_f = f),
+        by = c("id")
+      ) |>
+      dplyr::mutate(cond_f = dplyr::case_when(
+        condition == "A1" ~ A1_f,
+        condition == "A2" ~ A2_f,
+        condition == "A3" ~ A3_f
+      )) |>
+      dplyr::select(-A1_f, -A2_f, -A3_f) |>
+      dplyr::group_by(item_nr) |>
+      dplyr::mutate(manual_max_strdist = max_stringdist(cond_f)) |>
+      dplyr::ungroup() |>
+      dplyr::filter(is.na(gen_strdist)) |>
+      nrow()
+  },
+  69
   )
   # test with multiple control functions
   testthat::expect_equal({
@@ -452,7 +575,7 @@ testthat::test_that("control_for_euc", {
       split_by(a, -5:-0.1 ~ 0.1:5) |>
       control_for_euc(
         c(b, e),
-        0:1.5,
+        0:0.75,
         name = "gen_euc_dist"
       ) |>
       generate(20, silent=TRUE)
@@ -493,9 +616,272 @@ testthat::test_that("control_for_euc", {
         dplyr::select(manual_euc_dist, item_nr, man_euc_dist),
         by = "item_nr"
       ) |>
+      # NB: only one row per pair should have the Euclidean distance, as the other in the pair will be the match null and will have a distance of zero from itself
       dplyr::filter(gen_euc_dist == man_euc_dist) |>
       nrow()
   }, 20)
+  # test inclusive matching with 3 conditions is within the requested tolerance
+  testthat::expect_equal({
+    wide_res <- eg_df |>
+      set_options(id_col = "id") |>
+      split_by(d, "a" ~ "b" ~ "c") |>
+      control_for_euc(
+        c(b, e),
+        0:0.75,
+        name = "gen_euc_dist"
+      ) |>
+      generate(20, match_null="inclusive", silent=TRUE)
+
+    manual_euc_dist <- wide_res |>
+      # get A1 values
+      dplyr::left_join(
+        eg_df |>
+          dplyr::filter(d %in% c("a", "b", "c")) |>
+          dplyr::select(id, b, e) |>
+          dplyr::mutate(
+            b = as.numeric(scale(b)),
+            e = as.numeric(scale(e))
+          ) |>
+          dplyr::rename(A1_b = b, A1_e = e),
+        by = c("A1" = "id")
+      ) |>
+      # get A2 values
+      dplyr::left_join(
+        eg_df |>
+          dplyr::filter(d %in% c("a", "b", "c")) |>
+          dplyr::select(id, b, e) |>
+          dplyr::mutate(
+            b = as.numeric(scale(b)),
+            e = as.numeric(scale(e))
+          ) |>
+          dplyr::rename(A2_b = b, A2_e = e),
+        by = c("A2" = "id")
+      ) |>
+      # get A3 values
+      dplyr::left_join(
+        eg_df |>
+          dplyr::filter(d %in% c("a", "b", "c")) |>
+          dplyr::select(id, b, e) |>
+          dplyr::mutate(
+            b = as.numeric(scale(b)),
+            e = as.numeric(scale(e))
+          ) |>
+          dplyr::rename(A3_b = b, A3_e = e),
+        by = c("A3" = "id")
+      ) |>
+      dplyr::mutate(
+        # distance between A1 and A2
+        man_euc_dist_12 = as.numeric(sqrt((A1_b - A2_b)**2 + (A1_e - A2_e)**2)),
+        # distance between A1 and A3
+        man_euc_dist_13 = as.numeric(sqrt((A1_b - A3_b)**2 + (A1_e - A3_e)**2)),
+        # distance between A2 and A3
+        man_euc_dist_23 = as.numeric(sqrt((A2_b - A3_b)**2 + (A2_e - A3_e)**2))
+      )
+
+    wide_res |>
+      long_format() |>
+      dplyr::left_join(
+        dplyr::select(manual_euc_dist, item_nr, man_euc_dist_12, man_euc_dist_13, man_euc_dist_23),
+        by = c("item_nr")
+      ) |>
+      dplyr::rowwise() |>
+      dplyr::mutate(max_man_euc_dist = max(c(
+        man_euc_dist_12, man_euc_dist_13, man_euc_dist_23
+      ))) |>
+      dplyr::ungroup() |>
+      dplyr::filter(max_man_euc_dist <= 0.75) |>
+      nrow()
+  }, 60)
+  # test inclusive matching with 3 conditions returns a long-format column that is the maximum of the possible euclidean distances
+  testthat::expect_equal({
+    wide_res <- eg_df |>
+      set_options(id_col = "id") |>
+      split_by(d, "a" ~ "b" ~ "c") |>
+      control_for_euc(
+        c(b, e),
+        0:0.75,
+        name = "gen_euc_dist"
+      ) |>
+      generate(20, match_null="inclusive", silent=TRUE)
+
+    manual_euc_dist <- wide_res |>
+      # get A1 values
+      dplyr::left_join(
+        eg_df |>
+          dplyr::filter(d %in% c("a", "b", "c")) |>
+          dplyr::select(id, b, e) |>
+          dplyr::mutate(
+            b = as.numeric(scale(b)),
+            e = as.numeric(scale(e))
+          ) |>
+          dplyr::rename(A1_b = b, A1_e = e),
+        by = c("A1" = "id")
+      ) |>
+      # get A2 values
+      dplyr::left_join(
+        eg_df |>
+          dplyr::filter(d %in% c("a", "b", "c")) |>
+          dplyr::select(id, b, e) |>
+          dplyr::mutate(
+            b = as.numeric(scale(b)),
+            e = as.numeric(scale(e))
+          ) |>
+          dplyr::rename(A2_b = b, A2_e = e),
+        by = c("A2" = "id")
+      ) |>
+      # get A3 values
+      dplyr::left_join(
+        eg_df |>
+          dplyr::filter(d %in% c("a", "b", "c")) |>
+          dplyr::select(id, b, e) |>
+          dplyr::mutate(
+            b = as.numeric(scale(b)),
+            e = as.numeric(scale(e))
+          ) |>
+          dplyr::rename(A3_b = b, A3_e = e),
+        by = c("A3" = "id")
+      ) |>
+      dplyr::mutate(
+        # distance between A1 and A2
+        man_euc_dist_12 = as.numeric(sqrt((A1_b - A2_b)**2 + (A1_e - A2_e)**2)),
+        # distance between A1 and A3
+        man_euc_dist_13 = as.numeric(sqrt((A1_b - A3_b)**2 + (A1_e - A3_e)**2)),
+        # distance between A2 and A3
+        man_euc_dist_23 = as.numeric(sqrt((A2_b - A3_b)**2 + (A2_e - A3_e)**2))
+      )
+
+    wide_res |>
+      long_format() |>
+      dplyr::left_join(
+        dplyr::select(manual_euc_dist, item_nr, man_euc_dist_12, man_euc_dist_13, man_euc_dist_23),
+        by = c("item_nr")
+      ) |>
+      dplyr::rowwise() |>
+      dplyr::mutate(max_man_euc_dist = max(c(
+        man_euc_dist_12, man_euc_dist_13, man_euc_dist_23
+      ))) |>
+      dplyr::ungroup() |>
+      dplyr::filter(gen_euc_dist == max_man_euc_dist) |>
+      nrow()
+  }, 60)
+  # test inclusive matching with 4 factorial cells and 2 splits returns a long-format column that is the maximum of the possible euclidean distances
+  testthat::expect_equal({
+    wide_res <- eg_df |>
+      set_options(id_col = "id") |>
+      split_by(a, -5:-0.1 ~ 0.1:5) |>
+      split_by(d, "a" ~ "b") |>
+      control_for_euc(
+        c(b, e),
+        0:1.5,
+        name = "gen_euc_dist"
+      ) |>
+      generate(6, match_null="inclusive", silent=TRUE)
+
+    manual_euc_dist <- wide_res |>
+      # get A1_B1 values
+      dplyr::left_join(
+        eg_df |>
+          dplyr::filter(
+            (a>=-5 & a<=-0.1 & d == "a") |  # A1_B1
+            (a>=-5 & a<=-0.1 & d == "b") |  # A1_B2
+            (a>=0.1 & a<=5 & d == "a") |  # A2_B1
+            (a>=0.1 & a<=5 & d == "b")  # A2_B2
+          ) |>
+          dplyr::select(id, b, e) |>
+          dplyr::mutate(
+            b = as.numeric(scale(b)),
+            e = as.numeric(scale(e))
+          ) |>
+          dplyr::rename(A1_B1_b = b, A1_B1_e = e),
+        by = c("A1_B1" = "id")
+      ) |>
+      # get A1_B2 values
+      dplyr::left_join(
+        eg_df |>
+          dplyr::filter(
+            (a>=-5 & a<=-0.1 & d == "a") |  # A1_B1
+            (a>=-5 & a<=-0.1 & d == "b") |  # A1_B2
+            (a>=0.1 & a<=5 & d == "a") |  # A2_B1
+            (a>=0.1 & a<=5 & d == "b")  # A2_B2
+          ) |>
+          dplyr::select(id, b, e) |>
+          dplyr::mutate(
+            b = as.numeric(scale(b)),
+            e = as.numeric(scale(e))
+          ) |>
+          dplyr::rename(A1_B2_b = b, A1_B2_e = e),
+        by = c("A1_B2" = "id")
+      ) |>
+      # get A2_B1 values
+      dplyr::left_join(
+        eg_df |>
+          dplyr::filter(
+            (a>=-5 & a<=-0.1 & d == "a") |  # A1_B1
+            (a>=-5 & a<=-0.1 & d == "b") |  # A1_B2
+            (a>=0.1 & a<=5 & d == "a") |  # A2_B1
+            (a>=0.1 & a<=5 & d == "b")  # A2_B2
+          ) |>
+          dplyr::select(id, b, e) |>
+          dplyr::mutate(
+            b = as.numeric(scale(b)),
+            e = as.numeric(scale(e))
+          ) |>
+          dplyr::rename(A2_B1_b = b, A2_B1_e = e),
+        by = c("A2_B1" = "id")
+      ) |>
+      # get A2_B2 values
+      dplyr::left_join(
+        eg_df |>
+          dplyr::filter(
+            (a>=-5 & a<=-0.1 & d == "a") |  # A1_B1
+            (a>=-5 & a<=-0.1 & d == "b") |  # A1_B2
+            (a>=0.1 & a<=5 & d == "a") |  # A2_B1
+            (a>=0.1 & a<=5 & d == "b")  # A2_B2
+          ) |>
+          dplyr::select(id, b, e) |>
+          dplyr::mutate(
+            b = as.numeric(scale(b)),
+            e = as.numeric(scale(e))
+          ) |>
+          dplyr::rename(A2_B2_b = b, A2_B2_e = e),
+        by = c("A2_B2" = "id")
+      ) |>
+      dplyr::mutate(
+        # distance between A1_B1 and A1_B2
+        man_euc_dist_A1_B1_A1_B2 = as.numeric(sqrt((A1_B1_b - A1_B2_b)**2 + (A1_B1_e - A1_B2_e)**2)),
+        # distance between A1_B1 and A2_B1
+        man_euc_dist_A1_B1_A2_B1 = as.numeric(sqrt((A1_B1_b - A2_B1_b)**2 + (A1_B1_e - A2_B1_e)**2)),
+        # distance between A1_B1 and A2_B2
+        man_euc_dist_A1_B1_A2_B2 = as.numeric(sqrt((A1_B1_b - A2_B2_b)**2 + (A1_B1_e - A2_B2_e)**2)),
+        # distance between A1_B2 and A2_B1
+        man_euc_dist_A1_B2_A2_B1 = as.numeric(sqrt((A1_B2_b - A2_B1_b)**2 + (A1_B2_e - A2_B1_e)**2)),
+        # distance between A1_B2 and A2_B2
+        man_euc_dist_A1_B2_A2_B2 = as.numeric(sqrt((A1_B2_b - A2_B2_b)**2 + (A1_B2_e - A2_B2_e)**2)),
+        # distance between A2_B1 and A2_B2
+        man_euc_dist_A2_B1_A2_B2 = as.numeric(sqrt((A2_B1_b - A2_B2_b)**2 + (A2_B1_e - A2_B2_e)**2)),
+      )
+
+    wide_res |>
+      long_format() |>
+      dplyr::left_join(
+        dplyr::select(
+          manual_euc_dist, item_nr,
+          man_euc_dist_A1_B1_A1_B2, man_euc_dist_A1_B1_A2_B1, man_euc_dist_A1_B1_A2_B2,
+          man_euc_dist_A1_B2_A2_B1, man_euc_dist_A1_B2_A2_B2,
+          man_euc_dist_A2_B1_A2_B2
+        ),
+        by = c("item_nr")
+      ) |>
+      dplyr::rowwise() |>
+      dplyr::mutate(max_man_euc_dist = max(c(
+        man_euc_dist_A1_B1_A1_B2, man_euc_dist_A1_B1_A2_B1, man_euc_dist_A1_B1_A2_B2,
+        man_euc_dist_A1_B2_A2_B1, man_euc_dist_A1_B2_A2_B2,
+        man_euc_dist_A2_B1_A2_B2
+      ))) |>
+      dplyr::ungroup() |>
+      dplyr::filter(max_man_euc_dist <= 1.5, gen_euc_dist == max_man_euc_dist) |>
+      nrow()
+  }, 24)
   # test weighted Euclidean distance is calculated as expected
   testthat::expect_equal({
     weights <- runif(2, 0.1, 100)
@@ -651,7 +1037,7 @@ testthat::test_that("control_for_euc", {
       dplyr::rename(string = id) |>
       control_for_euc(
         c(b, e),
-        0:1.5,
+        0:0.75,
         name = "gen_euc_dist"
       ) |>
       split_by(a, -5:-0.1 ~ 0.1:5) |>
