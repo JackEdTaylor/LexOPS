@@ -4,7 +4,7 @@
 #'
 #' @param x A LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
 #' @param n The number of strings per condition (default = 20). Set to `"all"` to generate as many as possible.
-#' @param match_null The condition that words should be matched to. Should be a string indicating condition (e.g. `"A1_B2_C1"`), or a string indicating one of the following options: "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition (default), "inclusive" to match each condition within the tolerances to every other condition, "first" for the lowest condition (e.g. `"A1"` or `"A1_B1_C1_D1"`, etc.), "random" for randomly selected null condition each iteration.
+#' @param match_null The condition that items should be matched to. Should be a string indicating condition (e.g. `"A1_B2_C1"`), or a string indicating one of the following options: "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition (default), "inclusive" to match each condition within the tolerances to every other condition, "first" for the lowest condition (e.g. `"A1"` or `"A1_B1_C1_D1"`, etc.), "random" for randomly selected null condition each iteration.
 #' @param seed Deprecated: set seeds externally (e.g., `set.seed()`).
 #' @param silent Logical: should output to the console (via `cat()`) be suppressed? Default is FALSE.
 #' @param is_shiny Allows printing in a shiny context with `shinyjs::html()`. Outputs from the cat() function are stored in the div with id "gen_console". Default is FALSE.
@@ -210,7 +210,7 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
     n_tried <- 0
     n_tried_this_n_generated <- 0  # increases by 1 each iter but resets to 0 each time a row of matches is successfully generated
     n_generated <- 0
-    words_tried_this_generated <- c()
+    items_tried_this_generated <- c()
     out <- matrix(ncol=length(all_conds)+1, nrow=n)
     printing_points <- round(seq(0, n, n/20))
     successful_iterations <- c()
@@ -230,10 +230,10 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
 
       this_match_null <- null_conds[n_generated+1]
       null_rows <- rows_by_condition[[this_match_null]]
-      null_rows <- null_rows[!used_rows[null_rows] & !df[[id_col]][null_rows] %in% words_tried_this_generated]
-      null_word_bank <- df[[id_col]][null_rows]
+      null_rows <- null_rows[!used_rows[null_rows] & !df[[id_col]][null_rows] %in% items_tried_this_generated]
+      null_item_bank <- df[[id_col]][null_rows]
 
-      if (length(null_word_bank) == 0) {
+      if (length(null_item_bank) == 0) {
         if (n_all) {
           if (!silent) cat(sprintf("Generated %i (%i iterations, %.2f success rate)\r", n_generated, n_tried, n_generated/n_tried))
         } else {
@@ -247,16 +247,16 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
         break
       }
 
-      this_word <- sample(null_word_bank, 1)
-      words_tried_this_generated <- c(words_tried_this_generated, this_word)
-      target_row <- match(this_word, df[[id_col]])
+      this_item <- sample(null_item_bank, 1)
+      items_tried_this_generated <- c(items_tried_this_generated, this_item)
+      target_row <- match(this_item, df[[id_col]])
 
       matches <- sapply(all_conds[all_conds != this_match_null], function(cnd) {
         candidate_rows <- rows_by_condition[[cnd]]
         candidate_rows <- candidate_rows[!used_rows[candidate_rows]]
         m <- generate.find_matches(
           df,
-          target = this_word,
+          target = this_item,
           vars = lp_info$controls,
           matchCond = this_match_null,
           id_col = id_col,
@@ -266,16 +266,16 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
         )
         m <- generate.find_fun_matches(
           m,
-          target = this_word,
+          target = this_item,
           vars_pre_calc = lp_info$control_functions,
           matchCond = this_match_null,
           id_col = id_col,
           cond_col = cond_col,
-          target_row = match(this_word, m[[id_col]]),
+          target_row = match(this_item, m[[id_col]]),
           inclusive = match_null == "inclusive"
         )
-        # remove the target word
-        m <- m[m[[id_col]]!=this_word, ]
+        # remove the target item
+        m <- m[m[[id_col]]!=this_item, ]
 
         if (nrow(m)==0) {
           item_out <- NA
@@ -286,11 +286,11 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
             if (length(lp_info$control_functions) > 0) {
               item_row <- match(item_out, df[[id_col]])
               out_cont_map_val <- sapply(lp_info$control_functions, function(cont) {
-                # get the representations of the words in the given column
-                this_word_rep <- df[[ cont[[3]] ]][target_row]
+                # get the representations of the items in the given column
+                this_item_rep <- df[[ cont[[3]] ]][target_row]
                 out_rep <- df[[ cont[[3]] ]][item_row]
                 # get the value from the function
-                unname(cont[[2]](out_rep, this_word_rep))
+                unname(cont[[2]](out_rep, this_item_rep))
               })
               names(out_cont_map_val) <- control_function_names
               out_val <- item_out
@@ -298,16 +298,16 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
               newrow <- as.data.frame(as.list(c(out_val, out_cont_map_val)), stringsAsFactors = FALSE)
               control_for_map_values[[length(control_for_map_values) + 1]] <<- newrow
               control_for_map_value_rows <<- c(control_for_map_value_rows, item_row)
-              # ensure this_word row exists in control_for_map_values
+              # ensure this_item row exists in control_for_map_values
               if (!(target_row %in% control_for_map_value_rows)) {
-                this_word_map_val <- sapply(lp_info$control_functions, function(cont) {
-                  this_word_rep <- df[[ cont[[3]] ]][target_row]
-                  unname(cont[[2]](this_word, this_word))
+                this_item_map_val <- sapply(lp_info$control_functions, function(cont) {
+                  this_item_rep <- df[[ cont[[3]] ]][target_row]
+                  unname(cont[[2]](this_item, this_item))
                 })
-                names(this_word_map_val) <- control_function_names
-                this_word_val <- this_word
-                names(this_word_val) <- id_col
-                newrow2 <- as.data.frame(as.list(c(this_word_val, this_word_map_val)), stringsAsFactors = FALSE)
+                names(this_item_map_val) <- control_function_names
+                this_item_val <- this_item
+                names(this_item_val) <- id_col
+                newrow2 <- as.data.frame(as.list(c(this_item_val, this_item_map_val)), stringsAsFactors = FALSE)
                 control_for_map_values[[length(control_for_map_values) + 1]] <<- newrow2
                 control_for_map_value_rows <<- c(control_for_map_value_rows, target_row)
               }
@@ -317,8 +317,8 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
 
         item_out
       })
-      # add the target word
-      matches[this_match_null] <- this_word
+      # add the target item
+      matches[this_match_null] <- this_item
       # ensure ordered correctly (e.g. A1, A2, A3)
       matches <- matches[match(all_conds, names(matches))]
 
@@ -351,7 +351,7 @@ generate <- function(x, n=20, match_null = "balanced", seed = NA, silent = FALSE
         n_generated <- n_generated + 1
         successful_iterations <- c(successful_iterations, n_tried)
         n_tried_this_n_generated <- 0
-        words_tried_this_generated <- c()
+        items_tried_this_generated <- c()
         if (!silent) {
           if (n_generated %in% printing_points & !n_all) {
             cat(sprintf("Generated %i/%i (%i%%). %i total iterations, %.2f success rate.\r", n_generated, n, round(n_generated/n*100), n_tried, n_generated/n_tried))
@@ -485,14 +485,14 @@ generate.filter_tol_keep <- function(df_matches, vars, rows = seq_len(nrow(df_ma
   keep
 }
 
-# function to find matches for a particular word (better than current match_word() function?)
+# function to find matches for a particular item
 generate.find_matches <- function(df, target, vars, matchCond, id_col, cond_col, candidate_rows = NULL, target_row = NULL) {
   # if no controls, return the df unchanged
   if (length(vars)==0) {
     if (is.null(candidate_rows)) return(df)
     return(df[candidate_rows, , drop = FALSE])
   }
-  # get a copy of df excluding the null condition, but keep the target word
+  # get a copy of df excluding the null condition, but keep the target item
   if (is.null(candidate_rows)) {
     candidate_rows <- which(df[[cond_col]] != matchCond | df[[id_col]] == target)
   }
@@ -506,7 +506,7 @@ generate.find_matches <- function(df, target, vars, matchCond, id_col, cond_col,
     }
     if (is.list(cont)) append(cont, cont_val) else list(cont, cont_val)
   })
-  # for each control, filter out non-suitable matches for this word
+  # for each control, filter out non-suitable matches for this item
   keep <- generate.filter_tol_keep(df, vars, candidate_rows)
   df_matches_filt <- df[candidate_rows[keep], , drop = FALSE]
 
@@ -526,18 +526,18 @@ generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, mat
   selected_rows <- candidate_rows[candidate_rows %in% matched_rows]
   group_controls <- Filter(function(cont) !is.null(cont$inclusive_max), vars_pre_calc)
   vars_pre_calc <- Filter(function(cont) is.null(cont$inclusive_max), vars_pre_calc)
-  # check words are matched inclusively
-  are_inclusive <- lapply(matches, function(this_word) {
-    # get this word's condition
-    matchCond_this_word <- names(matches)[matches==this_word]
-    this_word_row <- match(this_word, df[[id_col]])
-    this_candidate_rows <- selected_rows[df[[cond_col]][selected_rows] != matchCond_this_word | selected_rows == this_word_row]
+  # check items are matched inclusively
+  are_inclusive <- lapply(matches, function(this_item) {
+    # get this item's condition
+    matchCond_this_item <- names(matches)[matches==this_item]
+    this_item_row <- match(this_item, df[[id_col]])
+    this_candidate_rows <- selected_rows[df[[cond_col]][selected_rows] != matchCond_this_item | selected_rows == this_item_row]
     # get list of suitable matches based on controls
-    df_matches_this_word <- generate.find_matches(df, this_word, vars, matchCond_this_word, id_col, cond_col, this_candidate_rows, this_word_row)
+    df_matches_this_item <- generate.find_matches(df, this_item, vars, matchCond_this_item, id_col, cond_col, this_candidate_rows, this_item_row)
     # get a similar list, but mapping any specified functions
-    df_matches_this_word_funs <- generate.find_fun_matches(df[this_candidate_rows, , drop = FALSE], this_word, vars_pre_calc, matchCond_this_word, id_col, cond_col)
+    df_matches_this_item_funs <- generate.find_fun_matches(df[this_candidate_rows, , drop = FALSE], this_item, vars_pre_calc, matchCond_this_item, id_col, cond_col)
     # check the other items are in there, and return this value
-    all(matches[matches != this_word] %in% df_matches_this_word[[id_col]]) & all(matches[matches != this_word] %in% df_matches_this_word_funs[[id_col]])
+    all(matches[matches != this_item] %in% df_matches_this_item[[id_col]]) & all(matches[matches != this_item] %in% df_matches_this_item_funs[[id_col]])
   })
   are_group_controls_inclusive <- vapply(group_controls, function(cont) {
     group_distance <- cont$inclusive_max(unname(matches))
@@ -551,7 +551,7 @@ generate.are_matches_inclusive <- function(df, matches, vars, vars_pre_calc, mat
   }
 }
 
-# function to find matches for a particular word using functions defined by `control_for_fun()`
+# function to find matches for a particular item using functions defined by `control_for_fun()`
 generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, id_col, cond_col, target_row = NULL, inclusive = FALSE) {
   # if no control functions, return the df unchanged
   if (length(vars_pre_calc)==0) return(df)
@@ -561,7 +561,7 @@ generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, id_c
 
   if (is.null(target_row)) target_row <- match(target, df[[id_col]])
 
-  # get the new columns' values for the target word
+  # get the new columns' values for the target item
   target_vals <- sapply(vars_pre_calc, function(x) {
     fun <- x[[2]]
     var <- x[[3]]
@@ -570,7 +570,7 @@ generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, id_c
     fun(target_input, target_input)
   })
 
-  # get a copy of df excluding the null condition and the target word
+  # get a copy of df excluding the null condition and the target item
   df_matches <- df[df[[cond_col]] != matchCond | df[[id_col]] == target, ]
 
   # calculate the new columns based on the supplied functions and arguments
@@ -628,7 +628,7 @@ generate.find_fun_matches <- function(df, target, vars_pre_calc, matchCond, id_c
     if (is.list(cont)) append(cont, cont_val) else list(cont, cont_val)
   })
 
-  # for each control, filter out non-suitable matches for this word
+  # for each control, filter out non-suitable matches for this item
   df_matches_filt <- generate.filter_tol(df_matches, vars)
 
   df_matches_filt
