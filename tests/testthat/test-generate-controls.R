@@ -500,7 +500,8 @@ testthat::test_that("control_for_map", {
       dplyr::group_by(item_nr) |>
       dplyr::mutate(manual_max_strdist = max_stringdist(cond_f)) |>
       dplyr::ungroup() |>
-      dplyr::filter(is.na(gen_strdist))
+      dplyr::filter(is.na(gen_strdist)) |>
+      nrow()
   },
   69
   )
@@ -610,6 +611,7 @@ testthat::test_that("control_for_euc", {
 
     wide_res |>
       long_format() |>
+      dplyr::mutate(gen_euc_dist = as.numeric(gen_euc_dist)) |>
       dplyr::filter(condition != match_null) |>
       dplyr::left_join(
         dplyr::select(manual_euc_dist, item_nr, man_euc_dist),
@@ -753,6 +755,7 @@ testthat::test_that("control_for_euc", {
 
     wide_res |>
       long_format() |>
+      dplyr::mutate(gen_euc_dist = as.numeric(gen_euc_dist)) |>
       dplyr::left_join(
         dplyr::select(manual_euc_dist, item_nr, man_euc_dist_12, man_euc_dist_13, man_euc_dist_23),
         by = c("item_nr")
