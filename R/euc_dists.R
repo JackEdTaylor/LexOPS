@@ -45,7 +45,7 @@
 #'   )
 #' @export
 
-euc_dists <- function(df = lexopsdata::lexops, target, vars = "all", scale = TRUE, center = TRUE, weights = NA, standardise_weights = TRUE, id_col = "string", standard_eval = FALSE) {
+euc_dists <- function(df = LexOPS::lexops, target, vars = "all", scale = TRUE, center = TRUE, weights = NA, standardise_weights = TRUE, id_col = "string", standard_eval = FALSE) {
   if (!standard_eval) {
     vars <- unlist(parse_levels(substitute(vars)))
     # revert to "all" if parse_levels(vars) returns "\"all\""

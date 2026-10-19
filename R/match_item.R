@@ -69,7 +69,7 @@
 #'
 #' @export
 
-match_item <- function(df = lexopsdata::lexops, target, ..., id_col = "string", filter = TRUE, standard_eval = FALSE) {
+match_item <- function(df = LexOPS::lexops, target, ..., id_col = "string", filter = TRUE, standard_eval = FALSE) {
   if (standard_eval) {
     vars <- (...)
   } else {

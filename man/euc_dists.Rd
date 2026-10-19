@@ -5,7 +5,7 @@
 \title{Calculate a word's Euclidean distance from other words}
 \usage{
 euc_dists(
-  df = lexopsdata::lexops,
+  df = LexOPS::lexops,
   target,
   vars = "all",
   scale = TRUE,

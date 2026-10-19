@@ -69,7 +69,7 @@
 #'
 #' @export
 
-match_word <- function(df = lexopsdata::lexops, target, ..., id_col = "string", filter = TRUE, standard_eval = FALSE) {
+match_word <- function(df = LexOPS::lexops, target, ..., id_col = "string", filter = TRUE, standard_eval = FALSE) {
   warning("`match_word() is now outdated. Please use `match_item()`")
   match_item(df = df, target = target, ...=..., id_col = id_col, filter = filter, standard_eval = standard_eval)
 }

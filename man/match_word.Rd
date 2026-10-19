@@ -5,7 +5,7 @@
 \title{An outdated wrapper for match_item()}
 \usage{
 match_word(
-  df = lexopsdata::lexops,
+  df = LexOPS::lexops,
   target,
   ...,
   id_col = "string",

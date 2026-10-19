@@ -5,7 +5,7 @@
 \title{Get suitable matches for a single item on one or several dimensions.}
 \usage{
 match_item(
-  df = lexopsdata::lexops,
+  df = LexOPS::lexops,
   target,
   ...,
   id_col = "string",
