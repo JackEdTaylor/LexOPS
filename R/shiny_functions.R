@@ -126,7 +126,7 @@ sensible_slider_vals <- function(numeric_vec, n_levels, is_tolerance = FALSE) {
 
 box_vis <- function(var, box_type = "primary", tol = NA, match_string = NA, shade_label = NA, shade_relative = TRUE, cat_vis = NA, df = lexopsdata::lexops) {
 
-  match_string_val <- if (is.na(match_string)) NA else dplyr::filter(df, string == match_string) %>% dplyr::pull(!!dplyr::sym(var))
+  match_string_val <- if (is.na(match_string)) NA else dplyr::filter(df, .data$string == match_string) %>% dplyr::pull(!!dplyr::sym(var))
 
   # filter out missing values to suppress warnings
   df <- dplyr::filter(df, !is.na(!!(dplyr::sym(var))))
@@ -232,12 +232,12 @@ box_vis.density <- function(var, box_type, df) {
 
 box_vis.rhyme <- function(var, box_type, rhyme_word, rhyme_word_val, df) {
   df %>%
-    dplyr::select(string, !!(dplyr::sym(var)), PK.Brysbaert) %>%
-    dplyr::filter(!!(dplyr::sym(var))==rhyme_word_val & PK.Brysbaert>=0.75 & string!=rhyme_word) %>%
+    dplyr::select(.data$string, !!(dplyr::sym(var)), .data$PK.Brysbaert) %>%
+    dplyr::filter(!!(dplyr::sym(var))==rhyme_word_val & .data$PK.Brysbaert>=0.75 & .data$string!=rhyme_word) %>%
     dplyr::slice_sample(n = 15) %>%
     dplyr::mutate(wordcloudsize=1, wordcloudalpha=0.9) %>%
     dplyr::add_row(string=rhyme_word, wordcloudsize=5, wordcloudalpha=1, .before=1) %>%
-    ggplot2::ggplot(ggplot2::aes(label=string, size=wordcloudsize, alpha=wordcloudalpha)) +
+    ggplot2::ggplot(ggplot2::aes(label=.data$string, size=.data$wordcloudsize, alpha=.data$wordcloudalpha)) +
     ggwordcloud::geom_text_wordcloud(colour=get_box_colour(box_type), rm_outside=T, shape="circle") +
     ggplot2::scale_size_area(max_size=20) +
     ggplot2::scale_alpha_identity() +
@@ -249,10 +249,10 @@ box_vis.categorical <- function(var, box_type, cat_to_highlight, df) {
     dplyr::filter(!is.na(!!(dplyr::sym(var)))) %>%
     dplyr::group_by(!!(dplyr::sym(var))) %>%
     dplyr::summarise(n = dplyr::n()) %>%
-    dplyr::arrange(dplyr::desc(n)) %>%
+    dplyr::arrange(dplyr::desc(.data$n)) %>%
     dplyr::mutate(x = factor(!!(dplyr::sym(var)), levels = !!(dplyr::sym(var)))) %>%
     dplyr::mutate(alpha_level = ifelse(!!(dplyr::sym(var)) %in% cat_to_highlight, 0.75, 0.25)) %>%
-    ggplot2::ggplot(ggplot2::aes(x = x, y = n, alpha = alpha_level)) +
+    ggplot2::ggplot(ggplot2::aes(x = .data$x, y = .data$n, alpha = .data$alpha_level)) +
     ggplot2::geom_bar(stat = "identity", fill=get_box_colour(box_type), colour=NA) +
     ggplot2::scale_alpha_identity() +
     ggplot2::theme_minimal() +
@@ -277,7 +277,7 @@ box_vis.question_marks <- function(message, box_type) {
   dplyr::tibble(qm = c(message, rep("?", 99)),
                 wordcloudsize = c(6, rep(1, 99)),
                 wordcloudalpha = c(1, rep(0.6, 99))) %>%
-    ggplot2::ggplot(ggplot2::aes(label=qm, size=wordcloudsize, alpha=wordcloudalpha)) +
+    ggplot2::ggplot(ggplot2::aes(label=.data$qm, size=.data$wordcloudsize, alpha=.data$wordcloudalpha)) +
     ggwordcloud::geom_text_wordcloud(colour=get_box_colour(box_type), rm_outside=T, shape='circle') +
     ggplot2::theme_minimal() +
     ggplot2::scale_size_area(max_size=15) +

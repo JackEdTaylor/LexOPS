@@ -32,22 +32,8 @@
 }
 
 .onLoad <- function(libname, pkgname) {
-
-  # prevent note about global variables in devtools::check()
-  utils::globalVariables("x")
-  utils::globalVariables("n")
-  utils::globalVariables("alpha_level")
-  utils::globalVariables("qm")
-  utils::globalVariables("wordcloudsize")
-  utils::globalVariables("wordcloudalpha")
-  utils::globalVariables("string")
-  utils::globalVariables("PK.Brysbaert")
-  utils::globalVariables("item_nr")
-  utils::globalVariables("condition")
-  utils::globalVariables("value")
-  utils::globalVariables("iteration")
-  utils::globalVariables("stim_generated")
-  utils::globalVariables("is_stim")
+  # add .data as global variable to prevent global variables note for non-standard evaluation in tidyverse
+  utils::globalVariables(".data")
 
   # bind lexops to the .lexops_data() function
   ns <- asNamespace(pkgname)

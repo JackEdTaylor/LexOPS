@@ -6,21 +6,22 @@
 #' @param include A character vector indicating which variables to include in the plot. This can be those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Alternatively, this can be a character vector of the variables that should be plotted, that were in the original dataframe. Default is `"design"`.
 #' @param force Logical, should the function be forced to try and work if attributes are missing (default is `TRUE`)? If `TRUE`, will expect the dataframe to have a structure similar to that produced by `long_format()`, where `condition` is character or factor, and `item_nr` is numeric or factor. Other variables will be plot-able if given to the `include` argument.
 #' @param id_col A character vector specifying the column identifying unique observations (e.g. in `lexopsdata::lexops`, the `id_col` is `"string"`). Ignored unless `force=TRUE`, in which case it is required.
+#' @importFrom stats ave
+#' @importFrom utils head
 #'
 #' @return A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
 #'
 #' @examplesIf rlang::is_installed("lexopsdata")
-#'
 #' library(lexopsdata)
 #'
-# stim <- lexops |>
-#   dplyr::filter(PK.Brysbaert >= .75) |>
-#   split_by(PoS.SUBTLEX_UK, "noun" ~ "adjective" ~ "verb") |>
-#   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
-#   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
-#   control_for(Length, 0:0) |>
-#   generate(n = 50, match_null = "balanced")
-# plot_sample(stim)
+#' stim <- lexops |>
+#'   dplyr::filter(PK.Brysbaert >= .75) |>
+#'   split_by(PoS.SUBTLEX_UK, "noun" ~ "adjective" ~ "verb") |>
+#'   split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
+#'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
+#'   control_for(Length, 0:0) |>
+#'   generate(n = 50, match_null = "balanced")
+#' plot_sample(stim)
 #'
 #' @export
 #
@@ -205,15 +206,15 @@ plot_sample <- function(df, include = "design", force = TRUE, id_col = "string")
   integer_data <- unique(plot_data[!is.na(plot_data$axis_value), c("x", "axis_value")])
 
   ggplot2::ggplot(plot_data, ggplot2::aes(
-    xmin = x - bar_width / 2,
-    xmax = x + bar_width / 2,
+    xmin = .data$x - .data$bar_width / 2,
+    xmax = .data$x + .data$bar_width / 2,
     ymin = 0,
-    ymax = n_obs,
-    fill = is_stim
+    ymax = .data$n_obs,
+    fill = .data$is_stim
   )) +
     # use geom_rect instead of geom_bar for control over individual bar widths (xmax-xmin)
     ggplot2::geom_rect(alpha = 0.75, colour = NA, position = "identity") +
-    ggplot2::facet_wrap(ggplot2::vars(variable), scales = "free") +
+    ggplot2::facet_wrap(ggplot2::vars(.data$variable), scales = "free") +
     ggplot2::scale_x_continuous(
       # separate breaks and labels approaches for categorical, integer, and continuous numeric variables
       breaks = function(limits) {
