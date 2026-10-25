@@ -1,6 +1,6 @@
 #' Get a box type's colour
 #'
-#' Simple function for getting the visualisation colour (in hex) for different coloured boxes. Colours are only accurate for the LexOPS shiny app.
+#' Simple function for getting the visualisation colour (in hex) for different coloured boxes. Colours are only accurate for the LexOPS `shiny` app.
 #'
 #' @param box_type A character vector (one of: "primary", "warning", "Success", "danger", and "info"), specifying which kind of box to generate the colour for.
 #'

@@ -13,5 +13,5 @@ get_box_colour(box_type)
 A character vector of the colour's hex value.
 }
 \description{
-Simple function for getting the visualisation colour (in hex) for different coloured boxes. Colours are only accurate for the LexOPS shiny app.
+Simple function for getting the visualisation colour (in hex) for different coloured boxes. Colours are only accurate for the LexOPS \code{shiny} app.
 }
