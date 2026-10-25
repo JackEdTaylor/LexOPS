@@ -18,6 +18,9 @@ No return value, called for side effects (printing).
 Prints a summary about a LexOPS pipeline object (returned from functions like \code{\link{split_by}}, \code{\link{control_for}}, etc.), listing the splits and controls in the pipeline so far.
 }
 \examples{
+\dontshow{if (rlang::is_installed("lexopsdata") & rlang::is_installed("stringdist")) withAutoprint(\{ # examplesIf}
+library(lexopsdata)
+
 pipeline <- lexops |>
   subset(PK.Brysbaert >= .75) |>
   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>
@@ -26,5 +29,5 @@ pipeline <- lexops |>
 
 pipeline
 
-
+\dontshow{\}) # examplesIf}
 }

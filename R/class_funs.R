@@ -7,7 +7,9 @@
 #'
 #' @returns No return value, called for side effects (printing).
 #'
-#' @examples
+#' @examplesIf rlang::is_installed("lexopsdata") & rlang::is_installed("stringdist")
+#' library(lexopsdata)
+#'
 #' pipeline <- lexops |>
 #'   subset(PK.Brysbaert >= .75) |>
 #'   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>
