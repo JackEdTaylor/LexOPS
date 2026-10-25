@@ -1,6 +1,6 @@
 Package: LexOPS
 Title: Selecting Matched Items for Factorial Designs
-Version: 0.6.2.9000
+Version: 0.6.3
 Date: 2026-10-25
 Authors@R: 
     c(
