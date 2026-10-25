@@ -16,6 +16,10 @@ A logical value: \code{TRUE} if \code{x} is of class \code{LexOPS_pipeline}, or 
 Check whether an object is of class \code{LexOPS_pipeline}
 }
 \examples{
+\dontshow{if (rlang::is_installed("lexopsdata") & rlang::is_installed("stringdist")) withAutoprint(\{ # examplesIf}
+library(lexopsdata)
+
+# the lexops dataset is not a LexOPS_pipeline before going through split_by() or control_for()
 is.LexOPS_pipeline(lexops)  # FALSE
 
 # a pipeline pregeneration is a LexOPS_pipeline
@@ -30,5 +34,5 @@ is.LexOPS_pipeline(pregen)  # TRUE
 # a pipeline's output is still a LexOPS_pipeline after going through generate()
 postgen <- generate(pregen, 10)
 is.LexOPS_pipeline(postgen)  # TRUE
-
+\dontshow{\}) # examplesIf}
 }

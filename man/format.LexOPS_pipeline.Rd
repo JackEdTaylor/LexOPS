@@ -18,6 +18,9 @@ A character vector containing a formatted summary of the LexOPS pipeline.
 Generates a text summary of a \code{LexOPS_pipeline} object resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc..
 }
 \examples{
+\dontshow{if (rlang::is_installed("lexopsdata") & rlang::is_installed("stringdist")) withAutoprint(\{ # examplesIf}
+library(lexopsdata)
+
 pipeline <- lexops |>
   subset(PK.Brysbaert >= .75) |>
   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>
@@ -25,5 +28,5 @@ pipeline <- lexops |>
   control_for(Length, 0:0)
 
 format(pipeline)
-
+\dontshow{\}) # examplesIf}
 }

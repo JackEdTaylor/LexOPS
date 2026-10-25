@@ -34,7 +34,9 @@ print.LexOPS_pipeline <- function(x, ...) {
 #'
 #' @returns A character vector containing a formatted summary of the LexOPS pipeline.
 #'
-#' @examples
+#' @examplesIf rlang::is_installed("lexopsdata") & rlang::is_installed("stringdist")
+#' library(lexopsdata)
+#'
 #' pipeline <- lexops |>
 #'   subset(PK.Brysbaert >= .75) |>
 #'   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>
@@ -96,8 +98,10 @@ format.LexOPS_pipeline <- function(x, ...) {
 #'
 #' @returns A logical value: `TRUE` if `x` is of class `LexOPS_pipeline`, or `FALSE` otherwise.
 #'
-#' @examples
-# the lexops dataset is not a LexOPS_pipeline before going through split_by() or control_for()
+#' @examplesIf rlang::is_installed("lexopsdata") & rlang::is_installed("stringdist")
+#' library(lexopsdata)
+#'
+#' # the lexops dataset is not a LexOPS_pipeline before going through split_by() or control_for()
 #' is.LexOPS_pipeline(lexops)  # FALSE
 #'
 #' # a pipeline pregeneration is a LexOPS_pipeline
