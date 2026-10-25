@@ -7,7 +7,7 @@
 \method{format}{LexOPS_pipeline}(x, ...)
 }
 \arguments{
-\item{x}{A \code{LexOPS_pipeline} object resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc., which has not yet been passed through \code{\link{generate()}}.}
+\item{x}{A \code{LexOPS_pipeline} object resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc., which has not yet been passed through \code{\link{generate}}.}
 
 \item{...}{Other arguments passed to or from other methods (unused).}
 }
@@ -15,5 +15,15 @@
 A character vector containing a formatted summary of the LexOPS pipeline.
 }
 \description{
-Generates a text summary of a \code{LexOPS_pipeline} object resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc..
+Generates a text summary of a \code{LexOPS_pipeline} object resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc..
+}
+\examples{
+pipeline <- lexops |>
+  subset(PK.Brysbaert >= .75) |>
+  split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
+  control_for(Length, 0:0)
+
+format(pipeline)
+
 }

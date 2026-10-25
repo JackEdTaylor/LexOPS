@@ -1,11 +1,21 @@
 #' Print a summary about an ungenerated LexOPS pipeline
 #'
-#' Prints a summary about a LexOPS pipeline object (returned from functions like \code{\link{split_by()}}, \code{\link{control_for()}}, etc.), listing the splits and controls in the pipeline so far.
+#' Prints a summary about a LexOPS pipeline object (returned from functions like \code{\link{split_by}}, \code{\link{control_for}}, etc.), listing the splits and controls in the pipeline so far.
 #'
-#' @param x A `LexOPS_pipeline` object resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc., which has not yet been passed through \code{\link{generate()}}.
+#' @param x A `LexOPS_pipeline` object resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc., which has not yet been passed through \code{\link{generate}}.
 #' @param ... Other arguments passed to or from other methods (unused).
 #'
 #' @return No return value, called for side effects (printing).
+#'
+#' @examples
+#' pipeline <- lexops |>
+#'   subset(PK.Brysbaert >= .75) |>
+#'   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>
+#'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
+#'   control_for(Length, 0:0)
+#'
+#' pipeline
+#'
 #'
 #' @export
 
@@ -15,12 +25,21 @@ print.LexOPS_pipeline <- function(x, ...) {
 
 #' Get a text summary about a LexOPS pipeline
 #'
-#' Generates a text summary of a `LexOPS_pipeline` object resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc..
+#' Generates a text summary of a `LexOPS_pipeline` object resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc..
 #'
-#' @param x A `LexOPS_pipeline` object resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc., which has not yet been passed through \code{\link{generate()}}.
+#' @param x A `LexOPS_pipeline` object resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc., which has not yet been passed through \code{\link{generate}}.
 #' @param ... Other arguments passed to or from other methods (unused).
 #'
 #' @return A character vector containing a formatted summary of the LexOPS pipeline.
+#'
+#' @examples
+#' pipeline <- lexops |>
+#'   subset(PK.Brysbaert >= .75) |>
+#'   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>
+#'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
+#'   control_for(Length, 0:0)
+#'
+#' format(pipeline)
 #'
 #' @export
 
@@ -71,9 +90,26 @@ format.LexOPS_pipeline <- function(x, ...) {
 
 #' Check whether an object is of class `LexOPS_pipeline`
 #'
-#' @param x Object, possibly resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc..
+#' @param x Object, possibly resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc..
 #'
 #' @return A logical value: `TRUE` if `x` is of class `LexOPS_pipeline`, or `FALSE` otherwise.
+#'
+#' @examples
+# the lexops dataset is not a LexOPS_pipeline before going through split_by() or control_for()
+#' is.LexOPS_pipeline(lexops)  # FALSE
+#'
+#' # a pipeline pregeneration is a LexOPS_pipeline
+#' pregen <- lexops |>
+#'   subset(PK.Brysbaert >= .75) |>
+#'   split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>
+#'   control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
+#'   control_for(Length, 0:0)
+#'
+#' is.LexOPS_pipeline(pregen)  # TRUE
+#'
+#' # a pipeline's output is still a LexOPS_pipeline after going through generate()
+#' postgen <- generate(pregen, 10)
+#' is.LexOPS_pipeline(postgen)  # TRUE
 #'
 #' @export
 
@@ -83,9 +119,12 @@ is.LexOPS_pipeline <- function(x) {
 
 #' Set an object's class to `LexOPS_pipeline`
 #'
-#' @param x Object, ultimately of class `data.frame`, possibly resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc..
+#' @param x Object, ultimately of class `data.frame`, possibly resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc..
 #'
 #' @return `x`, coerced into class `LexOPS_pipeline`
+#'
+#' @examples
+#' as.LexOPS_pipeline(lexops)
 #'
 #' @export
 

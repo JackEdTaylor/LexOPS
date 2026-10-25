@@ -7,7 +7,7 @@
 \method{print}{LexOPS_pipeline}(x, ...)
 }
 \arguments{
-\item{x}{A \code{LexOPS_pipeline} object resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc., which has not yet been passed through \code{\link{generate()}}.}
+\item{x}{A \code{LexOPS_pipeline} object resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc., which has not yet been passed through \code{\link{generate}}.}
 
 \item{...}{Other arguments passed to or from other methods (unused).}
 }
@@ -15,5 +15,16 @@
 No return value, called for side effects (printing).
 }
 \description{
-Prints a summary about a LexOPS pipeline object (returned from functions like \code{\link{split_by()}}, \code{\link{control_for()}}, etc.), listing the splits and controls in the pipeline so far.
+Prints a summary about a LexOPS pipeline object (returned from functions like \code{\link{split_by}}, \code{\link{control_for}}, etc.), listing the splits and controls in the pipeline so far.
+}
+\examples{
+pipeline <- lexops |>
+  subset(PK.Brysbaert >= .75) |>
+  split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
+  control_for(Length, 0:0)
+
+pipeline
+
+
 }

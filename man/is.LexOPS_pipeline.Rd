@@ -7,11 +7,28 @@
 is.LexOPS_pipeline(x)
 }
 \arguments{
-\item{x}{Object, possibly resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc..}
+\item{x}{Object, possibly resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc..}
 }
 \value{
 A logical value: \code{TRUE} if \code{x} is of class \code{LexOPS_pipeline}, or \code{FALSE} otherwise.
 }
 \description{
 Check whether an object is of class \code{LexOPS_pipeline}
+}
+\examples{
+is.LexOPS_pipeline(lexops)  # FALSE
+
+# a pipeline pregeneration is a LexOPS_pipeline
+pregen <- lexops |>
+  subset(PK.Brysbaert >= .75) |>
+  split_by(BG.SUBTLEX_UK, 0.001:0.003 ~ 0.009:0.011) |>
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
+  control_for(Length, 0:0)
+
+is.LexOPS_pipeline(pregen)  # TRUE
+
+# a pipeline's output is still a LexOPS_pipeline after going through generate()
+postgen <- generate(pregen, 10)
+is.LexOPS_pipeline(postgen)  # TRUE
+
 }
