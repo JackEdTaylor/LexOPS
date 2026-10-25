@@ -2,13 +2,16 @@
 % Please edit documentation in R/class_funs.R
 \name{as.LexOPS_pipeline}
 \alias{as.LexOPS_pipeline}
-\title{Set an object's class to LexOPS_pipeline}
+\title{Set an object's class to \code{LexOPS_pipeline}}
 \usage{
 as.LexOPS_pipeline(x)
 }
 \arguments{
-\item{x}{Object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
+\item{x}{Object, ultimately of class \code{data.frame}, possibly resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc..}
+}
+\value{
+\code{x}, coerced into class \code{LexOPS_pipeline}
 }
 \description{
-Set an object's class to LexOPS_pipeline
+Set an object's class to \code{LexOPS_pipeline}
 }

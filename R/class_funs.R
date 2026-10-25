@@ -1,9 +1,11 @@
 #' Print a summary about an ungenerated LexOPS pipeline
 #'
-#' Prints a summary about a LexOPS pipeline object (returned from functions like `split_by()`, `control_for()`, etc.), listing the splits and controls in the pipeline so far.
+#' Prints a summary about a LexOPS pipeline object (returned from functions like \code{\link{split_by()}}, \code{\link{control_for()}}, etc.), listing the splits and controls in the pipeline so far.
 #'
-#' @param x A LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
+#' @param x A `LexOPS_pipeline` object resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc., which has not yet been passed through \code{\link{generate()}}.
 #' @param ... Other arguments passed to or from other methods (unused).
+#'
+#' @return No return value, called for side effects (printing).
 #'
 #' @export
 
@@ -13,10 +15,12 @@ print.LexOPS_pipeline <- function(x, ...) {
 
 #' Get a text summary about a LexOPS pipeline
 #'
-#' Generates a text summary of a LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
+#' Generates a text summary of a `LexOPS_pipeline` object resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc..
 #'
-#' @param x A LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
+#' @param x A `LexOPS_pipeline` object resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc., which has not yet been passed through \code{\link{generate()}}.
 #' @param ... Other arguments passed to or from other methods (unused).
+#'
+#' @return A character vector containing a formatted summary of the LexOPS pipeline.
 #'
 #' @export
 
@@ -65,9 +69,11 @@ format.LexOPS_pipeline <- function(x, ...) {
   paste(out, collapse = "\n\n")
 }
 
-#' Check whether an object is of class LexOPS_pipeline
+#' Check whether an object is of class `LexOPS_pipeline`
 #'
-#' @param x Object resulting from one of `split_by()`, `control_for()`, etc..
+#' @param x Object, possibly resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc..
+#'
+#' @return A logical value: `TRUE` if `x` is of class `LexOPS_pipeline`, or `FALSE` otherwise.
 #'
 #' @export
 
@@ -75,9 +81,11 @@ is.LexOPS_pipeline <- function(x) {
   "LexOPS_pipeline" %in% class(x)
 }
 
-#' Set an object's class to LexOPS_pipeline
+#' Set an object's class to `LexOPS_pipeline`
 #'
-#' @param x Object resulting from one of `split_by()`, `control_for()`, etc..
+#' @param x Object, ultimately of class `data.frame`, possibly resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc..
+#'
+#' @return `x`, coerced into class `LexOPS_pipeline`
 #'
 #' @export
 

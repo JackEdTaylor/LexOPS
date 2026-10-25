@@ -37,13 +37,13 @@ control_for_euc(
 \item{standard_eval}{Logical; bypasses non-standard evaluation, and allows more standard R objects in \code{vars} and \code{tol}. If \code{TRUE}, \code{vars} should be a character vector referring to columns in \code{df} (e.g. \code{c("Zipf.SUBTLEX_UK", "Length")}), and \code{tol} should be a vector of length 2, specifying the tolerance (e.g. \code{c(0, 0.5)}). Default = \code{FALSE}.}
 }
 \value{
-Returns \code{df}, with details on the variables to be controlled for added to the attributes. Run the \code{\link{generate}} function to then generate the actual stimuli.
+Returns \code{df}, with details on the variables to be controlled for added to the attributes. Run the \code{\link{generate()}} function to then generate the actual stimuli.
 }
 \description{
-This function is a wrapper for \code{\link{control_for_map}} that allows you to easily control for Euclidean distance.
+This function is a wrapper for \code{\link{control_for_map()}} that allows you to easily control for Euclidean distance.
 }
 \details{
-The long format version of the generated items (\code{long_format()}) will include a column, with the name defined by the \code{name} argument. This will include the calculated Euclidean distances. If the match null is set in \code{generate()} to be inclusive (\code{match_null="inclusive"}) and there are more than two factorial cells, this column will contain the maximum of all Euclidean distances for a given item.
+The long format version of the generated items (\code{\link{long_format()}}) will include a column, with the name defined by the \code{name} argument. This will include the calculated Euclidean distances. If the match null is set in \code{\link{generate()}} to be inclusive (\code{match_null="inclusive"}) and there are more than two factorial cells, this column will contain the maximum of all Euclidean distances for a given item.
 }
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}

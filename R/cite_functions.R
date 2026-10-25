@@ -1,9 +1,9 @@
 #' Generate a citation
 #'
-#' Takes the output from `generate()` or `long_format()`, and generates a tibble that lists known references that should be cited. This function will only be useful if you use variables from the lexops dataset (`lexopsdata::lexops`) with their original names.
+#' Takes the output from \code{\link{generate()}} or \code{\link{long_format()}}, and generates a tibble that lists known references that should be cited. This function will only be useful if you use variables from the lexops dataset (\code{\link{lexops}}) with their original names.
 #'
-#' @param df Output from `generate()` or `long_format()`
-#' @param include A string indicating which variables to include in the citation. This can be those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Alternatively, this can be a character vector of the variables that should be cited, that were in the original dataframe. Default is `"design"`.
+#' @param df Output from \code{\link{generate()}} or \code{\link{long_format()}} functions.
+#' @param include A string indicating which variables to include in the citation. This can be those specified by \code{\link{split_by()}} and \code{\link{control_for()}} (`"design"`), only those specified in \code{\link{split_by()}} (`"splits"`), or only those specified by \code{\link{control_for()}} (`"controls"`). Alternatively, this can be a character vector of the variables that should be cited, that were in the original dataframe. Default is `"design"`.
 #'
 #' @return A tibble that lists measures and sources of data that should be cited (if known).
 #'
@@ -64,7 +64,7 @@ cite_design <- function(df, include = "design") {
 
 #' Generate a citation
 #'
-#' Get the measure name, source, and url for any vector of column names from `lexopsdata::lexops`.
+#' Get the measure name, source, and url for any vector of column names from \code{\link{lexops}}.
 #'
 #' @param cite_vars A character vector of column names
 #'
@@ -92,7 +92,7 @@ citation_table <- function(cite_vars) {
 
 #' Convert a variable name to its measure
 #'
-#' Converts the name of a variable from `lexopsdata::lexops` (e.g. "fpmw.SUBTLEX_US") into the name of its measure (e.g. "frequency per million words").
+#' Converts the name of a variable from \code{\link{lexops}} (e.g. "fpmw.SUBTLEX_US") into the name of its measure (e.g. "frequency per million words").
 #'
 #' @param var The variable name (non-standard evaluation)
 #' @param first_cite Logical; if `TRUE`, gives full name (e.g. frequency per million words), if `FALSE`, gives abbreviated name (e.g. FPMW)
@@ -223,14 +223,14 @@ var_to_measure_name <- function(var, include_pronunciations=TRUE) {
 
 #' Convert a variable name to APA citation
 #'
-#' Converts the name of a variable from `lexopsdata::lexops` (e.g. "Zipf.SUBTLEX_US") into an APA-style citation (e.g. "SUBTLEX-US (Brysbaert & New, 2009)").
+#' Converts the name of a variable from \code{\link{lexops}} (e.g. "Zipf.SUBTLEX_US") into an APA-style citation (e.g. "SUBTLEX-US (Brysbaert & New, 2009)").
 #'
 #' @param var The variable name (non-standard evaluation)
 #' @param first_cite Logical; if `TRUE`, gives full citation, if `FALSE`, gives abbreviated (i.e. "et al.") citation
 #' @param default The character string that should be returned if the variable does not have a known citeable source
 #' @param standard_eval Logical; bypasses non-standard evaluation. If `TRUE`, `var` should be a column name in quotation marks. If `FALSE`, the quotation marks are not necessary. Default = `FALSE`.
 #'
-#' @return A citation of a variable's source in APA format. Returns `default` if not recognised as a citeabile source.
+#' @return A citation of a variable's source in APA format. Returns `default` if not recognised as a citeable source.
 #'
 #' @examples
 #'
@@ -312,7 +312,7 @@ corpus_recode_name_source <- function(var) {
 
 #' Convert a variable name to a url reference.
 #'
-#' Converts the name of a variable from `lexopsdata::lexops` (e.g. "Zipf.SUBTLEX_US") into a url (usually doi).
+#' Converts the name of a variable from \code{\link{lexops}} (e.g. "Zipf.SUBTLEX_US") into a url (usually doi).
 #'
 #' @param var The variable name (non-standard evaluation)
 #' @param default The character string that should be returned if the variable does not have a known citeable source

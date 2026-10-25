@@ -7,10 +7,13 @@
 \method{format}{LexOPS_pipeline}(x, ...)
 }
 \arguments{
-\item{x}{A LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
+\item{x}{A \code{LexOPS_pipeline} object resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc., which has not yet been passed through \code{\link{generate()}}.}
 
 \item{...}{Other arguments passed to or from other methods (unused).}
 }
+\value{
+A character vector containing a formatted summary of the LexOPS pipeline.
+}
 \description{
-Generates a text summary of a LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..
+Generates a text summary of a \code{LexOPS_pipeline} object resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc..
 }

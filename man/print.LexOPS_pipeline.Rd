@@ -7,10 +7,13 @@
 \method{print}{LexOPS_pipeline}(x, ...)
 }
 \arguments{
-\item{x}{A LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
+\item{x}{A \code{LexOPS_pipeline} object resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc., which has not yet been passed through \code{\link{generate()}}.}
 
 \item{...}{Other arguments passed to or from other methods (unused).}
 }
+\value{
+No return value, called for side effects (printing).
+}
 \description{
-Prints a summary about a LexOPS pipeline object (returned from functions like \code{split_by()}, \code{control_for()}, etc.), listing the splits and controls in the pipeline so far.
+Prints a summary about a LexOPS pipeline object (returned from functions like \code{\link{split_by()}}, \code{\link{control_for()}}, etc.), listing the splits and controls in the pipeline so far.
 }

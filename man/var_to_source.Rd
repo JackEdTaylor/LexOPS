@@ -16,10 +16,10 @@ var_to_source(var, first_cite = TRUE, default = "", standard_eval = FALSE)
 \item{standard_eval}{Logical; bypasses non-standard evaluation. If \code{TRUE}, \code{var} should be a column name in quotation marks. If \code{FALSE}, the quotation marks are not necessary. Default = \code{FALSE}.}
 }
 \value{
-A citation of a variable's source in APA format. Returns \code{default} if not recognised as a citeabile source.
+A citation of a variable's source in APA format. Returns \code{default} if not recognised as a citeable source.
 }
 \description{
-Converts the name of a variable from \code{lexopsdata::lexops} (e.g. "Zipf.SUBTLEX_US") into an APA-style citation (e.g. "SUBTLEX-US (Brysbaert & New, 2009)").
+Converts the name of a variable from \code{\link{lexops}} (e.g. "Zipf.SUBTLEX_US") into an APA-style citation (e.g. "SUBTLEX-US (Brysbaert & New, 2009)").
 }
 \examples{
 

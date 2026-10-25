@@ -13,7 +13,7 @@ citation_table(cite_vars)
 A tibble that lists measures and sources of data that should be cited (if known).
 }
 \description{
-Get the measure name, source, and url for any vector of column names from \code{lexopsdata::lexops}.
+Get the measure name, source, and url for any vector of column names from \code{\link{lexops}}.
 }
 \examples{
 

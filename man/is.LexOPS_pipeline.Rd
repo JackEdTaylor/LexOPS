@@ -2,13 +2,16 @@
 % Please edit documentation in R/class_funs.R
 \name{is.LexOPS_pipeline}
 \alias{is.LexOPS_pipeline}
-\title{Check whether an object is of class LexOPS_pipeline}
+\title{Check whether an object is of class \code{LexOPS_pipeline}}
 \usage{
 is.LexOPS_pipeline(x)
 }
 \arguments{
-\item{x}{Object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
+\item{x}{Object, possibly resulting from one of \code{\link{split_by()}}, \code{\link{control_for()}}, etc..}
+}
+\value{
+A logical value: \code{TRUE} if \code{x} is of class \code{LexOPS_pipeline}, or \code{FALSE} otherwise.
 }
 \description{
-Check whether an object is of class LexOPS_pipeline
+Check whether an object is of class \code{LexOPS_pipeline}
 }

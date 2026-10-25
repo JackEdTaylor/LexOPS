@@ -1,6 +1,6 @@
 #' Control for Euclidean distance in several numeric variables
 #'
-#' This function is a wrapper for \code{\link{control_for_map}} that allows you to easily control for Euclidean distance.
+#' This function is a wrapper for \code{\link{control_for_map()}} that allows you to easily control for Euclidean distance.
 #'
 #' @param x A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
 #' @param vars The columns from which to calculate Euclidean distance.
@@ -12,7 +12,7 @@
 #' @param euc_df The dataframe to calculate the Euclidean distance from. By default, the function will use `df`. Giving a different dataframe to `euc_df` can be useful in some cases, such as when `df` has been filtered for generating stimuli, but you want to calculate Euclidean Distance from a full distribution.
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `vars` and `tol`. If `TRUE`, `vars` should be a character vector referring to columns in `df` (e.g. `c("Zipf.SUBTLEX_UK", "Length")`), and `tol` should be a vector of length 2, specifying the tolerance (e.g. `c(0, 0.5)`). Default = `FALSE`.
 #'
-#' @return Returns `df`, with details on the variables to be controlled for added to the attributes. Run the \code{\link{generate}} function to then generate the actual stimuli.
+#' @return Returns `df`, with details on the variables to be controlled for added to the attributes. Run the \code{\link{generate()}} function to then generate the actual stimuli.
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'
 #' library(lexopsdata)
@@ -40,7 +40,7 @@
 #'   )
 #'
 #' @details
-#' The long format version of the generated items (`long_format()`) will include a column, with the name defined by the `name` argument. This will include the calculated Euclidean distances. If the match null is set in `generate()` to be inclusive (`match_null="inclusive"`) and there are more than two factorial cells, this column will contain the maximum of all Euclidean distances for a given item.
+#' The long format version of the generated items (\code{\link{long_format()}}) will include a column, with the name defined by the `name` argument. This will include the calculated Euclidean distances. If the match null is set in \code{\link{generate()}} to be inclusive (`match_null="inclusive"`) and there are more than two factorial cells, this column will contain the maximum of all Euclidean distances for a given item.
 #'
 #' @export
 #' @importFrom stats setNames

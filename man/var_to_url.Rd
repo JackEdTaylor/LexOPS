@@ -17,7 +17,7 @@ var_to_url(var, default = "", standard_eval = FALSE)
 A citation of a variable's source in APA format. Returns \code{default} if not recognised as a citeabile source.
 }
 \description{
-Converts the name of a variable from \code{lexopsdata::lexops} (e.g. "Zipf.SUBTLEX_US") into a url (usually doi).
+Converts the name of a variable from \code{\link{lexops}} (e.g. "Zipf.SUBTLEX_US") into a url (usually doi).
 }
 \examples{
 
