@@ -7,7 +7,7 @@
 control_for(x, var, tol = NA, standard_eval = FALSE)
 }
 \arguments{
-\item{x}{A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
+\item{x}{A data frame containing the IV and strings, or a \code{LexOPS_pipeline} object resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc..}
 
 \item{var}{The column to treat as a control (non-standard evaluation).}
 
@@ -16,7 +16,7 @@ control_for(x, var, tol = NA, standard_eval = FALSE)
 \item{standard_eval}{Logical; bypasses non-standard evaluation, and allows more standard R objects in \code{var} and \code{tol}. If \code{TRUE}, \code{var} should be a character vector referring to a column in \code{df} (e.g. \code{"Zipf.SUBTLEX_UK"}), and \code{tol} should be a vector of length 2, specifying the tolerance (e.g. \code{c(-0.1, 0.5)}). Default = \code{FALSE}.}
 }
 \value{
-Returns \code{df}, with details on the variables to be controlled for added to the attributes. Run the \code{generate()} function to then generate the actual stimuli.
+A \code{LexOPS_pipeline} object, with details on the variables to be controlled for added to the attributes. Run the \code{\link{generate}} function to then generate the actual stimuli.
 }
 \description{
 Specifies variables that should be controlled for in the generated stimuli, after splitting. Can be run multiple times to control for multiple variables.

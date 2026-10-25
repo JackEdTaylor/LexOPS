@@ -1,13 +1,13 @@
 #' Add a random split to the data.
 #'
-#' Adds a split to the data comparable to that made by `split_by()`, but split randomly through the data. All entries in `df` are assigned a level randomly.
+#' Adds a split to the data comparable to that made by \code{\link{split_by}}, but split randomly through the data. All entries in `df` of the resulting `LexOPS_pipeline` object are assigned a level randomly.
 #'
-#' @param x A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
+#' @param x A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc..
 #' @param nlevels An integer, specifying how many levels this random split should have (default = 2).
-#' @param seed Deprecated: set seeds externally (e.g., `set.seed()`).
+#' @param seed Deprecated: set seeds externally instead (e.g., `set.seed()`).
 #' @param equal_size Logical; should LexOPS create equal (or as close to equal as possible) numbers of candidates for each level? When `FALSE`, will sample N levels with replacement, when `TRUE` will sample N rows. Setting to `TRUE` is recommended, as it will generally create more candidate matches. Default is `FALSE` to avoid altering reproducibility of existing pipelines.
 #'
-#' @return Returns `df`, with a new column (name defined by `cond_col` argument) identifying which level of the randomly generated IV each string belongs to.
+#' @returns A `LexOPS_pipeline` object, where `df` has a new column (name defined by `cond_col` argument) identifying which level of the randomly generated IV each item belongs to.
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'
 #' library(lexopsdata)

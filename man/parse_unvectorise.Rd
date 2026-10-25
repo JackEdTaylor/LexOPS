@@ -10,12 +10,8 @@ parse_unvectorise(vec_str)
 \item{vec_str}{The character vector (string), e.g., \code{c(value1, value2, value3)}}
 }
 \value{
-Returns a parsed, unvectorised character vector.
+A parsed, unvectorised character vector.
 }
 \description{
 A parse for extracting contents of \code{c()} in a character vector representation.
-}
-\examples{
-
-LexOPS:::parse_unvectorise("c(hello, world)")
 }

@@ -12,7 +12,7 @@ parse_levels(var, levels = NA)
 \item{levels}{Levels in the form of tilde-separated vectors (e.g. \code{c("noun", "name") ~ c("verb", "adjective")}) or character vectors (e.g. \code{"noun" ~ "verb"}). Numeric levels can be in the form \code{1.5:2.75 ~ 3.5:4.75}.}
 }
 \value{
-Returns a list object in the form \code{list("column_name", c(1, 2), c(3, 4), c(5, 6))}.
+A list object in the form \code{list("column_name", c(1, 2), c(3, 4), c(5, 6))}.
 }
 \description{
 A non-standard evaluation parser for levels (e.g., for \code{split_by()})

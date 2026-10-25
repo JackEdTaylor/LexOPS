@@ -2,10 +2,7 @@
 #'
 #' @param vec_str The character vector (string), e.g., `c(value1, value2, value3)`
 #'
-#' @return Returns a parsed, unvectorised character vector.
-#' @examples
-#'
-#' LexOPS:::parse_unvectorise("c(hello, world)")
+#' @returns A parsed, unvectorised character vector.
 
 parse_unvectorise <- function(vec_str) {
   if (grepl("^c\\(.+\\)$", vec_str)) {
@@ -21,7 +18,7 @@ parse_unvectorise <- function(vec_str) {
 #' @param var A column name (non-standard evaluation).
 #' @param levels Levels in the form of tilde-separated vectors (e.g. `c("noun", "name") ~ c("verb", "adjective")`) or character vectors (e.g. `"noun" ~ "verb"`). Numeric levels can be in the form `1.5:2.75 ~ 3.5:4.75`.
 #'
-#' @return Returns a list object in the form `list("column_name", c(1, 2), c(3, 4), c(5, 6))`.
+#' @returns A list object in the form `list("column_name", c(1, 2), c(3, 4), c(5, 6))`.
 #' @examples
 #'
 #' # Numeric sections of a distribution can be specified as lower:upper bound...
@@ -87,7 +84,7 @@ parse_levels <- function(var, levels = NA) {
 #'
 #' @param ... Variables and tolerances, in the form `num_variable1 = -1:3, num_variable2 = -0.5:0.5, char_variable1`. Variables and tolerances should be separated by a `=`, and lower and upper boundaries of tolerances should be separated by `:`. Variables without tolerances are also supported (useful for character variables or matching by numeric variables exactly, i.e. shorthand for `0:0`).
 #'
-#' @return Returns a list object in the form `list(c("num_variable1", -1, 3), c("num_variable2", -0.5, 0.5), "char_variable1")`.
+#' @returns A list object in the form `list(c("num_variable1", -1, 3), c("num_variable2", -0.5, 0.5), "char_variable1")`.
 #' @examples
 #'
 #' parse_ellipsis(substitute(c(Length = 0:0, Zipf.SUBTLEX_UK = -0.1:0.1, PoS.SUBTLEX_UK)))

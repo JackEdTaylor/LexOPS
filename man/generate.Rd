@@ -14,23 +14,23 @@ generate(
 )
 }
 \arguments{
-\item{x}{A LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
+\item{x}{A LexOPS_pipeline object resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc..}
 
 \item{n}{The number of strings per condition (default = 20). Set to \code{"all"} to generate as many as possible.}
 
-\item{match_null}{The condition that items should be matched to. Should be a string indicating condition (e.g. \code{"A1_B2_C1"}), or a string indicating one of the following options: "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition (default), "inclusive" to match each condition within the tolerances to every other condition, "first" for the lowest condition (e.g. \code{"A1"} or \code{"A1_B1_C1_D1"}, etc.), "random" for randomly selected null condition each iteration.}
+\item{match_null}{The condition that items should be matched to. Should be a string indicating condition (e.g. \code{"A1_B2_C1"}), or a string indicating one of the following options: \code{"balanced"} for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition (default), "inclusive" to match each condition within the tolerances to every other condition, \code{"first"} for the lowest condition (e.g. \code{"A1"} or \code{"A1_B1_C1_D1"}, etc.), \code{"random"} for randomly selected null condition each iteration.}
 
 \item{seed}{Deprecated: set seeds externally (e.g., \code{set.seed()}).}
 
 \item{silent}{Logical: should output to the console (via \code{cat()}) be suppressed? Default is FALSE.}
 
-\item{is_shiny}{Allows printing in a shiny context with \code{shinyjs::html()}. Outputs from the cat() function are stored in the div with id "gen_console". Default is FALSE.}
+\item{is_shiny}{Allows printing in a \code{shiny} context with \code{shinyjs::\link[shinyjs]{html}}. Outputs from the \code{cat()} function are stored in the div with id "gen_console". Default is FALSE.}
 }
 \value{
-Returns the generated stimuli.
+The generated stimuli, as a dataframe of class \code{LexOPS_pipeline}.
 }
 \description{
-Generates the stimuli from the data frame after it has been passed through \code{split_by()}, and optionally, \code{control_for()}. Will generate \code{n} items per condition. If <\code{n} items can be generated, will generate as many as possible given the experiment's design.
+Generates the stimuli from the data frame after it has been passed through \code{\link{split_by}}, and optionally, \code{\link{control_for}}. Will generate \code{n} items per condition. If <\code{n} items can be generated, will generate as many as possible given the experiment's design.
 }
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata") & rlang::is_installed("stringdist")) withAutoprint(\{ # examplesIf}
@@ -109,5 +109,5 @@ lexops |>
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\code{\link[lexopsdata]{lexops}} for the default data frame and associated variables.
+\code{\link{lexops}} for the data frame used in the examples.
 }

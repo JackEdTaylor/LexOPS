@@ -7,15 +7,15 @@
 plot_iterations(df, line_width = 1)
 }
 \arguments{
-\item{df}{Output from \code{generate()} or \code{long_format()}}
+\item{df}{Output from \code{\link{generate}} or \code{\link{long_format}}}
 
 \item{line_width}{Thickness of lines (default = 1)}
 }
 \value{
-A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
+A \code{ggplot2} object visualising how conditions differ in independent variables, and are matched for in controls.
 }
 \description{
-Plots iterations by number of items generated, when given a dataframe which has been passed through \code{generate()}.
+Plots iterations by number of items generated, when given a dataframe which has been passed through \code{\link{generate}}.
 }
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}

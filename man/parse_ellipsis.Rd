@@ -10,7 +10,7 @@ parse_ellipsis(...)
 \item{...}{Variables and tolerances, in the form \verb{num_variable1 = -1:3, num_variable2 = -0.5:0.5, char_variable1}. Variables and tolerances should be separated by a \code{=}, and lower and upper boundaries of tolerances should be separated by \code{:}. Variables without tolerances are also supported (useful for character variables or matching by numeric variables exactly, i.e. shorthand for \code{0:0}).}
 }
 \value{
-Returns a list object in the form \code{list(c("num_variable1", -1, 3), c("num_variable2", -0.5, 0.5), "char_variable1")}.
+A list object in the form \code{list(c("num_variable1", -1, 3), c("num_variable2", -0.5, 0.5), "char_variable1")}.
 }
 \description{
 This is useful for specifying multiple parameters in non-standard evaluation for \code{match_item()}.

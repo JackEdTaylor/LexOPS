@@ -30,32 +30,11 @@ box_vis(
 
 \item{cat_vis}{which category should be highlighted (if a categorical variable)? Can be one of \code{tol} or \code{match_string_val}.}
 
-\item{df}{A dataframe. Default is \code{lexopsdata::lexops}.}
+\item{df}{A dataframe. Default is \code{\link{lexops}}.}
 }
 \value{
-A ggplot/ggwordcloud object with the required visualisation.
+A \code{ggplot2} or \code{ggwordcloud} object with the required visualisation.
 }
 \description{
 Function for generating a visualisation for a box's selected options
-}
-\examples{
-\dontshow{if (rlang::is_installed(c("lexopsdata", "ggwordcloud", "dplyr"))) withAutoprint(\{ # examplesIf}
-
-LexOPS:::box_vis("CMU.PrN", "warning", c(-1, 1), "test")
-
-LexOPS:::box_vis("CMU.PrN", "warning", list(c(1, 1), c(3, 3)), shade_label = c("A1", "A2"))
-
-LexOPS:::box_vis("AROU.Glasgow_Norms", "info", c(-1, 0.5), match_string = "thicket")
-
-LexOPS:::box_vis("Rhyme.eSpeak.br", "danger", match_string = "thicket")
-
-LexOPS:::box_vis("PoS.SUBTLEX_UK", "warning", match_string = "jimmy", cat_vis = "match_string_val")
-
-LexOPS:::box_vis("PoS.SUBTLEX_UK", "warning", tol = "noun", match_string = "laura", cat_vis = "tol")
-
-LexOPS:::box_vis("PoS.ELP", "warning")
-
-# ignore shade_label for categorical histogram?
-LexOPS:::box_vis("PoS.SUBTLEX_UK", "warning", list("noun", "verb"), shade_label = c("B1", "B2"))
-\dontshow{\}) # examplesIf}
 }

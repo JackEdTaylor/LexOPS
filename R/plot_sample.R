@@ -9,7 +9,7 @@
 #' @importFrom stats ave
 #' @importFrom utils head
 #'
-#' @return A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
+#' @returns A `ggplot2` object showing how conditions differ in independent variables, and are matched for in controls.
 #'
 #' @examplesIf rlang::is_installed("lexopsdata")
 #' library(lexopsdata)

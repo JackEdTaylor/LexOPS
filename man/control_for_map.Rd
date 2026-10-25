@@ -7,9 +7,9 @@
 control_for_map(x, fun, var, tol = NA, name = NA, standard_eval = FALSE, ...)
 }
 \arguments{
-\item{x}{A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
+\item{x}{A data frame containing the IV and strings, or a \code{LexOPS_pipeline} object resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc..}
 
-\item{fun}{The function to use to calculate the control varibale. Should be an object of class "function".}
+\item{fun}{The function to use to calculate the control variable. Should be an object of class "function".}
 
 \item{var}{The column to provide the value which will be the first argument of the function.}
 
@@ -22,13 +22,13 @@ control_for_map(x, fun, var, tol = NA, name = NA, standard_eval = FALSE, ...)
 \item{...}{Arguments to be passed to \code{fun}}
 }
 \value{
-Returns \code{df}, with details on the variables to be controlled for added to the attributes. Run the \code{\link{generate}} function to then generate the actual stimuli.
+A \code{LexOPS_pipeline} object, where \code{df} has details on the variables to be controlled for added to the attributes. Run the \code{\link{generate}} function to then generate the actual stimuli.
 }
 \description{
-Some variables (e.g. similarity measures) are hard to control for with \code{\link{control_for}} as they need to be recalculated for each word relative to each other, rather than there being a single value for each possible stimulus. The \code{control_for_map} function declares a function that the \code{\link{generate}} function should apply to each match_null within an iteration of stimulus generation. The function given as \code{fun} should be able to take the data in the column given in \code{var} as the first argument, and should be able to take the match_null's value in that column as the second argument.
+Some variables (e.g. similarity measures) are hard to control for with \code{\link{control_for}} as they need to be recalculated for each word relative to each other, rather than there being a single value for each possible stimulus. The \code{control_for_map()} function declares a function that the \code{\link{generate}} function should apply to each match_null within an iteration of stimulus generation. The function given as \code{fun} should be able to take the data in the column given in \code{var} as the first argument, and should be able to take the match_null's value in that column as the second argument.
 }
 \details{
-The long format version of the generated items (\code{long_format()}) will include a column, with the name defined by the \code{name} argument. This will include the values returned by the function \code{fun}. If the match null is set in \code{generate()} to be inclusive (\code{match_null="inclusive"}) and there are more than two factorial cells, this column will only contain \code{NA}s.
+The long format version of the generated items (\code{\link{long_format}}) will include a column, with the name defined by the \code{name} argument. This will include the values returned by the function \code{fun}. If the match null is set in \code{\link{generate}} to be inclusive (\code{match_null="inclusive"}) and there are more than two factorial cells, this column will only contain \code{NA}s.
 }
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}

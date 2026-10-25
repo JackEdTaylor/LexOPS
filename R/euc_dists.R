@@ -11,7 +11,7 @@
 #' @param id_col The column containing the strings (default = `"string"`).
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `vars`. If `TRUE`, `vars` should be a character vector referring to columns in `df` (e.g. `c("Length", "Zipf.SUBTLEX_UK")`). Default = `FALSE`.
 #'
-#' @return Returns a vector of Euclidean distances, in the order of rows in `df`.
+#' @returns A numeric vector of Euclidean distances, in the order of rows in `df`.
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'
 #' library(lexopsdata)

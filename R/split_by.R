@@ -2,15 +2,14 @@
 #'
 #' Specifies splits for one IV for a factorial design. Can be called multiple times for multiple splits.
 #'
-#' @param x A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
+#' @param x A data frame containing the IV and strings, or a `LexOPS_pipeline` object resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc..
 #' @param var The column to treat as an independent variable (non-standard evaluation).
 #' @param levels The boundaries to use as levels of this variable (non-standard evaluation). These should be specified in the form `1:3 ~ 4:6 ~ 7:9` or `c(1, 3) ~ c(4, 6) ~ c(7, 9)` for numeric variables, and (e.g.) `"noun" ~ "verb" ~ c"adjective"` for character variables, where levels are separated by the `~` operator. Levels must be non-overlapping.
 #' @param filter Logical. If TRUE, words which fit no conditions are removed.
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `var` and `levels`. If `TRUE`, `var` should be a character vector referring to a column in `df` (e.g. `"Zipf.SUBTLEX_UK"`), and `levels` should be a list containing multiple vectors of length 2, each specifying the boundaries of one level's bin (e.g. `list(c(1, 3), c(4, 6), c(7, 20))`). Default = `FALSE`.
 #'
-#' @return Returns `df`, with a new column (name defined by `cond_col` argument of `set_options()`) identifying which level of the IV each string belongs to.
+#' @return A `LexOPS_pipeline` object, where `df` has a new column (name defined by `cond_col` argument of `set_options()`) identifying which level of the IV each item belongs to.
 #' @examplesIf rlang::is_installed("lexopsdata")
-#'
 #' library(lexopsdata)
 #'
 #' # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables

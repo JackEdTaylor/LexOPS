@@ -1,11 +1,11 @@
 #' Plot the cumulative frequency of stimuli generated
 #'
-#' Plots iterations by number of items generated, when given a dataframe which has been passed through `generate()`.
+#' Plots iterations by number of items generated, when given a dataframe which has been passed through \code{\link{generate}}.
 #'
-#' @param df Output from `generate()` or `long_format()`
+#' @param df Output from \code{\link{generate}} or \code{\link{long_format}}
 #' @param line_width Thickness of lines (default = 1)
 #'
-#' @return A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
+#' @returns A `ggplot2` object visualising how conditions differ in independent variables, and are matched for in controls.
 #'
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'

@@ -10,12 +10,8 @@ get_box_colour(box_type)
 \item{box_type}{A character vector (one of: "primary", "warning", "Success", "danger", and "info"), specifying which kind of box to generate the colour for.}
 }
 \value{
-The colour's hex value.
+A character vector of the colour's hex value.
 }
 \description{
 Simple function for getting the visualisation colour (in hex) for different coloured boxes. Colours are only accurate for the LexOPS shiny app.
-}
-\examples{
-
-LexOPS:::get_box_colour("primary")
 }

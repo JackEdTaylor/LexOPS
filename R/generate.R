@@ -1,15 +1,15 @@
 #' Generate stimuli
 #'
-#' Generates the stimuli from the data frame after it has been passed through `split_by()`, and optionally, `control_for()`. Will generate `n` items per condition. If <`n` items can be generated, will generate as many as possible given the experiment's design.
+#' Generates the stimuli from the data frame after it has been passed through \code{\link{split_by}}, and optionally, \code{\link{control_for}}. Will generate `n` items per condition. If <`n` items can be generated, will generate as many as possible given the experiment's design.
 #'
-#' @param x A LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
+#' @param x A LexOPS_pipeline object resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc..
 #' @param n The number of strings per condition (default = 20). Set to `"all"` to generate as many as possible.
-#' @param match_null The condition that items should be matched to. Should be a string indicating condition (e.g. `"A1_B2_C1"`), or a string indicating one of the following options: "balanced" for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition (default), "inclusive" to match each condition within the tolerances to every other condition, "first" for the lowest condition (e.g. `"A1"` or `"A1_B1_C1_D1"`, etc.), "random" for randomly selected null condition each iteration.
+#' @param match_null The condition that items should be matched to. Should be a string indicating condition (e.g. `"A1_B2_C1"`), or a string indicating one of the following options: `"balanced"` for randomly ordered null conditions with (as close to as possible) equal number of selections for each condition (default), "inclusive" to match each condition within the tolerances to every other condition, `"first"` for the lowest condition (e.g. `"A1"` or `"A1_B1_C1_D1"`, etc.), `"random"` for randomly selected null condition each iteration.
 #' @param seed Deprecated: set seeds externally (e.g., `set.seed()`).
 #' @param silent Logical: should output to the console (via `cat()`) be suppressed? Default is FALSE.
-#' @param is_shiny Allows printing in a shiny context with `shinyjs::html()`. Outputs from the cat() function are stored in the div with id "gen_console". Default is FALSE.
+#' @param is_shiny Allows printing in a `shiny` context with \code{shinyjs::\link[shinyjs]{html}}. Outputs from the `cat()` function are stored in the div with id "gen_console". Default is FALSE.
 #'
-#' @return Returns the generated stimuli.
+#' @returns The generated stimuli, as a dataframe of class `LexOPS_pipeline`.
 #' @examplesIf rlang::is_installed("lexopsdata") & rlang::is_installed("stringdist")
 #'
 #' library(lexopsdata)
@@ -84,7 +84,7 @@
 #'  control_for_map(stringdist, eSpeak.br_1letter, 0:2, method="lv") |>
 #'  generate(10, match_null = "inclusive")
 #'
-#' @seealso \code{\link[lexopsdata]{lexops}} for the default data frame and associated variables.
+#' @seealso \code{\link{lexops}} for the data frame used in the examples.
 #'
 #' @export
 #' @importFrom stats setNames

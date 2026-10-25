@@ -14,7 +14,7 @@ match_item(
 )
 }
 \arguments{
-\item{df}{A data frame to reorder, containing the target string (default = lexopsdata::lexops).}
+\item{df}{A data frame to reorder, containing the target string (default = \code{lexops}).}
 
 \item{target}{The target string}
 
@@ -27,10 +27,10 @@ match_item(
 \item{standard_eval}{Logical; bypasses non-standard evaluation, and allows more standard R object of list. If \code{TRUE}, \code{...} should be a single list specifying the variables to match by and their tolerances, in the form \code{list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName")}. Default = \code{FALSE}.}
 }
 \value{
-Returns data frame based on \code{df}. If \code{filter} == TRUE, will only contain matches. If \code{filter} == FALSE, will be the original \code{df} object, with a new column, "matchFilter".
+An object of class \code{data.frame} derived from \code{df}. If \code{filter == TRUE}, will only contain matches. If \code{filter == FALSE}, will be the original \code{df} object, with a new column, \code{"matchFilter"}.
 }
 \description{
-Suggests items that are suitable matches for a target item, based on selected variables of a data frame. Note that unlike functions in the generate pipeline (e.g. \code{control_for()}), multiple variables' tolerances can be defined in one function.
+Suggests items that are suitable matches for a target item, based on selected variables of a data frame. Note that unlike functions in the generate pipeline (e.g. \code{\link{control_for}}), multiple variables' tolerances can be defined in one function.
 }
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}

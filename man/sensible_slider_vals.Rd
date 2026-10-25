@@ -14,7 +14,7 @@ sensible_slider_vals(numeric_vec, n_levels, is_tolerance = FALSE)
 \item{is_tolerance}{Logical; is the slider for specifying tolerances (e.g. for matching)? Default is \code{FALSE}.}
 }
 \value{
-A list object, containing the following reccommended argument values for \code{shiny::sliderInput()}: \itemize{
+A list object, containing the following recommended argument values for \code{shiny::\link[shiny]{sliderInput}}: \itemize{
 \item min
 \item max
 \item value
@@ -22,20 +22,5 @@ A list object, containing the following reccommended argument values for \code{s
 }
 }
 \description{
-Function for converting a numeric vector into recommended arguments for \code{shiny::sliderInput()}, for sliders in LexOPS.
-}
-\examples{
-\dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
-
-library(lexopsdata)
-
-# for matching by frequency (e.g. control for...)
-LexOPS:::sensible_slider_vals(lexopsdata::lexops$Zipf.SUBTLEX_UK, 1, TRUE)
-
-# for 3 levels of arousal (e.g. split by...)
-LexOPS:::sensible_slider_vals(lexopsdata::lexops$AROU.Warriner, 3)
-
-# for filtering by word prevalence (e.g. control for...)
-LexOPS:::sensible_slider_vals(lexopsdata::lexops$PREV.Brysbaert, 1)
-\dontshow{\}) # examplesIf}
+Function for converting a numeric vector into recommended arguments for \code{shiny::\link[shiny]{sliderInput}}, for sliders in LexOPS.
 }

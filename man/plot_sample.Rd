@@ -16,15 +16,22 @@ plot_sample(df, include = "design", force = TRUE, id_col = "string")
 \item{id_col}{A character vector specifying the column identifying unique observations (e.g. in \code{lexopsdata::lexops}, the \code{id_col} is \code{"string"}). Ignored unless \code{force=TRUE}, in which case it is required.}
 }
 \value{
-A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
+A \code{ggplot2} object showing how conditions differ in independent variables, and are matched for in controls.
 }
 \description{
 Takes the output from \code{generate()} or \code{long_format()}, and plots distributions on numeric variables used in the generate pipeline (i.e. indepdent variables, controls), collapsed across conditions, relative to the underlying distribution. Alternatively, distributions of any specific numeric variables in the original dataframe can be queried.
 }
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
-
 library(lexopsdata)
 
+stim <- lexops |>
+  dplyr::filter(PK.Brysbaert >= .75) |>
+  split_by(PoS.SUBTLEX_UK, "noun" ~ "adjective" ~ "verb") |>
+  split_by(CNC.Brysbaert, 1:2 ~ 4:5) |>
+  control_for(Zipf.SUBTLEX_UK, -0.2:0.2) |>
+  control_for(Length, 0:0) |>
+  generate(n = 50, match_null = "balanced")
+plot_sample(stim)
 \dontshow{\}) # examplesIf}
 }

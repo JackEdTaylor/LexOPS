@@ -7,19 +7,19 @@
 split_random(x, nlevels = 2, seed = NA, equal_size = FALSE)
 }
 \arguments{
-\item{x}{A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
+\item{x}{A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc..}
 
 \item{nlevels}{An integer, specifying how many levels this random split should have (default = 2).}
 
-\item{seed}{Deprecated: set seeds externally (e.g., \code{set.seed()}).}
+\item{seed}{Deprecated: set seeds externally instead (e.g., \code{set.seed()}).}
 
 \item{equal_size}{Logical; should LexOPS create equal (or as close to equal as possible) numbers of candidates for each level? When \code{FALSE}, will sample N levels with replacement, when \code{TRUE} will sample N rows. Setting to \code{TRUE} is recommended, as it will generally create more candidate matches. Default is \code{FALSE} to avoid altering reproducibility of existing pipelines.}
 }
 \value{
-Returns \code{df}, with a new column (name defined by \code{cond_col} argument) identifying which level of the randomly generated IV each string belongs to.
+A \code{LexOPS_pipeline} object, where \code{df} has a new column (name defined by \code{cond_col} argument) identifying which level of the randomly generated IV each item belongs to.
 }
 \description{
-Adds a split to the data comparable to that made by \code{split_by()}, but split randomly through the data. All entries in \code{df} are assigned a level randomly.
+Adds a split to the data comparable to that made by \code{\link{split_by}}, but split randomly through the data. All entries in \code{df} of the resulting \code{LexOPS_pipeline} object are assigned a level randomly.
 }
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}

@@ -6,6 +6,13 @@
 \usage{
 lexops
 }
+\value{
+The \code{data.frame} object containing the lexops dataset.
+}
 \description{
-A data frame containing 68 variables for words, in English. This dataset was originally stored in the \code{LexOPS} package, but is now installed separately via \code{lexopsdata} (\link[lexopsdata]{lexops}).
+A data frame containing 68 variables for words, in English. This dataset was originally stored in the \code{LexOPS} package, but is now installed separately via \code{lexopsdata} (\code{\link[lexopsdata]{lexops}}).
+}
+\examples{
+lexops
+
 }

@@ -6,7 +6,7 @@
 #' @param values to be included in the modified vector.
 #' @param before a subscript, before which the values are to be appended.
 #'
-#' @return A merged vector.
+#' @returns A merged vector.
 
 prepend <- function (x, values, before = 1) {
   n <- length(x)
@@ -25,10 +25,7 @@ prepend <- function (x, values, before = 1) {
 #' @param x the vector to be modified.
 #' @param ... the objects to be included in the modified vector.
 #'
-#' @return A merged vector.
-#'
-#' @examples
-#' # prepend_list(list(c("test", "two"), c("test", "three")), c("test", "one"))
+#' @returns A merged vector.
 
 prepend_list <- function (x, ...) {
   if (is.list(x)) {

@@ -12,14 +12,8 @@ box_vis.question_marks(message, box_type)
 \item{box_type}{The type of box the visualisation is presented in.}
 }
 \value{
-A ggplot/ggwordcloud object with the required visualisation.
+A \code{ggplot2} or \code{ggwordcloud} object with the required visualisation.
 }
 \description{
 Function for generating a visualisation of question marks surrounding a message
-}
-\examples{
-\dontshow{if (rlang::is_installed(c("lexopsdata", "dplyr"))) withAutoprint(\{ # examplesIf}
-
-LexOPS:::box_vis.question_marks("Unknown!", "info")
-\dontshow{\}) # examplesIf}
 }

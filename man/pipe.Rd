@@ -6,7 +6,15 @@
 \usage{
 lhs \%>\% rhs
 }
+\value{
+No return value (syntactic alias for \code{rhs(lhs())}).
+}
 \description{
 See \code{magrittr::\link[magrittr]{\%>\%}} for details.
+}
+\examples{
+c(1, 4, 2, 7) \%>\%
+  sum()
+
 }
 \keyword{internal}

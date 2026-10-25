@@ -34,7 +34,7 @@ euc_dists(
 \item{standard_eval}{Logical; bypasses non-standard evaluation, and allows more standard R objects in \code{vars}. If \code{TRUE}, \code{vars} should be a character vector referring to columns in \code{df} (e.g. \code{c("Length", "Zipf.SUBTLEX_UK")}). Default = \code{FALSE}.}
 }
 \value{
-Returns a vector of Euclidean distances, in the order of rows in \code{df}.
+A numeric vector of Euclidean distances, in the order of rows in \code{df}.
 }
 \description{
 Caclulates the Euclidean distance of a word from all other words in a df, on selected variables.

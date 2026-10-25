@@ -2,18 +2,21 @@
 % Please edit documentation in R/run_shiny.R
 \name{run_shiny}
 \alias{run_shiny}
-\title{Run the LeXOPS Shiny App}
+\title{Run the LeXOPS \code{shiny} App}
 \usage{
 run_shiny(...)
 }
 \arguments{
-\item{...}{optional arguments to \code{shiny::runApp()}}
+\item{...}{optional arguments to \code{shiny::\link[shiny]{runApp}}}
+}
+\value{
+No return value, called to initialise the LexOPS \code{shiny} app.
 }
 \description{
-Runs the LexOPS Shiny App, with optional additional arguments.
+Runs the LexOPS \code{shiny} App, with optional additional arguments.
 }
 \details{
-The LexOPS shiny app requires additional packages. If any dependencies are missing, the user will be given an error and installation instructions. The additional packages required are:
+The LexOPS \code{shiny} app requires additional packages. If any dependencies are missing, the user will be given an error and installation instructions. The additional packages required are:
 \itemize{
 \item \code{shiny}
 \item \code{shinydashboard}
@@ -29,4 +32,8 @@ The LexOPS shiny app requires additional packages. If any dependencies are missi
 \item \code{stringdist}
 \item \code{lexopsdata} (http://github.com/JackEdTaylor/lexopsdata)
 }
+}
+\examples{
+\dontrun{run_shiny()}
+
 }

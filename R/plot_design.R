@@ -1,16 +1,16 @@
 #' Plot the generated stimuli's design
 #'
-#' Takes the output from `generate()` or `long_format()`, and plots conditions' distributions on numeric variables used in the generate pipeline (i.e. indepdent variables, controls). Alternatively, distributions of any numeric variables in the original dataframe can be queried.
+#' Takes the output from \code{\link{generate}} or \code{\link{long_format}}, and plots conditions' distributions on numeric variables used in the generate pipeline (i.e. indepdent variables, controls). Alternatively, distributions of any numeric variables in the original dataframe can be queried.
 #'
-#' @param df Output from `generate()` or `long_format()`
-#' @param include A character vector indicating which variables to include in the plot. This can be those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Alternatively, this can be a character vector of the variables that should be plotted, that were in the original dataframe. Default is `"design"`.
-#' @param dodge_width The width to give to `ggplot2::position_dodge` (default is 0.2)
+#' @param df Output from \code{\link{generate}} or \code{\link{long_format}}
+#' @param include A character vector indicating which variables to include in the plot. This can be those specified by \code{\link{split_by}} and \code{\link{control_for}} (`"design"`), only those specified in \code{\link{split_by}} (`"splits"`), or only those specified by \code{\link{control_for}} (`"controls"`). Alternatively, this can be a character vector of the variables that should be plotted, that were in the original dataframe. Default is `"design"`.
+#' @param dodge_width The width to give to \code{ggplot2::\link[ggplot2]{position_dodge}} (default is 0.2)
 #' @param point_size Size of points (default = 0.75)
 #' @param line_width Thickness of lines (default = 1)
-#' @param force Logical, should the function be forced to try and work if attributes are missing (default is `TRUE`)? If `TRUE`, will expect the dataframe to have a structure similar to that produced by `long_format()`, where `condition` is character or factor, and `item_nr` is numeric or factor. Other variables will be plot-able if given to the `include` argument.
-#' @param id_col A character vector specifying the column identifying unique observations (e.g. in `lexopsdata::lexops`, the `id_col` is `"string"`). Ignored unless `force=TRUE`, in which case it is required.
+#' @param force Logical, should the function be forced to try and work if attributes are missing (default is `TRUE`)? If `TRUE`, will expect the dataframe to have a structure similar to that produced by \code{\link{long_format}}, where `condition` is character or factor, and `item_nr` is numeric or factor. Other variables will be plot-able if given to the `include` argument.
+#' @param id_col A character vector specifying the column identifying unique observations (e.g. in \code{\link{lexops}}, the `id_col` is `"string"`). Ignored unless `force=TRUE`, in which case it is required.
 #'
-#' @return A ggplot object showing how conditions differ in independent variables, and are matched for in controls.
+#' @returns A `ggplot2` object visualising how conditions differ in independent variables, and are matched for in controls.
 #'
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'

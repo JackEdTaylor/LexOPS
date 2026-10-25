@@ -7,15 +7,15 @@
 cite_design(df, include = "design")
 }
 \arguments{
-\item{df}{Output from \code{\link{generate()}} or \code{\link{long_format()}} functions.}
+\item{df}{Output from \code{\link{generate}} or \code{\link{long_format}} functions.}
 
-\item{include}{A string indicating which variables to include in the citation. This can be those specified by \code{\link{split_by()}} and \code{\link{control_for()}} (\code{"design"}), only those specified in \code{\link{split_by()}} (\code{"splits"}), or only those specified by \code{\link{control_for()}} (\code{"controls"}). Alternatively, this can be a character vector of the variables that should be cited, that were in the original dataframe. Default is \code{"design"}.}
+\item{include}{A string indicating which variables to include in the citation. This can be those specified by \code{\link{split_by}} and \code{\link{control_for}} (\code{"design"}), only those specified in \code{\link{split_by}} (\code{"splits"}), or only those specified by \code{\link{control_for}} (\code{"controls"}). Alternatively, this can be a character vector of the variables that should be cited, that were in the original dataframe. Default is \code{"design"}.}
 }
 \value{
 A tibble that lists measures and sources of data that should be cited (if known).
 }
 \description{
-Takes the output from \code{\link{generate()}} or \code{\link{long_format()}}, and generates a tibble that lists known references that should be cited. This function will only be useful if you use variables from the lexops dataset (\code{\link{lexops}}) with their original names.
+Takes the output from \code{\link{generate}} or \code{\link{long_format}}, and generates a tibble that lists known references that should be cited. This function will only be useful if you use variables from the lexops dataset (\code{\link{lexops}}) with their original names.
 }
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}

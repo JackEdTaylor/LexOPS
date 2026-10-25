@@ -1,8 +1,8 @@
-#' Run the LeXOPS Shiny App
+#' Run the LeXOPS `shiny` App
 #'
-#' Runs the LexOPS Shiny App, with optional additional arguments.
+#' Runs the LexOPS `shiny` App, with optional additional arguments.
 #'
-#' The LexOPS shiny app requires additional packages. If any dependencies are missing, the user will be given an error and installation instructions. The additional packages required are:
+#' The LexOPS `shiny` app requires additional packages. If any dependencies are missing, the user will be given an error and installation instructions. The additional packages required are:
 #' * `shiny`
 #' * `shinydashboard`
 #' * `plotly`
@@ -17,7 +17,12 @@
 #' * `stringdist`
 #' * `lexopsdata` (http://github.com/JackEdTaylor/lexopsdata)
 #'
-#' @param ... optional arguments to `shiny::runApp()`
+#' @param ... optional arguments to \code{shiny::\link[shiny]{runApp}}
+#'
+#' @returns No return value, called to initialise the LexOPS `shiny` app.
+#'
+#' @examples
+#' \dontrun{run_shiny()}
 #'
 #' @export
 

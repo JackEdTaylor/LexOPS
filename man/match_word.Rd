@@ -2,7 +2,7 @@
 % Please edit documentation in R/match_word.R
 \name{match_word}
 \alias{match_word}
-\title{An outdated wrapper for match_item()}
+\title{An outdated wrapper for \code{\link{match_item}}}
 \usage{
 match_word(
   df = LexOPS::lexops,
@@ -27,10 +27,10 @@ match_word(
 \item{standard_eval}{Logical; bypasses non-standard evaluation, and allows more standard R object of list. If \code{TRUE}, \code{...} should be a single list specifying the variables to match by and their tolerances, in the form \code{list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName")}. Default = \code{FALSE}.}
 }
 \value{
-Returns data frame based on \code{df}. If \code{filter} == TRUE, will only contain matches. If \code{filter} == FALSE, will be the original \code{df} object, with a new column, "matchFilter".
+An object of class \code{data.frame} derived from \code{df}. If \code{filter == TRUE}, will only contain matches. If \code{filter == FALSE}, will be the original \code{df} object, with a new column, \code{"matchFilter"}.
 }
 \description{
-The \code{match_word()} function has been replaced by \code{match_item()}. This wrapper for the function has been kept to support backwards compatibility to code written in older versions of LexOPS. This wrapper may be removed in the future, so please update your code to use \code{match_item()}.
+The \code{match_word()} function has been replaced by \code{\link{match_item}}. This wrapper for the function has been kept to support backwards compatibility to code written in older versions of LexOPS. This wrapper may be removed in the future, so please update your code to use \code{\link{match_item}}.
 }
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}

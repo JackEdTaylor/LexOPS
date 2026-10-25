@@ -1,6 +1,6 @@
-#' An outdated wrapper for match_item()
+#' An outdated wrapper for \code{\link{match_item}}
 #'
-#' The `match_word()` function has been replaced by `match_item()`. This wrapper for the function has been kept to support backwards compatibility to code written in older versions of LexOPS. This wrapper may be removed in the future, so please update your code to use `match_item()`.
+#' The `match_word()` function has been replaced by \code{\link{match_item}}. This wrapper for the function has been kept to support backwards compatibility to code written in older versions of LexOPS. This wrapper may be removed in the future, so please update your code to use \code{\link{match_item}}.
 #'
 #' @param df A data frame to reorder, containing the target string (default = `lexopsdata::lexops`).
 #' @param target The target string
@@ -9,7 +9,7 @@
 #' @param filter Logical. If TRUE, matches outside the tolerances specified in vars are removed. If FALSE, a new column, matchFilter is calculated indicating whether or not the string is within all variables' tolerances. (Default = TRUE.)
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R object of list. If `TRUE`, `...` should be a single list specifying the variables to match by and their tolerances, in the form `list("numericVariable1Name", c("numericVariable2Name", -1.5, 3), "characterVariableName")`. Default = `FALSE`.
 #'
-#' @return Returns data frame based on `df`. If `filter` == TRUE, will only contain matches. If `filter` == FALSE, will be the original `df` object, with a new column, "matchFilter".
+#' @return An object of class `data.frame` derived from `df`. If `filter == TRUE`, will only contain matches. If `filter == FALSE`, will be the original `df` object, with a new column, `"matchFilter"`.
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'
 #' library(lexopsdata)

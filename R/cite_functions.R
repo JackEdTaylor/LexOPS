@@ -1,11 +1,11 @@
 #' Generate a citation
 #'
-#' Takes the output from \code{\link{generate()}} or \code{\link{long_format()}}, and generates a tibble that lists known references that should be cited. This function will only be useful if you use variables from the lexops dataset (\code{\link{lexops}}) with their original names.
+#' Takes the output from \code{\link{generate}} or \code{\link{long_format}}, and generates a tibble that lists known references that should be cited. This function will only be useful if you use variables from the lexops dataset (\code{\link{lexops}}) with their original names.
 #'
-#' @param df Output from \code{\link{generate()}} or \code{\link{long_format()}} functions.
-#' @param include A string indicating which variables to include in the citation. This can be those specified by \code{\link{split_by()}} and \code{\link{control_for()}} (`"design"`), only those specified in \code{\link{split_by()}} (`"splits"`), or only those specified by \code{\link{control_for()}} (`"controls"`). Alternatively, this can be a character vector of the variables that should be cited, that were in the original dataframe. Default is `"design"`.
+#' @param df Output from \code{\link{generate}} or \code{\link{long_format}} functions.
+#' @param include A string indicating which variables to include in the citation. This can be those specified by \code{\link{split_by}} and \code{\link{control_for}} (`"design"`), only those specified in \code{\link{split_by}} (`"splits"`), or only those specified by \code{\link{control_for}} (`"controls"`). Alternatively, this can be a character vector of the variables that should be cited, that were in the original dataframe. Default is `"design"`.
 #'
-#' @return A tibble that lists measures and sources of data that should be cited (if known).
+#' @returns A tibble that lists measures and sources of data that should be cited (if known).
 #'
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'
@@ -68,7 +68,7 @@ cite_design <- function(df, include = "design") {
 #'
 #' @param cite_vars A character vector of column names
 #'
-#' @return A tibble that lists measures and sources of data that should be cited (if known).
+#' @returns A tibble that lists measures and sources of data that should be cited (if known).
 #'
 #' @examples
 #'
@@ -101,7 +101,7 @@ citation_table <- function(cite_vars) {
 #' @param include_pronunciations Logical; allow pronunciation transpositions as measures (e.g. CMU.1letter). Default is `TRUE`.
 #' @param standard_eval Logical; bypasses non-standard evaluation. If `TRUE`, `var` should be a column name in quotation marks. If `FALSE`, the quotation marks are not necessary. Default = `FALSE`.
 #'
-#' @return A citation of a variable's source in APA format. Returns `default` if not recognised as a citeabile source.
+#' @returns A citation of a variable's source in APA format. Returns `default` if not recognised as a citeabile source.
 #'
 #' @examples
 #'
@@ -230,7 +230,7 @@ var_to_measure_name <- function(var, include_pronunciations=TRUE) {
 #' @param default The character string that should be returned if the variable does not have a known citeable source
 #' @param standard_eval Logical; bypasses non-standard evaluation. If `TRUE`, `var` should be a column name in quotation marks. If `FALSE`, the quotation marks are not necessary. Default = `FALSE`.
 #'
-#' @return A citation of a variable's source in APA format. Returns `default` if not recognised as a citeable source.
+#' @returns A citation of a variable's source in APA format. Returns `default` if not recognised as a citeable source.
 #'
 #' @examples
 #'
@@ -318,7 +318,7 @@ corpus_recode_name_source <- function(var) {
 #' @param default The character string that should be returned if the variable does not have a known citeable source
 #' @param standard_eval Logical; bypasses non-standard evaluation. If `TRUE`, `var` should be a column name in quotation marks. If `FALSE`, the quotation marks are not necessary. Default = `FALSE`.
 #'
-#' @return A citation of a variable's source in APA format. Returns `default` if not recognised as a citeabile source.
+#' @returns A citation of a variable's source in APA format. Returns `default` if not recognised as a citeabile source.
 #'
 #' @examples
 #'

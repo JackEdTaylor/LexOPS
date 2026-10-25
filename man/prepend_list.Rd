@@ -17,6 +17,3 @@ A merged vector.
 \description{
 A prepend function that plays nicely with lists.
 }
-\examples{
-# prepend_list(list(c("test", "two"), c("test", "three")), c("test", "one"))
-}

@@ -1,12 +1,12 @@
 #' Convert to long format
 #'
-#' Converts the generated stimuli from the `generate()` function into long format.
+#' Converts the generated stimuli from the \code{\link{generate}} function into long format.
 #'
-#' @param df A data frame that is the result from `control_for()` or `split_by()`.
-#' @param include A string indicating whether the long-format result should include all variables in the original data frame (`"all"`), only those specified by `split_by()` and `control_for()` (`"design"`), only those specified in `split_by()` (`"splits"`), or only those specified by `control_for()` (`"controls"`). Set to `NA` for only the data in the wide-format data frame. The default is `"design"`.
+#' @param df A data frame that is the result from \code{\link{control_for}} or \code{\link{split_by}}.
+#' @param include A string indicating whether the long-format result should include all variables in the original data frame (`"all"`), only those specified by \code{\link{split_by}} and \code{\link{control_for}} (`"design"`), only those specified in \code{\link{split_by}} (`"splits"`), or only those specified by \code{\link{control_for}} (`"controls"`). Set to `NA` for only the data in the wide-format data frame. The default is `"design"`.
 #' @param include_candids Logical; whether to include data about unused candidates in the result. If `TRUE`, will store whether each word was actually used in column, `is_stim`. Default is `FALSE`.
 #'
-#' @return Returns the generated stimuli, but converted into long format, containing requested variables from the original `df`, and the variables of `item_nr`, `condition`, `euclidean_distance` (from the match_null).
+#' @return The generated stimuli, as a `data.frame` object in long format, containing requested variables from the original `df`, and the variables of `item_nr`, `condition`, `euclidean_distance` (from the `match_null`).
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'
 #' library(lexopsdata)
@@ -44,7 +44,7 @@ long_format <- function(df, include = "design", include_candids = FALSE) {
   } else {
     # check the meta-data is present
     if (is.null(LexOPS_attrs$meta_df)) {
-      stop("`long_format` requires that the `control_for()` function has been run before the `generate()` function (or else the data is already in long format anyway)")
+      stop("long_format() requires that the control_for() function has been run before the generate() function (or else the data is already in long format anyway)")
     }
   }
 

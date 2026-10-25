@@ -1,16 +1,16 @@
 #' Control for confounding variables via a function.
 #'
-#' Some variables (e.g. similarity measures) are hard to control for with \code{\link{control_for}} as they need to be recalculated for each word relative to each other, rather than there being a single value for each possible stimulus. The `control_for_map` function declares a function that the \code{\link{generate}} function should apply to each match_null within an iteration of stimulus generation. The function given as `fun` should be able to take the data in the column given in `var` as the first argument, and should be able to take the match_null's value in that column as the second argument.
+#' Some variables (e.g. similarity measures) are hard to control for with \code{\link{control_for}} as they need to be recalculated for each word relative to each other, rather than there being a single value for each possible stimulus. The `control_for_map()` function declares a function that the \code{\link{generate}} function should apply to each match_null within an iteration of stimulus generation. The function given as `fun` should be able to take the data in the column given in `var` as the first argument, and should be able to take the match_null's value in that column as the second argument.
 #'
-#' @param x A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of `split_by()`, `control_for()`, etc..
-#' @param fun The function to use to calculate the control varibale. Should be an object of class "function".
+#' @param x A data frame containing the IV and strings, or a `LexOPS_pipeline` object resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc..
+#' @param fun The function to use to calculate the control variable. Should be an object of class "function".
 #' @param var The column to provide the value which will be the first argument of the function.
 #' @param tol The tolerance of the control. For numeric variables, this should be in the form lower:upper (e.g. `-0.1:0.1` will control within +/- 0.1). For categorical variables, this can be kept as `NA`.
 #' @param name What the output column should be named. If `NA` (default), will automatically assign as `sprintf("control_fun_%i", nr)`, where `nr` is the number of the control function.
 #' @param standard_eval Logical; bypasses non-standard evaluation, and allows more standard R objects in `var` and `tol`. If `TRUE`, `var` should be a character vector referring to a column in `df` (e.g. `"Zipf.SUBTLEX_UK"`), and `tol` should be a vector of length 2, specifying the tolerance (e.g. `c(-0.1, 0.5)`). Default = `FALSE`.
 #' @param ... Arguments to be passed to `fun`
 #'
-#' @return Returns `df`, with details on the variables to be controlled for added to the attributes. Run the \code{\link{generate}} function to then generate the actual stimuli.
+#' @returns  A `LexOPS_pipeline` object, where `df` has details on the variables to be controlled for added to the attributes. Run the \code{\link{generate}} function to then generate the actual stimuli.
 #' @examplesIf rlang::is_installed("lexopsdata")
 #'
 #' library(lexopsdata)
@@ -54,7 +54,7 @@
 #'    control_for_map(stringdist_okay, string, "not_okay")
 #'
 #' @details
-#' The long format version of the generated items (`long_format()`) will include a column, with the name defined by the `name` argument. This will include the values returned by the function `fun`. If the match null is set in `generate()` to be inclusive (`match_null="inclusive"`) and there are more than two factorial cells, this column will only contain `NA`s.
+#' The long format version of the generated items (\code{\link{long_format}}) will include a column, with the name defined by the `name` argument. This will include the values returned by the function `fun`. If the match null is set in \code{\link{generate}} to be inclusive (`match_null="inclusive"`) and there are more than two factorial cells, this column will only contain `NA`s.
 #'
 #' @export
 

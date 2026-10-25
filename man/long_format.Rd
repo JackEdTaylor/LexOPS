@@ -7,17 +7,17 @@
 long_format(df, include = "design", include_candids = FALSE)
 }
 \arguments{
-\item{df}{A data frame that is the result from \code{control_for()} or \code{split_by()}.}
+\item{df}{A data frame that is the result from \code{\link{control_for}} or \code{\link{split_by}}.}
 
-\item{include}{A string indicating whether the long-format result should include all variables in the original data frame (\code{"all"}), only those specified by \code{split_by()} and \code{control_for()} (\code{"design"}), only those specified in \code{split_by()} (\code{"splits"}), or only those specified by \code{control_for()} (\code{"controls"}). Set to \code{NA} for only the data in the wide-format data frame. The default is \code{"design"}.}
+\item{include}{A string indicating whether the long-format result should include all variables in the original data frame (\code{"all"}), only those specified by \code{\link{split_by}} and \code{\link{control_for}} (\code{"design"}), only those specified in \code{\link{split_by}} (\code{"splits"}), or only those specified by \code{\link{control_for}} (\code{"controls"}). Set to \code{NA} for only the data in the wide-format data frame. The default is \code{"design"}.}
 
 \item{include_candids}{Logical; whether to include data about unused candidates in the result. If \code{TRUE}, will store whether each word was actually used in column, \code{is_stim}. Default is \code{FALSE}.}
 }
 \value{
-Returns the generated stimuli, but converted into long format, containing requested variables from the original \code{df}, and the variables of \code{item_nr}, \code{condition}, \code{euclidean_distance} (from the match_null).
+The generated stimuli, as a \code{data.frame} object in long format, containing requested variables from the original \code{df}, and the variables of \code{item_nr}, \code{condition}, \code{euclidean_distance} (from the \code{match_null}).
 }
 \description{
-Converts the generated stimuli from the \code{generate()} function into long format.
+Converts the generated stimuli from the \code{\link{generate}} function into long format.
 }
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}

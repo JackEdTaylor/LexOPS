@@ -7,7 +7,7 @@
 split_by(x, var, levels, filter = TRUE, standard_eval = FALSE)
 }
 \arguments{
-\item{x}{A data frame containing the IV and strings, or a LexOPS_pipeline object resulting from one of \code{split_by()}, \code{control_for()}, etc..}
+\item{x}{A data frame containing the IV and strings, or a \code{LexOPS_pipeline} object resulting from one of \code{\link{split_by}}, \code{\link{control_for}}, etc..}
 
 \item{var}{The column to treat as an independent variable (non-standard evaluation).}
 
@@ -18,14 +18,13 @@ split_by(x, var, levels, filter = TRUE, standard_eval = FALSE)
 \item{standard_eval}{Logical; bypasses non-standard evaluation, and allows more standard R objects in \code{var} and \code{levels}. If \code{TRUE}, \code{var} should be a character vector referring to a column in \code{df} (e.g. \code{"Zipf.SUBTLEX_UK"}), and \code{levels} should be a list containing multiple vectors of length 2, each specifying the boundaries of one level's bin (e.g. \code{list(c(1, 3), c(4, 6), c(7, 20))}). Default = \code{FALSE}.}
 }
 \value{
-Returns \code{df}, with a new column (name defined by \code{cond_col} argument of \code{set_options()}) identifying which level of the IV each string belongs to.
+A \code{LexOPS_pipeline} object, where \code{df} has a new column (name defined by \code{cond_col} argument of \code{set_options()}) identifying which level of the IV each item belongs to.
 }
 \description{
 Specifies splits for one IV for a factorial design. Can be called multiple times for multiple splits.
 }
 \examples{
 \dontshow{if (rlang::is_installed("lexopsdata")) withAutoprint(\{ # examplesIf}
-
 library(lexopsdata)
 
 # Create 3 levels of syllables, for 1-3, 4-6, and 7-20 syllables
