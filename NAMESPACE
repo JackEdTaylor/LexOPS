@@ -33,6 +33,8 @@ importFrom(graphics,hist)
 importFrom(magrittr,"%>%")
 importFrom(rlang,":=")
 importFrom(stats,
+  ave,
   quantile,
   setNames
 )
+importFrom(utils,head)
