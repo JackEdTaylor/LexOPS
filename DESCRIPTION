@@ -1,6 +1,6 @@
 Package: LexOPS
-Title: A Package and 'shiny' App for Generating Matched Stimuli
-Version: 0.6.1
+Title: Selecting Matched Items for Factorial Designs
+Version: 0.6.2
 Date: 2026-10-25
 Authors@R: 
     c(
