@@ -27,7 +27,7 @@ output$fetch_opts_inputtext_choice <- renderUI({
   if(input$fetch_inputtype == "file"){
     NULL
   } else if(input$fetch_inputtype == "cp") {
-    textAreaInput("fetch_opts_inputtext", "Type or Copy and Paste Target Word Stimuli into the Box Below", width="100%", height="270px")
+    textAreaInput("fetch_opts_inputtext", "Type or Copy and Paste Target Items into the Box Below", width="100%", height="270px")
   }
 })
 
@@ -120,7 +120,7 @@ lapply(1:length(unique_measures), function(i) {
 
 output$fetch_results_plsinput <- renderText({
   if (is_null(fetch_df_res())) {
-    "Please input word stimuli..."
+    "Please input items (i.e., usually words)..."
   } else {
     NULL
   }

@@ -22,7 +22,7 @@ output$visualise_tab_content <- renderUI({
         column(6, uiOutput('vis_z_source_ui'))
       ),
       fluidRow(
-        column(6, selectInput('vis_colour_opt', 'Colour', c('(None)', 'Generated Stimuli', 'Generated Stimuli Condition', 'Target Match Word', 'Suggested Matches', 'Words Uploaded to Fetch Tab', measures), "(None)")),
+        column(6, selectInput('vis_colour_opt', 'Colour', c('(None)', 'Generated Items', 'Generated Items Condition', 'Target Match Item', 'Suggested Matches', 'Items Uploaded to Fetch Tab', measures), "(None)")),
         column(6, uiOutput('vis_colour_source_ui'))
       ),
       br(),
@@ -107,7 +107,7 @@ output$vis_colour_source_ui <- renderUI({
     out <- NULL
   } else if (measure == "(None)") {
     out <- NULL
-  } else if (measure %in% c("Length", "Generated Stimuli", "Generated Stimuli Condition", "Target Match Word", "Suggested Matches", "Words Uploaded to Fetch Tab")) {
+  } else if (measure %in% c("Length", "Generated Items", "Generated Items Condition", "Target Match Item", "Suggested Matches", "Items Uploaded to Fetch Tab")) {
     out <- NULL
   } else if (grepl("^custom.", measure)) {
     out <- NULL
@@ -180,17 +180,17 @@ output$visualiseplotly <- renderPlotly({
       if (is.null(axes[["colour"]])) {
         pd$colour <- NULL
       } else {
-        if (input$vis_colour_opt=="Generated Stimuli") {
-          pd$colour <- ifelse(pd$string %in% LexOPS::long_format(generated_stim())$string, "Generated Stimuli", "Other Strings")
-        } else if (input$vis_colour_opt=="Generated Stimuli Condition") {
+        if (input$vis_colour_opt=="Generated Items") {
+          pd$colour <- ifelse(pd$string %in% LexOPS::long_format(generated_stim())$string, "Generated Items", "Other Strings")
+        } else if (input$vis_colour_opt=="Generated Items Condition") {
           pd$colour <- dplyr::left_join(pd, LexOPS::long_format(generated_stim()), by = "string") %>%
             dplyr::pull(condition)
-        } else if (input$vis_colour_opt=="Target Match Word") {
-          pd$colour <- ifelse(pd$string == input$match_string, "Target Match Word", "Other Strings")
+        } else if (input$vis_colour_opt=="Target Match Item") {
+          pd$colour <- ifelse(pd$string == input$match_string, "Target Match Item", "Other Strings")
         } else if (input$vis_colour_opt=="Suggested Matches") {
           pd$colour <- ifelse(pd$string %in% matched_stim()$string, "Suggested Matches", "Other Strings")
-        } else if (input$vis_colour_opt=="Words Uploaded to Fetch Tab") {
-          pd$colour <- ifelse(pd$string %in% fetch_df_res()$string, "Uploaded Words", "Other Words")
+        } else if (input$vis_colour_opt=="Items Uploaded to Fetch Tab") {
+          pd$colour <- ifelse(pd$string %in% fetch_df_res()$string, "Uploaded Items", "Other Items")
         } else {
           pd$colour <- lexops_react()[[axes[["colour"]]]]
         }

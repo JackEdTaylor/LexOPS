@@ -131,9 +131,9 @@ output$matched_stim_dt <- DT::renderDataTable({
 
 # link to download
 output$matched_stim_download <- downloadHandler(
-  filename = 'matched_stimuli.csv',
+  filename = 'matched_items.csv',
   content = function(file) {
-    withProgress(message="Writing stimuli to .csv file...", value=1, {
+    withProgress(message="Writing items to .csv file...", value=1, {
       write.csv(matched_stim(), file, row.names = FALSE)
     })
   }

@@ -21,7 +21,7 @@ output$gen_match_null_ui <- renderUI({
     NULL
   }
 
-  selectInput("gen_match_null", "Match Null (Condition which stimuli will be matched relative to, i.e. within 0.1 and -0.1 Zipf of this condition)",
+  selectInput("gen_match_null", "Match Null (Condition which items will be matched relative to, i.e. within 0.1 and -0.1 Zipf of this condition)",
               c(
                 conditions,
                 "Balanced (use each condition as a control null an equal number of times, in a random order)" = "balanced",

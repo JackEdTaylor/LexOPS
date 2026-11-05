@@ -146,7 +146,7 @@ lapply(1:25, function(i) {
     measure <- input[[sprintf("%s_v_measure", boxid)]]
     source <- input[[sprintf("%s_v_source", boxid)]]
     if (measure == "Random") {
-      tags$p("Will create a random split in the stimuli. This is useful for non-stimulus related conditions (e.g. task) that still require matched stimuli.")
+      tags$p("Will create a random split in the items. This is useful for non-stimulus related conditions (e.g. task) that still require matched items.")
     } else if ((is.null(source) & measure != "Length" & !grepl("^custom.", measure)) | measure == "(None)") {
       NULL
     } else {

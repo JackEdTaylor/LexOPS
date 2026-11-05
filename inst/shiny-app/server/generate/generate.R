@@ -253,9 +253,9 @@ output$generated_stim_dt <- DT::renderDataTable({
 
 # link to download
 output$generated_stim_download <- downloadHandler(
-  filename = 'generated_stimuli.csv',
+  filename = 'generated_items.csv',
   content = function(file) {
-    withProgress(message="Writing stimuli to .csv file...", value=1, {
+    withProgress(message="Writing items to .csv file...", value=1, {
       write.csv(generated_stim_formatted(), file, row.names = FALSE)
     })
   }
