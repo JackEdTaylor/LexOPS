@@ -421,6 +421,7 @@ tagList(
                                               title=NULL, status='primary',
                                               collabsible=F, width=12,
                                               fluidRow(
+                                                  column(12, align = "center", img(src = "hex-250.png", class = "center-fit")),
                                                   column(12, align = "center", tags$p(sprintf("LexOPS version %s", packageVersion("LexOPS")), style='font-size:20px; color:black;')),
                                                   column(12, br()),
                                                   column(12, br()),
