@@ -24,7 +24,7 @@ lexops_loadingdone <- function() {
     show("main_content")
 }
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
 
     # initialise the dataframe
     source("server/initialise_data.R", local = TRUE)

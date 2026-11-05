@@ -1,6 +1,5 @@
 # generate code to codify the stimulus generation
-output$gen_codify_text <- renderText({
-
+gen_codify_text_reactive <- reactive({
   # get the filters
   filter_opts <- filter_opts_react()
 
@@ -92,4 +91,14 @@ output$gen_codify_text <- renderText({
   }
 
   out
+})
+
+# render text to show the user
+output$gen_codify_text <- renderText({
+  gen_codify_text_reactive()
+})
+
+# copy to clipboard
+observeEvent(input$codify_copy_clipboard, {
+  session$sendCustomMessage("txt", gen_codify_text_reactive())
 })

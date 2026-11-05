@@ -21,6 +21,12 @@ library(lexopsdata)
 
 tagList(
     useShinyjs(),
+    # register js function to copy to the clipboard
+    tags$script("
+      Shiny.addCustomMessageHandler('txt', function (txt) {
+        navigator.clipboard.writeText(txt);
+      });
+    "),
     tags$head(
         tags$link(href = "style.css", rel = "stylesheet")
     ),
@@ -204,7 +210,8 @@ tagList(
                                               tabPanel("Codify", icon = icon("laptop-code"),
                                                        tags$h1("Codify"),
                                                        tags$p("This R code will generate stimuli for the design you have specified. If you've set the random seed, this code will also generate the same stimuli list as that generated in the app each time it is run. You can set the seed in the Preferences tab on the sidebar."),
-                                                       verbatimTextOutput("gen_codify_text")
+                                                       verbatimTextOutput("gen_codify_text"),
+                                                       actionButton("codify_copy_clipboard", "Copy to clipboard", icon = icon("copy"))
                                               ),
                                               tabPanel("Cite", icon = icon("quote-left"),
                                                        tags$h1("Cite"),
