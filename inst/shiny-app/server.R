@@ -24,7 +24,6 @@ lexops_loadingdone <- function() {
     show("main_content")
 }
 
-# Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
     # initialise the dataframe
