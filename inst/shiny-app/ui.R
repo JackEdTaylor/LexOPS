@@ -208,7 +208,7 @@ tagList(
                                               ),
                                               tabPanel("Cite", icon = icon("quote-left"),
                                                        tags$h1("Cite"),
-                                                       shiny::HTML("Here is a list of the variables you used, with the sources it is recommended that you should cite. Please remember to also always <a href=\"https://jackedtaylor.github.io/LexOPSdocs/faq.html#how-should-i-cite-lexops\" target=\"_blank\">Cite LexOPS</a>."),
+                                                       shiny::HTML("Here is a list of the variables you used, with the sources it is recommended that you should cite. Please remember to also <a href=\"https://jackedtaylor.github.io/LexOPSdocs/faq.html#how-should-i-cite-lexops\" target=\"_blank\">Cite LexOPS</a>."),
                                                        tags$br(),
                                                        tags$br(),
                                                        DT::dataTableOutput("gen_citations")
