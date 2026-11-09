@@ -1,7 +1,7 @@
 Package: LexOPS
 Title: Selecting Matched Items for Factorial Designs
-Version: 0.6.3.9000
-Date: 2026-10-25
+Version: 0.6.4
+Date: 2026-11-09
 Authors@R: 
     c(
         person(given = "Jack",
