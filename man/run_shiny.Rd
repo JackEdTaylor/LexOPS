@@ -16,7 +16,7 @@ No return value, called to initialise the LexOPS \code{shiny} app.
 Runs the LexOPS \code{shiny} App, with optional additional arguments.
 }
 \details{
-The LexOPS \code{shiny} app requires additional packages. If any dependencies are missing, the user will be given an error and installation instructions. The additional packages required are:
+The LexOPS \code{shiny} app requires additional packages. If any dependencies are missing, the user will be prompted to install them. The additional packages required are:
 \itemize{
 \item \code{shiny}
 \item \code{shinydashboard}

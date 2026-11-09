@@ -2,7 +2,7 @@
 #'
 #' Runs the LexOPS `shiny` App, with optional additional arguments.
 #'
-#' The LexOPS `shiny` app requires additional packages. If any dependencies are missing, the user will be given an error and installation instructions. The additional packages required are:
+#' The LexOPS `shiny` app requires additional packages. If any dependencies are missing, the user will be prompted to install them. The additional packages required are:
 #' * `shiny`
 #' * `shinydashboard`
 #' * `plotly`
