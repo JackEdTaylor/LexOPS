@@ -196,7 +196,7 @@ box_vis.density <- function(var, box_type, df) {
 
 box_vis.rhyme <- function(var, box_type, rhyme_word, rhyme_word_val, df) {
   df %>%
-    dplyr::select(.data$string, !!(dplyr::sym(var)), .data$PK.Brysbaert) %>%
+    dplyr::select(dplyr::all_of(c("string", "PK.Brysbaert")), !!(dplyr::sym(var))) %>%
     dplyr::filter(!!(dplyr::sym(var))==rhyme_word_val & .data$PK.Brysbaert>=0.75 & .data$string!=rhyme_word) %>%
     dplyr::slice_sample(n = 15) %>%
     dplyr::mutate(wordcloudsize=1, wordcloudalpha=0.9) %>%
