@@ -22,7 +22,7 @@
 #' @returns No return value, called to initialise the LexOPS `shiny` app.
 #'
 #' @examples
-#' \dontrun{run_shiny()}
+#' if (interactive()) { run_shiny() }
 #'
 #' @export
 

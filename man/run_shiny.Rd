@@ -34,6 +34,6 @@ The LexOPS \code{shiny} app requires additional packages. If any dependencies ar
 }
 }
 \examples{
-\dontrun{run_shiny()}
+if (interactive()) { run_shiny() }
 
 }
